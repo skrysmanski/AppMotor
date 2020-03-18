@@ -1,0 +1,15 @@
+# Editor configuration
+# Example: https://editorconfig.org/#example-file
+root = true
+
+[*]
+end_of_line = lf
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+insert_final_newline = true
+charset = utf-8
+
+[*.md]
+# 3 spaces are required for separating child lists from parent lists (e.g. 1. or *)
+indent_size = 3
