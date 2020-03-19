@@ -10,6 +10,12 @@ trim_trailing_whitespace = true
 insert_final_newline = true
 charset = utf-8
 
-[*.md]
-# 3 spaces are required for separating child lists from parent lists (e.g. 1. or *)
-indent_size = 3
+[*.cs]
+charset = utf-8-bom
+
+dotnet_style_qualification_for_field = true:suggestion
+dotnet_style_qualification_for_property = true:suggestion
+dotnet_style_qualification_for_method = false:suggestion
+dotnet_style_qualification_for_event = true:suggestion
+
+dotnet_sort_system_directives_first = true:suggestion
