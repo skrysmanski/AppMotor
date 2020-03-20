@@ -10,6 +10,9 @@ namespace AppWeave.Core.Exceptions
     [PublicAPI]
     public class ValueException : Exception
     {
+        [NotNull]
+        internal const string DEFAULT_MESSAGE = "The specified value is invalid.";
+
         [CanBeNull]
         public string ValueName { get; }
 
@@ -55,7 +58,7 @@ namespace AppWeave.Core.Exceptions
 
         [PublicAPI]
         public ValueException([CanBeNull] string message, [CanBeNull] string valueName, [CanBeNull] Exception innerException)
-            : base(message ?? "The specified value is invalid.", innerException)
+            : base(message ?? DEFAULT_MESSAGE, innerException)
         {
             this.ValueName = valueName;
         }
