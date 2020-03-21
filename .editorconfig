@@ -19,3 +19,6 @@ dotnet_style_qualification_for_method = false:suggestion
 dotnet_style_qualification_for_event = true:suggestion
 
 dotnet_sort_system_directives_first = true:suggestion
+
+[*.csproj]
+indent_size = 2
