@@ -13,6 +13,11 @@ charset = utf-8
 [*.cs]
 charset = utf-8-bom
 
+# Unfortunately, Visual Studio doesn't enforce the end-of-line style on save. This
+# can easily lead to mixed end-of-line characters. So, we don't define the end-of-line
+# style here but in .gitattributes.
+end_of_line = unset
+
 dotnet_style_qualification_for_field = true:suggestion
 dotnet_style_qualification_for_property = true:suggestion
 dotnet_style_qualification_for_method = false:suggestion
@@ -21,4 +26,10 @@ dotnet_style_qualification_for_event = true:suggestion
 dotnet_sort_system_directives_first = true:suggestion
 
 [*.csproj]
+# This is how Visual Studio creates project files.
 indent_size = 2
+
+# Unfortunately, Visual Studio seems to ignore the end-of-line style for .csproj
+# files - and always creates .csproj files with crlf. Thus, we enforce the end-of-line
+# characters in .gitattributes instead.
+end_of_line = unset
