@@ -1,15 +1,38 @@
 # Editor configuration
-# Example: https://editorconfig.org/#example-file
+# For details, see: https://editorconfig.org/#file-format-details
+
 root = true
 
+#
+# All files
+#
 [*]
-end_of_line = lf
-indent_style = space
-indent_size = 4
-trim_trailing_whitespace = true
-insert_final_newline = true
+# For reasoning about encoding, see: https://github.com/skrysmanski/base/blob/master/docs/utf8-and-bom.md
 charset = utf-8
 
+end_of_line = lf
+
+indent_style = space
+indent_size = 4
+
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+#
+# Markdown
+#
+[*.md]
+charset = utf-8-bom
+
+# For explanation why tabs are used for Markdown, see: https://github.com/skrysmanski/base/blob/master/docs/markdown-indentation.md
+indent_style = tab
+
+# Let the user decide which tab size works for them.
+indent_size = unset
+
+#
+# C# files
+#
 [*.cs]
 charset = utf-8-bom
 
@@ -25,6 +48,9 @@ dotnet_style_qualification_for_event = true:suggestion
 
 dotnet_sort_system_directives_first = true:suggestion
 
+#
+# VS project files
+#
 [*.csproj]
 # This is how Visual Studio creates project files.
 indent_size = 2
