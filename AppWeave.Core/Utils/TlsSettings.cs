@@ -25,6 +25,9 @@ namespace AppWeave.Core.Utils
     /// </summary>
     public static class TlsSettings
     {
+        // NOTE: This value is copied from "SecurityProtocolType.Tls13" which is not available in .NET Standard 2.1.
+        private const SecurityProtocolType TLS_13 = (SecurityProtocolType)0x00003000;
+
         /// <summary>
         /// Enables and disables SSL and TLS protocols for the currently running process - based on current best practices.
         /// </summary>
@@ -34,6 +37,7 @@ namespace AppWeave.Core.Utils
             // NOTE: The default value of "ServicePointManager.SecurityProtocol" depends on the .NET Framework
             //   being used. This is why this method makes sure the value is the same across all frameworks.
 
+            EnableProtocol(TLS_13); // TLS 1.3
             EnableProtocol(SecurityProtocolType.Tls12); // TLS 1.2
 
             // NOTE: TLS 1.0 and 1.1 are considered obsolete/outdated nowadays and are disabled on more and more
