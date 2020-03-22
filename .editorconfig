@@ -24,11 +24,9 @@ insert_final_newline = true
 [*.md]
 charset = utf-8-bom
 
-# For explanation why tabs are used for Markdown, see: https://github.com/skrysmanski/base/blob/master/docs/markdown-indentation.md
-indent_style = tab
-
-# Let the user decide which tab size works for them.
-indent_size = unset
+# For explanation why spaces are used for Markdown, see: https://github.com/skrysmanski/base/blob/master/docs/markdown-indentation.md
+indent_style = space
+indent_size = 4
 
 #
 # C# files
