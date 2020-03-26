@@ -2,9 +2,7 @@
 * -text
 
 # NOTE: Visual Studio does not respect the end-of-line settings in
-#   .editorconfig for .csproj files (and sometimes not for .cs files
-#   as well). So, we let git handle this and just say that the end-of-line
-#   characters should match the platform (Windows or Linx/Unix/macOS).
-#   See .editorconfig for more details.
-*.cs text=auto
+#   .editorconfig for .csproj files. So, we let git handle this and
+#   just say that the end-of-line characters should match the platform
+#   (Windows or Linx/Unix/macOS). See .editorconfig for more details.
 *.csproj text=auto

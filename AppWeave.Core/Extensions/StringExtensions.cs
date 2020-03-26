@@ -1,4 +1,4 @@
-#region License
+﻿#region License
 // Copyright 2020 - 2020 AppWeave.Core (https://github.com/skrysmanski/AppWeave.Core)
 //
 // Licensed under the Apache License, Version 2.0 (the "License");

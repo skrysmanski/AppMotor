@@ -35,9 +35,10 @@ indent_size = 4
 charset = utf-8-bom
 
 # Unfortunately, Visual Studio doesn't enforce the end-of-line style on save. This
-# can easily lead to mixed end-of-line characters. So, we don't define the end-of-line
-# style here but in .gitattributes.
-end_of_line = unset
+# can easily lead to mixed line endings. Also both Visual Studio and ReSharper
+# have (had) issues of creating mixed line endings when not using crlf. So we'll use
+# crlf here (since most development will happen in Visual Studio on Windows).
+end_of_line = crlf
 
 dotnet_style_qualification_for_field = true:suggestion
 dotnet_style_qualification_for_property = true:suggestion
@@ -57,3 +58,9 @@ indent_size = 2
 # files - and always creates .csproj files with crlf. Thus, we enforce the end-of-line
 # characters in .gitattributes instead.
 end_of_line = unset
+
+#
+# ReSharper settings files
+#
+[*.DotSettings]
+indent_style = tab
