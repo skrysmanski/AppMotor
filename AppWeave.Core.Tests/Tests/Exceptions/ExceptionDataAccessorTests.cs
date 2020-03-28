@@ -17,6 +17,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 
 using AppWeave.Core.Exceptions;
 
@@ -64,10 +66,39 @@ namespace AppWeave.Core.Tests.Exceptions
         }
 
         [Fact]
+        [SuppressMessage("ReSharper", "HeuristicUnreachableCode")]
         public void TestNullData()
         {
             // setup
-            var accessor = new ExceptionDataAccessor(new ExceptionWithNullData());
+            var exception = new ExceptionWithNullData();
+            var accessor = new ExceptionDataAccessor(exception);
+
+            // test our assumptions
+            exception.Data.ShouldBeNull();
+
+            // test
+            accessor.IsReadOnly.ShouldBe(true);
+            accessor.Count.ShouldBe(0);
+            accessor["abc"].ShouldBe(null);
+            accessor.ContainsKey("abc").ShouldBe(false);
+
+            Should.Throw<ReadOnlyCollectionException>(() => accessor["abc"] = 42);
+            Should.Throw<ReadOnlyCollectionException>(() => accessor.Remove("abc"));
+            Should.Throw<ReadOnlyCollectionException>(() => accessor.Clear());
+
+            // Enumeration is empty.
+            accessor.GetEnumerator().MoveNext().ShouldBe(false);
+        }
+
+        [Fact]
+        public void TestReadOnlyData()
+        {
+            // setup
+            var exception = new ExceptionWithReadOnlyData();
+            var accessor = new ExceptionDataAccessor(exception);
+
+            // test our assumptions
+            exception.Data.IsReadOnly.ShouldBe(true);
 
             // test
             accessor.IsReadOnly.ShouldBe(true);
@@ -121,9 +152,16 @@ namespace AppWeave.Core.Tests.Exceptions
 
         private sealed class ExceptionWithNullData : Exception
         {
-            /// <inheritdoc />
+            // ReSharper disable once AnnotationConflictInHierarchy
+            [CanBeNull]
             // ReSharper disable once AssignNullToNotNullAttribute
             public override IDictionary Data => null;
+        }
+
+        private sealed class ExceptionWithReadOnlyData : Exception
+        {
+            /// <inheritdoc />
+            public override IDictionary Data { get; } = new ReadOnlyDictionary<object, object>(new Dictionary<object, object>());
         }
 
         private sealed class ExceptionWithActualDictionaryData : Exception
@@ -139,7 +177,7 @@ namespace AppWeave.Core.Tests.Exceptions
 
             private sealed class MyCustomDictionary : IDictionary<object, object>, IDictionary
             {
-                [NotNull]
+                [JetBrains.Annotations.NotNull]
                 // ReSharper disable once CollectionNeverUpdated.Local
                 private readonly Dictionary<object, object> m_underlyingDictionary = new Dictionary<object, object>();
 
