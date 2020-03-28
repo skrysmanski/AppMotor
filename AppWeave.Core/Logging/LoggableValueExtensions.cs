@@ -16,6 +16,7 @@
 
 using System;
 
+using AppWeave.Core.DataModel;
 using AppWeave.Core.Extensions;
 using AppWeave.Core.Utils;
 
@@ -30,11 +31,21 @@ namespace AppWeave.Core.Logging
         /// types, primitive types as well as some basic .NET types (like <c>string</c>
         /// or <see cref="DateTime"/>). This explicitly excludes any form of collection.
         /// It also excludes exceptions as they can't be logged with one line.
+        ///
+        /// <para>Also respects <see cref="ISensitiveValue"/>, <see cref="SensitiveValueMarker"/>,
+        /// <see cref="ISimpleLoggableValue"/>, and <see cref="SimpleLoggableValueMarker"/>.</para>
         /// </summary>
         [PublicAPI, Pure]
         public static bool IsSimpleLoggableType([NotNull] this Type typeToCheck)
         {
             Verify.ParamNotNull(typeToCheck, nameof(typeToCheck));
+
+            // Sensitive values must never be logged.
+            // NOTE: This also takes precedence before "ISimpleLoggableValue"/"SimpleLoggableValueMarker".
+            if (typeToCheck.Is<ISensitiveValue>() || typeToCheck.IsMarkedWith<SensitiveValueMarker>())
+            {
+                return false;
+            }
 
             if (typeToCheck.IsValueType)
             {
@@ -70,6 +81,11 @@ namespace AppWeave.Core.Logging
                 {
                     return true;
                 }
+            }
+
+            if (typeToCheck.Is<ISimpleLoggableValue>() || typeToCheck.IsMarkedWith<SimpleLoggableValueMarker>())
+            {
+                return true;
             }
 
             return false;

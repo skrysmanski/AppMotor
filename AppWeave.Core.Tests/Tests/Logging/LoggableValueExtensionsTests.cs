@@ -17,6 +17,7 @@
 using System;
 using System.Numerics;
 
+using AppWeave.Core.DataModel;
 using AppWeave.Core.Logging;
 
 using Shouldly;
@@ -30,6 +31,11 @@ namespace AppWeave.Core.Tests.Logging
         [Fact]
         public void TestIsSimpleLoggableType()
         {
+            // setup
+            typeof(MyCustomLoggableType2).MarkWith<SimpleLoggableValueMarker>();
+            typeof(MyCustomSensitiveType2).MarkWith<SensitiveValueMarker>();
+
+            // test
             typeof(object).IsSimpleLoggableType().ShouldBe(false);
             typeof(Exception).IsSimpleLoggableType().ShouldBe(false);
 
@@ -78,9 +84,32 @@ namespace AppWeave.Core.Tests.Logging
             // Enums
             typeof(MyEnum).IsSimpleLoggableType().ShouldBe(true);
             typeof(MyEnum?).IsSimpleLoggableType().ShouldBe(true);
+
+            // Custom types
+            typeof(MyCustomLoggableType1).IsSimpleLoggableType().ShouldBe(true);
+            typeof(MyCustomLoggableType2).IsSimpleLoggableType().ShouldBe(true);
+
+            typeof(MyCustomSensitiveType1).IsSimpleLoggableType().ShouldBe(false);
+            typeof(MyCustomSensitiveType2).IsSimpleLoggableType().ShouldBe(false);
         }
 
         private enum MyEnum
+        {
+        }
+
+        private sealed class MyCustomLoggableType1 : ISimpleLoggableValue
+        {
+        }
+
+        private sealed class MyCustomLoggableType2
+        {
+        }
+
+        private sealed class MyCustomSensitiveType1 : ISimpleLoggableValue, ISensitiveValue
+        {
+        }
+
+        private sealed class MyCustomSensitiveType2 : ISimpleLoggableValue
         {
         }
     }
