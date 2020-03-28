@@ -118,5 +118,36 @@ namespace AppWeave.Core.Tests.Extensions
             typeof(string).IsNullableType().ShouldBe(true);
             typeof(object).IsNullableType().ShouldBe(true);
         }
+
+        [Fact]
+        public void TestIs()
+        {
+            typeof(ClassA).Is<ITestInterface>().ShouldBe(true);
+            typeof(ClassA).Is(typeof(ITestInterface)).ShouldBe(true);
+
+            typeof(ClassB).Is<ITestInterface>().ShouldBe(true);
+            typeof(ClassB).Is(typeof(ITestInterface)).ShouldBe(true);
+
+            typeof(ITestInterface).Is<ITestInterface>().ShouldBe(true);
+            typeof(ITestInterface).Is(typeof(ITestInterface)).ShouldBe(true);
+
+            typeof(object).Is<ITestInterface>().ShouldBe(false);
+            typeof(object).Is(typeof(ITestInterface)).ShouldBe(false);
+        }
+
+        private interface ITestInterface
+        {
+
+        }
+
+        private class ClassA : ITestInterface
+        {
+
+        }
+
+        private class ClassB : ClassA
+        {
+
+        }
     }
 }

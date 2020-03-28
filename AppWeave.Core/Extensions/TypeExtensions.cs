@@ -151,5 +151,40 @@ namespace AppWeave.Core.Extensions
 
             return Nullable.GetUnderlyingType(type) != null;
         }
+
+        /// <summary>
+        /// This method does the same as <see cref="Type.IsAssignableFrom"/>. However,
+        /// <c>IsAssignableFrom</c> is often very confusing because it swaps the order
+        /// of base type and child type when compared to <c>is</c> checks. This method
+        /// aims to be better understandable.
+        /// </summary>
+        /// <remarks>
+        /// Unlike <see cref="Type.IsAssignableFrom"/>, the parameter <paramref name="typeToCheck"/>
+        /// can't be <c>null</c> here.
+        /// </remarks>
+        [PublicAPI, Pure]
+        public static bool Is<TBaseType>([NotNull] this Type typeToCheck)
+        {
+            return typeToCheck.Is(typeof(TBaseType));
+        }
+
+        /// <summary>
+        /// This method does the same as <see cref="Type.IsAssignableFrom"/>. However,
+        /// <c>IsAssignableFrom</c> is often very confusing because it swaps the order
+        /// of base type and child type when compared to <c>is</c> checks. This method
+        /// aims to be better understandable.
+        /// </summary>
+        /// <remarks>
+        /// Unlike <see cref="Type.IsAssignableFrom"/>, the parameter <paramref name="typeToCheck"/>
+        /// can't be <c>null</c> here.
+        /// </remarks>
+        [PublicAPI, Pure]
+        public static bool Is([NotNull] this Type typeToCheck, [NotNull] Type baseType)
+        {
+            Verify.ParamNotNull(typeToCheck, nameof(typeToCheck));
+            Verify.ParamNotNull(baseType, nameof(baseType));
+
+            return baseType.IsAssignableFrom(typeToCheck);
+        }
     }
 }
