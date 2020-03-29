@@ -36,61 +36,61 @@ namespace AppWeave.Core.Tests.Logging
             typeof(MyCustomSensitiveType2).MarkWith<SensitiveValueMarker>();
 
             // test
-            typeof(object).IsSimpleLoggableType().ShouldBe(false);
-            typeof(Exception).IsSimpleLoggableType().ShouldBe(false);
+            LoggableValues.IsSimpleLoggableType(typeof(object)).ShouldBe(false);
+            LoggableValues.IsSimpleLoggableType(typeof(Exception)).ShouldBe(false);
 
-            typeof(string).IsSimpleLoggableType().ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(string)).ShouldBe(true);
 
-            typeof(byte).IsSimpleLoggableType().ShouldBe(true);
-            typeof(byte?).IsSimpleLoggableType().ShouldBe(true);
-            typeof(sbyte).IsSimpleLoggableType().ShouldBe(true);
-            typeof(sbyte?).IsSimpleLoggableType().ShouldBe(true);
-            typeof(short).IsSimpleLoggableType().ShouldBe(true);
-            typeof(short?).IsSimpleLoggableType().ShouldBe(true);
-            typeof(ushort).IsSimpleLoggableType().ShouldBe(true);
-            typeof(ushort?).IsSimpleLoggableType().ShouldBe(true);
-            typeof(int).IsSimpleLoggableType().ShouldBe(true);
-            typeof(int?).IsSimpleLoggableType().ShouldBe(true);
-            typeof(uint).IsSimpleLoggableType().ShouldBe(true);
-            typeof(uint?).IsSimpleLoggableType().ShouldBe(true);
-            typeof(long).IsSimpleLoggableType().ShouldBe(true);
-            typeof(long?).IsSimpleLoggableType().ShouldBe(true);
-            typeof(ulong).IsSimpleLoggableType().ShouldBe(true);
-            typeof(ulong?).IsSimpleLoggableType().ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(byte)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(byte?)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(sbyte)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(sbyte?)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(short)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(short?)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(ushort)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(ushort?)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(int)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(int?)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(uint)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(uint?)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(long)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(long?)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(ulong)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(ulong?)).ShouldBe(true);
 
-            typeof(float).IsSimpleLoggableType().ShouldBe(true);
-            typeof(float?).IsSimpleLoggableType().ShouldBe(true);
-            typeof(double).IsSimpleLoggableType().ShouldBe(true);
-            typeof(double?).IsSimpleLoggableType().ShouldBe(true);
-            typeof(decimal).IsSimpleLoggableType().ShouldBe(true);
-            typeof(decimal?).IsSimpleLoggableType().ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(float)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(float?)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(double)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(double?)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(decimal)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(decimal?)).ShouldBe(true);
 
-            typeof(BigInteger).IsSimpleLoggableType().ShouldBe(true);
-            typeof(BigInteger?).IsSimpleLoggableType().ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(BigInteger)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(BigInteger?)).ShouldBe(true);
 
-            typeof(bool).IsSimpleLoggableType().ShouldBe(true);
-            typeof(bool?).IsSimpleLoggableType().ShouldBe(true);
-            typeof(char).IsSimpleLoggableType().ShouldBe(true);
-            typeof(char?).IsSimpleLoggableType().ShouldBe(true);
-            typeof(Guid).IsSimpleLoggableType().ShouldBe(true);
-            typeof(Guid?).IsSimpleLoggableType().ShouldBe(true);
-            typeof(DateTime).IsSimpleLoggableType().ShouldBe(true);
-            typeof(DateTime?).IsSimpleLoggableType().ShouldBe(true);
-            typeof(TimeSpan).IsSimpleLoggableType().ShouldBe(true);
-            typeof(TimeSpan?).IsSimpleLoggableType().ShouldBe(true);
-            typeof(DateTimeOffset).IsSimpleLoggableType().ShouldBe(true);
-            typeof(DateTimeOffset?).IsSimpleLoggableType().ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(bool)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(bool?)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(char)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(char?)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(Guid)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(Guid?)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(DateTime)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(DateTime?)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(TimeSpan)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(TimeSpan?)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(DateTimeOffset)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(DateTimeOffset?)).ShouldBe(true);
 
             // Enums
-            typeof(MyEnum).IsSimpleLoggableType().ShouldBe(true);
-            typeof(MyEnum?).IsSimpleLoggableType().ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(MyEnum)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(MyEnum?)).ShouldBe(true);
 
             // Custom types
-            typeof(MyCustomLoggableType1).IsSimpleLoggableType().ShouldBe(true);
-            typeof(MyCustomLoggableType2).IsSimpleLoggableType().ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(MyCustomLoggableType1)).ShouldBe(true);
+            LoggableValues.IsSimpleLoggableType(typeof(MyCustomLoggableType2)).ShouldBe(true);
 
-            typeof(MyCustomSensitiveType1).IsSimpleLoggableType().ShouldBe(false);
-            typeof(MyCustomSensitiveType2).IsSimpleLoggableType().ShouldBe(false);
+            LoggableValues.IsSimpleLoggableType(typeof(MyCustomSensitiveType1)).ShouldBe(false);
+            LoggableValues.IsSimpleLoggableType(typeof(MyCustomSensitiveType2)).ShouldBe(false);
         }
 
         private enum MyEnum

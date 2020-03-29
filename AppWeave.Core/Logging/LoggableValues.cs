@@ -36,7 +36,7 @@ namespace AppWeave.Core.Logging
         /// <see cref="ISimpleLoggableValue"/>, and <see cref="SimpleLoggableValueMarker"/>.</para>
         /// </summary>
         [PublicAPI, Pure]
-        public static bool IsSimpleLoggableType([NotNull] this Type typeToCheck)
+        public static bool IsSimpleLoggableType([NotNull] Type typeToCheck)
         {
             Verify.ParamNotNull(typeToCheck, nameof(typeToCheck));
 
