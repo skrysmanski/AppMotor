@@ -28,12 +28,22 @@ namespace AppWeave.Core.DataModel
         private static readonly ConcurrentDictionary<Type, TypeMarkerCollection> s_markers = new ConcurrentDictionary<Type, TypeMarkerCollection>();
 
         /// <summary>
+        /// This event is raised whenever a type is marked with a new type marker (via
+        /// <see cref="TypeMarkerExtensions.MarkWith{TTypeMarker}"/>).
+        /// </summary>
+        public static event EventHandler<TypeMarkerAddedEventArgs> TypeMarkerAdded;
+
+        /// <summary>
         /// See <see cref="TypeMarkerExtensions.MarkWith{TTypeMarker}"/> for documentation.
         /// </summary>
         internal static void RegisterTypeMaker([NotNull] Type typeToMark, [NotNull] Type markerType)
         {
             var typeMarkerCollection = s_markers.GetOrAdd(typeToMark, CreateTypeMarkerCollection);
-            typeMarkerCollection.Add(markerType);
+            bool markerAdded = typeMarkerCollection.Add(markerType);
+            if (markerAdded)
+            {
+                TypeMarkerAdded?.Invoke(null, new TypeMarkerAddedEventArgs(typeToMark, markerType));
+            }
         }
 
         /// <summary>
@@ -68,14 +78,14 @@ namespace AppWeave.Core.DataModel
             [CanBeNull]
             private HashSet<Type> m_underlyingCollection;
 
-            public void Add([NotNull] Type markerType)
+            public bool Add([NotNull] Type markerType)
             {
                 lock (this.m_updateLock)
                 {
                     if (Contains(markerType))
                     {
                         // Already present. We don't need to update the set.
-                        return;
+                        return false;
                     }
 
                     HashSet<Type> newCollection;
@@ -93,6 +103,8 @@ namespace AppWeave.Core.DataModel
 
                     this.m_underlyingCollection = newCollection;
                 }
+
+                return true;
             }
 
             [Pure]

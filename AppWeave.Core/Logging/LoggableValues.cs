@@ -27,6 +27,25 @@ namespace AppWeave.Core.Logging
     public static class LoggableValues
     {
         /// <summary>
+        /// This event is raised whenever the "loggability" of a type changes (or may have changed).
+        /// The event args contain the new valid values.
+        /// </summary>
+        public static event EventHandler<LoggabilityChangedEventArgs> LoggabilityChanged;
+
+        static LoggableValues()
+        {
+            TypeMarkers.TypeMarkerAdded += OnTypeMarkerAdded;
+        }
+
+        private static void OnTypeMarkerAdded(object sender, [NotNull] TypeMarkerAddedEventArgs e)
+        {
+            if (e.TypeMarkerType == typeof(SimpleLoggableValueMarker) || e.TypeMarkerType == typeof(SensitiveValueMarker))
+            {
+                LoggabilityChanged?.Invoke(null, new LoggabilityChangedEventArgs(e.MarkedType));
+            }
+        }
+
+        /// <summary>
         /// Whether this type is a type can be (easily) logged. This includes all numeric
         /// types, primitive types as well as some basic .NET types (like <c>string</c>
         /// or <see cref="DateTime"/>). This explicitly excludes any form of collection.
