@@ -26,7 +26,7 @@ using Xunit;
 
 namespace AppWeave.Core.Tests.Logging
 {
-    public sealed class LoggableValueExtensionsTests
+    public sealed class LoggableValuesTests
     {
         [Fact]
         public void TestIsSimpleLoggableType()

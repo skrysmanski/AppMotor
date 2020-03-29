@@ -24,7 +24,7 @@ using JetBrains.Annotations;
 
 namespace AppWeave.Core.Logging
 {
-    public static class LoggableValueExtensions
+    public static class LoggableValues
     {
         /// <summary>
         /// Whether this type is a type can be (easily) logged. This includes all numeric
