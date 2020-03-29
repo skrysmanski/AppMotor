@@ -15,9 +15,11 @@
 #endregion
 
 using System;
+using System.Globalization;
 
 using AppWeave.Core.DataModel;
 using AppWeave.Core.Extensions;
+using AppWeave.Core.Globalization;
 using AppWeave.Core.Utils;
 
 using JetBrains.Annotations;
@@ -26,6 +28,9 @@ namespace AppWeave.Core.Logging
 {
     public static class LoggableValues
     {
+        [NotNull]
+        private static readonly IValueFormatter DEFAULT_VALUE_FORMATTER = new DefaultLoggableValueFormatter(CultureInfo.InvariantCulture);
+
         /// <summary>
         /// This event is raised whenever the "loggability" of a type changes (or may have changed).
         /// The event args contain the new valid values.
@@ -108,6 +113,16 @@ namespace AppWeave.Core.Logging
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Returns the loggable text representation for the specified value. If no value formatter is
+        /// specified, an instance of <see cref="DefaultLoggableValueFormatter"/> will be used.
+        /// </summary>
+        [PublicAPI, NotNull]
+        public static string GetLoggableText([CanBeNull] object loggableValue, [CanBeNull] IValueFormatter valueFormatter = null)
+        {
+            return (valueFormatter ?? DEFAULT_VALUE_FORMATTER).FormatValue(loggableValue) ?? "";
         }
     }
 }
