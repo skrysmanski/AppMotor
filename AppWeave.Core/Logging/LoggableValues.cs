@@ -61,7 +61,7 @@ namespace AppWeave.Core.Logging
 
             // Sensitive values must never be logged.
             // NOTE: This also takes precedence before "ISimpleLoggableValue"/"SimpleLoggableValueMarker".
-            if (typeToCheck.Is<ISensitiveValue>() || typeToCheck.IsMarkedWith<SensitiveValueMarker>())
+            if (SensitiveValues.IsSensitiveValueType(typeToCheck))
             {
                 return false;
             }
