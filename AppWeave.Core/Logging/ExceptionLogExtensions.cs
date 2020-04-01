@@ -134,7 +134,23 @@ namespace AppWeave.Core.Logging
 
             foreach (var (propertyName, loggableValue) in loggableValues)
             {
-                var loggableText = LoggableValues.GetLoggableText(loggableValue, valueFormatter);
+                string loggableText;
+
+                if (propertyName == nameof(Exception.HResult) && loggableValue is int hResult)
+                {
+                    loggableText = HResultInfo.FormatHResult(hResult, includeName: true);
+                }
+                else
+                {
+                    try
+                    {
+                        loggableText = LoggableValues.GetLoggableText(loggableValue, valueFormatter);
+                    }
+                    catch (Exception ex)
+                    {
+                        loggableText = $"Error while convert value of property '{propertyName}' to text: {ex.Message}";
+                    }
+                }
 
                 yield return new KeyValuePair<string, string>(propertyName, loggableText);
             }
