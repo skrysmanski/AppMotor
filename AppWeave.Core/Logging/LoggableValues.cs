@@ -28,8 +28,11 @@ namespace AppWeave.Core.Logging
 {
     public static class LoggableValues
     {
+        /// <summary>
+        /// The default value formatter used by this class.
+        /// </summary>
         [NotNull]
-        private static readonly IValueFormatter DEFAULT_VALUE_FORMATTER = new DefaultLoggableValueFormatter(CultureInfo.InvariantCulture);
+        public static readonly IValueFormatter DEFAULT_VALUE_FORMATTER = new DefaultLoggableValueFormatter(CultureInfo.InvariantCulture);
 
         /// <summary>
         /// This event is raised whenever the "loggability" of a type changes (or may have changed).

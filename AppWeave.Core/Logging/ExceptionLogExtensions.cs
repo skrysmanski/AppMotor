@@ -73,15 +73,25 @@ namespace AppWeave.Core.Logging
         /// Returns all (simple) loggable values for the specified exception. The values will be returned
         /// sorted by property name.
         /// </summary>
+        /// <param name="exception">This exception.</param>
+        /// <param name="filter">The filter to use (optional).</param>
         /// <seealso cref="GetLoggableProperties"/>
         /// <seealso cref="GetLoggablePropertyValuesAsStrings"/>
         [PublicAPI, NotNull]
-        public static IEnumerable<KeyValuePair<string, object>> GetLoggablePropertyValues([NotNull] this Exception exception)
+        public static IEnumerable<KeyValuePair<string, object>> GetLoggablePropertyValues(
+                [NotNull] this Exception exception,
+                [CanBeNull] ILoggableExceptionPropertyFilter filter = null
+            )
         {
             var loggableProperties = exception.GetLoggableProperties();
 
             foreach (var loggableProperty in loggableProperties)
             {
+                if (filter?.ExcludeProperty(loggableProperty) == true)
+                {
+                    continue;
+                }
+
                 object loggableValue;
 
                 try
@@ -91,6 +101,11 @@ namespace AppWeave.Core.Logging
                 catch (Exception ex)
                 {
                     loggableValue = $"Error while retrieving value for property '{loggableProperty.Name}': {ex.Message}";
+                }
+
+                if (filter?.ExcludePropertyValue(loggableValue, loggableProperty) == true)
+                {
+                    continue;
                 }
 
                 if (loggableValue != null)
@@ -122,15 +137,20 @@ namespace AppWeave.Core.Logging
         /// will be returned sorted by property name. Value to text conversion is done via
         /// <see cref="LoggableValues.GetLoggableText"/>. See there for more details.
         /// </summary>
+        /// <param name="exception">This exception.</param>
+        /// <param name="valueFormatter">The formatter to use for converting the property values into
+        /// strings.</param>
+        /// <param name="filter">The filter to use (optional).</param>
         /// <seealso cref="GetLoggableProperties"/>
         /// <seealso cref="GetLoggablePropertyValues"/>
         [PublicAPI, NotNull]
         public static IEnumerable<KeyValuePair<string, string>> GetLoggablePropertyValuesAsStrings(
                 [NotNull] this Exception exception,
-                [CanBeNull] IValueFormatter valueFormatter = null
+                [CanBeNull] IValueFormatter valueFormatter = null,
+                [CanBeNull] ILoggableExceptionPropertyFilter filter = null
             )
         {
-            var loggableValues = exception.GetLoggablePropertyValues();
+            var loggableValues = exception.GetLoggablePropertyValues(filter);
 
             foreach (var (propertyName, loggableValue) in loggableValues)
             {
