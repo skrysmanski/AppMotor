@@ -108,9 +108,9 @@ namespace AppWeave.Core.Utils
 
         /// <summary>
         /// Verifies that the <see cref="ICollection{T}.IsReadOnly"/> property of <paramref name="collectionToCheck"/>
-        /// is <c>true</c>; other a <see cref="ReadOnlyCollectionModificationException"/> will be thrown.
+        /// is <c>true</c>; other a <see cref="CollectionIsReadOnlyException"/> will be thrown.
         /// </summary>
-        /// <exception cref="ReadOnlyCollectionModificationException">Thrown if the collection is read-only.</exception>
+        /// <exception cref="CollectionIsReadOnlyException">Thrown if the collection is read-only.</exception>
         [PublicAPI]
         public static void ValueNotReadOnly<T>([NotNull] ICollection<T> collectionToCheck, [NotNull] string valueName)
         {
@@ -118,7 +118,7 @@ namespace AppWeave.Core.Utils
 
             if (collectionToCheck.IsReadOnly)
             {
-                throw new ReadOnlyCollectionModificationException(valueName: valueName);
+                throw new CollectionIsReadOnlyException(valueName: valueName);
             }
         }
     }

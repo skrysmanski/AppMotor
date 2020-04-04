@@ -29,7 +29,7 @@ namespace AppWeave.Core.Extensions
         /// <summary>
         /// Adds the specified items to the collection.
         /// </summary>
-        /// <exception cref="ReadOnlyCollectionModificationException">Thrown if the collection is read-only.</exception>
+        /// <exception cref="CollectionIsReadOnlyException">Thrown if the collection is read-only.</exception>
         [PublicAPI]
         public static void AddRange<T>([NotNull] this ICollection<T> collection, [NotNull] IEnumerable<T> itemsToAdd)
         {
@@ -48,7 +48,7 @@ namespace AppWeave.Core.Extensions
         /// </summary>
         /// <returns>Returns the items that were removed from the collection. If no items were
         /// removed, the returned list will be empty (but never <c>null</c>).</returns>
-        /// <exception cref="ReadOnlyCollectionModificationException">Thrown if the collection is read-only.</exception>
+        /// <exception cref="CollectionIsReadOnlyException">Thrown if the collection is read-only.</exception>
         [PublicAPI, NotNull]
         public static List<T> RemoveWhere<T>([NotNull] this ICollection<T> collection, [NotNull] Predicate<T> predicate)
         {

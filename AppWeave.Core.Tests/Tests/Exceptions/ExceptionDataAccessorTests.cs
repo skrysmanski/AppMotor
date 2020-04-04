@@ -82,9 +82,9 @@ namespace AppWeave.Core.Tests.Exceptions
             accessor["abc"].ShouldBe(null);
             accessor.ContainsKey("abc").ShouldBe(false);
 
-            Should.Throw<ReadOnlyCollectionModificationException>(() => accessor["abc"] = 42);
-            Should.Throw<ReadOnlyCollectionModificationException>(() => accessor.Remove("abc"));
-            Should.Throw<ReadOnlyCollectionModificationException>(() => accessor.Clear());
+            Should.Throw<CollectionIsReadOnlyException>(() => accessor["abc"] = 42);
+            Should.Throw<CollectionIsReadOnlyException>(() => accessor.Remove("abc"));
+            Should.Throw<CollectionIsReadOnlyException>(() => accessor.Clear());
 
             // Enumeration is empty.
             accessor.GetEnumerator().MoveNext().ShouldBe(false);
@@ -106,9 +106,9 @@ namespace AppWeave.Core.Tests.Exceptions
             accessor["abc"].ShouldBe(null);
             accessor.ContainsKey("abc").ShouldBe(false);
 
-            Should.Throw<ReadOnlyCollectionModificationException>(() => accessor["abc"] = 42);
-            Should.Throw<ReadOnlyCollectionModificationException>(() => accessor.Remove("abc"));
-            Should.Throw<ReadOnlyCollectionModificationException>(() => accessor.Clear());
+            Should.Throw<CollectionIsReadOnlyException>(() => accessor["abc"] = 42);
+            Should.Throw<CollectionIsReadOnlyException>(() => accessor.Remove("abc"));
+            Should.Throw<CollectionIsReadOnlyException>(() => accessor.Clear());
 
             // Enumeration is empty.
             accessor.GetEnumerator().MoveNext().ShouldBe(false);

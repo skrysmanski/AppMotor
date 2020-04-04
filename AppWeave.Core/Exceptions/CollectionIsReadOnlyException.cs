@@ -30,13 +30,13 @@ namespace AppWeave.Core.Exceptions
     ///
     /// <para>Note: The base exception is not part of the contract and may change.</para>
     /// </remarks>
-    public class ReadOnlyCollectionModificationException : ValueException
+    public class CollectionIsReadOnlyException : ValueException
     {
-        public ReadOnlyCollectionModificationException() : base("This collection is read-only.")
+        public CollectionIsReadOnlyException() : base("This collection is read-only.")
         {
         }
 
-        public ReadOnlyCollectionModificationException(string valueName)
+        public CollectionIsReadOnlyException(string valueName)
             : base("This collection is read-only.", valueName: valueName)
         {
         }

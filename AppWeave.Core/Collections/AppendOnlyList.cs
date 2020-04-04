@@ -216,13 +216,13 @@ namespace AppWeave.Core.Collections
             /// <inheritdoc />
             public void Add(T item)
             {
-                throw new ReadOnlyCollectionModificationException();
+                throw new CollectionIsReadOnlyException();
             }
 
             /// <inheritdoc />
             public void Clear()
             {
-                throw new ReadOnlyCollectionModificationException();
+                throw new CollectionIsReadOnlyException();
             }
 
             /// <inheritdoc />
@@ -251,7 +251,7 @@ namespace AppWeave.Core.Collections
             /// <inheritdoc />
             public bool Remove(T item)
             {
-                throw new ReadOnlyCollectionModificationException();
+                throw new CollectionIsReadOnlyException();
             }
         }
     }
