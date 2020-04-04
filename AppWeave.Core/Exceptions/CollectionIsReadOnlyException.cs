@@ -15,6 +15,9 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+
+using JetBrains.Annotations;
 
 namespace AppWeave.Core.Exceptions
 {
@@ -28,18 +31,17 @@ namespace AppWeave.Core.Exceptions
     /// <see cref="InvalidOperationException"/> more fitting. This why this exception
     /// exists: so that developer don't need to care.
     ///
-    /// <para>Note: The base exception is not part of the contract and may change.</para>
+    /// <para>Note: The base exception is <see cref="NotSupportedException"/> so that this
+    /// exception can honor the contract of <see cref="ICollection{T}.Add"/> and the like
+    /// which require a <see cref="NotSupportedException"/> in case of read-only collections.</para>
     /// </remarks>
-    public class CollectionIsReadOnlyException : ValueException
+    public class CollectionIsReadOnlyException : NotSupportedException, ICollectionIsReadOnlyException
     {
-        public CollectionIsReadOnlyException() : base("This collection is read-only.")
+        [NotNull]
+        public const string DEFAULT_MESSAGE = "This collection is read-only.";
+
+        public CollectionIsReadOnlyException() : base(DEFAULT_MESSAGE)
         {
         }
-
-        public CollectionIsReadOnlyException(string valueName)
-            : base("This collection is read-only.", valueName: valueName)
-        {
-        }
-
     }
 }
