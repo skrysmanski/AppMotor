@@ -105,7 +105,7 @@ namespace AppWeave.Core.Exceptions
         {
             if (this.IsReadOnly)
             {
-                throw new ReadOnlyCollectionException();
+                throw new ReadOnlyCollectionModificationException();
             }
         }
 

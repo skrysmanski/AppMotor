@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 
 using AppWeave.Core.Exceptions;
 
@@ -30,7 +31,10 @@ namespace AppWeave.Core.Utils
     {
         [PublicAPI]
         [ContractAnnotation("obj:null => halt")]
-        public static void ParamNotNull<T>([CanBeNull, InstantHandle] T obj, [InvokerParameterName] string paramName) where T : class
+        public static void ParamNotNull<T>(
+                [CanBeNull, InstantHandle, NoEnumeration] T obj,
+                [InvokerParameterName] string paramName
+            ) where T : class
         {
             if (obj is null)
             {
@@ -80,7 +84,11 @@ namespace AppWeave.Core.Utils
 
         [PublicAPI]
         [ContractAnnotation("obj:null => halt")]
-        public static void ValueNotNull<T>([CanBeNull, InstantHandle] T obj, string valueName) where T : class
+        public static void ValueNotNull<T>(
+                [CanBeNull, InstantHandle, NoEnumeration] T obj,
+                string valueName
+            )
+                where T : class
         {
             if (obj is null)
             {
@@ -95,6 +103,22 @@ namespace AppWeave.Core.Utils
             if (!obj.HasValue)
             {
                 throw new ValueNullException(valueName);
+            }
+        }
+
+        /// <summary>
+        /// Verifies that the <see cref="ICollection{T}.IsReadOnly"/> property of <paramref name="collectionToCheck"/>
+        /// is <c>true</c>; other a <see cref="ReadOnlyCollectionModificationException"/> will be thrown.
+        /// </summary>
+        /// <exception cref="ReadOnlyCollectionModificationException">Thrown if the collection is read-only.</exception>
+        [PublicAPI]
+        public static void ValueNotReadOnly<T>([NotNull] ICollection<T> collectionToCheck, [NotNull] string valueName)
+        {
+            ParamNotNull(collectionToCheck, nameof(collectionToCheck));
+
+            if (collectionToCheck.IsReadOnly)
+            {
+                throw new ReadOnlyCollectionModificationException(valueName: valueName);
             }
         }
     }
