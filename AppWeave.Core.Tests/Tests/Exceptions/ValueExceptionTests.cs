@@ -20,7 +20,7 @@ using Shouldly;
 
 using Xunit;
 
-namespace AppWeave.Core.Tests
+namespace AppWeave.Core.Tests.Exceptions
 {
     public sealed class ValueExceptionTests
     {
