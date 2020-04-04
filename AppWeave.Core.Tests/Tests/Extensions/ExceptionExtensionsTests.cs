@@ -20,12 +20,15 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 using AppWeave.Core.Extensions;
+using AppWeave.Core.TestUtils;
+using AppWeave.Core.Utils;
 
 using JetBrains.Annotations;
 
 using Shouldly;
 
 using Xunit;
+using Xunit.Abstractions;
 
 using ExceptionExtensions = AppWeave.Core.Extensions.ExceptionExtensions;
 
@@ -36,6 +39,18 @@ namespace AppWeave.Core.Tests.Extensions
     /// </summary>
     public sealed class ExceptionExtensionsTests
     {
+        [NotNull]
+        private readonly ITestOutputHelper m_testOutputHelper;
+
+        public ExceptionExtensionsTests([NotNull] ITestOutputHelper testOutputHelper)
+        {
+            Verify.ParamNotNull(testOutputHelper, nameof(testOutputHelper));
+
+            this.m_testOutputHelper = testOutputHelper;
+        }
+
+        #region AddData()
+
         [Fact]
         public void TestAddData()
         {
@@ -92,6 +107,38 @@ namespace AppWeave.Core.Tests.Extensions
         {
             [UsedImplicitly]
             public int SomeProperty { get; } = 42;
+        }
+
+        #endregion AddData()
+
+        [Fact]
+        public void TestRethrow()
+        {
+            // setup
+            var caughtException = ExceptionCreator<MySpecialException>.CreateAndCatch();
+
+            // test
+            var rethrownException = Should.Throw<MySpecialException>(() => SomeOtherMethod(caughtException));
+
+            // for manual verification
+            this.m_testOutputHelper.WriteLine(rethrownException.ToString());
+
+            // verify
+            rethrownException.StackTrace.ShouldContain(nameof(ExceptionCreator<MySpecialException>.CreateAndCatch));
+        }
+
+        private static void SomeOtherMethod([NotNull] Exception caughtException)
+        {
+            throw caughtException.Rethrow();
+        }
+
+        // ReSharper disable once ClassNeverInstantiated.Local
+        private sealed class MySpecialException : InvalidOperationException
+        {
+            /// <inheritdoc />
+            public MySpecialException([CanBeNull] string message) : base(message)
+            {
+            }
         }
     }
 }
