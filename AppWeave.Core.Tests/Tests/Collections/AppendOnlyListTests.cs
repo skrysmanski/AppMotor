@@ -41,6 +41,7 @@ namespace AppWeave.Core.Tests.Collections
             GetUnderlyingList(list1).ShouldBeSameAs(originalUnderlyingList);
 
             var list2 = list1.CloneShallow();
+            // CloneShallow() should not create new copies of the underlying list instance.
             GetUnderlyingList(list1).ShouldBeSameAs(originalUnderlyingList);
             GetUnderlyingList(list2).ShouldBeSameAs(originalUnderlyingList);
 
@@ -54,20 +55,29 @@ namespace AppWeave.Core.Tests.Collections
             GetUnderlyingList(list1).ShouldBeSameAs(originalUnderlyingList);
             GetUnderlyingList(list2).ShouldBeSameAs(originalUnderlyingList);
 
-            list1.Append("value3");
+            var list3 = list1.CloneShallow();
+            // CloneShallow() should not create new copies of the underlying list instance.
+            GetUnderlyingList(list1).ShouldBeSameAs(originalUnderlyingList);
+            GetUnderlyingList(list3).ShouldBeSameAs(originalUnderlyingList);
+
+            list3.Append("value3");
             list2.Count.ShouldBe(2); // list2 should be unchanged
-            list1.Count.ShouldBe(2);
+            list1.Count.ShouldBe(1); // list1 should be unchanged
+            list3.Count.ShouldBe(2);
             // This "Append()" call should have created a new underlying list instance
-            // for "list1" - but "list2" should still use the original list instance
-            // (because it called "Append()" first).
-            GetUnderlyingList(list1).ShouldNotBeSameAs(originalUnderlyingList);
+            // for "list3" - but "list1" and "list2" should still use the original list
+            // instance ("list2" because its "Append()" method was called first).
+            GetUnderlyingList(list1).ShouldBeSameAs(originalUnderlyingList);
             GetUnderlyingList(list2).ShouldBeSameAs(originalUnderlyingList);
+            GetUnderlyingList(list3).ShouldNotBeSameAs(originalUnderlyingList);
 
             list1[0].ShouldBe("value1");
-            list1[1].ShouldBe("value3");
 
             list2[0].ShouldBe("value1");
             list2[1].ShouldBe("value2");
+
+            list3[0].ShouldBe("value1");
+            list3[1].ShouldBe("value3");
         }
 
         [NotNull]
