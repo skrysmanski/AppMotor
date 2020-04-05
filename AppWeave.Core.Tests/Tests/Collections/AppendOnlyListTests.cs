@@ -138,6 +138,29 @@ namespace AppWeave.Core.Tests.Collections
             list3[5].ShouldBe("value2b");
         }
 
+        [Fact]
+        public void TestAppendRange_SelfAppend()
+        {
+            var list1 = new AppendOnlyList<string>();
+            var originalUnderlyingList = GetUnderlyingList(list1);
+
+            list1.AppendRange(new [] { "value1a", "value1b" });
+            list1.Count.ShouldBe(2);
+            // This "Append()" call should not have create a new underlying list instance.
+            GetUnderlyingList(list1).ShouldBeSameAs(originalUnderlyingList);
+
+            list1.AppendRange(list1);
+            // AppendRange() should not create new copies of the underlying list instance.
+            GetUnderlyingList(list1).ShouldBeSameAs(originalUnderlyingList);
+
+            list1.Count.ShouldBe(4);
+
+            list1[0].ShouldBe("value1a");
+            list1[1].ShouldBe("value1b");
+            list1[2].ShouldBe("value1a");
+            list1[3].ShouldBe("value1b");
+        }
+
         [NotNull]
         private static List<T> GetUnderlyingList<T>([NotNull] AppendOnlyList<T> appendOnlyList)
         {
