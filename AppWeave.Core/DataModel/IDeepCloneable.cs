@@ -34,7 +34,7 @@ namespace AppWeave.Core.DataModel
         /// <summary>
         /// Creates a deep copy of this object.
         /// </summary>
-        [PublicAPI, NotNull]
+        [PublicAPI, NotNull, Pure]
         T CloneDeep();
     }
 }

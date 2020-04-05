@@ -29,11 +29,16 @@ namespace AppWeave.Core.Collections
 {
     /// <summary>
     /// Represents a list that can only be append to (but not removed from or changed in any other way).
-    /// This design allows for the same list instance to be shared and appended to in a very efficient way.
-    /// The primary use case for this list is to be used in <c>+ operator</c> overloads that append to
-    /// an internal list. In this case, since neither operand of the operator should be modified by
-    /// the implementation, a copy of the internal list would need to be created for the return value.
-    /// By using this class, no copy is created most of the time while the operands remain unchanged.
+    ///
+    /// <para>This design allows for the list to have very cheap clones (via <see cref="CloneShallow"/>)
+    /// when there's always/most of the time only one clone that will be appended to. (If more than one
+    /// clone is created and then more than one clone is appended to, every clone but the first that
+    /// was appended to will create its own full copy of the underlying list.)</para>
+    ///
+    /// <para>The primary use case for this list is when a <c>+ operator</c> overload appends to
+    /// some internal list - which in this case should be an instance of this class. In this case, you can
+    /// simply use <c>myInternalList.CloneShallow().Append(...)</c> and store the result in the return
+    /// value. The trick here is that <see cref="CloneShallow"/> is very efficient in this case.</para>
     ///
     /// <para>Note: This class is not thread-safe.</para>
     /// </summary>
