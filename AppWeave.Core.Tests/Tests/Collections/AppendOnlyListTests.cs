@@ -30,7 +30,7 @@ namespace AppWeave.Core.Tests.Collections
     public sealed class AppendOnlyListTests
     {
         [Fact]
-        public void TestBasicFunctionality()
+        public void TestAppend()
         {
             var list1 = new AppendOnlyList<string>();
             var originalUnderlyingList = GetUnderlyingList(list1);
@@ -78,6 +78,64 @@ namespace AppWeave.Core.Tests.Collections
 
             list3[0].ShouldBe("value1");
             list3[1].ShouldBe("value3");
+        }
+
+        [Fact]
+        public void TestAppendRange()
+        {
+            var list1 = new AppendOnlyList<string>();
+            var originalUnderlyingList = GetUnderlyingList(list1);
+
+            list1.AppendRange(new [] { "value1a", "value1b" });
+            list1.Count.ShouldBe(2);
+            // This "Append()" call should not have create a new underlying list instance.
+            GetUnderlyingList(list1).ShouldBeSameAs(originalUnderlyingList);
+
+            var list2 = list1.CloneShallow();
+            // CloneShallow() should not create new copies of the underlying list instance.
+            GetUnderlyingList(list1).ShouldBeSameAs(originalUnderlyingList);
+            GetUnderlyingList(list2).ShouldBeSameAs(originalUnderlyingList);
+
+            list2.Count.ShouldBe(2);
+            list2.AppendRange(new [] { "value2a", "value2b" });
+            list2.Count.ShouldBe(4);
+            list1.Count.ShouldBe(2); // list1 should be unchanged
+            // This "Append()" call should also not have create a new underlying list instance.
+            // "list1" should still use the same underlying list as "list2" (just restrict itself
+            // to a smaller range).
+            GetUnderlyingList(list1).ShouldBeSameAs(originalUnderlyingList);
+            GetUnderlyingList(list2).ShouldBeSameAs(originalUnderlyingList);
+
+            var list3 = list1.CloneShallow();
+            // CloneShallow() should not create new copies of the underlying list instance.
+            GetUnderlyingList(list1).ShouldBeSameAs(originalUnderlyingList);
+            GetUnderlyingList(list3).ShouldBeSameAs(originalUnderlyingList);
+
+            list3.AppendRange(list2);
+            list2.Count.ShouldBe(4); // list2 should be unchanged
+            list1.Count.ShouldBe(2); // list1 should be unchanged
+            list3.Count.ShouldBe(6);
+            // This "Append()" call should have created a new underlying list instance
+            // for "list3" - but "list1" and "list2" should still use the original list
+            // instance ("list2" because its "Append()" method was called first).
+            GetUnderlyingList(list1).ShouldBeSameAs(originalUnderlyingList);
+            GetUnderlyingList(list2).ShouldBeSameAs(originalUnderlyingList);
+            GetUnderlyingList(list3).ShouldNotBeSameAs(originalUnderlyingList);
+
+            list1[0].ShouldBe("value1a");
+            list1[1].ShouldBe("value1b");
+
+            list2[0].ShouldBe("value1a");
+            list2[1].ShouldBe("value1b");
+            list2[2].ShouldBe("value2a");
+            list2[3].ShouldBe("value2b");
+
+            list3[0].ShouldBe("value1a");
+            list3[1].ShouldBe("value1b");
+            list3[2].ShouldBe("value1a");
+            list3[3].ShouldBe("value1b");
+            list3[4].ShouldBe("value2a");
+            list3[5].ShouldBe("value2b");
         }
 
         [NotNull]

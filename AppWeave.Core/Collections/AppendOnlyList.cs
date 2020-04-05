@@ -128,7 +128,15 @@ namespace AppWeave.Core.Collections
 
             EnsureUnderlyingListCanBeAppended();
 
-            this.m_underlyingList.AddRange(items);
+            if (items is AppendOnlyList<T> otherAppendOnlyList)
+            {
+                this.m_underlyingList.AddRange(otherAppendOnlyList.CreateListRange());
+            }
+            else
+            {
+                this.m_underlyingList.AddRange(items);
+            }
+
             this.Count = this.m_underlyingList.Count;
         }
 
@@ -139,7 +147,7 @@ namespace AppWeave.Core.Collections
                 // Another user of the list has already appended to it. Thus,
                 // we need to create a copy of the list.
 
-                var oldUnderlyingList = this.m_underlyingList;
+                var originalUnderlyingList = CreateListRange();
 
                 // NOTE: We reserve 5 more items for future append calls.
                 this.m_underlyingList = new List<T>(this.Count + 5);
@@ -147,8 +155,18 @@ namespace AppWeave.Core.Collections
                 // NOTE: The ListRange class implements "ICollection" which makes
                 //   the copy process more efficient than any collection type that
                 //   doesn't implement "ICollection" (incl. "IReadOnlyCollection").
-                this.m_underlyingList.AddRange(new ListRange(oldUnderlyingList, this.Count));
+                this.m_underlyingList.AddRange(originalUnderlyingList);
             }
+        }
+
+        /// <summary>
+        /// Creates an instance of <see cref="ListRange"/> so that a call
+        /// to <see cref="List{T}.AddRange"/> is more efficient.
+        /// </summary>
+        [NotNull, Pure]
+        private ListRange CreateListRange()
+        {
+            return new ListRange(this.m_underlyingList, this.Count);
         }
 
         /// <inheritdoc />
