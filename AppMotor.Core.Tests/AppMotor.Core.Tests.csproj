@@ -6,6 +6,10 @@
     <IsPackable>false</IsPackable>
 
     <RootNamespace>AppMotor.Core</RootNamespace>
+
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors></WarningsAsErrors>
+    <NoWarn></NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
