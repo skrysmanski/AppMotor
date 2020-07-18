@@ -25,6 +25,8 @@ using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
+using ExcludeFromCodeCoverageAttribute = System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute;
+
 namespace AppMotor.Core.Collections
 {
     /// <summary>
@@ -206,8 +208,10 @@ namespace AppMotor.Core.Collections
             public int Count { get; }
 
             /// <inheritdoc />
+            [ExcludeFromCodeCoverage]
             public bool IsReadOnly => true;
 
+            [ExcludeFromCodeCoverage]
             public ListRange([NotNull] List<T> underlyingList, int rangeLength)
             {
                 if (underlyingList.Count < rangeLength)
@@ -222,6 +226,7 @@ namespace AppMotor.Core.Collections
             }
 
             /// <inheritdoc />
+            [ExcludeFromCodeCoverage]
             public IEnumerator<T> GetEnumerator()
             {
                 for (var i = 0; i < this.Count; i++)
@@ -231,24 +236,28 @@ namespace AppMotor.Core.Collections
             }
 
             /// <inheritdoc />
+            [ExcludeFromCodeCoverage]
             IEnumerator IEnumerable.GetEnumerator()
             {
                 return GetEnumerator();
             }
 
             /// <inheritdoc />
+            [ExcludeFromCodeCoverage]
             public void Add(T item)
             {
                 throw new CollectionIsReadOnlyException();
             }
 
             /// <inheritdoc />
+            [ExcludeFromCodeCoverage]
             public void Clear()
             {
                 throw new CollectionIsReadOnlyException();
             }
 
             /// <inheritdoc />
+            [ExcludeFromCodeCoverage]
             public bool Contains(T item)
             {
                 if (this.Count == 0)
@@ -272,6 +281,7 @@ namespace AppMotor.Core.Collections
             }
 
             /// <inheritdoc />
+            [ExcludeFromCodeCoverage]
             public bool Remove(T item)
             {
                 throw new CollectionIsReadOnlyException();

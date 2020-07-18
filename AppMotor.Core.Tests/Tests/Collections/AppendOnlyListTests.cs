@@ -1,12 +1,12 @@
 ﻿#region License
 // Copyright 2020 AppMotor Framework (https://github.com/skrysmanski/AppMotor)
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,10 +14,13 @@
 // limitations under the License.
 #endregion
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
 using AppMotor.Core.Collections;
+using AppMotor.Core.TestUtils;
 
 using JetBrains.Annotations;
 
@@ -159,6 +162,64 @@ namespace AppMotor.Core.Tests.Collections
             list1[1].ShouldBe("value1b");
             list1[2].ShouldBe("value1a");
             list1[3].ShouldBe("value1b");
+        }
+
+        [Fact]
+        public void TestIndexer_OutOfRange()
+        {
+            var list = new AppendOnlyList<string>();
+
+            Should.Throw<ArgumentOutOfRangeException>(() => list[0]);
+            Should.Throw<ArgumentOutOfRangeException>(() => list[-1]);
+
+            list.Append("abc");
+
+            Should.NotThrow(() => list[0]);
+            Should.Throw<ArgumentOutOfRangeException>(() => list[1]);
+            Should.Throw<ArgumentOutOfRangeException>(() => list[-1]);
+        }
+
+        [Fact]
+        public void TestGetEnumerator()
+        {
+            var list = new AppendOnlyList<string>();
+
+            list.GetEnumerator().ExecuteGenericEnumerator().Count.ShouldBe(0);
+
+            list.Append("abc");
+            list.Append("abc2");
+
+            list.GetEnumerator().ExecuteGenericEnumerator().ShouldBe(list);
+        }
+
+        [Fact]
+        public void TestGetEnumerator_NonGeneric()
+        {
+            var list = new AppendOnlyList<string>();
+
+            ((IEnumerable)list).GetEnumerator().ExecuteNonGenericEnumerator<string>().Count.ShouldBe(0);
+
+            list.Append("abc");
+            list.Append("abc2");
+
+            ((IEnumerable)list).GetEnumerator().ExecuteNonGenericEnumerator<string>().ShouldBe(list);
+        }
+
+        [Fact]
+        public void TestCollectionConstructor()
+        {
+            var sourceList = new List<string>()
+            {
+                "abc",
+                "def",
+                "ghi",
+            };
+
+            var appendOnlyList1 = new AppendOnlyList<string>(sourceList);
+            appendOnlyList1.ShouldBe(sourceList);
+
+            var appendOnlyList2 = new AppendOnlyList<string>((IEnumerable<string>)appendOnlyList1);
+            GetUnderlyingList(appendOnlyList2).ShouldBeSameAs(GetUnderlyingList(appendOnlyList1));
         }
 
         [NotNull]
