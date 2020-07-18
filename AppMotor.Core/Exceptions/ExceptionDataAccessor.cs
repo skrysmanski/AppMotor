@@ -93,7 +93,7 @@ namespace AppMotor.Core.Exceptions
         /// </summary>
         public ExceptionDataAccessor([NotNull] Exception exception)
         {
-            Verify.ParamNotNull(exception, nameof(exception));
+            Verify.Argument.NotNull(exception, nameof(exception));
 
             // For nullability of "Data", see: https://github.com/dotnet/dotnet-api-docs/issues/4045
             this.m_data = exception.Data;

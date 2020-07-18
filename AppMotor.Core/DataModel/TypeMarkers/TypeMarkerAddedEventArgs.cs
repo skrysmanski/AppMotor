@@ -42,8 +42,8 @@ namespace AppMotor.Core.DataModel
         /// <inheritdoc />
         public TypeMarkerAddedEventArgs([NotNull] Type markedType, [NotNull] Type typeMarkerType)
         {
-            Verify.ParamNotNull(typeMarkerType, nameof(typeMarkerType));
-            Verify.ParamNotNull(markedType, nameof(markedType));
+            Verify.Argument.NotNull(typeMarkerType, nameof(typeMarkerType));
+            Verify.Argument.NotNull(markedType, nameof(markedType));
 
             this.MarkedType = markedType;
             this.TypeMarkerType = typeMarkerType;

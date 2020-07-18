@@ -1,12 +1,12 @@
 ﻿#region License
 // Copyright 2020 AppMotor Framework (https://github.com/skrysmanski/AppMotor)
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -84,7 +84,7 @@ namespace AppMotor.Core.Processes
         [PublicAPI, NotNull]
         public static ChildProcessResult Exec([NotNull] ChildProcessStartInfo startInfo)
         {
-            Verify.ParamNotNull(startInfo, nameof(startInfo));
+            Verify.Argument.NotNull(startInfo, nameof(startInfo));
 
             var runningProcess = StartProcess(startInfo);
 
@@ -205,8 +205,8 @@ namespace AppMotor.Core.Processes
 
             public PreparedProcess([NotNull] Process process, [NotNull] ChildProcessStartInfo startInfo)
             {
-                Verify.ParamNotNull(process, nameof(process));
-                Verify.ParamNotNull(startInfo, nameof(startInfo));
+                Verify.Argument.NotNull(process, nameof(process));
+                Verify.Argument.NotNull(startInfo, nameof(startInfo));
 
                 this.m_process = process;
                 this.m_startInfo = startInfo;

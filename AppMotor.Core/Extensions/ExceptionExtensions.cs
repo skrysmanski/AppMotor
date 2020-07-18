@@ -1,12 +1,12 @@
 ﻿#region License
 // Copyright 2020 AppMotor Framework (https://github.com/skrysmanski/AppMotor)
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -51,8 +51,8 @@ namespace AppMotor.Core.Extensions
         [PublicAPI]
         public static void AddData([NotNull] this Exception exception, [NotNull] object key, [CanBeNull] object value)
         {
-            Verify.ParamNotNull(exception, nameof(exception));
-            Verify.ParamNotNull(key, nameof(key));
+            Verify.Argument.NotNull(exception, nameof(exception));
+            Verify.Argument.NotNull(key, nameof(key));
 
             var exceptionData = exception.GetData();
 
@@ -125,7 +125,7 @@ namespace AppMotor.Core.Extensions
                 bool preventUnrollingOnExistingExceptionData = true
             )
         {
-            Verify.ParamNotNull(aggregateException, nameof(aggregateException));
+            Verify.Argument.NotNull(aggregateException, nameof(aggregateException));
 
             Exception exceptionToThrow = GetUnrolledException(aggregateException, deepUnroll, preventUnrollingOnExistingExceptionData);
 

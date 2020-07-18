@@ -1,12 +1,12 @@
 ﻿#region License
 // Copyright 2020 AppMotor Framework (https://github.com/skrysmanski/AppMotor)
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,7 +40,7 @@ namespace AppMotor.Core.Extensions
         [PublicAPI, Pure]
         public static bool IsNumericType([NotNull] this Type type)
         {
-            Verify.ParamNotNull(type, nameof(type));
+            Verify.Argument.NotNull(type, nameof(type));
 
             switch (type.FullName)
             {
@@ -79,7 +79,7 @@ namespace AppMotor.Core.Extensions
         [PublicAPI, Pure]
         public static bool IsNumericIntegerType([NotNull] this Type type)
         {
-            Verify.ParamNotNull(type, nameof(type));
+            Verify.Argument.NotNull(type, nameof(type));
 
             switch (type.FullName)
             {
@@ -113,7 +113,7 @@ namespace AppMotor.Core.Extensions
         [PublicAPI, Pure]
         public static bool IsNumericFloatType([NotNull] this Type type)
         {
-            Verify.ParamNotNull(type, nameof(type));
+            Verify.Argument.NotNull(type, nameof(type));
 
             switch (type.FullName)
             {
@@ -135,7 +135,7 @@ namespace AppMotor.Core.Extensions
         [PublicAPI, Pure]
         public static bool IsNullableType([NotNull] this Type type)
         {
-            Verify.ParamNotNull(type, nameof(type));
+            Verify.Argument.NotNull(type, nameof(type));
 
             return !type.IsValueType || type.IsNullableValueType();
         }
@@ -147,7 +147,7 @@ namespace AppMotor.Core.Extensions
         [PublicAPI, Pure]
         public static bool IsNullableValueType([NotNull] this Type type)
         {
-            Verify.ParamNotNull(type, nameof(type));
+            Verify.Argument.NotNull(type, nameof(type));
 
             return Nullable.GetUnderlyingType(type) != null;
         }
@@ -181,8 +181,8 @@ namespace AppMotor.Core.Extensions
         [PublicAPI, Pure]
         public static bool Is([NotNull] this Type typeToCheck, [NotNull] Type baseType)
         {
-            Verify.ParamNotNull(typeToCheck, nameof(typeToCheck));
-            Verify.ParamNotNull(baseType, nameof(baseType));
+            Verify.Argument.NotNull(typeToCheck, nameof(typeToCheck));
+            Verify.Argument.NotNull(baseType, nameof(baseType));
 
             return baseType.IsAssignableFrom(typeToCheck);
         }

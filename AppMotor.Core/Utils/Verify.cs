@@ -31,86 +31,140 @@ namespace AppMotor.Core.Utils
     {
         #region Argument Verification
 
-        [PublicAPI]
-        [ContractAnnotation("obj:null => halt")]
-        public static void ParamNotNull<T>([CanBeNull, InstantHandle, NoEnumeration] T obj, [InvokerParameterName, NotNull] string paramName) where T : class
+        public static class Argument
         {
-            ArgumentVerifier.INSTANCE.NotNull(obj, paramName);
-        }
+            [NotNull]
+            private static readonly ArgumentVerifier VERIFIER = new ArgumentVerifier();
 
-        [PublicAPI]
-        [ContractAnnotation("obj:null => halt")]
-        public static void ParamNotNull<T>([CanBeNull] T? obj, [InvokerParameterName, NotNull] string paramName) where T : struct
-        {
-            ArgumentVerifier.INSTANCE.NotNull(obj, paramName);
-        }
+            [PublicAPI]
+            [ContractAnnotation("obj:null => halt")]
+            public static void NotNull<T>([CanBeNull, InstantHandle, NoEnumeration] T obj, [InvokerParameterName, NotNull] string paramName) where T : class
+            {
+                VERIFIER.NotNull(obj, paramName);
+            }
 
-        [PublicAPI]
-        [ContractAnnotation("obj:null => halt")]
-        public static void ParamNotNullOrEmpty([CanBeNull] string obj, [InvokerParameterName, NotNull] string paramName)
-        {
-            ArgumentVerifier.INSTANCE.NotNullOrEmpty(obj, paramName);
-        }
+            [PublicAPI]
+            [ContractAnnotation("obj:null => halt")]
+            public static void NotNull<T>([CanBeNull, NoEnumeration] T? obj, [InvokerParameterName, NotNull] string paramName) where T : struct
+            {
+                VERIFIER.NotNull(obj, paramName);
+            }
 
-        [PublicAPI]
-        [ContractAnnotation("obj:null => halt")]
-        public static void ParamNotNullOrWhiteSpace([CanBeNull] string obj, [InvokerParameterName, NotNull] string paramName)
-        {
-            ArgumentVerifier.INSTANCE.NotNullOrWhiteSpace(obj, paramName);
-        }
+            [PublicAPI]
+            [ContractAnnotation("obj:null => halt")]
+            public static void NotNullOrEmpty([CanBeNull] string obj, [InvokerParameterName, NotNull] string paramName)
+            {
+                VERIFIER.NotNullOrEmpty(obj, paramName);
+            }
 
-        /// <summary>
-        /// Verifies that the <see cref="ICollection{T}.IsReadOnly"/> property of <paramref name="collectionToCheck"/>
-        /// is <c>true</c>; otherwise a <see cref="CollectionIsReadOnlyArgumentException"/> will be thrown.
-        /// </summary>
-        /// <exception cref="CollectionIsReadOnlyArgumentException">Thrown if the collection is read-only.</exception>
-        [PublicAPI]
-        public static void ParamNotReadOnly<T>([NotNull] ICollection<T> collectionToCheck, [InvokerParameterName, NotNull] string paramName)
-        {
-            ArgumentVerifier.INSTANCE.NotReadOnly(collectionToCheck, paramName);
+            [PublicAPI]
+            [ContractAnnotation("obj:null => halt")]
+            public static void NotNullOrWhiteSpace([CanBeNull] string obj, [InvokerParameterName, NotNull] string paramName)
+            {
+                VERIFIER.NotNullOrWhiteSpace(obj, paramName);
+            }
+
+            /// <summary>
+            /// Verifies that the <see cref="ICollection{T}.IsReadOnly"/> property of <paramref name="collectionToCheck"/>
+            /// is <c>true</c>; otherwise a <see cref="CollectionIsReadOnlyArgumentException"/> will be thrown.
+            /// </summary>
+            /// <exception cref="CollectionIsReadOnlyArgumentException">Thrown if the collection is read-only.</exception>
+            [PublicAPI]
+            public static void NotReadOnly<T>([NotNull] ICollection<T> collectionToCheck, [InvokerParameterName, NotNull] string paramName)
+            {
+                VERIFIER.NotReadOnly(collectionToCheck, paramName);
+            }
+
+            private sealed class ArgumentVerifier : VerifierBase<ArgumentException>
+            {
+                /// <inheritdoc />
+                protected override ArgumentException CreateNullException(string valueName)
+                {
+                    return new ArgumentNullException(paramName: valueName ?? DEFAULT_VALUE_NAME);
+                }
+
+                /// <inheritdoc />
+                protected override ArgumentException CreateCollectionIsReadOnlyException(string valueName)
+                {
+                    return new CollectionIsReadOnlyArgumentException(paramName: valueName ?? DEFAULT_VALUE_NAME);
+                }
+
+                /// <inheritdoc />
+                protected override ArgumentException CreateRootException(string message, string valueName)
+                {
+                    return new ArgumentException(message: message, paramName: valueName ?? DEFAULT_VALUE_NAME);
+                }
+            }
         }
 
         #endregion Argument Verification
 
         #region Value Verification
 
-        [PublicAPI]
-        [ContractAnnotation("obj:null => halt")]
-        public static void ValueNotNull<T>([CanBeNull, InstantHandle, NoEnumeration] T obj, [NotNull] string valueName) where T : class
+        public static class Value
         {
-            ValueVerifier.INSTANCE.NotNull(obj, valueName);
-        }
+            [NotNull]
+            private static readonly ValueVerifier VERIFIER = new ValueVerifier();
 
-        [PublicAPI]
-        [ContractAnnotation("obj:null => halt")]
-        public static void ValueNotNull<T>([CanBeNull] T? obj, [NotNull] string valueName) where T : struct
-        {
-            ValueVerifier.INSTANCE.NotNull(obj, valueName);
-        }
+            [PublicAPI]
+            [ContractAnnotation("obj:null => halt")]
+            public static void NotNull<T>([CanBeNull, InstantHandle, NoEnumeration] T obj, [NotNull] string valueName) where T : class
+            {
+                VERIFIER.NotNull(obj, valueName);
+            }
 
-        [PublicAPI]
-        [ContractAnnotation("obj:null => halt")]
-        public static void ValueNotNullOrEmpty([CanBeNull] string obj, [NotNull] string valueName)
-        {
-            ValueVerifier.INSTANCE.NotNullOrEmpty(obj, valueName);
-        }
+            [PublicAPI]
+            [ContractAnnotation("obj:null => halt")]
+            public static void NotNull<T>([CanBeNull, NoEnumeration] T? obj, [NotNull] string valueName) where T : struct
+            {
+                VERIFIER.NotNull(obj, valueName);
+            }
 
-        [PublicAPI]
-        [ContractAnnotation("obj:null => halt")]
-        public static void ValueNotNullOrWhiteSpace([CanBeNull] string obj, [NotNull] string valueName)
-        {
-            ValueVerifier.INSTANCE.NotNullOrWhiteSpace(obj, valueName);
-        }
+            [PublicAPI]
+            [ContractAnnotation("obj:null => halt")]
+            public static void NotNullOrEmpty([CanBeNull] string obj, [NotNull] string valueName)
+            {
+                VERIFIER.NotNullOrEmpty(obj, valueName);
+            }
 
-        /// <summary>
-        /// Verifies that the <see cref="ICollection{T}.IsReadOnly"/> property of <paramref name="collectionToCheck"/>
-        /// is <c>true</c>; otherwise a <see cref="CollectionIsReadOnlyValueException"/> will be thrown.
-        /// </summary>
-        /// <exception cref="CollectionIsReadOnlyValueException">Thrown if the collection is read-only.</exception>
-        [PublicAPI]
-        public static void ValueNotReadOnly<T>([NotNull] ICollection<T> collectionToCheck, [NotNull] string valueName)
-        {
-            ValueVerifier.INSTANCE.NotReadOnly(collectionToCheck, valueName);
+            [PublicAPI]
+            [ContractAnnotation("obj:null => halt")]
+            public static void NotNullOrWhiteSpace([CanBeNull] string obj, [NotNull] string valueName)
+            {
+                VERIFIER.NotNullOrWhiteSpace(obj, valueName);
+            }
+
+            /// <summary>
+            /// Verifies that the <see cref="ICollection{T}.IsReadOnly"/> property of <paramref name="collectionToCheck"/>
+            /// is <c>true</c>; otherwise a <see cref="CollectionIsReadOnlyValueException"/> will be thrown.
+            /// </summary>
+            /// <exception cref="CollectionIsReadOnlyValueException">Thrown if the collection is read-only.</exception>
+            [PublicAPI]
+            public static void NotReadOnly<T>([NotNull] ICollection<T> collectionToCheck, [NotNull] string valueName)
+            {
+                VERIFIER.NotReadOnly(collectionToCheck, valueName);
+            }
+
+            private sealed class ValueVerifier : VerifierBase<ValueException>
+            {
+                /// <inheritdoc />
+                protected override ValueException CreateNullException(string valueName)
+                {
+                    return new ValueNullException(message: null, valueName: valueName ?? DEFAULT_VALUE_NAME);
+                }
+
+                /// <inheritdoc />
+                protected override ValueException CreateCollectionIsReadOnlyException(string valueName)
+                {
+                    return new CollectionIsReadOnlyValueException(valueName: valueName ?? DEFAULT_VALUE_NAME);
+                }
+
+                /// <inheritdoc />
+                protected override ValueException CreateRootException(string message, string valueName)
+                {
+                    return new ValueException(message: message, valueName: valueName ?? DEFAULT_VALUE_NAME);
+                }
+            }
         }
 
         #endregion Value Verification
@@ -201,53 +255,5 @@ namespace AppMotor.Core.Utils
         }
 
         // ReSharper restore ParameterOnlyUsedForPreconditionCheck.Local
-
-        private sealed class ArgumentVerifier : VerifierBase<ArgumentException>
-        {
-            [NotNull]
-            public static readonly ArgumentVerifier INSTANCE = new ArgumentVerifier();
-
-            /// <inheritdoc />
-            protected override ArgumentException CreateNullException(string valueName)
-            {
-                return new ArgumentNullException(paramName: valueName ?? DEFAULT_VALUE_NAME);
-            }
-
-            /// <inheritdoc />
-            protected override ArgumentException CreateCollectionIsReadOnlyException(string valueName)
-            {
-                return new CollectionIsReadOnlyArgumentException(paramName: valueName ?? DEFAULT_VALUE_NAME);
-            }
-
-            /// <inheritdoc />
-            protected override ArgumentException CreateRootException(string message, string valueName)
-            {
-                return new ArgumentException(message: message, paramName: valueName ?? DEFAULT_VALUE_NAME);
-            }
-        }
-
-        private sealed class ValueVerifier : VerifierBase<ValueException>
-        {
-            [NotNull]
-            public static readonly ValueVerifier INSTANCE = new ValueVerifier();
-
-            /// <inheritdoc />
-            protected override ValueException CreateNullException(string valueName)
-            {
-                return new ValueNullException(message: null, valueName: valueName ?? DEFAULT_VALUE_NAME);
-            }
-
-            /// <inheritdoc />
-            protected override ValueException CreateCollectionIsReadOnlyException(string valueName)
-            {
-                return new CollectionIsReadOnlyValueException(valueName: valueName ?? DEFAULT_VALUE_NAME);
-            }
-
-            /// <inheritdoc />
-            protected override ValueException CreateRootException(string message, string valueName)
-            {
-                return new ValueException(message: message, valueName: valueName ?? DEFAULT_VALUE_NAME);
-            }
-        }
     }
 }
