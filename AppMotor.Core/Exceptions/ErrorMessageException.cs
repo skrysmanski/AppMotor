@@ -18,7 +18,7 @@ using System;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.Exceptions
+namespace AppMotor.Core.Exceptions
 {
     /// <summary>
     /// An exception whose message can/should be displayed to the user - but not the stacktrace.

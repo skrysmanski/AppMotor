@@ -19,7 +19,7 @@ using System.Collections.Generic;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.Exceptions
+namespace AppMotor.Core.Exceptions
 {
     /// <summary>
     /// Thrown on the attempt to modify a read-only collection.

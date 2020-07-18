@@ -16,11 +16,11 @@
 
 using System;
 
-using AppWeave.Core.Utils;
+using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.Processes
+namespace AppMotor.Core.Processes
 {
     /// <summary>
     /// Allows some more advanced options for <see cref="ChildProcess"/> to be specified.

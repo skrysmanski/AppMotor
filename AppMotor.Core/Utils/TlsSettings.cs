@@ -18,7 +18,7 @@ using System.Net;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.Utils
+namespace AppMotor.Core.Utils
 {
     /// <summary>
     /// Manages SSL/TLS settings and protocols.

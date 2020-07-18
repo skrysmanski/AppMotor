@@ -20,11 +20,11 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-using AppWeave.Core.Utils;
+using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.Processes
+namespace AppMotor.Core.Processes
 {
     /// <summary>
     /// Convenience class to execute child processes. This class especially takes care of potential

@@ -16,11 +16,11 @@
 
 using System;
 
-using AppWeave.Core.Utils;
+using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.Logging
+namespace AppMotor.Core.Logging
 {
     /// <summary>
     /// Used by <see cref="LoggableValues.LoggabilityChanged"/>.

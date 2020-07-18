@@ -18,7 +18,7 @@ using System;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.Processes
+namespace AppMotor.Core.Processes
 {
     /// <summary>
     /// Thrown by <see cref="ChildProcess"/> when the child process signals an error.

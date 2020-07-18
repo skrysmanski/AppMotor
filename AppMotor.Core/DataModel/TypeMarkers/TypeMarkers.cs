@@ -20,7 +20,7 @@ using System.Collections.Generic;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.DataModel
+namespace AppMotor.Core.DataModel
 {
     public static class TypeMarkers
     {

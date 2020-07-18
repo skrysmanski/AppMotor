@@ -16,7 +16,7 @@
 
 using System;
 
-namespace AppWeave.Core.DataModel
+namespace AppMotor.Core.DataModel
 {
     /// <summary>
     /// Represents a type marker; that is a way of marking certain .NET <see cref="Type"/>s in a

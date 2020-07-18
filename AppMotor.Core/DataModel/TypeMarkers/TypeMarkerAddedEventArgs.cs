@@ -16,11 +16,11 @@
 
 using System;
 
-using AppWeave.Core.Utils;
+using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.DataModel
+namespace AppMotor.Core.DataModel
 {
     /// <summary>
     /// Used by <see cref="TypeMarkers.TypeMarkerAdded"/>.

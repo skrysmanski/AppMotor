@@ -14,10 +14,9 @@
 // limitations under the License.
 #endregion
 
-using AppWeave.Core.DataModel;
-using AppWeave.Core.Extensions;
+using AppMotor.Core.DataModel;
 
-namespace AppWeave.Core.Logging
+namespace AppMotor.Core.Logging
 {
     /// <summary>
     /// Represents a simple loggable value in the sense that it's a (more or less) value

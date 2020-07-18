@@ -19,13 +19,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-using AppWeave.Core.DataModel;
-using AppWeave.Core.Exceptions;
-using AppWeave.Core.Utils;
+using AppMotor.Core.DataModel;
+using AppMotor.Core.Exceptions;
+using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.Collections
+namespace AppMotor.Core.Collections
 {
     /// <summary>
     /// Represents a list that can only be append to (but not removed from or changed in any other way).

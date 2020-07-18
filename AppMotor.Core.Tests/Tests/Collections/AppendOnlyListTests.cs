@@ -17,7 +17,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-using AppWeave.Core.Collections;
+using AppMotor.Core.Collections;
 
 using JetBrains.Annotations;
 
@@ -25,7 +25,7 @@ using Shouldly;
 
 using Xunit;
 
-namespace AppWeave.Core.Tests.Collections
+namespace AppMotor.Core.Tests.Collections
 {
     public sealed class AppendOnlyListTests
     {

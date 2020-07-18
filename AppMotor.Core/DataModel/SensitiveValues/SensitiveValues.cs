@@ -17,11 +17,11 @@
 using System;
 using System.Security;
 
-using AppWeave.Core.Extensions;
+using AppMotor.Core.Extensions;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.DataModel
+namespace AppMotor.Core.DataModel
 {
     /// <summary>
     /// Contains methods related to sensitive values. See <see cref="ISensitiveValue"/>

@@ -17,11 +17,11 @@
 using System;
 using System.Collections.Generic;
 
-using AppWeave.Core.Exceptions;
+using AppMotor.Core.Exceptions;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.Utils
+namespace AppMotor.Core.Utils
 {
     /// <summary>
     /// Provides various verification methods for parameters and values in general. Raises <see cref="ArgumentException"/>s

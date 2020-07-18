@@ -19,7 +19,7 @@ using System.Threading;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.Utils
+namespace AppMotor.Core.Utils
 {
     /// <summary>
     /// Implements <see cref="IDisposable"/> in an easy to use way. Implementers can override

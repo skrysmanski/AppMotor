@@ -19,9 +19,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-using AppWeave.Core.Extensions;
-using AppWeave.Core.TestUtils;
-using AppWeave.Core.Utils;
+using AppMotor.Core.Extensions;
+using AppMotor.Core.TestUtils;
+using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
@@ -30,9 +30,9 @@ using Shouldly;
 using Xunit;
 using Xunit.Abstractions;
 
-using ExceptionExtensions = AppWeave.Core.Extensions.ExceptionExtensions;
+using ExceptionExtensions = AppMotor.Core.Extensions.ExceptionExtensions;
 
-namespace AppWeave.Core.Tests.Extensions
+namespace AppMotor.Core.Tests.Extensions
 {
     /// <summary>
     /// Tests for <see cref="ExceptionExtensions"/>.

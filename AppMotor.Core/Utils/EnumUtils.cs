@@ -18,7 +18,7 @@ using System;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.Utils
+namespace AppMotor.Core.Utils
 {
     public static class EnumUtils
     {

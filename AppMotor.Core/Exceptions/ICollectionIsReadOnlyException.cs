@@ -14,7 +14,7 @@
 // limitations under the License.
 #endregion
 
-namespace AppWeave.Core.Exceptions
+namespace AppMotor.Core.Exceptions
 {
     /// <summary>
     /// Marker interface for <see cref="CollectionIsReadOnlyException"/>

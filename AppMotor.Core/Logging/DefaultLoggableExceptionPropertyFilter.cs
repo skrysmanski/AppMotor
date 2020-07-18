@@ -17,7 +17,7 @@
 using System;
 using System.Reflection;
 
-namespace AppWeave.Core.Logging
+namespace AppMotor.Core.Logging
 {
     /// <summary>
     /// The property filter used by <see cref="ExtendedExceptionStringExtensions.ToStringExtended"/>.

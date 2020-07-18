@@ -18,7 +18,7 @@ using System;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.DataModel
+namespace AppMotor.Core.DataModel
 {
     public static class TypeMarkerExtensions
     {

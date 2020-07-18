@@ -5,7 +5,7 @@
 
     <IsPackable>false</IsPackable>
 
-    <RootNamespace>AppWeave.Core</RootNamespace>
+    <RootNamespace>AppMotor.Core</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

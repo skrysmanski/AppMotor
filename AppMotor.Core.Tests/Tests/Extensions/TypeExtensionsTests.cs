@@ -17,13 +17,13 @@
 using System.Collections.Generic;
 using System.Numerics;
 
-using AppWeave.Core.Extensions;
+using AppMotor.Core.Extensions;
 
 using Shouldly;
 
 using Xunit;
 
-namespace AppWeave.Core.Tests.Extensions
+namespace AppMotor.Core.Tests.Extensions
 {
     public sealed class TypeExtensionsTests
     {

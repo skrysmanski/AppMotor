@@ -17,14 +17,14 @@
 using System;
 using System.Numerics;
 
-using AppWeave.Core.DataModel;
-using AppWeave.Core.Logging;
+using AppMotor.Core.DataModel;
+using AppMotor.Core.Logging;
 
 using Shouldly;
 
 using Xunit;
 
-namespace AppWeave.Core.Tests.Logging
+namespace AppMotor.Core.Tests.Logging
 {
     public sealed class LoggableValuesTests
     {

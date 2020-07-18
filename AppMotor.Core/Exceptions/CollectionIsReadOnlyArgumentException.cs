@@ -18,7 +18,7 @@ using System;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.Exceptions
+namespace AppMotor.Core.Exceptions
 {
     /// <summary>
     /// <see cref="ArgumentException"/> version of <see cref="CollectionIsReadOnlyException"/>.

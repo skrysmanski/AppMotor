@@ -19,12 +19,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using AppWeave.Core.Extensions;
-using AppWeave.Core.Globalization;
+using AppMotor.Core.Extensions;
+using AppMotor.Core.Globalization;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.Logging
+namespace AppMotor.Core.Logging
 {
     /// <summary>
     /// Provides the exception extension method <see cref="ToStringExtended"/>.

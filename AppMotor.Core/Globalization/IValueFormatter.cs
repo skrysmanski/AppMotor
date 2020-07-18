@@ -16,7 +16,7 @@
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.Globalization
+namespace AppMotor.Core.Globalization
 {
     /// <summary>
     /// Provides a method to convert an arbitrary value into a string.

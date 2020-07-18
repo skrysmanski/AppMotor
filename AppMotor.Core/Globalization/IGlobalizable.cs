@@ -18,7 +18,7 @@ using System.Globalization;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.Globalization
+namespace AppMotor.Core.Globalization
 {
     /// <summary>
     /// Provides a method to convert values into strings by using

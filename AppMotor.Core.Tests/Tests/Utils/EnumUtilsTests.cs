@@ -14,13 +14,13 @@
 // limitations under the License.
 #endregion
 
-using AppWeave.Core.Utils;
+using AppMotor.Core.Utils;
 
 using Shouldly;
 
 using Xunit;
 
-namespace AppWeave.Core.Tests.Utils
+namespace AppMotor.Core.Tests.Utils
 {
     public sealed class EnumUtilsTests
     {

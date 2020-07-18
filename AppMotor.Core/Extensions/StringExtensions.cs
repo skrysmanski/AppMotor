@@ -21,7 +21,7 @@ using System.IO;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.Extensions
+namespace AppMotor.Core.Extensions
 {
     /// <summary>
     /// Various extension methods related to strings.

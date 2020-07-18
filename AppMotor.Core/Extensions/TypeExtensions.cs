@@ -17,11 +17,11 @@
 using System;
 using System.Numerics;
 
-using AppWeave.Core.Utils;
+using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.Extensions
+namespace AppMotor.Core.Extensions
 {
     public static class TypeExtensions
     {

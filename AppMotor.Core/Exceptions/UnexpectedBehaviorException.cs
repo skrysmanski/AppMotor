@@ -18,7 +18,7 @@ using System;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.Exceptions
+namespace AppMotor.Core.Exceptions
 {
     /// <summary>
     /// This exception is for places that code should never reach (because of the logical control flow)

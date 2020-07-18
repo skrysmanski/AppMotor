@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 
-using AppWeave.Core.Exceptions;
+using AppMotor.Core.Exceptions;
 
 using JetBrains.Annotations;
 
@@ -28,7 +28,7 @@ using Shouldly;
 
 using Xunit;
 
-namespace AppWeave.Core.Tests.Exceptions
+namespace AppMotor.Core.Tests.Exceptions
 {
     public sealed class ExceptionDataAccessorTests
     {

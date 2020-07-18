@@ -17,9 +17,9 @@
 using System;
 using System.Threading.Tasks;
 
-using AppWeave.Core.Logging;
-using AppWeave.Core.TestUtils;
-using AppWeave.Core.Utils;
+using AppMotor.Core.Logging;
+using AppMotor.Core.TestUtils;
+using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
@@ -28,7 +28,7 @@ using Shouldly;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace AppWeave.Core.Tests.Logging
+namespace AppMotor.Core.Tests.Logging
 {
     public sealed class ExtendedExceptionStringExtensionsTests
     {

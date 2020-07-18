@@ -14,7 +14,7 @@
 // limitations under the License.
 #endregion
 
-namespace AppWeave.Core.DataModel
+namespace AppMotor.Core.DataModel
 {
     /// <summary>
     /// Represents a sensitive value (e.g. a password or access token). Users of

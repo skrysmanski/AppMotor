@@ -14,11 +14,11 @@
 // limitations under the License.
 #endregion
 
-using AppWeave.Core.Utils;
+using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.Processes
+namespace AppMotor.Core.Processes
 {
     /// <summary>
     /// The result of executing a child process through <see cref="ChildProcess"/>.

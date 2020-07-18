@@ -18,13 +18,13 @@
 
 using System;
 
-using AppWeave.Core.Exceptions;
+using AppMotor.Core.Exceptions;
 
 using JetBrains.Annotations;
 
 using Shouldly;
 
-namespace AppWeave.Core.TestUtils
+namespace AppMotor.Core.TestUtils
 {
     internal sealed class ExceptionCreator<TException> where TException : Exception
     {

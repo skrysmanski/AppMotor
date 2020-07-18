@@ -18,7 +18,7 @@ using System;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.DataModel
+namespace AppMotor.Core.DataModel
 {
     /// <summary>
     /// Represents a type that can create shallow clones (copies) of itself.

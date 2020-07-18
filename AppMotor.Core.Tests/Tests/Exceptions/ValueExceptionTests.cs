@@ -14,13 +14,13 @@
 // limitations under the License.
 #endregion
 
-using AppWeave.Core.Exceptions;
+using AppMotor.Core.Exceptions;
 
 using Shouldly;
 
 using Xunit;
 
-namespace AppWeave.Core.Tests.Exceptions
+namespace AppMotor.Core.Tests.Exceptions
 {
     public sealed class ValueExceptionTests
     {

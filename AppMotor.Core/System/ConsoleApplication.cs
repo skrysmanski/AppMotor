@@ -17,13 +17,13 @@
 using System;
 using System.Diagnostics;
 
-using AppWeave.Core.Exceptions;
-using AppWeave.Core.Logging;
-using AppWeave.Core.Utils;
+using AppMotor.Core.Exceptions;
+using AppMotor.Core.Logging;
+using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.System
+namespace AppMotor.Core.System
 {
     /// <summary>
     /// Base class for .NET console applications. Use <see cref="Start{TApp}"/> as entry point.

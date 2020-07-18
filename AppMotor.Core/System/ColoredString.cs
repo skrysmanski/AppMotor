@@ -19,12 +19,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-using AppWeave.Core.Collections;
-using AppWeave.Core.DataModel;
+using AppMotor.Core.Collections;
+using AppMotor.Core.DataModel;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.System
+namespace AppMotor.Core.System
 {
     /// <summary>
     /// Represents a string that contains (potentially) colored substrings. Each colored substring is represented

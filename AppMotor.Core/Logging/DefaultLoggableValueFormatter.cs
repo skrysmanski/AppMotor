@@ -18,12 +18,12 @@ using System;
 using System.Globalization;
 using System.Security;
 
-using AppWeave.Core.DataModel;
-using AppWeave.Core.Globalization;
+using AppMotor.Core.DataModel;
+using AppMotor.Core.Globalization;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.Logging
+namespace AppMotor.Core.Logging
 {
     public class DefaultLoggableValueFormatter : DefaultValueFormatter
     {

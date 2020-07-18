@@ -19,7 +19,7 @@ using System.Globalization;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.Globalization
+namespace AppMotor.Core.Globalization
 {
     /// <summary>
     /// Default implementation of <see cref="IValueFormatter"/>. Supports <see cref="IConvertible"/>

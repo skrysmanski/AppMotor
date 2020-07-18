@@ -18,11 +18,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using AppWeave.Core.Utils;
+using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.Threading
+namespace AppMotor.Core.Threading
 {
     /// <summary>
     /// A (very simple) list of tasks that - for convenience purposes - has a "+=" operator.

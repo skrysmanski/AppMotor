@@ -20,7 +20,7 @@ using System.Text;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.System
+namespace AppMotor.Core.System
 {
     /// <summary>
     /// Replacement for <see cref="Console"/> that supports <see cref="ColoredString"/>.

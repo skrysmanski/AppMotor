@@ -20,12 +20,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-using AppWeave.Core.Extensions;
-using AppWeave.Core.Utils;
+using AppMotor.Core.Extensions;
+using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.Exceptions
+namespace AppMotor.Core.Exceptions
 {
     /// <summary>
     /// Provides safe access to the <see cref="Exception.Data"/> property. Usually obtained through

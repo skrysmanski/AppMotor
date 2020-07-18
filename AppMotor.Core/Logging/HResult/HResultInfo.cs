@@ -19,11 +19,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-using AppWeave.Core.Extensions;
+using AppMotor.Core.Extensions;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.Logging
+namespace AppMotor.Core.Logging
 {
     /// <summary>
     /// Provies information about <see cref="Exception.HResult"/>.

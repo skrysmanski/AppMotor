@@ -17,14 +17,14 @@
 using System;
 using System.Globalization;
 
-using AppWeave.Core.DataModel;
-using AppWeave.Core.Extensions;
-using AppWeave.Core.Globalization;
-using AppWeave.Core.Utils;
+using AppMotor.Core.DataModel;
+using AppMotor.Core.Extensions;
+using AppMotor.Core.Globalization;
+using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.Logging
+namespace AppMotor.Core.Logging
 {
     public static class LoggableValues
     {

@@ -18,12 +18,12 @@ using System;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 
-using AppWeave.Core.Exceptions;
-using AppWeave.Core.Utils;
+using AppMotor.Core.Exceptions;
+using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.Extensions
+namespace AppMotor.Core.Extensions
 {
     /// <summary>
     /// Extension methods for <see cref="Exception"/>.

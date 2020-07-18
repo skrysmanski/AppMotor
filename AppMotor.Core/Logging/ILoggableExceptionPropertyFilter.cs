@@ -18,7 +18,7 @@ using System.Reflection;
 
 using JetBrains.Annotations;
 
-namespace AppWeave.Core.Logging
+namespace AppMotor.Core.Logging
 {
     /// <summary>
     /// Filter for <see cref="ExceptionLogExtensions.GetLoggablePropertyValues"/> and

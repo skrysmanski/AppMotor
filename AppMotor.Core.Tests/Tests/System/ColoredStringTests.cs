@@ -17,9 +17,9 @@
 using System;
 using System.Reflection;
 
-using AppWeave.Core.Exceptions;
-using AppWeave.Core.System;
-using AppWeave.Core.Utils;
+using AppMotor.Core.Exceptions;
+using AppMotor.Core.System;
+using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
@@ -27,7 +27,7 @@ using Shouldly;
 
 using Xunit;
 
-namespace AppWeave.Core.Tests.System
+namespace AppMotor.Core.Tests.System
 {
     public sealed class ColoredStringTests
     {
