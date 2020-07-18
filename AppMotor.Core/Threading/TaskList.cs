@@ -1,12 +1,12 @@
 ﻿#region License
 // Copyright 2020 AppMotor Framework (https://github.com/skrysmanski/AppMotor)
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,11 +14,13 @@
 // limitations under the License.
 #endregion
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
-using AppMotor.Core.Utils;
+using AppMotor.Core.Collections;
 
 using JetBrains.Annotations;
 
@@ -29,39 +31,49 @@ namespace AppMotor.Core.Threading
     ///
     /// <para>Note: This class is not thread-safe.</para>
     /// </summary>
+    /// <remarks>
+    /// For efficiency reasons, this type is a struct rather than a class - because we need to create
+    /// new instances within the + operator but usually only the last instance is used.
+    /// </remarks>
     /// <seealso cref="TaskList{T}"/>
-    public class TaskList : IReadOnlyList<Task>
+    public readonly struct TaskList : IReadOnlyList<Task>
     {
-        [NotNull, ItemNotNull]
-        private readonly List<Task> m_underlyingList = new List<Task>();
+        [CanBeNull]
+        [ItemNotNull]
+        private readonly AppendOnlyList<Task> m_underlyingList;
 
         /// <inheritdoc />
-        public int Count => this.m_underlyingList.Count;
+        public int Count => this.m_underlyingList?.Count ?? 0;
 
         /// <inheritdoc />
         [NotNull]
-        public Task this[int index] => this.m_underlyingList[index];
-
-        /// <summary>
-        /// Adds a task to this list.
-        /// </summary>
-        [NotNull]
-        public static TaskList operator+([NotNull] TaskList taskList, [NotNull] Task task)
+        public Task this[int index]
         {
-            taskList.Add(task);
-            return taskList;
+            get
+            {
+                if (this.m_underlyingList == null)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(index));
+                }
+
+                return this.m_underlyingList[index];
+            }
+        }
+
+        private TaskList(AppendOnlyList<Task> list)
+        {
+            this.m_underlyingList = list;
         }
 
         /// <summary>
         /// Adds a task to this list.
         /// </summary>
-        [PublicAPI]
-        public void Add([NotNull] Task task)
+        public static TaskList operator+(TaskList taskList, [NotNull] Task task)
         {
-            // Tasks must not be null or else "Task.WhenAll()" will throw an exception
-            Verify.ParamNotNull(task, nameof(task));
+            var newList = taskList.m_underlyingList?.CloneShallow() ?? new AppendOnlyList<Task>();
+            newList.Append(task);
 
-            this.m_underlyingList.Add(task);
+            return new TaskList(newList);
         }
 
         /// <summary>
@@ -74,10 +86,10 @@ namespace AppMotor.Core.Threading
         }
 
         /// <summary>
-        /// Calls <see cref="Task.WhenAny(IEnumerable{Task})"/> for this list.
+        /// Calls <see cref="Task.WhenAny(IEnumerable{Task})"/> for this list. Returns the completed task.
         /// </summary>
-        [PublicAPI]
-        public Task WhenAny()
+        [PublicAPI, ItemNotNull]
+        public Task<Task> WhenAny()
         {
             return Task.WhenAny(this.m_underlyingList);
         }
@@ -85,7 +97,14 @@ namespace AppMotor.Core.Threading
         /// <inheritdoc />
         public IEnumerator<Task> GetEnumerator()
         {
-            return this.m_underlyingList.GetEnumerator();
+            if (this.m_underlyingList != null)
+            {
+                return this.m_underlyingList.GetEnumerator();
+            }
+            else
+            {
+                return Enumerable.Empty<Task>().GetEnumerator();
+            }
         }
 
         /// <inheritdoc />
@@ -100,55 +119,65 @@ namespace AppMotor.Core.Threading
     ///
     /// <para>Note: This class is not thread-safe.</para>
     /// </summary>
+    /// <remarks>
+    /// For efficiency reasons, this type is a struct rather than a class - because we need to create
+    /// new instances within the + operator but usually only the last instance is used.
+    /// </remarks>
     /// <seealso cref="TaskList"/>
-    public class TaskList<T> : IReadOnlyList<Task<T>>
+    public readonly struct TaskList<T> : IReadOnlyList<Task<T>>
     {
-        [NotNull, ItemNotNull]
-        private readonly List<Task<T>> m_underlyingList = new List<Task<T>>();
+        [CanBeNull]
+        [ItemNotNull]
+        private readonly AppendOnlyList<Task<T>> m_underlyingList;
 
         /// <inheritdoc />
-        public int Count => this.m_underlyingList.Count;
+        public int Count => this.m_underlyingList?.Count ?? 0;
 
         /// <inheritdoc />
         [NotNull]
-        public Task<T> this[int index] => this.m_underlyingList[index];
-
-        /// <summary>
-        /// Adds a task to this list.
-        /// </summary>
-        [NotNull]
-        public static TaskList<T> operator+([NotNull] TaskList<T> taskList, [NotNull] Task<T> task)
+        public Task<T> this[int index]
         {
-            taskList.Add(task);
-            return taskList;
+            get
+            {
+                if (this.m_underlyingList == null)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(index));
+                }
+
+                return this.m_underlyingList[index];
+            }
+        }
+
+        private TaskList(AppendOnlyList<Task<T>> list)
+        {
+            this.m_underlyingList = list;
         }
 
         /// <summary>
         /// Adds a task to this list.
         /// </summary>
-        [PublicAPI]
-        public void Add([NotNull] Task<T> task)
+        public static TaskList<T> operator+(TaskList<T> taskList, [NotNull] Task<T> task)
         {
-            // Tasks must not be null or else "Task.WhenAll()" will throw an exception
-            Verify.ParamNotNull(task, nameof(task));
+            var newList = taskList.m_underlyingList?.CloneShallow() ?? new AppendOnlyList<Task<T>>();
+            newList.Append(task);
 
-            this.m_underlyingList.Add(task);
+            return new TaskList<T>(newList);
         }
 
         /// <summary>
         /// Calls <see cref="Task.WhenAll(IEnumerable{Task})"/> for this list.
         /// </summary>
-        [PublicAPI]
-        public Task WhenAll()
+        [PublicAPI, ItemNotNull]
+        public Task<T[]> WhenAll()
         {
             return Task.WhenAll(this.m_underlyingList);
         }
 
         /// <summary>
-        /// Calls <see cref="Task.WhenAny(IEnumerable{Task})"/> for this list.
+        /// Calls <see cref="Task.WhenAny(IEnumerable{Task})"/> for this list. Returns the completed task.
         /// </summary>
-        [PublicAPI]
-        public Task WhenAny()
+        [PublicAPI, ItemNotNull]
+        public Task<Task<T>> WhenAny()
         {
             return Task.WhenAny(this.m_underlyingList);
         }
@@ -156,7 +185,14 @@ namespace AppMotor.Core.Threading
         /// <inheritdoc />
         public IEnumerator<Task<T>> GetEnumerator()
         {
-            return this.m_underlyingList.GetEnumerator();
+            if (this.m_underlyingList != null)
+            {
+                return this.m_underlyingList.GetEnumerator();
+            }
+            else
+            {
+                return Enumerable.Empty<Task<T>>().GetEnumerator();
+            }
         }
 
         /// <inheritdoc />
