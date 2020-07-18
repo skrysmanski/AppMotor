@@ -14,8 +14,10 @@
 // limitations under the License.
 #endregion
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 using JetBrains.Annotations;
 
@@ -23,27 +25,38 @@ namespace AppMotor.Core.TestUtils
 {
     internal static class EnumeratorTestHelper
     {
+        /// <summary>
+        /// Obtains the generic enumerator (<see cref="IEnumerator{T}"/>) from this collection, iterates it and
+        /// returns the result as a list.
+        /// </summary>
         [NotNull]
-        public static List<T> ExecuteGenericEnumerator<T>([NotNull] this IEnumerator<T> enumerator)
+        public static List<TItem> ExecuteGenericEnumerator<TItem>([NotNull] this IEnumerable<TItem> enumerable)
         {
-            var resultList = new List<T>();
-
-            while (enumerator.MoveNext())
-            {
-                resultList.Add(enumerator.Current);
-            }
-
-            return resultList;
+            return enumerable.ToList();
         }
 
+        /// <summary>
+        /// Obtains the non-generic enumerator (<see cref="IEnumerator"/>) from this collection, iterates it and
+        /// returns the result as a list.
+        /// </summary>
+        /// <typeparam name="TItem">The type of the items in this collection.</typeparam>
         [NotNull]
-        public static List<T> ExecuteNonGenericEnumerator<T>([NotNull] this IEnumerator enumerator)
+        public static List<TItem> ExecuteNonGenericEnumerator<TItem>([NotNull] this IEnumerable enumerable)
         {
-            var resultList = new List<T>();
+            var resultList = new List<TItem>();
 
-            while (enumerator.MoveNext())
+            var enumerator = enumerable.GetEnumerator();
+
+            try
             {
-                resultList.Add((T)enumerator.Current);
+                while (enumerator.MoveNext())
+                {
+                    resultList.Add((TItem)enumerator.Current);
+                }
+            }
+            finally
+            {
+                (enumerator as IDisposable)?.Dispose();
             }
 
             return resultList;

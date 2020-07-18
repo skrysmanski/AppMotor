@@ -15,7 +15,6 @@
 #endregion
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -184,12 +183,12 @@ namespace AppMotor.Core.Tests.Collections
         {
             var list = new AppendOnlyList<string>();
 
-            list.GetEnumerator().ExecuteGenericEnumerator().Count.ShouldBe(0);
+            list.ExecuteGenericEnumerator().Count.ShouldBe(0);
 
             list.Append("abc");
             list.Append("abc2");
 
-            list.GetEnumerator().ExecuteGenericEnumerator().ShouldBe(list);
+            list.ExecuteGenericEnumerator().ShouldBe(list);
         }
 
         [Fact]
@@ -197,12 +196,12 @@ namespace AppMotor.Core.Tests.Collections
         {
             var list = new AppendOnlyList<string>();
 
-            ((IEnumerable)list).GetEnumerator().ExecuteNonGenericEnumerator<string>().Count.ShouldBe(0);
+            list.ExecuteNonGenericEnumerator<string>().Count.ShouldBe(0);
 
             list.Append("abc");
             list.Append("abc2");
 
-            ((IEnumerable)list).GetEnumerator().ExecuteNonGenericEnumerator<string>().ShouldBe(list);
+            list.ExecuteNonGenericEnumerator<string>().ShouldBe(list);
         }
 
         [Fact]
