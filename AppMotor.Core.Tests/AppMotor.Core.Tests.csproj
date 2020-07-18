@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AppWeave.Core\AppWeave.Core.csproj" />
+    <ProjectReference Include="..\AppMotor.Core\AppMotor.Core.csproj" />
   </ItemGroup>
 
 </Project>
