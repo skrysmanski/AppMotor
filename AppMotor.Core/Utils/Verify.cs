@@ -213,7 +213,7 @@ namespace AppMotor.Core.Utils
 
                 if (obj.Length == 0)
                 {
-                    throw CreateRootException("String is empty.", valueName);
+                    throw CreateRootException(ExceptionMessages.STRING_IS_EMPTY, valueName);
                 }
             }
 
@@ -227,12 +227,12 @@ namespace AppMotor.Core.Utils
 
                 if (obj.Length == 0)
                 {
-                    throw CreateRootException("String is empty.", valueName);
+                    throw CreateRootException(ExceptionMessages.STRING_IS_EMPTY, valueName);
                 }
 
                 if (string.IsNullOrWhiteSpace(obj))
                 {
-                    throw CreateRootException("String just contains white space characters.", valueName);
+                    throw CreateRootException(ExceptionMessages.STRING_IS_WHITE_SPACES, valueName);
                 }
             }
 
@@ -259,6 +259,7 @@ namespace AppMotor.Core.Utils
 
         internal static class ExceptionMessages
         {
+            [NotNull]
             public const string DEFAULT_VALUE_NAME = "unknown";
 
             [NotNull]
@@ -266,6 +267,12 @@ namespace AppMotor.Core.Utils
 
             [NotNull]
             public const string VALUE_IS_NULL = "The value must not be null.";
+
+            [NotNull]
+            public const string STRING_IS_EMPTY = "The string must not be empty.";
+
+            [NotNull]
+            public const string STRING_IS_WHITE_SPACES = "The string must not contain just white space characters.";
         }
     }
 }
