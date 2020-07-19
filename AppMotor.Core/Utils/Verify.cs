@@ -81,6 +81,7 @@ namespace AppMotor.Core.Utils
                 protected override ArgumentException CreateNullException(string valueName)
                 {
                     return new ArgumentNullException(
+                        message: ExceptionMessages.VALUE_IS_NULL, // <-- we specify this here so that the message doesn't get translated
                         paramName: valueName ?? ExceptionMessages.DEFAULT_VALUE_NAME
                     );
                 }
