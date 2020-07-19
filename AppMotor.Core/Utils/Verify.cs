@@ -80,19 +80,21 @@ namespace AppMotor.Core.Utils
                 /// <inheritdoc />
                 protected override ArgumentException CreateNullException(string valueName)
                 {
-                    return new ArgumentNullException(paramName: valueName ?? DEFAULT_VALUE_NAME);
+                    return new ArgumentNullException(
+                        paramName: valueName ?? ExceptionMessages.DEFAULT_VALUE_NAME
+                    );
                 }
 
                 /// <inheritdoc />
                 protected override ArgumentException CreateCollectionIsReadOnlyException(string valueName)
                 {
-                    return new CollectionIsReadOnlyArgumentException(paramName: valueName ?? DEFAULT_VALUE_NAME);
+                    return new CollectionIsReadOnlyArgumentException(paramName: valueName ?? ExceptionMessages.DEFAULT_VALUE_NAME);
                 }
 
                 /// <inheritdoc />
                 protected override ArgumentException CreateRootException(string message, string valueName)
                 {
-                    return new ArgumentException(message: message, paramName: valueName ?? DEFAULT_VALUE_NAME);
+                    return new ArgumentException(message: message, paramName: valueName ?? ExceptionMessages.DEFAULT_VALUE_NAME);
                 }
             }
         }
@@ -150,19 +152,19 @@ namespace AppMotor.Core.Utils
                 /// <inheritdoc />
                 protected override ValueException CreateNullException(string valueName)
                 {
-                    return new ValueNullException(message: null, valueName: valueName ?? DEFAULT_VALUE_NAME);
+                    return new ValueNullException(message: null, valueName: valueName ?? ExceptionMessages.DEFAULT_VALUE_NAME);
                 }
 
                 /// <inheritdoc />
                 protected override ValueException CreateCollectionIsReadOnlyException(string valueName)
                 {
-                    return new CollectionIsReadOnlyValueException(valueName: valueName ?? DEFAULT_VALUE_NAME);
+                    return new CollectionIsReadOnlyValueException(valueName: valueName ?? ExceptionMessages.DEFAULT_VALUE_NAME);
                 }
 
                 /// <inheritdoc />
                 protected override ValueException CreateRootException(string message, string valueName)
                 {
-                    return new ValueException(message: message, valueName: valueName ?? DEFAULT_VALUE_NAME);
+                    return new ValueException(message: message, valueName: valueName ?? ExceptionMessages.DEFAULT_VALUE_NAME);
                 }
             }
         }
@@ -173,8 +175,6 @@ namespace AppMotor.Core.Utils
 
         private abstract class VerifierBase<TBaseException> where TBaseException : Exception
         {
-            protected const string DEFAULT_VALUE_NAME = "unknown";
-
             [NotNull]
             protected abstract TBaseException CreateNullException([CanBeNull] string valueName);
 
@@ -255,5 +255,16 @@ namespace AppMotor.Core.Utils
         }
 
         // ReSharper restore ParameterOnlyUsedForPreconditionCheck.Local
+
+        internal static class ExceptionMessages
+        {
+            public const string DEFAULT_VALUE_NAME = "unknown";
+
+            [NotNull]
+            public const string DEFAULT_MESSAGE = "The value is invalid.";
+
+            [NotNull]
+            public const string VALUE_IS_NULL = "The value must not be null.";
+        }
     }
 }

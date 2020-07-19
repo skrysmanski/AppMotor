@@ -1,12 +1,12 @@
 ﻿#region License
 // Copyright 2020 AppMotor Framework (https://github.com/skrysmanski/AppMotor)
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,6 +15,8 @@
 #endregion
 
 using System;
+
+using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
@@ -47,7 +49,7 @@ namespace AppMotor.Core.Exceptions
         }
 
         public ValueNullException([CanBeNull] string message, [CanBeNull] string valueName, [CanBeNull] Exception innerException)
-            : base(message ?? "The specified value is null.", valueName, innerException)
+            : base(message ?? Verify.ExceptionMessages.VALUE_IS_NULL, valueName, innerException)
         {
         }
     }
