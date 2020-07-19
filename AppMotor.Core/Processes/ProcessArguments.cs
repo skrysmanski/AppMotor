@@ -51,7 +51,7 @@ namespace AppMotor.Core.Processes
         /// </summary>
         public void CopyTo([NotNull] ProcessStartInfo processStartInfo)
         {
-            Verify.Argument.NotNull(processStartInfo, nameof(processStartInfo));
+            Verify.Argument.IsNotNull(processStartInfo, nameof(processStartInfo));
 
             // Must be set to empty when using "ArgumentsList".
             processStartInfo.Arguments = "";

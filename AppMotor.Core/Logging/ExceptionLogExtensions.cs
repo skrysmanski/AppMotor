@@ -51,7 +51,7 @@ namespace AppMotor.Core.Logging
         [PublicAPI, ItemNotNull]
         public static ImmutableArray<PropertyInfo> GetLoggableProperties([NotNull] this Exception exception)
         {
-            Verify.Argument.NotNull(exception, nameof(exception));
+            Verify.Argument.IsNotNull(exception, nameof(exception));
 
             var exceptionType = exception.GetType();
 

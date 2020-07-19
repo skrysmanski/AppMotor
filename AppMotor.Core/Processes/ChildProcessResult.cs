@@ -46,7 +46,7 @@ namespace AppMotor.Core.Processes
 
         public ChildProcessResult(int exitCode, [NotNull] string output, [CanBeNull] string errorOutput)
         {
-            Verify.Argument.NotNull(output, nameof(output));
+            Verify.Argument.IsNotNull(output, nameof(output));
 
             this.ExitCode = exitCode;
             this.Output = output;

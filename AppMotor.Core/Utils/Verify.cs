@@ -38,30 +38,30 @@ namespace AppMotor.Core.Utils
 
             [PublicAPI]
             [ContractAnnotation("obj:null => halt")]
-            public static void NotNull<T>([CanBeNull, InstantHandle, NoEnumeration] T obj, [InvokerParameterName, NotNull] string paramName) where T : class
+            public static void IsNotNull<T>([CanBeNull, InstantHandle, NoEnumeration] T obj, [InvokerParameterName, NotNull] string paramName) where T : class
             {
-                VERIFIER.NotNull(obj, paramName);
+                VERIFIER.IsNotNull(obj, paramName);
             }
 
             [PublicAPI]
             [ContractAnnotation("obj:null => halt")]
-            public static void NotNull<T>([CanBeNull, NoEnumeration] T? obj, [InvokerParameterName, NotNull] string paramName) where T : struct
+            public static void IsNotNull<T>([CanBeNull, NoEnumeration] T? obj, [InvokerParameterName, NotNull] string paramName) where T : struct
             {
-                VERIFIER.NotNull(obj, paramName);
+                VERIFIER.IsNotNull(obj, paramName);
             }
 
             [PublicAPI]
             [ContractAnnotation("obj:null => halt")]
-            public static void NotNullOrEmpty([CanBeNull] string obj, [InvokerParameterName, NotNull] string paramName)
+            public static void IsNotNullOrEmpty([CanBeNull] string obj, [InvokerParameterName, NotNull] string paramName)
             {
-                VERIFIER.NotNullOrEmpty(obj, paramName);
+                VERIFIER.IsNotNullOrEmpty(obj, paramName);
             }
 
             [PublicAPI]
             [ContractAnnotation("obj:null => halt")]
-            public static void NotNullOrWhiteSpace([CanBeNull] string obj, [InvokerParameterName, NotNull] string paramName)
+            public static void IsNotNullOrWhiteSpace([CanBeNull] string obj, [InvokerParameterName, NotNull] string paramName)
             {
-                VERIFIER.NotNullOrWhiteSpace(obj, paramName);
+                VERIFIER.IsNotNullOrWhiteSpace(obj, paramName);
             }
 
             /// <summary>
@@ -70,9 +70,9 @@ namespace AppMotor.Core.Utils
             /// </summary>
             /// <exception cref="CollectionIsReadOnlyArgumentException">Thrown if the collection is read-only.</exception>
             [PublicAPI]
-            public static void NotReadOnly<T>([NotNull] ICollection<T> collectionToCheck, [InvokerParameterName, NotNull] string paramName)
+            public static void IsNotReadOnly<T>([NotNull] ICollection<T> collectionToCheck, [InvokerParameterName, NotNull] string paramName)
             {
-                VERIFIER.NotReadOnly(collectionToCheck, paramName);
+                VERIFIER.IsNotReadOnly(collectionToCheck, paramName);
             }
 
             private sealed class ArgumentVerifier : VerifierBase<ArgumentException>
@@ -111,30 +111,30 @@ namespace AppMotor.Core.Utils
 
             [PublicAPI]
             [ContractAnnotation("obj:null => halt")]
-            public static void NotNull<T>([CanBeNull, InstantHandle, NoEnumeration] T obj, [NotNull] string valueName) where T : class
+            public static void IsNotNull<T>([CanBeNull, InstantHandle, NoEnumeration] T obj, [NotNull] string valueName) where T : class
             {
-                VERIFIER.NotNull(obj, valueName);
+                VERIFIER.IsNotNull(obj, valueName);
             }
 
             [PublicAPI]
             [ContractAnnotation("obj:null => halt")]
-            public static void NotNull<T>([CanBeNull, NoEnumeration] T? obj, [NotNull] string valueName) where T : struct
+            public static void IsNotNull<T>([CanBeNull, NoEnumeration] T? obj, [NotNull] string valueName) where T : struct
             {
-                VERIFIER.NotNull(obj, valueName);
+                VERIFIER.IsNotNull(obj, valueName);
             }
 
             [PublicAPI]
             [ContractAnnotation("obj:null => halt")]
-            public static void NotNullOrEmpty([CanBeNull] string obj, [NotNull] string valueName)
+            public static void IsNotNullOrEmpty([CanBeNull] string obj, [NotNull] string valueName)
             {
-                VERIFIER.NotNullOrEmpty(obj, valueName);
+                VERIFIER.IsNotNullOrEmpty(obj, valueName);
             }
 
             [PublicAPI]
             [ContractAnnotation("obj:null => halt")]
-            public static void NotNullOrWhiteSpace([CanBeNull] string obj, [NotNull] string valueName)
+            public static void IsNotNullOrWhiteSpace([CanBeNull] string obj, [NotNull] string valueName)
             {
-                VERIFIER.NotNullOrWhiteSpace(obj, valueName);
+                VERIFIER.IsNotNullOrWhiteSpace(obj, valueName);
             }
 
             /// <summary>
@@ -143,9 +143,9 @@ namespace AppMotor.Core.Utils
             /// </summary>
             /// <exception cref="CollectionIsReadOnlyValueException">Thrown if the collection is read-only.</exception>
             [PublicAPI]
-            public static void NotReadOnly<T>([NotNull] ICollection<T> collectionToCheck, [NotNull] string valueName)
+            public static void IsNotReadOnly<T>([NotNull] ICollection<T> collectionToCheck, [NotNull] string valueName)
             {
-                VERIFIER.NotReadOnly(collectionToCheck, valueName);
+                VERIFIER.IsNotReadOnly(collectionToCheck, valueName);
             }
 
             private sealed class ValueVerifier : VerifierBase<ValueException>
@@ -186,7 +186,7 @@ namespace AppMotor.Core.Utils
             protected abstract TBaseException CreateRootException([NotNull] string message, [CanBeNull] string valueName);
 
             [ContractAnnotation("obj:null => halt")]
-            public void NotNull<T>([CanBeNull, InstantHandle, NoEnumeration] T obj, [NotNull] string valueName) where T : class
+            public void IsNotNull<T>([CanBeNull, InstantHandle, NoEnumeration] T obj, [NotNull] string valueName) where T : class
             {
                 if (obj is null)
                 {
@@ -195,7 +195,7 @@ namespace AppMotor.Core.Utils
             }
 
             [ContractAnnotation("obj:null => halt")]
-            public void NotNull<T>([CanBeNull] T? obj, [NotNull] string valueName) where T : struct
+            public void IsNotNull<T>([CanBeNull] T? obj, [NotNull] string valueName) where T : struct
             {
                 if (!obj.HasValue)
                 {
@@ -204,7 +204,7 @@ namespace AppMotor.Core.Utils
             }
 
             [ContractAnnotation("obj:null => halt")]
-            public void NotNullOrEmpty([CanBeNull] string obj, [NotNull] string valueName)
+            public void IsNotNullOrEmpty([CanBeNull] string obj, [NotNull] string valueName)
             {
                 if (obj is null)
                 {
@@ -218,7 +218,7 @@ namespace AppMotor.Core.Utils
             }
 
             [ContractAnnotation("obj:null => halt")]
-            public void NotNullOrWhiteSpace([CanBeNull] string obj, [NotNull] string valueName)
+            public void IsNotNullOrWhiteSpace([CanBeNull] string obj, [NotNull] string valueName)
             {
                 if (obj is null)
                 {
@@ -241,7 +241,7 @@ namespace AppMotor.Core.Utils
             /// is <c>true</c>; otherwise a <see cref="CollectionIsReadOnlyArgumentException"/> will be thrown.
             /// </summary>
             /// <exception cref="CollectionIsReadOnlyArgumentException">Thrown if the collection is read-only.</exception>
-            public void NotReadOnly<T>([NotNull] ICollection<T> collectionToCheck, [NotNull] string valueName)
+            public void IsNotReadOnly<T>([NotNull] ICollection<T> collectionToCheck, [NotNull] string valueName)
             {
                 if (collectionToCheck is null)
                 {

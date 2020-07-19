@@ -34,9 +34,9 @@ namespace AppMotor.Core.Tests.Utils
         [Fact]
         public void TestNotNull_RefType_ForArgument()
         {
-            Should.NotThrow(() => Verify.Argument.NotNull("", "abc"));
+            Should.NotThrow(() => Verify.Argument.IsNotNull("", "abc"));
 
-            var exception = Should.Throw<ArgumentNullException>(() => Verify.Argument.NotNull((object)null, "abc"));
+            var exception = Should.Throw<ArgumentNullException>(() => Verify.Argument.IsNotNull((object)null, "abc"));
             exception.Message.ShouldContain(Verify.ExceptionMessages.VALUE_IS_NULL);
             exception.Message.ShouldContain("abc", Case.Sensitive);
         }
@@ -44,9 +44,9 @@ namespace AppMotor.Core.Tests.Utils
         [Fact]
         public void TestNotNull_RefType_ForValue()
         {
-            Should.NotThrow(() => Verify.Value.NotNull("", "abc"));
+            Should.NotThrow(() => Verify.Value.IsNotNull("", "abc"));
 
-            var exception = Should.Throw<ValueNullException>(() => Verify.Value.NotNull((object)null, "abc"));
+            var exception = Should.Throw<ValueNullException>(() => Verify.Value.IsNotNull((object)null, "abc"));
             exception.Message.ShouldContain(Verify.ExceptionMessages.VALUE_IS_NULL);
             exception.Message.ShouldContain("abc", Case.Sensitive);
         }
@@ -54,9 +54,9 @@ namespace AppMotor.Core.Tests.Utils
         [Fact]
         public void TestNotNull_ValueType_ForArgument()
         {
-            Should.NotThrow(() => Verify.Argument.NotNull((int?)42, "abc"));
+            Should.NotThrow(() => Verify.Argument.IsNotNull((int?)42, "abc"));
 
-            var exception = Should.Throw<ArgumentNullException>(() => Verify.Argument.NotNull((int?)null, "abc"));
+            var exception = Should.Throw<ArgumentNullException>(() => Verify.Argument.IsNotNull((int?)null, "abc"));
             exception.Message.ShouldContain(Verify.ExceptionMessages.VALUE_IS_NULL);
             exception.Message.ShouldContain("abc", Case.Sensitive);
         }
@@ -64,9 +64,9 @@ namespace AppMotor.Core.Tests.Utils
         [Fact]
         public void TestNotNull_ValueType_ForValue()
         {
-            Should.NotThrow(() => Verify.Value.NotNull((int?)42, "abc"));
+            Should.NotThrow(() => Verify.Value.IsNotNull((int?)42, "abc"));
 
-            var exception = Should.Throw<ValueNullException>(() => Verify.Value.NotNull((int?)null, "abc"));
+            var exception = Should.Throw<ValueNullException>(() => Verify.Value.IsNotNull((int?)null, "abc"));
             exception.Message.ShouldContain(Verify.ExceptionMessages.VALUE_IS_NULL);
             exception.Message.ShouldContain("abc", Case.Sensitive);
         }
@@ -74,13 +74,13 @@ namespace AppMotor.Core.Tests.Utils
         [Fact]
         public void TestNotNullOrEmpty_String_ForArgument()
         {
-            Should.NotThrow(() => Verify.Argument.NotNullOrEmpty("a test", "abc"));
+            Should.NotThrow(() => Verify.Argument.IsNotNullOrEmpty("a test", "abc"));
 
-            var exception1 = Should.Throw<ArgumentNullException>(() => Verify.Argument.NotNullOrEmpty(null, "abc"));
+            var exception1 = Should.Throw<ArgumentNullException>(() => Verify.Argument.IsNotNullOrEmpty(null, "abc"));
             exception1.Message.ShouldContain(Verify.ExceptionMessages.VALUE_IS_NULL);
             exception1.Message.ShouldContain("abc", Case.Sensitive);
 
-            var exception2 = Should.Throw<ArgumentException>(() => Verify.Argument.NotNullOrEmpty("", "abc"));
+            var exception2 = Should.Throw<ArgumentException>(() => Verify.Argument.IsNotNullOrEmpty("", "abc"));
             exception2.Message.ShouldContain(Verify.ExceptionMessages.STRING_IS_EMPTY);
             exception2.Message.ShouldContain("abc", Case.Sensitive);
         }
@@ -88,13 +88,13 @@ namespace AppMotor.Core.Tests.Utils
         [Fact]
         public void TestNotNullOrEmpty_String_ForValue()
         {
-            Should.NotThrow(() => Verify.Value.NotNullOrEmpty("a test", "abc"));
+            Should.NotThrow(() => Verify.Value.IsNotNullOrEmpty("a test", "abc"));
 
-            var exception1 = Should.Throw<ValueNullException>(() => Verify.Value.NotNullOrEmpty(null, "abc"));
+            var exception1 = Should.Throw<ValueNullException>(() => Verify.Value.IsNotNullOrEmpty(null, "abc"));
             exception1.Message.ShouldContain(Verify.ExceptionMessages.VALUE_IS_NULL);
             exception1.Message.ShouldContain("abc", Case.Sensitive);
 
-            var exception2 = Should.Throw<ValueException>(() => Verify.Value.NotNullOrEmpty("", "abc"));
+            var exception2 = Should.Throw<ValueException>(() => Verify.Value.IsNotNullOrEmpty("", "abc"));
             exception2.Message.ShouldContain(Verify.ExceptionMessages.STRING_IS_EMPTY);
             exception2.Message.ShouldContain("abc", Case.Sensitive);
         }
@@ -102,68 +102,68 @@ namespace AppMotor.Core.Tests.Utils
         [Fact]
         public void TestIsNotNullOrWhiteSpace_ForArgument()
         {
-            Should.NotThrow(() => Verify.Argument.NotNullOrWhiteSpace("a test", "abc"));
+            Should.NotThrow(() => Verify.Argument.IsNotNullOrWhiteSpace("a test", "abc"));
 
-            var exception1 = Should.Throw<ArgumentNullException>(() => Verify.Argument.NotNullOrWhiteSpace(null, "abc"));
+            var exception1 = Should.Throw<ArgumentNullException>(() => Verify.Argument.IsNotNullOrWhiteSpace(null, "abc"));
             exception1.Message.ShouldContain(Verify.ExceptionMessages.VALUE_IS_NULL);
             exception1.Message.ShouldContain("abc", Case.Sensitive);
 
-            var exception2 = Should.Throw<ArgumentException>(() => Verify.Argument.NotNullOrWhiteSpace("", "abc"));
+            var exception2 = Should.Throw<ArgumentException>(() => Verify.Argument.IsNotNullOrWhiteSpace("", "abc"));
             exception2.Message.ShouldContain(Verify.ExceptionMessages.STRING_IS_EMPTY);
             exception2.Message.ShouldContain("abc", Case.Sensitive);
 
-            var exception3 = Should.Throw<ArgumentException>(() => Verify.Argument.NotNullOrWhiteSpace(" ", "abc"));
+            var exception3 = Should.Throw<ArgumentException>(() => Verify.Argument.IsNotNullOrWhiteSpace(" ", "abc"));
             exception3.Message.ShouldContain(Verify.ExceptionMessages.STRING_IS_WHITE_SPACES);
             exception3.Message.ShouldContain("abc", Case.Sensitive);
 
-            Should.Throw<ArgumentException>(() => Verify.Argument.NotNullOrWhiteSpace("  ", "abc"));
+            Should.Throw<ArgumentException>(() => Verify.Argument.IsNotNullOrWhiteSpace("  ", "abc"));
         }
 
         [Fact]
         public void TestIsNotNullOrWhiteSpace_ForValue()
         {
-            Should.NotThrow(() => Verify.Value.NotNullOrWhiteSpace("a test", "abc"));
+            Should.NotThrow(() => Verify.Value.IsNotNullOrWhiteSpace("a test", "abc"));
 
-            var exception1 = Should.Throw<ValueNullException>(() => Verify.Value.NotNullOrWhiteSpace(null, "abc"));
+            var exception1 = Should.Throw<ValueNullException>(() => Verify.Value.IsNotNullOrWhiteSpace(null, "abc"));
             exception1.Message.ShouldContain(Verify.ExceptionMessages.VALUE_IS_NULL);
             exception1.Message.ShouldContain("abc", Case.Sensitive);
 
-            var exception2 = Should.Throw<ValueException>(() => Verify.Value.NotNullOrWhiteSpace("", "abc"));
+            var exception2 = Should.Throw<ValueException>(() => Verify.Value.IsNotNullOrWhiteSpace("", "abc"));
             exception2.Message.ShouldContain(Verify.ExceptionMessages.STRING_IS_EMPTY);
             exception2.Message.ShouldContain("abc", Case.Sensitive);
 
-            var exception3 = Should.Throw<ValueException>(() => Verify.Value.NotNullOrWhiteSpace(" ", "abc"));
+            var exception3 = Should.Throw<ValueException>(() => Verify.Value.IsNotNullOrWhiteSpace(" ", "abc"));
             exception3.Message.ShouldContain(Verify.ExceptionMessages.STRING_IS_WHITE_SPACES);
             exception3.Message.ShouldContain("abc", Case.Sensitive);
 
-            Should.Throw<ValueException>(() => Verify.Value.NotNullOrWhiteSpace("  ", "abc"));
+            Should.Throw<ValueException>(() => Verify.Value.IsNotNullOrWhiteSpace("  ", "abc"));
         }
 
         [Fact]
         public void TestIsNotReadOnly_ForArgument()
         {
-            Should.NotThrow(() => Verify.Argument.NotReadOnly(new List<string>(), "abc"));
+            Should.NotThrow(() => Verify.Argument.IsNotReadOnly(new List<string>(), "abc"));
 
             // ReSharper disable once AssignNullToNotNullAttribute
-            var exception1 = Should.Throw<ArgumentNullException>(() => Verify.Argument.NotReadOnly((List<string>)null, "abc"));
+            var exception1 = Should.Throw<ArgumentNullException>(() => Verify.Argument.IsNotReadOnly((List<string>)null, "abc"));
             exception1.Message.ShouldContain(Verify.ExceptionMessages.VALUE_IS_NULL);
             exception1.Message.ShouldContain("abc", Case.Sensitive);
 
-            var exception2 = Should.Throw<CollectionIsReadOnlyArgumentException>(() => Verify.Argument.NotReadOnly(new ReadOnlyCollection<string>(new List<string>()), "abc"));
+            var exception2 = Should.Throw<CollectionIsReadOnlyArgumentException>(() => Verify.Argument.IsNotReadOnly(new ReadOnlyCollection<string>(new List<string>()), "abc"));
             exception2.Message.ShouldContain("abc", Case.Sensitive);
         }
 
         [Fact]
         public void TestIsNotReadOnly_ForValue()
         {
-            Should.NotThrow(() => Verify.Value.NotReadOnly(new List<string>(), "abc"));
+            Should.NotThrow(() => Verify.Value.IsNotReadOnly(new List<string>(), "abc"));
 
             // ReSharper disable once AssignNullToNotNullAttribute
-            var exception1 = Should.Throw<ValueNullException>(() => Verify.Value.NotReadOnly((List<string>)null, "abc"));
+            var exception1 = Should.Throw<ValueNullException>(() => Verify.Value.IsNotReadOnly((List<string>)null, "abc"));
             exception1.Message.ShouldContain(Verify.ExceptionMessages.VALUE_IS_NULL);
             exception1.Message.ShouldContain("abc", Case.Sensitive);
 
-            var exception2 = Should.Throw<CollectionIsReadOnlyValueException>(() => Verify.Value.NotReadOnly(new ReadOnlyCollection<string>(new List<string>()), "abc"));
+            var exception2 = Should.Throw<CollectionIsReadOnlyValueException>(() => Verify.Value.IsNotReadOnly(new ReadOnlyCollection<string>(new List<string>()), "abc"));
             exception2.Message.ShouldContain("abc", Case.Sensitive);
         }
     }

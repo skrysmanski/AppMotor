@@ -40,7 +40,7 @@ namespace AppMotor.Core.Extensions
         [PublicAPI, Pure]
         public static bool IsNumericType([NotNull] this Type type)
         {
-            Verify.Argument.NotNull(type, nameof(type));
+            Verify.Argument.IsNotNull(type, nameof(type));
 
             switch (type.FullName)
             {
@@ -79,7 +79,7 @@ namespace AppMotor.Core.Extensions
         [PublicAPI, Pure]
         public static bool IsNumericIntegerType([NotNull] this Type type)
         {
-            Verify.Argument.NotNull(type, nameof(type));
+            Verify.Argument.IsNotNull(type, nameof(type));
 
             switch (type.FullName)
             {
@@ -113,7 +113,7 @@ namespace AppMotor.Core.Extensions
         [PublicAPI, Pure]
         public static bool IsNumericFloatType([NotNull] this Type type)
         {
-            Verify.Argument.NotNull(type, nameof(type));
+            Verify.Argument.IsNotNull(type, nameof(type));
 
             switch (type.FullName)
             {
@@ -135,7 +135,7 @@ namespace AppMotor.Core.Extensions
         [PublicAPI, Pure]
         public static bool IsNullableType([NotNull] this Type type)
         {
-            Verify.Argument.NotNull(type, nameof(type));
+            Verify.Argument.IsNotNull(type, nameof(type));
 
             return !type.IsValueType || type.IsNullableValueType();
         }
@@ -147,7 +147,7 @@ namespace AppMotor.Core.Extensions
         [PublicAPI, Pure]
         public static bool IsNullableValueType([NotNull] this Type type)
         {
-            Verify.Argument.NotNull(type, nameof(type));
+            Verify.Argument.IsNotNull(type, nameof(type));
 
             return Nullable.GetUnderlyingType(type) != null;
         }
@@ -181,8 +181,8 @@ namespace AppMotor.Core.Extensions
         [PublicAPI, Pure]
         public static bool Is([NotNull] this Type typeToCheck, [NotNull] Type baseType)
         {
-            Verify.Argument.NotNull(typeToCheck, nameof(typeToCheck));
-            Verify.Argument.NotNull(baseType, nameof(baseType));
+            Verify.Argument.IsNotNull(typeToCheck, nameof(typeToCheck));
+            Verify.Argument.IsNotNull(baseType, nameof(baseType));
 
             return baseType.IsAssignableFrom(typeToCheck);
         }

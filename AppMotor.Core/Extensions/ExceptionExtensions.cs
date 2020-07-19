@@ -51,8 +51,8 @@ namespace AppMotor.Core.Extensions
         [PublicAPI]
         public static void AddData([NotNull] this Exception exception, [NotNull] object key, [CanBeNull] object value)
         {
-            Verify.Argument.NotNull(exception, nameof(exception));
-            Verify.Argument.NotNull(key, nameof(key));
+            Verify.Argument.IsNotNull(exception, nameof(exception));
+            Verify.Argument.IsNotNull(key, nameof(key));
 
             var exceptionData = exception.GetData();
 
@@ -125,7 +125,7 @@ namespace AppMotor.Core.Extensions
                 bool preventUnrollingOnExistingExceptionData = true
             )
         {
-            Verify.Argument.NotNull(aggregateException, nameof(aggregateException));
+            Verify.Argument.IsNotNull(aggregateException, nameof(aggregateException));
 
             Exception exceptionToThrow = GetUnrolledException(aggregateException, deepUnroll, preventUnrollingOnExistingExceptionData);
 

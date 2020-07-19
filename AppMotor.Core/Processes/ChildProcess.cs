@@ -84,7 +84,7 @@ namespace AppMotor.Core.Processes
         [PublicAPI, NotNull]
         public static ChildProcessResult Exec([NotNull] ChildProcessStartInfo startInfo)
         {
-            Verify.Argument.NotNull(startInfo, nameof(startInfo));
+            Verify.Argument.IsNotNull(startInfo, nameof(startInfo));
 
             var runningProcess = StartProcess(startInfo);
 
@@ -205,8 +205,8 @@ namespace AppMotor.Core.Processes
 
             public PreparedProcess([NotNull] Process process, [NotNull] ChildProcessStartInfo startInfo)
             {
-                Verify.Argument.NotNull(process, nameof(process));
-                Verify.Argument.NotNull(startInfo, nameof(startInfo));
+                Verify.Argument.IsNotNull(process, nameof(process));
+                Verify.Argument.IsNotNull(startInfo, nameof(startInfo));
 
                 this.m_process = process;
                 this.m_startInfo = startInfo;

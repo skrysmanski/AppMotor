@@ -81,7 +81,7 @@ namespace AppMotor.Core.Collections
         [PublicAPI]
         public AppendOnlyList([NotNull] IEnumerable<T> source)
         {
-            Verify.Argument.NotNull(source, nameof(source));
+            Verify.Argument.IsNotNull(source, nameof(source));
 
             if (source is AppendOnlyList<T> appendOnlyList)
             {
@@ -102,7 +102,7 @@ namespace AppMotor.Core.Collections
         [PublicAPI]
         public AppendOnlyList([NotNull] AppendOnlyList<T> source)
         {
-            Verify.Argument.NotNull(source, nameof(source));
+            Verify.Argument.IsNotNull(source, nameof(source));
 
             this.m_underlyingList = source.m_underlyingList;
             this.Count = source.Count;
@@ -126,7 +126,7 @@ namespace AppMotor.Core.Collections
         [PublicAPI]
         public void AppendRange([NotNull] IEnumerable<T> items)
         {
-            Verify.Argument.NotNull(items, nameof(items));
+            Verify.Argument.IsNotNull(items, nameof(items));
 
             EnsureUnderlyingListCanBeAppended();
 
