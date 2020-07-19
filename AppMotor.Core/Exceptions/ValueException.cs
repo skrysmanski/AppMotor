@@ -31,6 +31,8 @@ namespace AppMotor.Core.Exceptions
         [CanBeNull]
         public string ValueName { get; }
 
+        // NOTE: This implementation mirrors how "ArgumentException" incorporates the parameter name into its message
+        //   (i.e. by overriding the "Message" property instead of doing this in the constructor).
         [NotNull]
         public override string Message
         {
@@ -43,7 +45,7 @@ namespace AppMotor.Core.Exceptions
                     return message;
                 }
 
-                return message + Environment.NewLine + "Value name: " + this.ValueName;
+                return message + " (Value name: '" + this.ValueName + "')";
             }
         }
 
