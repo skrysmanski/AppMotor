@@ -64,6 +64,13 @@ namespace AppMotor.Core.Utils
                 VERIFIER.IsNotNullOrWhiteSpace(obj, paramName);
             }
 
+            [PublicAPI]
+            [ContractAnnotation("obj:null => halt")]
+            public static void IsNotNullOrEmpty<T>([CanBeNull] IReadOnlyCollection<T> obj, [InvokerParameterName, NotNull] string paramName)
+            {
+                VERIFIER.IsNotNullOrEmpty(obj, paramName);
+            }
+
             /// <summary>
             /// Verifies that the <see cref="ICollection{T}.IsReadOnly"/> property of <paramref name="collectionToCheck"/>
             /// is <c>true</c>; otherwise a <see cref="CollectionIsReadOnlyArgumentException"/> will be thrown.
@@ -135,6 +142,13 @@ namespace AppMotor.Core.Utils
             public static void IsNotNullOrWhiteSpace([CanBeNull] string obj, [NotNull] string valueName)
             {
                 VERIFIER.IsNotNullOrWhiteSpace(obj, valueName);
+            }
+
+            [PublicAPI]
+            [ContractAnnotation("obj:null => halt")]
+            public static void IsNotNullOrEmpty<T>([CanBeNull] IReadOnlyCollection<T> obj, [NotNull] string valueName)
+            {
+                VERIFIER.IsNotNullOrEmpty(obj, valueName);
             }
 
             /// <summary>
@@ -236,6 +250,20 @@ namespace AppMotor.Core.Utils
                 }
             }
 
+            [ContractAnnotation("obj:null => halt")]
+            public void IsNotNullOrEmpty<T>([CanBeNull] IReadOnlyCollection<T> obj, [NotNull] string valueName)
+            {
+                if (obj is null)
+                {
+                    throw CreateNullException(valueName);
+                }
+
+                if (obj.Count == 0)
+                {
+                    throw CreateRootException(ExceptionMessages.COLLECTION_IS_EMPTY, valueName);
+                }
+            }
+
             /// <summary>
             /// Verifies that the <see cref="ICollection{T}.IsReadOnly"/> property of <paramref name="collectionToCheck"/>
             /// is <c>true</c>; otherwise a <see cref="CollectionIsReadOnlyArgumentException"/> will be thrown.
@@ -273,6 +301,9 @@ namespace AppMotor.Core.Utils
 
             [NotNull]
             public const string STRING_IS_WHITE_SPACES = "The string must not contain just white space characters.";
+
+            [NotNull]
+            public const string COLLECTION_IS_EMPTY = "The collection must not be empty.";
         }
     }
 }
