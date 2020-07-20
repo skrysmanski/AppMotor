@@ -18,6 +18,7 @@ indent_size = 4
 trim_trailing_whitespace = true
 insert_final_newline = true
 
+
 #
 # Markdown
 #
@@ -27,6 +28,7 @@ charset = utf-8-bom
 # For explanation why spaces are used for Markdown, see: https://github.com/skrysmanski/base/blob/master/docs/markdown-indentation.md
 indent_style = space
 indent_size = 4
+
 
 #
 # C# files
@@ -48,6 +50,7 @@ dotnet_style_qualification_for_event = true:suggestion
 
 dotnet_sort_system_directives_first = true:suggestion
 
+
 #
 # VS project files
 #
@@ -59,6 +62,15 @@ indent_size = 2
 # files - and always creates .csproj files with crlf. Thus, we enforce the end-of-line
 # characters in .gitattributes instead.
 end_of_line = unset
+
+
+#
+# .props files
+#
+[*.props]
+# This mirrors the indent size for .csproj files.
+indent_size = 2
+
 
 #
 # ReSharper settings files
