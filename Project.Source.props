@@ -3,6 +3,13 @@
 
   <Import Project="$(MSBuildThisFileDirectory)\Project.Shared.props" />
 
+  <PropertyGroup>
+    <!-- See: https://docs.microsoft.com/de-de/dotnet/core/tools/csproj#nuget-metadata-properties -->
+    <Copyright>Copyright © Sebastian Krysmanski 2020</Copyright>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/skrysmanski/AppMotor</RepositoryUrl>
+  </PropertyGroup>
+
   <ItemGroup>
     <!-- Make internals automatically available to the associated tests project. -->
     <!-- Can be replaced with something better in .NET 5: https://github.com/dotnet/sdk/pull/3439 -->
