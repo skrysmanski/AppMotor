@@ -1,9 +1,22 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Project.Source.props', '$(MSBuildThisFileDirectory)'))" />
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
+
+    <AssemblyName>AppMotor.Core</AssemblyName>
+    <Version>0.1.0</Version>
+
+    <Description>Contains core APIs of the AppMotor framework.</Description>
+    <Copyright>Copyright © Sebastian Krysmanski 2020</Copyright>
+
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+    <!-- See: https://docs.microsoft.com/de-de/dotnet/core/tools/csproj#nuget-metadata-properties -->
+    <Authors>Sebastian Krysmanski</Authors>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/skrysmanski/AppMotor</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
