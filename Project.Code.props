@@ -1,4 +1,6 @@
-<!-- Default settings for all non-test projects. -->
+<!--
+  Default settings for all production code (i.e. non-test) projects.
+-->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <Import Project="$(MSBuildThisFileDirectory)\Project.Shared.props" />

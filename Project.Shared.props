@@ -1,6 +1,6 @@
 <!--
     Shared settings for all projects.
-    NOTE: Do not include directly. Use one of the ohter props files instead.
+    NOTE: Do not include directly. Use one of the other props files instead.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
@@ -8,6 +8,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors></WarningsAsErrors>
     <NoWarn></NoWarn>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
 
   <ItemGroup>
