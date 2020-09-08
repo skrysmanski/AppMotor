@@ -4,7 +4,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild Condition="'$(Configuration)' == 'Release'">true</GeneratePackageOnBuild>
 
     <AssemblyName>AppMotor.Core</AssemblyName>
     <!-- See: https://docs.microsoft.com/en-us/nuget/create-packages/prerelease-packages -->
