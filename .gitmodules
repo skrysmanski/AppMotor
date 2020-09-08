@@ -1,0 +1,3 @@
+[submodule "AppMotor.StyleGuide"]
+	path = AppMotor.StyleGuide
+	url = https://github.com/skrysmanski/AppMotor.StyleGuide.git
