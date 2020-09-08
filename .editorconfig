@@ -29,6 +29,8 @@ charset = utf-8-bom
 indent_style = space
 indent_size = 4
 
+[*.{bat,cmd}]
+end_of_line = crlf
 
 #
 # C# files

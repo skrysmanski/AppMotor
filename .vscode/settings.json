@@ -11,5 +11,7 @@
         "MD036": false,
         // Fenced code blocks should have a language specified
         "MD040": false,
+        // Inconsistent code blocks are sometimes nicer to write
+        "MD046": false,
     }
 }
