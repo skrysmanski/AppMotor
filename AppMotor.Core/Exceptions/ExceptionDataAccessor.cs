@@ -1,12 +1,12 @@
 ﻿#region License
 // Copyright 2020 AppMotor Framework (https://github.com/skrysmanski/AppMotor)
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,22 +29,23 @@ namespace AppMotor.Core.Exceptions
     /// Provides safe access to the <see cref="Exception.Data"/> property. Usually obtained through
     /// <see cref="ExceptionExtensions.GetData"/>.
     ///
-    /// <para>The safety of this struct is two-fold:</para>
+    /// <para>The safety of this type is as follows:</para>
     ///
     /// <para>First, there are certain situations where <see cref="Exception.Data"/> can be <c>null</c>.
     /// For one, an older version of the .NET Framework documentation for this property noted that for
     /// certain exception types this property is <c>null</c>. Also, since the property is <c>virtual</c>,
     /// we can't be sure that child classes will always return a non-null value. This struct internally
-    /// treats <c>null</c> as empty, read-only dictionary. So for write operations, you simply have
-    /// to check <see cref="IsReadOnly"/>.</para>
+    /// treats <c>null</c> as empty, read-only dictionary.</para>
     ///
-    /// <para>Secondly, it makes the data dictionary "type-safe" for <c>foreach</c>. So you can
+    /// <para>Secondly, if the data dictionary is read-only, write operations just wont do anything.
+    /// They especially won't throw any exceptions.</para>
+    ///
+    /// <para>Thirdly, it makes the data dictionary "type-safe" for <c>foreach</c>. So you can
     /// use <c>foreach (var entry : ...)</c> where entry will be a proper key value pair.</para>
     /// </summary>
     public readonly struct ExceptionDataAccessor : IReadOnlyCollection<KeyValuePair<object, object>>
     {
-        [CanBeNull]
-        private readonly IDictionary m_data;
+        private readonly IDictionary? m_data;
 
         /// <inheritdoc />
         public int Count => this.m_data?.Count ?? 0;
@@ -61,8 +62,8 @@ namespace AppMotor.Core.Exceptions
         /// <para>Note: If using the getter and the specified key does not exist in the
         /// dictionary, <c>null</c> is returned (instead of throwing an exception).</para>
         /// </summary>
-        [PublicAPI, CanBeNull]
-        public object this[[NotNull] object key]
+        [PublicAPI]
+        public object? this[object key]
         {
             get
             {
@@ -81,30 +82,22 @@ namespace AppMotor.Core.Exceptions
             }
             set
             {
-                VerifyNotReadOnly();
-
-                // ReSharper disable once PossibleNullReferenceException
-                this.m_data[key] = value;
+                if (!this.IsReadOnly)
+                {
+                    this.m_data![key] = value;
+                }
             }
         }
 
         /// <summary>
         /// Constructor. Alternatively, you can use <see cref="ExceptionExtensions.GetData"/>.
         /// </summary>
-        public ExceptionDataAccessor([NotNull] Exception exception)
+        public ExceptionDataAccessor(Exception exception)
         {
             Verify.Argument.IsNotNull(exception, nameof(exception));
 
             // For nullability of "Data", see: https://github.com/dotnet/dotnet-api-docs/issues/4045
             this.m_data = exception.Data;
-        }
-
-        private void VerifyNotReadOnly()
-        {
-            if (this.IsReadOnly)
-            {
-                throw new CollectionIsReadOnlyException();
-            }
         }
 
         /// <summary>
@@ -113,15 +106,17 @@ namespace AppMotor.Core.Exceptions
         [PublicAPI]
         public void Clear()
         {
-            VerifyNotReadOnly();
-            this.m_data?.Clear();
+            if (!this.IsReadOnly)
+            {
+                this.m_data!.Clear();
+            }
         }
 
         /// <summary>
         /// Returns whether the specified key is contained in the dictionary.
         /// </summary>
         [PublicAPI, Pure]
-        public bool ContainsKey([NotNull] object key)
+        public bool ContainsKey(object key)
         {
             return this.m_data?.Contains(key) ?? false;
         }
@@ -131,10 +126,12 @@ namespace AppMotor.Core.Exceptions
         /// in the dictionary, nothing happens (especially not exception).
         /// </summary>
         [PublicAPI]
-        public void Remove([NotNull] object key)
+        public void Remove(object key)
         {
-            VerifyNotReadOnly();
-            this.m_data?.Remove(key);
+            if (!this.IsReadOnly)
+            {
+                this.m_data!.Remove(key);
+            }
         }
 
         /// <inheritdoc />

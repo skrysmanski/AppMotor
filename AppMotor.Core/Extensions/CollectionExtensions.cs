@@ -31,7 +31,7 @@ namespace AppMotor.Core.Extensions
         /// </summary>
         /// <exception cref="CollectionIsReadOnlyException">Thrown if the collection is read-only.</exception>
         [PublicAPI]
-        public static void AddRange<T>([NotNull] this ICollection<T> collection, [NotNull] IEnumerable<T> itemsToAdd)
+        public static void AddRange<T>(this ICollection<T> collection, IEnumerable<T> itemsToAdd)
         {
             Verify.Argument.IsNotNull(collection, nameof(collection));
             Verify.Argument.IsNotNull(itemsToAdd, nameof(itemsToAdd));
@@ -49,8 +49,8 @@ namespace AppMotor.Core.Extensions
         /// <returns>Returns the items that were removed from the collection. If no items were
         /// removed, the returned list will be empty (but never <c>null</c>).</returns>
         /// <exception cref="CollectionIsReadOnlyException">Thrown if the collection is read-only.</exception>
-        [PublicAPI, NotNull]
-        public static List<T> RemoveWhere<T>([NotNull] this ICollection<T> collection, [NotNull] Predicate<T> predicate)
+        [PublicAPI]
+        public static List<T> RemoveWhere<T>(this ICollection<T> collection, Predicate<T> predicate)
         {
             Verify.Argument.IsNotNull(collection, nameof(collection));
             Verify.Argument.IsNotNull(predicate, nameof(predicate));

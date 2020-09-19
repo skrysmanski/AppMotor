@@ -1,12 +1,12 @@
 ﻿#region License
 // Copyright 2020 AppMotor Framework (https://github.com/skrysmanski/AppMotor)
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,7 @@ using System;
 using System.Security;
 
 using AppMotor.Core.Extensions;
+using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
@@ -35,14 +36,16 @@ namespace AppMotor.Core.DataModel
         /// </summary>
         /// <seealso cref="IsSensitiveValueType"/>
         [PublicAPI, Pure]
-        public static bool IsSensitiveValue<T>([NotNull] this T value)
+        public static bool IsSensitiveValue<T>(this T value)
         {
+            Verify.Argument.IsNotNull(value, nameof(value));
+
             if (value is SecureString || value is ISensitiveValue)
             {
                 return true;
             }
 
-            if (value.GetType().IsMarkedWith<SensitiveValueMarker>())
+            if (value!.GetType().IsMarkedWith<SensitiveValueMarker>())
             {
                 return true;
             }
@@ -56,7 +59,7 @@ namespace AppMotor.Core.DataModel
         /// </summary>
         /// <seealso cref="IsSensitiveValue{T}"/>
         [PublicAPI, Pure]
-        public static bool IsSensitiveValueType([NotNull] Type typeToCheck)
+        public static bool IsSensitiveValueType(Type typeToCheck)
         {
             if (typeToCheck == typeof(SecureString) || typeToCheck.Is<ISensitiveValue>())
             {

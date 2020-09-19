@@ -1,12 +1,12 @@
 ﻿#region License
 // Copyright 2020 AppMotor Framework (https://github.com/skrysmanski/AppMotor)
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,8 +21,6 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 
 using AppMotor.Core.Exceptions;
-
-using JetBrains.Annotations;
 
 using Shouldly;
 
@@ -82,9 +80,10 @@ namespace AppMotor.Core.Tests.Exceptions
             accessor["abc"].ShouldBe(null);
             accessor.ContainsKey("abc").ShouldBe(false);
 
-            Should.Throw<CollectionIsReadOnlyException>(() => accessor["abc"] = 42);
-            Should.Throw<CollectionIsReadOnlyException>(() => accessor.Remove("abc"));
-            Should.Throw<CollectionIsReadOnlyException>(() => accessor.Clear());
+            Should.NotThrow(() => accessor["abc"] = 42);
+            accessor["abc"].ShouldBe(null);
+            Should.NotThrow(() => accessor.Remove("abc"));
+            Should.NotThrow(() => accessor.Clear());
 
             // Enumeration is empty.
             accessor.GetEnumerator().MoveNext().ShouldBe(false);
@@ -106,9 +105,10 @@ namespace AppMotor.Core.Tests.Exceptions
             accessor["abc"].ShouldBe(null);
             accessor.ContainsKey("abc").ShouldBe(false);
 
-            Should.Throw<CollectionIsReadOnlyException>(() => accessor["abc"] = 42);
-            Should.Throw<CollectionIsReadOnlyException>(() => accessor.Remove("abc"));
-            Should.Throw<CollectionIsReadOnlyException>(() => accessor.Clear());
+            Should.NotThrow(() => accessor["abc"] = 42);
+            accessor["abc"].ShouldBe(null);
+            Should.NotThrow(() => accessor.Remove("abc"));
+            Should.NotThrow(() => accessor.Clear());
 
             // Enumeration is empty.
             accessor.GetEnumerator().MoveNext().ShouldBe(false);
@@ -152,10 +152,9 @@ namespace AppMotor.Core.Tests.Exceptions
 
         private sealed class ExceptionWithNullData : Exception
         {
-            // ReSharper disable once AnnotationConflictInHierarchy
-            [CanBeNull]
-            // ReSharper disable once AssignNullToNotNullAttribute
-            public override IDictionary Data => null;
+#pragma warning disable 8764
+            public override IDictionary? Data => null;
+#pragma warning restore 8764
         }
 
         private sealed class ExceptionWithReadOnlyData : Exception
@@ -177,7 +176,6 @@ namespace AppMotor.Core.Tests.Exceptions
 
             private sealed class MyCustomDictionary : IDictionary<object, object>, IDictionary
             {
-                [JetBrains.Annotations.NotNull]
                 // ReSharper disable once CollectionNeverUpdated.Local
                 private readonly Dictionary<object, object> m_underlyingDictionary = new Dictionary<object, object>();
 
@@ -206,11 +204,12 @@ namespace AppMotor.Core.Tests.Exceptions
                 /// <inheritdoc />
                 public bool IsFixedSize => throw new NotSupportedException();
 
-                // ReSharper disable once AnnotateNotNullTypeMember
                 public object this[object key]
                 {
                     get => this.m_underlyingDictionary[key];
+#pragma warning disable 8767
                     set => throw new NotSupportedException();
+#pragma warning restore 8767
                 }
 
                 /// <inheritdoc />
@@ -285,7 +284,7 @@ namespace AppMotor.Core.Tests.Exceptions
                     throw new NotSupportedException();
                 }
 
-                public void Add(object key, object value)
+                public void Add(object key, object? value)
                 {
                     throw new NotSupportedException();
                 }

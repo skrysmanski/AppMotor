@@ -1,12 +1,12 @@
 ﻿#region License
 // Copyright 2020 AppMotor Framework (https://github.com/skrysmanski/AppMotor)
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,8 +20,6 @@ using System.Reflection;
 using AppMotor.Core.Exceptions;
 using AppMotor.Core.System;
 using AppMotor.Core.Utils;
-
-using JetBrains.Annotations;
 
 using Shouldly;
 
@@ -74,8 +72,7 @@ namespace AppMotor.Core.Tests.System
             }
         }
 
-        [NotNull]
-        private static ColoredString.Substring CreateTextInClassInstance(ConsoleColor color, [CanBeNull] string value)
+        private static ColoredString.Substring CreateTextInClassInstance(ConsoleColor color, string? value)
         {
             var textInClassesAssembly = typeof(TextInBlack).Assembly;
             var textInClassesNamespace = typeof(TextInBlack).Namespace;
@@ -84,10 +81,10 @@ namespace AppMotor.Core.Tests.System
             textInType.ShouldNotBeNull();
 
             // See: https://stackoverflow.com/a/11113450/614177
-            var createOperator = textInType.GetMethod("op_Explicit", BindingFlags.Static | BindingFlags.Public);
+            var createOperator = textInType!.GetMethod("op_Explicit", BindingFlags.Static | BindingFlags.Public);
             createOperator.ShouldNotBeNull();
 
-            var textInValue = (ColoredString.Substring)createOperator.Invoke(null, new object[] { value });
+            var textInValue = (ColoredString.Substring)createOperator!.Invoke(null, new object[] { value! })!;
             textInValue.ShouldNotBeNull();
 
             return textInValue;
@@ -151,9 +148,9 @@ namespace AppMotor.Core.Tests.System
         }
 
         private static void VerifyColoredStringResult(
-                [CanBeNull] ColoredString result,
-                [NotNull] object operand1,
-                [NotNull] object operand2
+                ColoredString? result,
+                object operand1,
+                object operand2
             )
         {
             ColoredString.Substring CreateExpectedSubstring(object operand)
@@ -175,7 +172,7 @@ namespace AppMotor.Core.Tests.System
             }
 
             result.ShouldNotBeNull();
-            result.Count.ShouldBe(2);
+            result!.Count.ShouldBe(2);
 
             var expectedSubstring1 = CreateExpectedSubstring(operand1);
             var expectedSubstring2 = CreateExpectedSubstring(operand2);
@@ -199,7 +196,7 @@ namespace AppMotor.Core.Tests.System
             coloredString[0].Text.ShouldBe("abc");
             coloredString[0].Color.ShouldBe(null);
 
-            coloredString.Append(color: null, (ColoredString)null);
+            coloredString.Append(color: null, (ColoredString?)null);
             coloredString.Count.ShouldBe(1);
 
             coloredString.Append(color: null, (ColoredString)"");
@@ -236,7 +233,7 @@ namespace AppMotor.Core.Tests.System
             coloredString[0].Text.ShouldBe("abc");
             coloredString[0].Color.ShouldBe(color);
 
-            coloredString.Append(color: color, (string)null);
+            coloredString.Append(color: color, (string?)null);
             coloredString.Count.ShouldBe(1);
 
             coloredString.Append(color: color, "");
@@ -255,7 +252,7 @@ namespace AppMotor.Core.Tests.System
             coloredString[0].Text.ShouldBe("abc");
             coloredString[0].Color.ShouldBe(color);
 
-            coloredString.Append(color: color, (object)null);
+            coloredString.Append(color: color, (object?)null);
             coloredString.Count.ShouldBe(1);
 
             coloredString.Append(color: color, (object)"");

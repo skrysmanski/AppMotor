@@ -30,7 +30,7 @@ namespace AppMotor.Core.Logging
         /// Returns whether the specified property should be excluded from the result.
         /// </summary>
         [Pure]
-        bool ExcludeProperty([NotNull] PropertyInfo loggableProperty);
+        bool ExcludeProperty(PropertyInfo loggableProperty);
 
         /// <summary>
         /// Returns whether the specified loggable property value should be excluded from the result list.
@@ -40,6 +40,6 @@ namespace AppMotor.Core.Logging
         /// <param name="propertyValue">The value to check.</param>
         /// <param name="loggableProperty">The property the value belongs to.</param>
         [Pure]
-        bool ExcludePropertyValue([CanBeNull] object propertyValue, [NotNull] PropertyInfo loggableProperty);
+        bool ExcludePropertyValue(object? propertyValue, PropertyInfo loggableProperty);
     }
 }

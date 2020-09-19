@@ -27,13 +27,13 @@ namespace AppMotor.Core.Exceptions
     public class UnexpectedBehaviorException : Exception
     {
         [PublicAPI]
-        public UnexpectedBehaviorException([NotNull] string message)
+        public UnexpectedBehaviorException(string message)
             : base(message)
         {
         }
 
         [PublicAPI]
-        public UnexpectedBehaviorException([NotNull] string message, [CanBeNull] Exception innerException)
+        public UnexpectedBehaviorException(string message, Exception? innerException)
             : base(message, innerException)
         {
         }

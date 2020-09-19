@@ -5,6 +5,9 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
+    <!-- See: https://docs.microsoft.com/en-us/dotnet/csharp/nullable-references#nullable-contexts -->
+    <Nullable>enable</Nullable>
+
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors></WarningsAsErrors>
     <NoWarn></NoWarn>

@@ -29,7 +29,7 @@ namespace AppMotor.Core.DataModel
         /// <para>This method is thread-safe.</para>
         /// </summary>
         [PublicAPI]
-        public static void MarkWith<TTypeMarker>([NotNull] this Type typeToMark) where TTypeMarker : TypeMarker
+        public static void MarkWith<TTypeMarker>(this Type typeToMark) where TTypeMarker : TypeMarker
         {
             TypeMarkers.RegisterTypeMaker(typeToMark, typeof(TTypeMarker));
         }
@@ -40,7 +40,7 @@ namespace AppMotor.Core.DataModel
         /// <para>This method is thread-safe.</para>
         /// </summary>
         [PublicAPI, Pure]
-        public static bool IsMarkedWith<TTypeMarker>([NotNull] this Type typeToCheck) where TTypeMarker : TypeMarker
+        public static bool IsMarkedWith<TTypeMarker>(this Type typeToCheck) where TTypeMarker : TypeMarker
         {
             return TypeMarkers.IsTypeMarkerRegistered(typeToCheck, typeof(TTypeMarker));
         }

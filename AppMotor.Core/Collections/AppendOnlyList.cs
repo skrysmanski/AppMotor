@@ -46,7 +46,6 @@ namespace AppMotor.Core.Collections
     /// </summary>
     public sealed class AppendOnlyList<T> : IReadOnlyList<T>, IShallowCloneable<AppendOnlyList<T>>
     {
-        [NotNull]
         private List<T> m_underlyingList;
 
         /// <inheritdoc />
@@ -79,7 +78,7 @@ namespace AppMotor.Core.Collections
         /// Creates a new list with a copy of <paramref name="source"/>.
         /// </summary>
         [PublicAPI]
-        public AppendOnlyList([NotNull] IEnumerable<T> source)
+        public AppendOnlyList(IEnumerable<T> source)
         {
             Verify.Argument.IsNotNull(source, nameof(source));
 
@@ -100,7 +99,7 @@ namespace AppMotor.Core.Collections
         /// same effect as <see cref="CloneShallow"/>.
         /// </summary>
         [PublicAPI]
-        public AppendOnlyList([NotNull] AppendOnlyList<T> source)
+        public AppendOnlyList(AppendOnlyList<T> source)
         {
             Verify.Argument.IsNotNull(source, nameof(source));
 
@@ -112,7 +111,7 @@ namespace AppMotor.Core.Collections
         /// Appends the specified item to the end of the list.
         /// </summary>
         [PublicAPI]
-        public void Append([CanBeNull] T item)
+        public void Append(T item)
         {
             EnsureUnderlyingListCanBeAppended();
 
@@ -124,7 +123,7 @@ namespace AppMotor.Core.Collections
         /// Appends the specified items to the end of the list.
         /// </summary>
         [PublicAPI]
-        public void AppendRange([NotNull] IEnumerable<T> items)
+        public void AppendRange(IEnumerable<T> items)
         {
             Verify.Argument.IsNotNull(items, nameof(items));
 
@@ -165,7 +164,7 @@ namespace AppMotor.Core.Collections
         /// Creates an instance of <see cref="ListRange"/> so that a call
         /// to <see cref="List{T}.AddRange"/> is more efficient.
         /// </summary>
-        [NotNull, Pure]
+        [Pure]
         private ListRange CreateListRange()
         {
             return new ListRange(this.m_underlyingList, this.Count);
@@ -199,7 +198,6 @@ namespace AppMotor.Core.Collections
         /// </summary>
         private sealed class ListRange : ICollection<T>
         {
-            [NotNull]
             private readonly List<T> m_underlyingList;
 
             /// <summary>
@@ -212,7 +210,7 @@ namespace AppMotor.Core.Collections
             public bool IsReadOnly => true;
 
             [ExcludeFromCodeCoverage]
-            public ListRange([NotNull] List<T> underlyingList, int rangeLength)
+            public ListRange(List<T> underlyingList, int rangeLength)
             {
                 if (underlyingList.Count < rangeLength)
                 {

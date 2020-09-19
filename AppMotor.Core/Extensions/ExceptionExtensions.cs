@@ -35,7 +35,7 @@ namespace AppMotor.Core.Extensions
         /// <see cref="ExceptionDataAccessor"/>.
         /// </summary>
         [PublicAPI]
-        public static ExceptionDataAccessor GetData([NotNull] this Exception exception)
+        public static ExceptionDataAccessor GetData(this Exception exception)
         {
             return new ExceptionDataAccessor(exception);
         }
@@ -49,7 +49,7 @@ namespace AppMotor.Core.Extensions
         /// <param name="key">The key. Can be anything but strings are recommended.</param>
         /// <param name="value">The value.</param>
         [PublicAPI]
-        public static void AddData([NotNull] this Exception exception, [NotNull] object key, [CanBeNull] object value)
+        public static void AddData(this Exception exception, object key, object? value)
         {
             Verify.Argument.IsNotNull(exception, nameof(exception));
             Verify.Argument.IsNotNull(key, nameof(key));
@@ -72,8 +72,8 @@ namespace AppMotor.Core.Extensions
         /// Captures this exception so that it can be rethrown later without losing its
         /// stacktrace. For more details, see <see cref="Rethrow"/>.
         /// </summary>
-        [PublicAPI, NotNull, Pure]
-        public static ExceptionDispatchInfo Capture([NotNull] this Exception exception)
+        [PublicAPI, Pure]
+        public static ExceptionDispatchInfo Capture(this Exception exception)
         {
             return ExceptionDispatchInfo.Capture(exception);
         }
@@ -91,8 +91,8 @@ namespace AppMotor.Core.Extensions
         ///
         /// <para>You should use this method like this: <c>throw exception.Rethrow();</c></para>
         /// </summary>
-        [PublicAPI, NotNull, ContractAnnotation("=>halt")]
-        public static Exception Rethrow([NotNull] this Exception exception)
+        [PublicAPI, ContractAnnotation("=>halt")]
+        public static Exception Rethrow(this Exception exception)
         {
             ExceptionDispatchInfo.Throw(exception);
             throw new UnexpectedBehaviorException("We should never get here.");
@@ -118,9 +118,9 @@ namespace AppMotor.Core.Extensions
         /// data (<see cref="Exception.Data"/>) prevent unrolling (<c>true</c>; the default). The reasoning
         /// here is that if the <see cref="AggregateException"/> itself contains exception data, it would
         /// be lost on unrolling.</param>
-        [PublicAPI, NotNull, ContractAnnotation("=>halt")]
+        [PublicAPI, ContractAnnotation("=>halt")]
         public static Exception UnrollIfPossible(
-                [NotNull] this AggregateException aggregateException,
+                this AggregateException aggregateException,
                 bool deepUnroll = false,
                 bool preventUnrollingOnExistingExceptionData = true
             )
@@ -132,9 +132,8 @@ namespace AppMotor.Core.Extensions
             throw exceptionToThrow.Rethrow();
         }
 
-        [NotNull]
         private static Exception GetUnrolledException(
-                [NotNull] AggregateException aggregateException,
+                AggregateException aggregateException,
                 bool deepUnroll,
                 bool preventUnrollingOnExistingExceptionData
             )

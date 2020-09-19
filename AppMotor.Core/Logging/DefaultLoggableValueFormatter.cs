@@ -1,12 +1,12 @@
 ﻿#region License
 // Copyright 2020 AppMotor Framework (https://github.com/skrysmanski/AppMotor)
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,21 +21,19 @@ using System.Security;
 using AppMotor.Core.DataModel;
 using AppMotor.Core.Globalization;
 
-using JetBrains.Annotations;
-
 namespace AppMotor.Core.Logging
 {
     public class DefaultLoggableValueFormatter : DefaultValueFormatter
     {
         /// <inheritdoc />
-        public DefaultLoggableValueFormatter([CanBeNull] CultureInfo cultureForFormatting)
+        public DefaultLoggableValueFormatter(CultureInfo? cultureForFormatting)
             // NOTE: For logging purposes it's better to use "InvariantCulture" than "CurrentUICulture".
             : base(cultureForFormatting ?? CultureInfo.InvariantCulture)
         {
         }
 
         /// <inheritdoc />
-        public override string FormatValue<T>(T value)
+        public override string? FormatValue<T>(T value)
         {
             switch (value)
             {

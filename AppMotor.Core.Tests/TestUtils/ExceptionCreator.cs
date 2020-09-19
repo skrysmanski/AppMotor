@@ -18,29 +18,25 @@ using System;
 
 using AppMotor.Core.Exceptions;
 
-using JetBrains.Annotations;
-
 using Shouldly;
 
 namespace AppMotor.Core.TestUtils
 {
     internal sealed class ExceptionCreator<TException> where TException : Exception
     {
-        [NotNull]
         private readonly string m_exceptionMessage;
 
-        [CanBeNull]
-        private readonly Exception m_innerException;
+        private readonly Exception? m_innerException;
 
-        private ExceptionCreator([NotNull] string exceptionMessage, [CanBeNull] Exception innerException)
+        private ExceptionCreator(string exceptionMessage, Exception? innerException)
         {
             this.m_exceptionMessage = exceptionMessage;
             this.m_innerException = innerException;
         }
 
         public static void CreateAndThrow(
-                [NotNull] string exceptionMessage = "Some error text",
-                [CanBeNull] Exception innerException = null,
+                string exceptionMessage = "Some error text",
+                Exception? innerException = null,
                 int stackDepth = 5
             )
         {
@@ -48,10 +44,9 @@ namespace AppMotor.Core.TestUtils
             creator.MethodOnTheStacktraceA(stackDepth - 1);
         }
 
-        [NotNull]
         public static TException CreateAndCatch(
-                [NotNull] string exceptionMessage = "Some error text",
-                [CanBeNull] Exception innerException = null,
+                string exceptionMessage = "Some error text",
+                Exception? innerException = null,
                 int stackDepth = 5
             )
         {
@@ -139,7 +134,6 @@ namespace AppMotor.Core.TestUtils
             }
         }
 
-        [NotNull]
         private TException CreateException()
         {
 
@@ -147,11 +141,11 @@ namespace AppMotor.Core.TestUtils
 
             if (this.m_innerException != null)
             {
-                newException = (TException)Activator.CreateInstance(typeof(TException), this.m_exceptionMessage, this.m_innerException);
+                newException = (TException)Activator.CreateInstance(typeof(TException), this.m_exceptionMessage, this.m_innerException)!;
             }
             else
             {
-                newException = (TException)Activator.CreateInstance(typeof(TException), this.m_exceptionMessage);
+                newException = (TException)Activator.CreateInstance(typeof(TException), this.m_exceptionMessage)!;
             }
 
             newException.ShouldNotBeNull();

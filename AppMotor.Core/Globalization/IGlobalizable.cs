@@ -30,7 +30,7 @@ namespace AppMotor.Core.Globalization
         /// Converts the value of this instance to an equivalent string using
         /// the specified culture-specific formatting information.
         /// </summary>
-        [PublicAPI, NotNull]
-        string ToString([CanBeNull] CultureInfo culture);
+        [PublicAPI]
+        string ToString(CultureInfo? culture);
     }
 }

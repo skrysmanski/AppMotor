@@ -38,7 +38,7 @@ namespace AppMotor.Core.Extensions
         /// <seealso cref="IsNumericIntegerType"/>
         /// <seealso cref="IsNumericFloatType"/>
         [PublicAPI, Pure]
-        public static bool IsNumericType([NotNull] this Type type)
+        public static bool IsNumericType(this Type type)
         {
             Verify.Argument.IsNotNull(type, nameof(type));
 
@@ -77,7 +77,7 @@ namespace AppMotor.Core.Extensions
         /// <seealso cref="IsNumericType"/>
         /// <seealso cref="IsNumericFloatType"/>
         [PublicAPI, Pure]
-        public static bool IsNumericIntegerType([NotNull] this Type type)
+        public static bool IsNumericIntegerType(this Type type)
         {
             Verify.Argument.IsNotNull(type, nameof(type));
 
@@ -111,7 +111,7 @@ namespace AppMotor.Core.Extensions
         /// <seealso cref="IsNumericIntegerType"/>
         /// <seealso cref="IsNumericType"/>
         [PublicAPI, Pure]
-        public static bool IsNumericFloatType([NotNull] this Type type)
+        public static bool IsNumericFloatType(this Type type)
         {
             Verify.Argument.IsNotNull(type, nameof(type));
 
@@ -133,7 +133,7 @@ namespace AppMotor.Core.Extensions
         /// </summary>
         /// <seealso cref="IsNullableValueType"/>
         [PublicAPI, Pure]
-        public static bool IsNullableType([NotNull] this Type type)
+        public static bool IsNullableType(this Type type)
         {
             Verify.Argument.IsNotNull(type, nameof(type));
 
@@ -145,7 +145,7 @@ namespace AppMotor.Core.Extensions
         /// </summary>
         /// <seealso cref="IsNullableType"/>
         [PublicAPI, Pure]
-        public static bool IsNullableValueType([NotNull] this Type type)
+        public static bool IsNullableValueType(this Type type)
         {
             Verify.Argument.IsNotNull(type, nameof(type));
 
@@ -163,7 +163,7 @@ namespace AppMotor.Core.Extensions
         /// can't be <c>null</c> here.
         /// </remarks>
         [PublicAPI, Pure]
-        public static bool Is<TBaseType>([NotNull] this Type typeToCheck)
+        public static bool Is<TBaseType>(this Type typeToCheck)
         {
             return typeToCheck.Is(typeof(TBaseType));
         }
@@ -179,7 +179,7 @@ namespace AppMotor.Core.Extensions
         /// can't be <c>null</c> here.
         /// </remarks>
         [PublicAPI, Pure]
-        public static bool Is([NotNull] this Type typeToCheck, [NotNull] Type baseType)
+        public static bool Is(this Type typeToCheck, Type baseType)
         {
             Verify.Argument.IsNotNull(typeToCheck, nameof(typeToCheck));
             Verify.Argument.IsNotNull(baseType, nameof(baseType));

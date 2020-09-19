@@ -31,10 +31,10 @@ namespace AppMotor.Core.Logging
         /// The type for which the loggability has changed. You may use the methods
         /// of <see cref="LoggableValues"/> to determine the new loggability.
         /// </summary>
-        [PublicAPI, NotNull]
+        [PublicAPI]
         public Type Type { get; }
 
-        public LoggabilityChangedEventArgs([NotNull] Type type)
+        public LoggabilityChangedEventArgs(Type type)
         {
             Verify.Argument.IsNotNull(type, nameof(type));
 

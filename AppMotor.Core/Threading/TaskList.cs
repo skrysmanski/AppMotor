@@ -38,15 +38,12 @@ namespace AppMotor.Core.Threading
     /// <seealso cref="TaskList{T}"/>
     public readonly struct TaskList : IReadOnlyList<Task>
     {
-        [CanBeNull]
-        [ItemNotNull]
-        private readonly AppendOnlyList<Task> m_underlyingList;
+        private readonly AppendOnlyList<Task>? m_underlyingList;
 
         /// <inheritdoc />
         public int Count => this.m_underlyingList?.Count ?? 0;
 
         /// <inheritdoc />
-        [NotNull]
         public Task this[int index]
         {
             get
@@ -68,7 +65,7 @@ namespace AppMotor.Core.Threading
         /// <summary>
         /// Adds a task to this list.
         /// </summary>
-        public static TaskList operator+(TaskList taskList, [NotNull] Task task)
+        public static TaskList operator+(TaskList taskList, Task task)
         {
             var newList = taskList.m_underlyingList?.CloneShallow() ?? new AppendOnlyList<Task>();
             newList.Append(task);
@@ -88,7 +85,7 @@ namespace AppMotor.Core.Threading
         /// <summary>
         /// Calls <see cref="Task.WhenAny(IEnumerable{Task})"/> for this list. Returns the completed task.
         /// </summary>
-        [PublicAPI, ItemNotNull]
+        [PublicAPI]
         public Task<Task> WhenAny()
         {
             return Task.WhenAny(this.m_underlyingList);
@@ -126,15 +123,12 @@ namespace AppMotor.Core.Threading
     /// <seealso cref="TaskList"/>
     public readonly struct TaskList<T> : IReadOnlyList<Task<T>>
     {
-        [CanBeNull]
-        [ItemNotNull]
-        private readonly AppendOnlyList<Task<T>> m_underlyingList;
+        private readonly AppendOnlyList<Task<T>>? m_underlyingList;
 
         /// <inheritdoc />
         public int Count => this.m_underlyingList?.Count ?? 0;
 
         /// <inheritdoc />
-        [NotNull]
         public Task<T> this[int index]
         {
             get
@@ -156,7 +150,7 @@ namespace AppMotor.Core.Threading
         /// <summary>
         /// Adds a task to this list.
         /// </summary>
-        public static TaskList<T> operator+(TaskList<T> taskList, [NotNull] Task<T> task)
+        public static TaskList<T> operator+(TaskList<T> taskList, Task<T> task)
         {
             var newList = taskList.m_underlyingList?.CloneShallow() ?? new AppendOnlyList<Task<T>>();
             newList.Append(task);
@@ -167,7 +161,7 @@ namespace AppMotor.Core.Threading
         /// <summary>
         /// Calls <see cref="Task.WhenAll(IEnumerable{Task})"/> for this list.
         /// </summary>
-        [PublicAPI, ItemNotNull]
+        [PublicAPI]
         public Task<T[]> WhenAll()
         {
             return Task.WhenAll(this.m_underlyingList);
@@ -176,7 +170,7 @@ namespace AppMotor.Core.Threading
         /// <summary>
         /// Calls <see cref="Task.WhenAny(IEnumerable{Task})"/> for this list. Returns the completed task.
         /// </summary>
-        [PublicAPI, ItemNotNull]
+        [PublicAPI]
         public Task<Task<T>> WhenAny()
         {
             return Task.WhenAny(this.m_underlyingList);

@@ -1,12 +1,12 @@
 ﻿#region License
 // Copyright 2020 AppMotor Framework (https://github.com/skrysmanski/AppMotor)
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,17 +33,15 @@ namespace AppMotor.Core.System
     /// </summary>
     public sealed class ColoredString : IReadOnlyList<ColoredString.Substring>, IShallowCloneable<ColoredString>
     {
-        [NotNull, ItemNotNull]
         private readonly AppendOnlyList<Substring> m_substrings;
 
         /// <inheritdoc />
         public int Count => this.m_substrings.Count;
 
         /// <inheritdoc />
-        [NotNull]
         public Substring this[int index] => this.m_substrings[index];
 
-        private ColoredString([CanBeNull] ColoredString other)
+        private ColoredString(ColoredString? other)
         {
             if (other != null)
             {
@@ -58,7 +56,7 @@ namespace AppMotor.Core.System
         /// <summary>
         /// Creates a new empty <see cref="ColoredString"/>.
         /// </summary>
-        [PublicAPI, NotNull, Pure]
+        [PublicAPI, Pure]
         public static ColoredString New()
         {
             return new ColoredString(null);
@@ -72,8 +70,8 @@ namespace AppMotor.Core.System
         /// If <c>null</c>, they will remain uncolored.</param>
         /// <param name="value">The color string to append.</param>
         /// <returns>Returns this instance (useful for chaining calls).</returns>
-        [PublicAPI, NotNull]
-        public ColoredString Append(ConsoleColor? color, [CanBeNull] ColoredString value)
+        [PublicAPI]
+        public ColoredString Append(ConsoleColor? color, ColoredString? value)
         {
             if (value == null || value.Count == 0)
             {
@@ -135,8 +133,8 @@ namespace AppMotor.Core.System
         /// <see cref="Append(ConsoleColor?,ColoredString)"/> instead of
         /// <see cref="Append(ConsoleColor?,object)"/> (resulting in unnecessary conversions).
         /// </remarks>
-        [PublicAPI, NotNull]
-        public ColoredString Append(ConsoleColor? color, [CanBeNull] Substring value)
+        [PublicAPI]
+        public ColoredString Append(ConsoleColor? color, Substring? value)
         {
             if (value == null)
             {
@@ -153,8 +151,8 @@ namespace AppMotor.Core.System
             }
         }
 
-        [PublicAPI, NotNull]
-        public ColoredString Append([CanBeNull] Substring substring)
+        [PublicAPI]
+        public ColoredString Append(Substring? substring)
         {
             if (substring == null || string.IsNullOrEmpty(substring.Text))
             {
@@ -180,8 +178,8 @@ namespace AppMotor.Core.System
         /// <see cref="Append(ConsoleColor?,ColoredString)"/> instead of
         /// <see cref="Append(ConsoleColor?,object)"/> (resulting in unnecessary conversions).
         /// </remarks>
-        [PublicAPI, NotNull]
-        public ColoredString Append(ConsoleColor? color, [CanBeNull] string value)
+        [PublicAPI]
+        public ColoredString Append(ConsoleColor? color, string? value)
         {
             if (string.IsNullOrEmpty(value))
             {
@@ -201,8 +199,8 @@ namespace AppMotor.Core.System
         /// <see cref="Substring.Color"/> for more details.</param>
         /// <param name="value">The value to append</param>
         /// <returns>Returns this instance (useful for chaining calls).</returns>
-        [PublicAPI, NotNull]
-        public ColoredString Append(ConsoleColor? color, [CanBeNull] object value)
+        [PublicAPI]
+        public ColoredString Append(ConsoleColor? color, object? value)
         {
             switch (value)
             {
@@ -229,38 +227,32 @@ namespace AppMotor.Core.System
             return this;
         }
 
-        [NotNull]
-        public static ColoredString operator +([NotNull] ColoredString left, [NotNull] string right)
+        public static ColoredString operator +(ColoredString left, string right)
         {
             return left.CloneShallow().Append(color: null, right);
         }
 
-        [NotNull]
-        public static ColoredString operator +([NotNull] ColoredString left, [NotNull] Substring right)
+        public static ColoredString operator +(ColoredString left, Substring right)
         {
             return left.CloneShallow().Append(right);
         }
 
-        [NotNull]
-        public static ColoredString operator +([NotNull] ColoredString left, [NotNull] ColoredString right)
+        public static ColoredString operator +(ColoredString left, ColoredString right)
         {
             return left.CloneShallow().Append(color: null, right);
         }
 
-        [NotNull]
-        public static ColoredString operator +([NotNull] string left, [NotNull] ColoredString right)
+        public static ColoredString operator +(string left, ColoredString right)
         {
             return New().Append(color: null, left).Append(color: null, right);
         }
 
-        [NotNull]
-        public static implicit operator ColoredString([NotNull] Substring text)
+        public static implicit operator ColoredString(Substring text)
         {
             return New().Append(text);
         }
 
-        [NotNull]
-        public static implicit operator ColoredString([NotNull] string text)
+        public static implicit operator ColoredString(string text)
         {
             return New().Append(color: null, (object)text);
         }
@@ -285,7 +277,6 @@ namespace AppMotor.Core.System
             return new ColoredString(this);
         }
 
-        [NotNull]
         public override string ToString()
         {
             return string.Join("", this.m_substrings.Select(sub => sub.Text));
@@ -303,7 +294,7 @@ namespace AppMotor.Core.System
             /// The text value of this colored string. Is never null but may be empty (when
             /// created via one of the <c>TextIn...</c> classes).
             /// </summary>
-            [PublicAPI, NotNull]
+            [PublicAPI]
             public string Text { get; }
 
             /// <summary>
@@ -313,32 +304,29 @@ namespace AppMotor.Core.System
             [PublicAPI]
             public ConsoleColor? Color { get; }
 
-            internal Substring(ConsoleColor? color, [CanBeNull] string text)
+            internal Substring(ConsoleColor? color, string? text)
             {
                 this.Text = text ?? "";
                 this.Color = color;
             }
 
-            [NotNull]
-            public static ColoredString operator +([NotNull] Substring left, [CanBeNull] string right)
+            public static ColoredString operator +(Substring left, string? right)
             {
                 return New().Append(left).Append(null, right);
             }
 
-            [NotNull]
-            public static ColoredString operator +([CanBeNull] string left, [NotNull] Substring right)
+            public static ColoredString operator +(string? left, Substring right)
             {
                 return New().Append(null, left).Append(right);
             }
 
-            [NotNull]
-            public static ColoredString operator +([NotNull] Substring left, [NotNull] Substring right)
+            public static ColoredString operator +(Substring left, Substring right)
             {
                 return New().Append(left).Append(right);
             }
 
             /// <inheritdoc />
-            public bool Equals(Substring other)
+            public bool Equals(Substring? other)
             {
                 if (other is null)
                 {
@@ -354,7 +342,7 @@ namespace AppMotor.Core.System
             }
 
             /// <inheritdoc />
-            public override bool Equals(object obj)
+            public override bool Equals(object? obj)
             {
                 return Equals(obj as Substring);
             }
@@ -365,7 +353,6 @@ namespace AppMotor.Core.System
                 return HashCode.Combine(this.Text, this.Color);
             }
 
-            [NotNull]
             public override string ToString()
             {
                 return this.Text;
@@ -381,13 +368,12 @@ namespace AppMotor.Core.System
     [PublicAPI]
     public sealed class TextInBlack : ColoredString.Substring
     {
-        private TextInBlack([NotNull] string text)
+        private TextInBlack(string text)
             : base(ConsoleColor.Black, text)
         {
         }
 
-        [NotNull]
-        public static explicit operator TextInBlack([CanBeNull] string text)
+        public static explicit operator TextInBlack(string? text)
         {
             return new TextInBlack(text ?? "");
         }
@@ -401,13 +387,12 @@ namespace AppMotor.Core.System
     [PublicAPI]
     public sealed class TextInDarkGray : ColoredString.Substring
     {
-        private TextInDarkGray([NotNull] string text)
+        private TextInDarkGray(string text)
             : base(ConsoleColor.DarkGray, text)
         {
         }
 
-        [NotNull]
-        public static explicit operator TextInDarkGray([CanBeNull] string text)
+        public static explicit operator TextInDarkGray(string? text)
         {
             return new TextInDarkGray(text ?? "");
         }
@@ -421,13 +406,12 @@ namespace AppMotor.Core.System
     [PublicAPI]
     public sealed class TextInGray : ColoredString.Substring
     {
-        private TextInGray([NotNull] string text)
+        private TextInGray(string text)
             : base(ConsoleColor.Gray, text)
         {
         }
 
-        [NotNull]
-        public static explicit operator TextInGray([CanBeNull] string text)
+        public static explicit operator TextInGray(string? text)
         {
             return new TextInGray(text ?? "");
         }
@@ -442,13 +426,12 @@ namespace AppMotor.Core.System
     [PublicAPI]
     public sealed class TextInWhite : ColoredString.Substring
     {
-        private TextInWhite([NotNull] string text)
+        private TextInWhite(string text)
             : base(ConsoleColor.White, text)
         {
         }
 
-        [NotNull]
-        public static explicit operator TextInWhite([CanBeNull] string text)
+        public static explicit operator TextInWhite(string? text)
         {
             return new TextInWhite(text ?? "");
         }
@@ -462,13 +445,12 @@ namespace AppMotor.Core.System
     [PublicAPI]
     public sealed class TextInDarkBlue : ColoredString.Substring
     {
-        private TextInDarkBlue([NotNull] string text)
+        private TextInDarkBlue(string text)
             : base(ConsoleColor.DarkBlue, text)
         {
         }
 
-        [NotNull]
-        public static explicit operator TextInDarkBlue([CanBeNull] string text)
+        public static explicit operator TextInDarkBlue(string? text)
         {
             return new TextInDarkBlue(text ?? "");
         }
@@ -482,13 +464,12 @@ namespace AppMotor.Core.System
     [PublicAPI]
     public sealed class TextInBlue : ColoredString.Substring
     {
-        private TextInBlue([NotNull] string text)
+        private TextInBlue(string text)
             : base(ConsoleColor.Blue, text)
         {
         }
 
-        [NotNull]
-        public static explicit operator TextInBlue([CanBeNull] string text)
+        public static explicit operator TextInBlue(string? text)
         {
             return new TextInBlue(text ?? "");
         }
@@ -502,13 +483,12 @@ namespace AppMotor.Core.System
     [PublicAPI]
     public sealed class TextInDarkGreen : ColoredString.Substring
     {
-        private TextInDarkGreen([NotNull] string text)
+        private TextInDarkGreen(string text)
             : base(ConsoleColor.DarkGreen, text)
         {
         }
 
-        [NotNull]
-        public static explicit operator TextInDarkGreen([CanBeNull] string text)
+        public static explicit operator TextInDarkGreen(string? text)
         {
             return new TextInDarkGreen(text ?? "");
         }
@@ -522,13 +502,12 @@ namespace AppMotor.Core.System
     [PublicAPI]
     public sealed class TextInGreen : ColoredString.Substring
     {
-        private TextInGreen([NotNull] string text)
+        private TextInGreen(string text)
             : base(ConsoleColor.Green, text)
         {
         }
 
-        [NotNull]
-        public static explicit operator TextInGreen([CanBeNull] string text)
+        public static explicit operator TextInGreen(string? text)
         {
             return new TextInGreen(text ?? "");
         }
@@ -542,13 +521,12 @@ namespace AppMotor.Core.System
     [PublicAPI]
     public sealed class TextInDarkCyan : ColoredString.Substring
     {
-        private TextInDarkCyan([NotNull] string text)
+        private TextInDarkCyan(string text)
             : base(ConsoleColor.DarkCyan, text)
         {
         }
 
-        [NotNull]
-        public static explicit operator TextInDarkCyan([CanBeNull] string text)
+        public static explicit operator TextInDarkCyan(string? text)
         {
             return new TextInDarkCyan(text ?? "");
         }
@@ -562,13 +540,12 @@ namespace AppMotor.Core.System
     [PublicAPI]
     public sealed class TextInCyan : ColoredString.Substring
     {
-        private TextInCyan([NotNull] string text)
+        private TextInCyan(string text)
             : base(ConsoleColor.Cyan, text)
         {
         }
 
-        [NotNull]
-        public static explicit operator TextInCyan([CanBeNull] string text)
+        public static explicit operator TextInCyan(string? text)
         {
             return new TextInCyan(text ?? "");
         }
@@ -582,13 +559,12 @@ namespace AppMotor.Core.System
     [PublicAPI]
     public sealed class TextInDarkRed : ColoredString.Substring
     {
-        private TextInDarkRed([NotNull] string text)
+        private TextInDarkRed(string text)
             : base(ConsoleColor.DarkRed, text)
         {
         }
 
-        [NotNull]
-        public static explicit operator TextInDarkRed([CanBeNull] string text)
+        public static explicit operator TextInDarkRed(string? text)
         {
             return new TextInDarkRed(text ?? "");
         }
@@ -602,13 +578,12 @@ namespace AppMotor.Core.System
     [PublicAPI]
     public sealed class TextInRed : ColoredString.Substring
     {
-        private TextInRed([NotNull] string text)
+        private TextInRed(string text)
             : base(ConsoleColor.Red, text)
         {
         }
 
-        [NotNull]
-        public static explicit operator TextInRed([CanBeNull] string text)
+        public static explicit operator TextInRed(string? text)
         {
             return new TextInRed(text ?? "");
         }
@@ -622,13 +597,12 @@ namespace AppMotor.Core.System
     [PublicAPI]
     public sealed class TextInDarkMagenta : ColoredString.Substring
     {
-        private TextInDarkMagenta([NotNull] string text)
+        private TextInDarkMagenta(string text)
             : base(ConsoleColor.DarkMagenta, text)
         {
         }
 
-        [NotNull]
-        public static explicit operator TextInDarkMagenta([CanBeNull] string text)
+        public static explicit operator TextInDarkMagenta(string? text)
         {
             return new TextInDarkMagenta(text ?? "");
         }
@@ -642,13 +616,12 @@ namespace AppMotor.Core.System
     [PublicAPI]
     public sealed class TextInMagenta : ColoredString.Substring
     {
-        private TextInMagenta([NotNull] string text)
+        private TextInMagenta(string text)
             : base(ConsoleColor.Magenta, text)
         {
         }
 
-        [NotNull]
-        public static explicit operator TextInMagenta([CanBeNull] string text)
+        public static explicit operator TextInMagenta(string? text)
         {
             return new TextInMagenta(text ?? "");
         }
@@ -662,13 +635,12 @@ namespace AppMotor.Core.System
     [PublicAPI]
     public sealed class TextInDarkYellow : ColoredString.Substring
     {
-        private TextInDarkYellow([NotNull] string text)
+        private TextInDarkYellow(string text)
             : base(ConsoleColor.DarkYellow, text)
         {
         }
 
-        [NotNull]
-        public static explicit operator TextInDarkYellow([CanBeNull] string text)
+        public static explicit operator TextInDarkYellow(string? text)
         {
             return new TextInDarkYellow(text ?? "");
         }
@@ -682,13 +654,12 @@ namespace AppMotor.Core.System
     [PublicAPI]
     public sealed class TextInYellow : ColoredString.Substring
     {
-        private TextInYellow([NotNull] string text)
+        private TextInYellow(string text)
             : base(ConsoleColor.Yellow, text)
         {
         }
 
-        [NotNull]
-        public static explicit operator TextInYellow([CanBeNull] string text)
+        public static explicit operator TextInYellow(string? text)
         {
             return new TextInYellow(text ?? "");
         }

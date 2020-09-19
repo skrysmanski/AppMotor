@@ -34,7 +34,7 @@ namespace AppMotor.Core.DataModel
         /// <summary>
         /// Creates a deep copy of this object.
         /// </summary>
-        [PublicAPI, NotNull, Pure]
+        [PublicAPI, Pure]
         T CloneDeep();
     }
 }

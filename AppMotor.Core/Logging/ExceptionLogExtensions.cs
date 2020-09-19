@@ -34,7 +34,6 @@ namespace AppMotor.Core.Logging
     /// </summary>
     public static class ExceptionLogExtensions
     {
-        [NotNull]
         private static readonly Dictionary<Type, LoggablePropertiesList> s_loggablePropertiesCache
             = new Dictionary<Type, LoggablePropertiesList>();
 
@@ -48,8 +47,8 @@ namespace AppMotor.Core.Logging
         /// </summary>
         /// <seealso cref="GetLoggablePropertyValues"/>
         /// <seealso cref="GetLoggablePropertyValuesAsStrings"/>
-        [PublicAPI, ItemNotNull]
-        public static ImmutableArray<PropertyInfo> GetLoggableProperties([NotNull] this Exception exception)
+        [PublicAPI]
+        public static ImmutableArray<PropertyInfo> GetLoggableProperties(this Exception exception)
         {
             Verify.Argument.IsNotNull(exception, nameof(exception));
 
@@ -77,10 +76,10 @@ namespace AppMotor.Core.Logging
         /// <param name="filter">The filter to use (optional).</param>
         /// <seealso cref="GetLoggableProperties"/>
         /// <seealso cref="GetLoggablePropertyValuesAsStrings"/>
-        [PublicAPI, NotNull]
-        public static IEnumerable<KeyValuePair<string, object>> GetLoggablePropertyValues(
-                [NotNull] this Exception exception,
-                [CanBeNull] ILoggableExceptionPropertyFilter filter = null
+        [PublicAPI]
+        public static IEnumerable<KeyValuePair<string, object?>> GetLoggablePropertyValues(
+                this Exception exception,
+                ILoggableExceptionPropertyFilter? filter = null
             )
         {
             var loggableProperties = exception.GetLoggableProperties();
@@ -92,7 +91,7 @@ namespace AppMotor.Core.Logging
                     continue;
                 }
 
-                object loggableValue;
+                object? loggableValue;
 
                 try
                 {
@@ -128,7 +127,7 @@ namespace AppMotor.Core.Logging
                     }
                 }
 
-                yield return new KeyValuePair<string, object>(loggableProperty.Name, loggableValue);
+                yield return new KeyValuePair<string, object?>(loggableProperty.Name, loggableValue);
             }
         }
 
@@ -143,11 +142,11 @@ namespace AppMotor.Core.Logging
         /// <param name="filter">The filter to use (optional).</param>
         /// <seealso cref="GetLoggableProperties"/>
         /// <seealso cref="GetLoggablePropertyValues"/>
-        [PublicAPI, NotNull]
+        [PublicAPI]
         public static IEnumerable<KeyValuePair<string, string>> GetLoggablePropertyValuesAsStrings(
-                [NotNull] this Exception exception,
-                [CanBeNull] IValueFormatter valueFormatter = null,
-                [CanBeNull] ILoggableExceptionPropertyFilter filter = null
+                this Exception exception,
+                IValueFormatter? valueFormatter = null,
+                ILoggableExceptionPropertyFilter? filter = null
             )
         {
             var loggableValues = exception.GetLoggablePropertyValues(filter);
@@ -178,19 +177,15 @@ namespace AppMotor.Core.Logging
 
         private sealed class LoggablePropertiesList
         {
-            [NotNull]
             private readonly PropertyInfo[] m_allPropertiesOrderedByName;
 
-            [NotNull, ItemNotNull]
             private readonly HashSet<Type> m_allPropertyTypes = new HashSet<Type>();
 
-            [ItemNotNull]
             public ImmutableArray<PropertyInfo> Value => this.m_valueLazy.Value;
 
-            [NotNull]
             private Lazy<ImmutableArray<PropertyInfo>> m_valueLazy;
 
-            public LoggablePropertiesList([NotNull] Type exceptionType)
+            public LoggablePropertiesList(Type exceptionType)
             {
                 // NOTE: This list will only contain properties that are "visible" for the
                 //   exception type. This especially excludes properties that hide properties
@@ -210,7 +205,7 @@ namespace AppMotor.Core.Logging
                 LoggableValues.LoggabilityChanged += OnLoggabilityChanged;
             }
 
-            private void OnLoggabilityChanged(object sender, [NotNull] LoggabilityChangedEventArgs e)
+            private void OnLoggabilityChanged(object sender, LoggabilityChangedEventArgs e)
             {
                 // If any of our types changed loggability, re-create the list of loggable properties.
                 if (this.m_allPropertyTypes.Contains(e.Type))
@@ -219,7 +214,6 @@ namespace AppMotor.Core.Logging
                 }
             }
 
-            [NotNull]
             private Lazy<ImmutableArray<PropertyInfo>> CreateValueLazy()
             {
                 return new Lazy<ImmutableArray<PropertyInfo>>(
@@ -228,7 +222,6 @@ namespace AppMotor.Core.Logging
                 );
             }
 
-            [ItemNotNull]
             private ImmutableArray<PropertyInfo> CollectProperties()
             {
                 var loggablePropertiesBuilder = ImmutableArray.CreateBuilder<PropertyInfo>();

@@ -19,8 +19,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-using JetBrains.Annotations;
-
 namespace AppMotor.Core.TestUtils
 {
     internal static class EnumeratorTestHelper
@@ -29,8 +27,7 @@ namespace AppMotor.Core.TestUtils
         /// Obtains the generic enumerator (<see cref="IEnumerator{T}"/>) from this collection, iterates it and
         /// returns the result as a list.
         /// </summary>
-        [NotNull]
-        public static List<TItem> ExecuteGenericEnumerator<TItem>([NotNull] this IEnumerable<TItem> enumerable)
+        public static List<TItem> ExecuteGenericEnumerator<TItem>(this IEnumerable<TItem> enumerable)
         {
             return enumerable.ToList();
         }
@@ -40,8 +37,7 @@ namespace AppMotor.Core.TestUtils
         /// returns the result as a list.
         /// </summary>
         /// <typeparam name="TItem">The type of the items in this collection.</typeparam>
-        [NotNull]
-        public static List<TItem> ExecuteNonGenericEnumerator<TItem>([NotNull] this IEnumerable enumerable)
+        public static List<TItem> ExecuteNonGenericEnumerator<TItem>(this IEnumerable enumerable)
         {
             var resultList = new List<TItem>();
 
@@ -51,7 +47,11 @@ namespace AppMotor.Core.TestUtils
             {
                 while (enumerator.MoveNext())
                 {
+#pragma warning disable 8605
+#pragma warning disable CS8604 // Possible null reference argument.
                     resultList.Add((TItem)enumerator.Current);
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore 8605
                 }
             }
             finally

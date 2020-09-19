@@ -33,8 +33,8 @@ namespace AppMotor.Core.Extensions
         /// <exception cref="CollectionIsReadOnlyException">Thrown if the collection is read-only.</exception>
         [PublicAPI]
         public static void PutRange<TKey, TValue>(
-                [NotNull] this IDictionary<TKey, TValue> dictionary,
-                [NotNull] IEnumerable<KeyValuePair<TKey, TValue>> itemsToAdd
+                this IDictionary<TKey, TValue> dictionary,
+                IEnumerable<KeyValuePair<TKey, TValue>> itemsToAdd
             )
         {
             Verify.Argument.IsNotNull(dictionary, nameof(dictionary));

@@ -17,8 +17,6 @@
 using System;
 using System.Collections.Generic;
 
-using JetBrains.Annotations;
-
 namespace AppMotor.Core.Exceptions
 {
     /// <summary>
@@ -37,7 +35,6 @@ namespace AppMotor.Core.Exceptions
     /// </remarks>
     public class CollectionIsReadOnlyException : NotSupportedException, ICollectionIsReadOnlyException
     {
-        [NotNull]
         public const string DEFAULT_MESSAGE = "This collection is read-only.";
 
         public CollectionIsReadOnlyException() : base(DEFAULT_MESSAGE)

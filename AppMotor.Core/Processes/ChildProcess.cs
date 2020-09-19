@@ -52,11 +52,11 @@ namespace AppMotor.Core.Processes
         /// <exception cref="ChildProcessErrorException">Thrown if the exit code signals failure or if anything
         /// is written to stderr by the child process.</exception>
         /// <exception cref="TimeoutException">Thrown when the process runs longer than 30 seconds.</exception>
-        [PublicAPI, NotNull]
+        [PublicAPI]
         public static ChildProcessResult Exec(
-                [NotNull] string processFileName,
-                [CanBeNull] ProcessArguments arguments = null,
-                [CanBeNull] string workingDirectory = null,
+                string processFileName,
+                ProcessArguments? arguments = null,
+                string? workingDirectory = null,
                 int? successExitCode = 0
             )
         {
@@ -81,8 +81,8 @@ namespace AppMotor.Core.Processes
         /// is <c>true</c>.</exception>
         /// <exception cref="TimeoutException">Thrown when the process timeout is exceeded
         /// (see <see cref="ChildProcessStartInfo.ProcessTimeout"/>).</exception>
-        [PublicAPI, NotNull]
-        public static ChildProcessResult Exec([NotNull] ChildProcessStartInfo startInfo)
+        [PublicAPI]
+        public static ChildProcessResult Exec(ChildProcessStartInfo startInfo)
         {
             Verify.Argument.IsNotNull(startInfo, nameof(startInfo));
 
@@ -107,11 +107,11 @@ namespace AppMotor.Core.Processes
         /// <exception cref="ChildProcessErrorException">Thrown if the exit code signals failure or if anything
         /// is written to stderr by the child process.</exception>
         /// <exception cref="TimeoutException">Thrown when the process runs longer than 30 seconds.</exception>
-        [PublicAPI, ItemNotNull]
+        [PublicAPI]
         public static async Task<ChildProcessResult> ExecAsync(
-                [NotNull] string processFileName,
-                [CanBeNull] ProcessArguments arguments = null,
-                [CanBeNull] string workingDirectory = null,
+                string processFileName,
+                ProcessArguments? arguments = null,
+                string? workingDirectory = null,
                 int? successExitCode = 0
             )
         {
@@ -137,19 +137,19 @@ namespace AppMotor.Core.Processes
         /// is <c>true</c>.</exception>
         /// <exception cref="TimeoutException">Thrown when the process timeout is exceeded
         /// (see <see cref="ChildProcessStartInfo.ProcessTimeout"/>).</exception>
-        [PublicAPI, ItemNotNull]
-        public static async Task<ChildProcessResult> ExecAsync([NotNull] ChildProcessStartInfo startInfo)
+        [PublicAPI]
+        public static async Task<ChildProcessResult> ExecAsync(ChildProcessStartInfo startInfo)
         {
             var runningProcess = StartProcess(startInfo);
 
             return await runningProcess.ExecuteAsync();
         }
 
-        [NotNull, Pure]
+        [Pure]
         private static ChildProcessStartInfo CreateChildProcessStartInfo(
-                [NotNull] string processFileName,
-                [CanBeNull] ProcessArguments arguments,
-                [CanBeNull] string workingDirectory,
+                string processFileName,
+                ProcessArguments? arguments,
+                string? workingDirectory,
                 int? successExitCode
             )
         {
@@ -167,8 +167,7 @@ namespace AppMotor.Core.Processes
             return startInfo;
         }
 
-        [NotNull]
-        private static PreparedProcess StartProcess([NotNull] ChildProcessStartInfo childProcessStartInfo)
+        private static PreparedProcess StartProcess(ChildProcessStartInfo childProcessStartInfo)
         {
             var processStartInfo = new ProcessStartInfo(childProcessStartInfo.ProcessFileName);
 
@@ -197,13 +196,11 @@ namespace AppMotor.Core.Processes
 
         private sealed class PreparedProcess
         {
-            [NotNull]
             private readonly Process m_process;
 
-            [NotNull]
             private readonly ChildProcessStartInfo m_startInfo;
 
-            public PreparedProcess([NotNull] Process process, [NotNull] ChildProcessStartInfo startInfo)
+            public PreparedProcess(Process process, ChildProcessStartInfo startInfo)
             {
                 Verify.Argument.IsNotNull(process, nameof(process));
                 Verify.Argument.IsNotNull(startInfo, nameof(startInfo));
@@ -212,7 +209,6 @@ namespace AppMotor.Core.Processes
                 this.m_startInfo = startInfo;
             }
 
-            [NotNull]
             public ChildProcessResult Execute()
             {
                 StartProcess(out var stdOutReadTask, out var stdErrReadTask);
@@ -238,7 +234,6 @@ namespace AppMotor.Core.Processes
                 return PostProcessAfterExit(stdOutReadTask, stdErrReadTask);
             }
 
-            [ItemNotNull]
             public async Task<ChildProcessResult> ExecuteAsync()
             {
                 CancellationTokenSource cts;
@@ -254,7 +249,7 @@ namespace AppMotor.Core.Processes
 
                 using (cts)
                 {
-                    var tcs = new TaskCompletionSource<object>();
+                    var tcs = new TaskCompletionSource<object?>();
                     this.m_process.EnableRaisingEvents = true;
                     this.m_process.Exited += (s, e) => tcs.TrySetResult(null);
 
@@ -277,7 +272,7 @@ namespace AppMotor.Core.Processes
                 }
             }
 
-            private void StartProcess([NotNull] out Task<string> stdOutReadTask, [NotNull] out Task<string> stdErrReadTask)
+            private void StartProcess(out Task<string> stdOutReadTask, out Task<string> stdErrReadTask)
             {
                 bool startSuccessful;
 
@@ -299,10 +294,9 @@ namespace AppMotor.Core.Processes
                 stdErrReadTask = Task.Run(() => this.m_process.StandardError.ReadToEndAsync());
             }
 
-            [NotNull]
             private ChildProcessResult PostProcessAfterExit(
-                    [NotNull] Task<string> stdOutReadTask,
-                    [NotNull] Task<string> stdErrorReadTask
+                    Task<string> stdOutReadTask,
+                    Task<string> stdErrorReadTask
                 )
             {
                 var errorOutput = stdErrorReadTask.Result;

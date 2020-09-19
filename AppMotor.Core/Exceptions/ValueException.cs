@@ -28,12 +28,10 @@ namespace AppMotor.Core.Exceptions
     [PublicAPI]
     public class ValueException : Exception
     {
-        [CanBeNull]
-        public string ValueName { get; }
+        public string? ValueName { get; }
 
         // NOTE: This implementation mirrors how "ArgumentException" incorporates the parameter name into its message
         //   (i.e. by overriding the "Message" property instead of doing this in the constructor).
-        [NotNull]
         public override string Message
         {
             get
@@ -56,25 +54,25 @@ namespace AppMotor.Core.Exceptions
         }
 
         [PublicAPI]
-        public ValueException([CanBeNull] string message)
+        public ValueException(string? message)
             : this(message: message, valueName: null, innerException: null)
         {
         }
 
         [PublicAPI]
-        public ValueException([CanBeNull] string message, [CanBeNull] string valueName)
+        public ValueException(string? message, string? valueName)
             : this(message: message, valueName: valueName, innerException: null)
         {
         }
 
         [PublicAPI]
-        public ValueException([CanBeNull] string message, [CanBeNull] Exception innerException)
+        public ValueException(string? message, Exception? innerException)
             : this(message: message, valueName: null, innerException: innerException)
         {
         }
 
         [PublicAPI]
-        public ValueException([CanBeNull] string message, [CanBeNull] string valueName, [CanBeNull] Exception innerException)
+        public ValueException(string? message, string? valueName, Exception? innerException)
             : base(message ?? Verify.ExceptionMessages.DEFAULT_MESSAGE, innerException)
         {
             this.ValueName = valueName;

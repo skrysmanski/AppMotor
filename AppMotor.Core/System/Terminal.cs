@@ -1,12 +1,12 @@
 ﻿#region License
 // Copyright 2020 AppMotor Framework (https://github.com/skrysmanski/AppMotor)
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,7 +30,7 @@ namespace AppMotor.Core.System
         /// <summary>
         /// The standard input stream.
         /// </summary>
-        [PublicAPI, NotNull]
+        [PublicAPI]
         public static TextReader Input => Console.In;
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace AppMotor.Core.System
         /// <remarks>
         /// For details and defaults, see <see cref="Console.InputEncoding"/>.
         /// </remarks>
-        [PublicAPI, NotNull]
+        [PublicAPI,]
         public static Encoding InputEncoding
         {
             get => Console.InputEncoding;
@@ -75,7 +75,7 @@ namespace AppMotor.Core.System
         /// <summary>
         /// The standard error output stream.
         /// </summary>
-        [PublicAPI, NotNull]
+        [PublicAPI]
         public static TextWriter Error => Console.Error;
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace AppMotor.Core.System
         /// <remarks>
         /// For details and defaults, see <see cref="Console.OutputEncoding"/>.
         /// </remarks>
-        [PublicAPI, NotNull]
+        [PublicAPI]
         public static Encoding OutputEncoding
         {
             get => Console.OutputEncoding;
@@ -220,7 +220,7 @@ namespace AppMotor.Core.System
         /// </remarks>
         /// <seealso cref="TreatControlCAsInput"/>
         [PublicAPI]
-        public static event EventHandler<ConsoleCancelEventArgs> TerminateKeyCombinationPressed;
+        public static event EventHandler<ConsoleCancelEventArgs>? TerminateKeyCombinationPressed;
 
         static Terminal()
         {
@@ -236,7 +236,7 @@ namespace AppMotor.Core.System
         /// Writes the specified object to the terminal's standard output.
         /// </summary>
         [PublicAPI]
-        public static void Write([CanBeNull] object value)
+        public static void Write(object? value)
         {
             Console.Write(value);
         }
@@ -245,7 +245,7 @@ namespace AppMotor.Core.System
         /// Writes the specified string to the terminal's standard output.
         /// </summary>
         [PublicAPI]
-        public static void Write([CanBeNull] string value)
+        public static void Write(string? value)
         {
             Console.Write(value);
         }
@@ -254,7 +254,7 @@ namespace AppMotor.Core.System
         /// Writes the specified colored string to the terminal's standard output.
         /// </summary>
         [PublicAPI]
-        public static void Write([CanBeNull] ColoredString coloredString)
+        public static void Write(ColoredString? coloredString)
         {
             if (coloredString == null || coloredString.Count == 0)
             {
@@ -283,7 +283,7 @@ namespace AppMotor.Core.System
         /// and appends a line break at the end.
         /// </summary>
         [PublicAPI]
-        public static void WriteLine([CanBeNull] object value)
+        public static void WriteLine(object? value)
         {
             Console.WriteLine(value);
         }
@@ -293,7 +293,7 @@ namespace AppMotor.Core.System
         /// and appends a line break at the end.
         /// </summary>
         [PublicAPI]
-        public static void WriteLine([CanBeNull] string value)
+        public static void WriteLine(string? value)
         {
             Console.WriteLine(value);
         }
@@ -303,7 +303,7 @@ namespace AppMotor.Core.System
         /// and appends a line break at the end.
         /// </summary>
         [PublicAPI]
-        public static void WriteLine([CanBeNull] ColoredString coloredString)
+        public static void WriteLine(ColoredString? coloredString)
         {
             Write(coloredString);
             WriteLine();
@@ -341,8 +341,8 @@ namespace AppMotor.Core.System
         /// if the input stream has been redirected (<see cref="IsInputRedirected"/>)
         /// and no more lines are available.
         /// </returns>
-        [PublicAPI, CanBeNull]
-        public static string ReadLine()
+        [PublicAPI]
+        public static string? ReadLine()
         {
             return Console.ReadLine();
         }
@@ -381,7 +381,7 @@ namespace AppMotor.Core.System
         /// on Windows, use <see cref="Console.Title"/>.
         /// </remarks>
         [PublicAPI]
-        public static void SetWindowTitle([NotNull] string title)
+        public static void SetWindowTitle(string title)
         {
             Console.Title = title;
         }

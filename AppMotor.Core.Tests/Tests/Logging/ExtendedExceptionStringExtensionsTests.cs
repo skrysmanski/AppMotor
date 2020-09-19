@@ -21,8 +21,6 @@ using AppMotor.Core.Logging;
 using AppMotor.Core.TestUtils;
 using AppMotor.Core.Utils;
 
-using JetBrains.Annotations;
-
 using Shouldly;
 
 using Xunit;
@@ -32,10 +30,9 @@ namespace AppMotor.Core.Tests.Logging
 {
     public sealed class ExtendedExceptionStringExtensionsTests
     {
-        [NotNull]
         private readonly ITestOutputHelper m_testOutputHelper;
 
-        public ExtendedExceptionStringExtensionsTests([NotNull] ITestOutputHelper testOutputHelper)
+        public ExtendedExceptionStringExtensionsTests(ITestOutputHelper testOutputHelper)
         {
             Verify.Argument.IsNotNull(testOutputHelper, nameof(testOutputHelper));
 

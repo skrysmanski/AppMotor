@@ -32,8 +32,8 @@ namespace AppMotor.Core.Extensions
         /// Convenience method for calling <c>string.Format()</c> with <see cref="CultureInfo.InvariantCulture"/>.
         /// </summary>
         [StringFormatMethod("message")]
-        [PublicAPI, NotNull]
-        public static string WithIC([NotNull, Localizable(false)] this string message, [NotNull] params object[] args)
+        [PublicAPI]
+        public static string WithIC([Localizable(false)] this string message, params object[] args)
         {
             return string.Format(CultureInfo.InvariantCulture, message, args);
         }
@@ -43,8 +43,8 @@ namespace AppMotor.Core.Extensions
         ///
         /// <para>Note: Lines are returned without the trailing end-of-line characters (i.e. <c>\r</c> and <c>\n</c>).</para>
         /// </summary>
-        [PublicAPI, NotNull, ItemNotNull, Pure]
-        public static IEnumerable<string> SplitLines([NotNull] this string input)
+        [PublicAPI, Pure]
+        public static IEnumerable<string> SplitLines(this string input)
         {
             using var reader = new StringReader(input);
 

@@ -21,8 +21,6 @@ using System.Reflection;
 using AppMotor.Core.Collections;
 using AppMotor.Core.TestUtils;
 
-using JetBrains.Annotations;
-
 using Shouldly;
 
 using Xunit;
@@ -221,8 +219,7 @@ namespace AppMotor.Core.Tests.Collections
             GetUnderlyingList(appendOnlyList2).ShouldBeSameAs(GetUnderlyingList(appendOnlyList1));
         }
 
-        [NotNull]
-        private static List<T> GetUnderlyingList<T>([NotNull] AppendOnlyList<T> appendOnlyList)
+        private static List<T> GetUnderlyingList<T>(AppendOnlyList<T> appendOnlyList)
         {
             var underlyingListField = appendOnlyList.GetType().GetField(
                 "m_underlyingList",
@@ -230,10 +227,10 @@ namespace AppMotor.Core.Tests.Collections
             );
             underlyingListField.ShouldNotBeNull();
 
-            var underlyingList = (List<T>)underlyingListField.GetValue(appendOnlyList);
+            var underlyingList = (List<T>?)underlyingListField!.GetValue(appendOnlyList);
             underlyingList.ShouldNotBeNull();
 
-            return underlyingList;
+            return underlyingList!;
         }
     }
 }

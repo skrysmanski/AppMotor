@@ -30,7 +30,6 @@ namespace AppMotor.Core.Logging
     /// </summary>
     public static class HResultInfo
     {
-        [NotNull]
         private static readonly Dictionary<int, string> s_hResultNames;
 
         static HResultInfo()
@@ -38,7 +37,7 @@ namespace AppMotor.Core.Logging
             s_hResultNames = GetHResultNames();
         }
 
-        [NotNull, Pure]
+        [Pure]
         private static Dictionary<int, string> GetHResultNames()
         {
             var hResultNames = new Dictionary<int, string>();
@@ -58,8 +57,8 @@ namespace AppMotor.Core.Logging
         /// Returns the name for the specified value, if it has a name. Otherwise
         /// <c>null</c> will be returned.
         /// </summary>
-        [PublicAPI, CanBeNull, Pure]
-        public static string GetHResultName(int hResult)
+        [PublicAPI, Pure]
+        public static string? GetHResultName(int hResult)
         {
             s_hResultNames.TryGetValue(hResult, out var hResultName);
             return hResultName;
@@ -72,7 +71,7 @@ namespace AppMotor.Core.Logging
         /// <param name="includeName">Whether to include the value's name, if
         /// it has one (see <see cref="GetHResultName"/>).</param>
         /// <returns></returns>
-        [PublicAPI, NotNull, Pure]
+        [PublicAPI, Pure]
         public static string FormatHResult(int hResult, bool includeName)
         {
             // Format the HResult property in hexadecimal notation.

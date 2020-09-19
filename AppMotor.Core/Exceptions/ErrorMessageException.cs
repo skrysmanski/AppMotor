@@ -30,7 +30,7 @@ namespace AppMotor.Core.Exceptions
         /// </summary>
         /// <param name="message">The message to display to the user.</param>
         [PublicAPI]
-        public ErrorMessageException([NotNull] string message)
+        public ErrorMessageException(string message)
             : base(message)
         {
         }

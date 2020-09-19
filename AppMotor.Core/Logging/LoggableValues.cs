@@ -31,21 +31,20 @@ namespace AppMotor.Core.Logging
         /// <summary>
         /// The default value formatter used by this class.
         /// </summary>
-        [NotNull]
         public static readonly IValueFormatter DEFAULT_VALUE_FORMATTER = new DefaultLoggableValueFormatter(CultureInfo.InvariantCulture);
 
         /// <summary>
         /// This event is raised whenever the "loggability" of a type changes (or may have changed).
         /// The event args contain the new valid values.
         /// </summary>
-        public static event EventHandler<LoggabilityChangedEventArgs> LoggabilityChanged;
+        public static event EventHandler<LoggabilityChangedEventArgs>? LoggabilityChanged;
 
         static LoggableValues()
         {
             TypeMarkers.TypeMarkerAdded += OnTypeMarkerAdded;
         }
 
-        private static void OnTypeMarkerAdded(object sender, [NotNull] TypeMarkerAddedEventArgs e)
+        private static void OnTypeMarkerAdded(object sender, TypeMarkerAddedEventArgs e)
         {
             if (e.TypeMarkerType == typeof(SimpleLoggableValueMarker) || e.TypeMarkerType == typeof(SensitiveValueMarker))
             {
@@ -63,7 +62,7 @@ namespace AppMotor.Core.Logging
         /// <see cref="ISimpleLoggableValue"/>, and <see cref="SimpleLoggableValueMarker"/>.</para>
         /// </summary>
         [PublicAPI, Pure]
-        public static bool IsSimpleLoggableType([NotNull] Type typeToCheck)
+        public static bool IsSimpleLoggableType(Type typeToCheck)
         {
             Verify.Argument.IsNotNull(typeToCheck, nameof(typeToCheck));
 
@@ -122,8 +121,8 @@ namespace AppMotor.Core.Logging
         /// Returns the loggable text representation for the specified value. If no value formatter is
         /// specified, an instance of <see cref="DefaultLoggableValueFormatter"/> will be used.
         /// </summary>
-        [PublicAPI, NotNull]
-        public static string GetLoggableText([CanBeNull] object loggableValue, [CanBeNull] IValueFormatter valueFormatter = null)
+        [PublicAPI]
+        public static string GetLoggableText(object? loggableValue, IValueFormatter? valueFormatter = null)
         {
             return (valueFormatter ?? DEFAULT_VALUE_FORMATTER).FormatValue(loggableValue) ?? "";
         }

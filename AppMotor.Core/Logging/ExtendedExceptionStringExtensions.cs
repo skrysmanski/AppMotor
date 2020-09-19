@@ -1,12 +1,12 @@
 ﻿#region License
 // Copyright 2020 AppMotor Framework (https://github.com/skrysmanski/AppMotor)
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,8 +39,8 @@ namespace AppMotor.Core.Logging
         /// <param name="exception">This exception</param>
         /// <param name="valueFormatter">The value formatter to use. If this is <c>null</c>,
         /// <see cref="LoggableValues.DEFAULT_VALUE_FORMATTER"/> will be used.</param>
-        [PublicAPI, NotNull, Pure]
-        public static string ToStringExtended([NotNull] this Exception exception, [CanBeNull] IValueFormatter valueFormatter = null)
+        [PublicAPI, Pure]
+        public static string ToStringExtended(this Exception exception, IValueFormatter? valueFormatter = null)
         {
             var builder = new ExtendedStringBuilder(valueFormatter);
 
@@ -51,29 +51,24 @@ namespace AppMotor.Core.Logging
 
         private sealed class ExtendedStringBuilder
         {
-            [NotNull]
             private static readonly ILoggableExceptionPropertyFilter PROPERTY_FILTER = new DefaultLoggableExceptionPropertyFilter();
 
             private const int HEADER_WITH = 70;
 
-            [NotNull]
             private static readonly HeaderBox EXCEPTION_SECTION_HEADER = new HeaderBox(HEADER_WITH, doubleBorder: false);
 
-            [NotNull]
             private static readonly HeaderBox INNER_EXCEPTION_HEADER = new HeaderBox(HEADER_WITH, doubleBorder: true);
 
-            [NotNull]
             private readonly StringBuilder m_builder = new StringBuilder();
 
-            [NotNull]
             private readonly IValueFormatter m_valueFormatter;
 
-            public ExtendedStringBuilder([CanBeNull] IValueFormatter valueFormatter)
+            public ExtendedStringBuilder(IValueFormatter? valueFormatter)
             {
                 this.m_valueFormatter = valueFormatter ?? LoggableValues.DEFAULT_VALUE_FORMATTER;
             }
 
-            public void AppendExtendedExceptionString(StringIndentation indentation, [NotNull] Exception exception)
+            public void AppendExtendedExceptionString(StringIndentation indentation, Exception exception)
             {
                 //
                 // Information about the specified exception itself.
@@ -116,7 +111,7 @@ namespace AppMotor.Core.Logging
                 }
             }
 
-            private void AppendAdditionalDataAndProperties(StringIndentation indentation, [NotNull] Exception exception)
+            private void AppendAdditionalDataAndProperties(StringIndentation indentation, Exception exception)
             {
                 var loggableExceptionProperties = exception.GetLoggablePropertyValuesAsStrings(this.m_valueFormatter, PROPERTY_FILTER).ToList();
                 if (loggableExceptionProperties.Count > 0)
@@ -137,7 +132,7 @@ namespace AppMotor.Core.Logging
 
                     foreach (var (key, value) in exceptionData)
                     {
-                        string keyAsString;
+                        string? keyAsString;
 
                         try
                         {
@@ -148,7 +143,7 @@ namespace AppMotor.Core.Logging
                             continue;
                         }
 
-                        string valueAsString;
+                        string? valueAsString;
 
                         try
                         {
@@ -167,7 +162,7 @@ namespace AppMotor.Core.Logging
 
             private void AppendDetailsFromAggregateException(
                     StringIndentation indentation,
-                    [NotNull] AggregateException aggregateException
+                    AggregateException aggregateException
                 )
             {
                 var innerExceptions = aggregateException.InnerExceptions;
@@ -193,7 +188,7 @@ namespace AppMotor.Core.Logging
                 }
             }
 
-            private void AppendSectionHeader(StringIndentation indentation, [NotNull] HeaderBox headerBox, [NotNull] string sectionName)
+            private void AppendSectionHeader(StringIndentation indentation, HeaderBox headerBox, string sectionName)
             {
                 foreach (var line in headerBox.CreateBox(sectionName))
                 {
@@ -203,7 +198,7 @@ namespace AppMotor.Core.Logging
                 AppendLine();
             }
 
-            private void AppendLine(StringIndentation indentation, [NotNull] string text)
+            private void AppendLine(StringIndentation indentation, string text)
             {
                 this.m_builder.AppendLine($"{indentation}{text}");
             }
@@ -214,7 +209,6 @@ namespace AppMotor.Core.Logging
             }
 
             /// <inheritdoc />
-            [NotNull]
             public override string ToString()
             {
                 return this.m_builder.ToString();
@@ -225,10 +219,9 @@ namespace AppMotor.Core.Logging
         {
             private const char INDENT_CHAR = '\t';
 
-            [CanBeNull]
-            private readonly string m_indentation;
+            private readonly string? m_indentation;
 
-            private StringIndentation([NotNull] string indentation)
+            private StringIndentation(string indentation)
             {
                 this.m_indentation = indentation;
             }
@@ -240,7 +233,6 @@ namespace AppMotor.Core.Logging
             }
 
             /// <inheritdoc />
-            [NotNull]
             public override string ToString()
             {
                 return this.m_indentation ?? "";
@@ -251,10 +243,8 @@ namespace AppMotor.Core.Logging
         {
             private readonly bool m_doubleBorder;
 
-            [NotNull]
             private readonly string m_horizontalBorder;
 
-            [NotNull]
             private readonly string m_textContent;
 
             public HeaderBox(int width, bool doubleBorder)
@@ -264,8 +254,7 @@ namespace AppMotor.Core.Logging
                 this.m_textContent = "{0} {{0,-{1}}} {0}".WithIC(doubleBorder ? '║' : '│', width - 4);
             }
 
-            [NotNull, ItemNotNull]
-            public IEnumerable<string> CreateBox([NotNull] string title)
+            public IEnumerable<string> CreateBox(string title)
             {
                 if (this.m_doubleBorder)
                 {

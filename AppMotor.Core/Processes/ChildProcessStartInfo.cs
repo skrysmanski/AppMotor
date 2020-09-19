@@ -33,21 +33,18 @@ namespace AppMotor.Core.Processes
         /// <summary>
         /// The path to the file to execute.
         /// </summary>
-        [NotNull]
         public string ProcessFileName { get; }
 
         /// <summary>
         /// The arguments to pass to <see cref="ProcessFileName"/>.
         /// </summary>
-        [NotNull]
         public ProcessArguments Arguments { get; } = new ProcessArguments();
 
         /// <summary>
         /// The working directory. Can be <c>null</c> in which case the runtime picks
         /// a working directory.
         /// </summary>
-        [CanBeNull]
-        public string WorkingDirectory { get; set; }
+        public string? WorkingDirectory { get; set; }
 
         /// <summary>
         /// Determines for how long the process can run before triggering a <see cref="TimeoutException"/>.
@@ -76,7 +73,7 @@ namespace AppMotor.Core.Processes
         /// </summary>
         public bool TreatErrorOutputAsFailure { get; set; } = true;
 
-        public ChildProcessStartInfo([NotNull] string processFileName)
+        public ChildProcessStartInfo(string processFileName)
         {
             Verify.Argument.IsNotNullOrWhiteSpace(processFileName, nameof(processFileName));
 

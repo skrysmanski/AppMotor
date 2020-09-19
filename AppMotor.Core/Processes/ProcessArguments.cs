@@ -34,7 +34,7 @@ namespace AppMotor.Core.Processes
         /// <summary>
         /// Creates an instance of this class and populates it with the specified arguments.
         /// </summary>
-        public ProcessArguments([NotNull] params string[] args)
+        public ProcessArguments(params string[] args)
             : base(args)
         {
         }
@@ -42,14 +42,14 @@ namespace AppMotor.Core.Processes
         /// <summary>
         /// Creates an instance of this class and populates it with a copy of the specified collection.
         /// </summary>
-        public ProcessArguments([NotNull] IEnumerable<string> collection) : base(collection)
+        public ProcessArguments(IEnumerable<string> collection) : base(collection)
         {
         }
 
         /// <summary>
         /// Copies the arguments in this instance to the specified instance of <see cref="ProcessStartInfo"/>.
         /// </summary>
-        public void CopyTo([NotNull] ProcessStartInfo processStartInfo)
+        public void CopyTo(ProcessStartInfo processStartInfo)
         {
             Verify.Argument.IsNotNull(processStartInfo, nameof(processStartInfo));
 

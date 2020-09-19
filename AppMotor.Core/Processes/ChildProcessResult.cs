@@ -34,17 +34,17 @@ namespace AppMotor.Core.Processes
         /// <summary>
         /// The output (stdout) of the child process. Never <c>null</c> but may be empty.
         /// </summary>
-        [PublicAPI, NotNull]
+        [PublicAPI]
         public string Output { get; }
 
         /// <summary>
         /// The error output (stderr) of the child process. Is <c>null</c> if no
         /// error output was produced by the child process.
         /// </summary>
-        [PublicAPI, CanBeNull]
-        public string ErrorOutput { get; }
+        [PublicAPI]
+        public string? ErrorOutput { get; }
 
-        public ChildProcessResult(int exitCode, [NotNull] string output, [CanBeNull] string errorOutput)
+        public ChildProcessResult(int exitCode, string output, string? errorOutput)
         {
             Verify.Argument.IsNotNull(output, nameof(output));
 

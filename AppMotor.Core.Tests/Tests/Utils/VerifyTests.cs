@@ -21,8 +21,6 @@ using System.Collections.ObjectModel;
 using AppMotor.Core.Exceptions;
 using AppMotor.Core.Utils;
 
-using JetBrains.Annotations;
-
 using Shouldly;
 
 using Xunit;
@@ -33,18 +31,16 @@ namespace AppMotor.Core.Tests.Utils
 
     public sealed class VerifyTests
     {
-        [CanBeNull]
-        private static readonly string NULL_STRING = null;
+        private static readonly string? NULL_STRING = null;
 
-        [CanBeNull]
-        private static readonly List<string> NULL_LIST = null;
+        private static readonly List<string>? NULL_LIST = null;
 
         [Fact]
         public void TestNotNull_RefType_ForArgument()
         {
             Should.NotThrow(() => Verify.Argument.IsNotNull("", "abc"));
 
-            var exception = Should.Throw<ArgumentNullException>(() => Verify.Argument.IsNotNull((object)null, "abc"));
+            var exception = Should.Throw<ArgumentNullException>(() => Verify.Argument.IsNotNull((object?)null, "abc"));
             exception.Message.ShouldContain(Verify.ExceptionMessages.VALUE_IS_NULL);
             exception.Message.ShouldContain("abc", Case.Sensitive);
         }
@@ -54,7 +50,7 @@ namespace AppMotor.Core.Tests.Utils
         {
             Should.NotThrow(() => Verify.Value.IsNotNull("", "abc"));
 
-            var exception = Should.Throw<ValueNullException>(() => Verify.Value.IsNotNull((object)null, "abc"));
+            var exception = Should.Throw<ValueNullException>(() => Verify.Value.IsNotNull((object?)null, "abc"));
             exception.Message.ShouldContain(Verify.ExceptionMessages.VALUE_IS_NULL);
             exception.Message.ShouldContain("abc", Case.Sensitive);
         }
@@ -187,7 +183,7 @@ namespace AppMotor.Core.Tests.Utils
             Should.NotThrow(() => Verify.Argument.IsNotReadOnly(new List<string>(), "abc"));
 
             // ReSharper disable once AssignNullToNotNullAttribute
-            var exception1 = Should.Throw<ArgumentNullException>(() => Verify.Argument.IsNotReadOnly((List<string>)null, "abc"));
+            var exception1 = Should.Throw<ArgumentNullException>(() => Verify.Argument.IsNotReadOnly((List<string>)null!, "abc"));
             exception1.Message.ShouldContain(Verify.ExceptionMessages.VALUE_IS_NULL);
             exception1.Message.ShouldContain("abc", Case.Sensitive);
 
@@ -201,7 +197,7 @@ namespace AppMotor.Core.Tests.Utils
             Should.NotThrow(() => Verify.Value.IsNotReadOnly(new List<string>(), "abc"));
 
             // ReSharper disable once AssignNullToNotNullAttribute
-            var exception1 = Should.Throw<ValueNullException>(() => Verify.Value.IsNotReadOnly((List<string>)null, "abc"));
+            var exception1 = Should.Throw<ValueNullException>(() => Verify.Value.IsNotReadOnly((List<string>)null!, "abc"));
             exception1.Message.ShouldContain(Verify.ExceptionMessages.VALUE_IS_NULL);
             exception1.Message.ShouldContain("abc", Case.Sensitive);
 

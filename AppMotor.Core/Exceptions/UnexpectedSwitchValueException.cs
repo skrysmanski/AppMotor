@@ -30,7 +30,7 @@ namespace AppMotor.Core.Exceptions
     public class UnexpectedSwitchValueException : UnexpectedBehaviorException
     {
         [PublicAPI]
-        public UnexpectedSwitchValueException([NotNull] string what, [CanBeNull] object value)
+        public UnexpectedSwitchValueException(string what, object? value)
             : base($"Unexpected {what}: {value ?? "null"}")
         {
         }

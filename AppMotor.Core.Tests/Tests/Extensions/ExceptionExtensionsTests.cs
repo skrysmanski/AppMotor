@@ -39,10 +39,9 @@ namespace AppMotor.Core.Tests.Extensions
     /// </summary>
     public sealed class ExceptionExtensionsTests
     {
-        [NotNull]
         private readonly ITestOutputHelper m_testOutputHelper;
 
-        public ExceptionExtensionsTests([NotNull] ITestOutputHelper testOutputHelper)
+        public ExceptionExtensionsTests(ITestOutputHelper testOutputHelper)
         {
             Verify.Argument.IsNotNull(testOutputHelper, nameof(testOutputHelper));
 
@@ -127,7 +126,7 @@ namespace AppMotor.Core.Tests.Extensions
             rethrownException.StackTrace.ShouldContain(nameof(ExceptionCreator<MySpecialException>.CreateAndCatch));
         }
 
-        private static void SomeOtherMethod([NotNull] Exception caughtException)
+        private static void SomeOtherMethod(Exception caughtException)
         {
             throw caughtException.Rethrow();
         }
@@ -136,7 +135,7 @@ namespace AppMotor.Core.Tests.Extensions
         private sealed class MySpecialException : InvalidOperationException
         {
             /// <inheritdoc />
-            public MySpecialException([CanBeNull] string message) : base(message)
+            public MySpecialException(string? message) : base(message)
             {
             }
         }

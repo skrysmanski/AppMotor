@@ -49,7 +49,7 @@ namespace AppMotor.Core.System
         /// </summary>
         /// <returns>The exit code to use.</returns>
         [PublicAPI, MustUseReturnValue]
-        public static int Start<TApp>([NotNull, ItemNotNull] string[] args) where TApp : ConsoleApplication, new()
+        public static int Start<TApp>(string[] args) where TApp : ConsoleApplication, new()
         {
             if (!s_tlsSettingsApplied)
             {
@@ -84,13 +84,13 @@ namespace AppMotor.Core.System
         /// <summary>
         /// Called for any unhandled exception that is thrown by <see cref="Run"/>.
         /// </summary>
-        protected virtual void OnUnhandledException([NotNull] Exception exception)
+        protected virtual void OnUnhandledException(Exception exception)
         {
             PrintUnhandledException(exception, supportMessage: null);
         }
 
         [PublicAPI]
-        public static void PrintUnhandledException([NotNull] Exception exception, [CanBeNull] string supportMessage)
+        public static void PrintUnhandledException(Exception exception, string? supportMessage)
         {
             bool printSupportMessage = PrintUnhandledException(exception);
 
@@ -103,7 +103,7 @@ namespace AppMotor.Core.System
         }
 
         [MustUseReturnValue]
-        private static bool PrintUnhandledException([NotNull] Exception exception)
+        private static bool PrintUnhandledException(Exception exception)
         {
             bool printSupportMessage;
 
@@ -133,6 +133,6 @@ namespace AppMotor.Core.System
         }
 
         [PublicAPI, MustUseReturnValue]
-        protected abstract int Run([NotNull, ItemNotNull] string[] args);
+        protected abstract int Run(string[] args);
     }
 }

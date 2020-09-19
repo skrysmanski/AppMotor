@@ -33,22 +33,22 @@ namespace AppMotor.Core.Exceptions
         {
         }
 
-        public ValueNullException([CanBeNull] string message)
+        public ValueNullException(string? message)
             : this(message: message, valueName: null, innerException: null)
         {
         }
 
-        public ValueNullException([CanBeNull] string message, [CanBeNull] string valueName)
+        public ValueNullException(string? message, string? valueName)
             : this(message: message, valueName: valueName, innerException: null)
         {
         }
 
-        public ValueNullException([CanBeNull] string message, [CanBeNull] Exception innerException)
+        public ValueNullException(string? message, Exception? innerException)
             : this(message: message, valueName: null, innerException: innerException)
         {
         }
 
-        public ValueNullException([CanBeNull] string message, [CanBeNull] string valueName, [CanBeNull] Exception innerException)
+        public ValueNullException(string? message, string? valueName, Exception? innerException)
             : base(message ?? Verify.ExceptionMessages.VALUE_IS_NULL, valueName, innerException)
         {
         }

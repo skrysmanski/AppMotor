@@ -28,7 +28,7 @@ namespace AppMotor.Core.Utils
         /// <remarks>
         /// This is the typed version of <see cref="Enum.GetValues"/>.
         /// </remarks>
-        [PublicAPI, NotNull, Pure]
+        [PublicAPI, Pure]
         public static TEnum[] GetValues<TEnum>() where TEnum : Enum
         {
             return (TEnum[])Enum.GetValues(typeof(TEnum));

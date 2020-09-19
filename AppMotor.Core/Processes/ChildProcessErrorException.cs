@@ -16,8 +16,6 @@
 
 using System;
 
-using JetBrains.Annotations;
-
 namespace AppMotor.Core.Processes
 {
     /// <summary>
@@ -26,7 +24,7 @@ namespace AppMotor.Core.Processes
     public sealed class ChildProcessErrorException : Exception
     {
         /// <inheritdoc />
-        public ChildProcessErrorException([NotNull] string message) : base(message)
+        public ChildProcessErrorException(string message) : base(message)
         {
         }
     }
