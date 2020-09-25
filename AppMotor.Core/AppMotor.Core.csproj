@@ -4,7 +4,6 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <GeneratePackageOnBuild Condition="'$(Configuration)' == 'Release'">true</GeneratePackageOnBuild>
 
     <AssemblyName>AppMotor.Core</AssemblyName>
     <!-- See: https://docs.microsoft.com/en-us/nuget/create-packages/prerelease-packages -->
@@ -12,6 +11,10 @@
 
     <Description>Contains core APIs of the AppMotor framework.</Description>
     <Authors>Sebastian Krysmanski</Authors>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GeneratePackageOnBuild Condition="'$(Configuration)' == 'Release'">true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
