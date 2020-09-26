@@ -4,6 +4,10 @@
         "markdownlint"
     ],
 
+    "files.associations": {
+        "*.DotSettings": "xml",
+    },
+
     "markdownlint.config": {
         // No trailing punctuation in heading
         "MD026": false,
