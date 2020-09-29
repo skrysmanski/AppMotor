@@ -16,7 +16,7 @@
   <PropertyGroup>
     <PackageId>AppMotor.Core</PackageId>
     <Description>The core APIs for the AppMotor framework.</Description>
-    <Authors>skrysmanski</Authors>
+    <Authors>Sebastian Krysmanski</Authors>
   </PropertyGroup>
 
   <PropertyGroup>
