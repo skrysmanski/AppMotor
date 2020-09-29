@@ -140,6 +140,8 @@ namespace AppMotor.Core.Processes
         [PublicAPI]
         public static async Task<ChildProcessResult> ExecAsync(ChildProcessStartInfo startInfo)
         {
+            Verify.Argument.IsNotNull(startInfo, nameof(startInfo));
+
             var runningProcess = StartProcess(startInfo);
 
             return await runningProcess.ExecuteAsync();

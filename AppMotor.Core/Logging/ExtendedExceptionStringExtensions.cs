@@ -21,6 +21,7 @@ using System.Text;
 
 using AppMotor.Core.Extensions;
 using AppMotor.Core.Globalization;
+using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
@@ -42,6 +43,8 @@ namespace AppMotor.Core.Logging
         [PublicAPI, Pure]
         public static string ToStringExtended(this Exception exception, IValueFormatter? valueFormatter = null)
         {
+            Verify.Argument.IsNotNull(exception, nameof(exception));
+
             var builder = new ExtendedStringBuilder(valueFormatter);
 
             builder.AppendExtendedExceptionString(new StringIndentation(), exception);
