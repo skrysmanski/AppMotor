@@ -43,7 +43,9 @@ namespace AppMotor.Core.Exceptions
     /// <para>Thirdly, it makes the data dictionary "type-safe" for <c>foreach</c>. So you can
     /// use <c>foreach (var entry : ...)</c> where entry will be a proper key value pair.</para>
     /// </summary>
+#pragma warning disable CA1815 // Override equals and operator equals on value types
     public readonly struct ExceptionDataAccessor : IReadOnlyCollection<KeyValuePair<object, object>>
+#pragma warning restore CA1815 // Override equals and operator equals on value types
     {
         private readonly IDictionary? m_data;
 
