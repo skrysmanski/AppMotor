@@ -49,7 +49,9 @@ namespace AppMotor.Core.Utils
             Dispose(disposing: false);
         }
 
+#pragma warning disable CA1063 // Implement IDisposable Correctly - we have our own IDisposable pattern
         private void Dispose(bool disposing)
+#pragma warning restore CA1063 // Implement IDisposable Correctly
         {
             var origValue = Interlocked.CompareExchange(ref this.m_disposeState, DisposeStates.DISPOSING, comparand: DisposeStates.NOT_DISPOSED);
             if (origValue != DisposeStates.NOT_DISPOSED)
