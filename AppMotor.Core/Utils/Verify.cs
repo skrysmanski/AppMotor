@@ -37,28 +37,28 @@ namespace AppMotor.Core.Utils
 
             [PublicAPI]
             [ContractAnnotation("obj:null => halt")]
-            public static void IsNotNull<T>([InstantHandle, NoEnumeration] T obj, [InvokerParameterName] string paramName)
+            public static void IsNotNull<T>([InstantHandle, NoEnumeration, ValidatedNotNull] T obj, [InvokerParameterName] string paramName)
             {
                 VERIFIER.IsNotNull(obj, paramName);
             }
 
             [PublicAPI]
             [ContractAnnotation("obj:null => halt")]
-            public static void IsNotNullOrEmpty(string? obj, [InvokerParameterName] string paramName)
+            public static void IsNotNullOrEmpty([ValidatedNotNull] string? obj, [InvokerParameterName] string paramName)
             {
                 VERIFIER.IsNotNullOrEmpty(obj, paramName);
             }
 
             [PublicAPI]
             [ContractAnnotation("obj:null => halt")]
-            public static void IsNotNullOrWhiteSpace(string? obj, [InvokerParameterName] string paramName)
+            public static void IsNotNullOrWhiteSpace([ValidatedNotNull] string? obj, [InvokerParameterName] string paramName)
             {
                 VERIFIER.IsNotNullOrWhiteSpace(obj, paramName);
             }
 
             [PublicAPI]
             [ContractAnnotation("obj:null => halt")]
-            public static void IsNotNullOrEmpty<T>(IReadOnlyCollection<T>? obj, [InvokerParameterName] string paramName)
+            public static void IsNotNullOrEmpty<T>([ValidatedNotNull] IReadOnlyCollection<T>? obj, [InvokerParameterName] string paramName)
             {
                 VERIFIER.IsNotNullOrEmpty(obj, paramName);
             }
@@ -69,7 +69,7 @@ namespace AppMotor.Core.Utils
             /// </summary>
             /// <exception cref="CollectionIsReadOnlyArgumentException">Thrown if the collection is read-only.</exception>
             [PublicAPI]
-            public static void IsNotReadOnly<T>(ICollection<T> collectionToCheck, [InvokerParameterName] string paramName)
+            public static void IsNotReadOnly<T>([ValidatedNotNull] ICollection<T> collectionToCheck, [InvokerParameterName] string paramName)
             {
                 VERIFIER.IsNotReadOnly(collectionToCheck, paramName);
             }
@@ -109,28 +109,28 @@ namespace AppMotor.Core.Utils
 
             [PublicAPI]
             [ContractAnnotation("obj:null => halt")]
-            public static void IsNotNull<T>([InstantHandle, NoEnumeration] T obj, string valueName)
+            public static void IsNotNull<T>([InstantHandle, NoEnumeration, ValidatedNotNull] T obj, string valueName)
             {
                 VERIFIER.IsNotNull(obj, valueName);
             }
 
             [PublicAPI]
             [ContractAnnotation("obj:null => halt")]
-            public static void IsNotNullOrEmpty(string? obj, string valueName)
+            public static void IsNotNullOrEmpty([ValidatedNotNull] string? obj, string valueName)
             {
                 VERIFIER.IsNotNullOrEmpty(obj, valueName);
             }
 
             [PublicAPI]
             [ContractAnnotation("obj:null => halt")]
-            public static void IsNotNullOrWhiteSpace(string? obj, string valueName)
+            public static void IsNotNullOrWhiteSpace([ValidatedNotNull] string? obj, string valueName)
             {
                 VERIFIER.IsNotNullOrWhiteSpace(obj, valueName);
             }
 
             [PublicAPI]
             [ContractAnnotation("obj:null => halt")]
-            public static void IsNotNullOrEmpty<T>(IReadOnlyCollection<T>? obj, string valueName)
+            public static void IsNotNullOrEmpty<T>([ValidatedNotNull] IReadOnlyCollection<T>? obj, string valueName)
             {
                 VERIFIER.IsNotNullOrEmpty(obj, valueName);
             }
@@ -141,7 +141,7 @@ namespace AppMotor.Core.Utils
             /// </summary>
             /// <exception cref="CollectionIsReadOnlyValueException">Thrown if the collection is read-only.</exception>
             [PublicAPI]
-            public static void IsNotReadOnly<T>(ICollection<T> collectionToCheck, string valueName)
+            public static void IsNotReadOnly<T>([ValidatedNotNull] ICollection<T> collectionToCheck, string valueName)
             {
                 VERIFIER.IsNotReadOnly(collectionToCheck, valueName);
             }
