@@ -122,7 +122,7 @@ namespace AppMotor.Core.Processes
                 successExitCode: successExitCode
             );
 
-            return await ExecAsync(startInfo);
+            return await ExecAsync(startInfo).ConfigureAwait(continueOnCapturedContext: false);
         }
 
 
@@ -144,7 +144,7 @@ namespace AppMotor.Core.Processes
 
             var runningProcess = StartProcess(startInfo);
 
-            return await runningProcess.ExecuteAsync();
+            return await runningProcess.ExecuteAsync().ConfigureAwait(continueOnCapturedContext: false);
         }
 
         [Pure]
@@ -261,14 +261,14 @@ namespace AppMotor.Core.Processes
 
                     try
                     {
-                        await tcs.Task;
+                        await tcs.Task.ConfigureAwait(continueOnCapturedContext: false);
                     }
                     catch (OperationCanceledException)
                     {
                         throw new TimeoutException("The process has not finished within the specified timeout.");
                     }
 
-                    await Task.WhenAll(stdOutReadTask, stdErrReadTask);
+                    await Task.WhenAll(stdOutReadTask, stdErrReadTask).ConfigureAwait(continueOnCapturedContext: false);
 
                     return PostProcessAfterExit(stdOutReadTask, stdErrReadTask);
                 }
