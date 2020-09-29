@@ -36,7 +36,9 @@ namespace AppMotor.Core.Threading
     /// new instances within the + operator but usually only the last instance is used.
     /// </remarks>
     /// <seealso cref="TaskList{T}"/>
+#pragma warning disable CA1815 // Override equals and operator equals on value types
     public readonly struct TaskList : IReadOnlyList<Task>
+#pragma warning restore CA1815 // Override equals and operator equals on value types
     {
         private readonly AppendOnlyList<Task>? m_underlyingList;
 
@@ -121,7 +123,9 @@ namespace AppMotor.Core.Threading
     /// new instances within the + operator but usually only the last instance is used.
     /// </remarks>
     /// <seealso cref="TaskList"/>
+#pragma warning disable CA1815 // Override equals and operator equals on value types
     public readonly struct TaskList<T> : IReadOnlyList<Task<T>>
+#pragma warning restore CA1815 // Override equals and operator equals on value types
     {
         private readonly AppendOnlyList<Task<T>>? m_underlyingList;
 
