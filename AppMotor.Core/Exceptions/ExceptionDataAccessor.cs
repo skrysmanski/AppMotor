@@ -19,7 +19,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 using AppMotor.Core.Extensions;
-using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
@@ -92,14 +91,16 @@ namespace AppMotor.Core.Exceptions
         }
 
         /// <summary>
-        /// Constructor. Alternatively, you can use <see cref="ExceptionExtensions.GetData"/>.
+        /// Constructor. Users should use <see cref="ExceptionExtensions.GetData"/>.
         /// </summary>
-        public ExceptionDataAccessor(Exception exception)
+        /// <remarks>
+        /// To save some performance here we don't enforce that <paramref name="exception"/> is
+        /// not null. Instead we treat <c>null</c> as if the data was empty and read-only.
+        /// </remarks>
+        internal ExceptionDataAccessor(Exception? exception)
         {
-            Verify.Argument.IsNotNull(exception, nameof(exception));
-
             // For nullability of "Data", see: https://github.com/dotnet/dotnet-api-docs/issues/4045
-            this.m_data = exception.Data;
+            this.m_data = exception?.Data;
         }
 
         /// <summary>
