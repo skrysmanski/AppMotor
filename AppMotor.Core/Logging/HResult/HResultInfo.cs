@@ -30,12 +30,7 @@ namespace AppMotor.Core.Logging
     /// </summary>
     public static class HResultInfo
     {
-        private static readonly Dictionary<int, string> s_hResultNames;
-
-        static HResultInfo()
-        {
-            s_hResultNames = GetHResultNames();
-        }
+        private static readonly Dictionary<int, string> s_hResultNames = GetHResultNames();
 
         [Pure]
         private static Dictionary<int, string> GetHResultNames()
