@@ -227,34 +227,34 @@ namespace AppMotor.Core.System
             return this;
         }
 
-        public static ColoredString operator +(ColoredString left, string right)
+        public static ColoredString operator +(ColoredString? left, string? right)
         {
-            return left.CloneShallow().Append(color: null, right);
+            return new ColoredString(left).Append(color: null, right);
         }
 
-        public static ColoredString operator +(ColoredString left, ColoredSubstring right)
+        public static ColoredString operator +(ColoredString? left, ColoredSubstring? right)
         {
-            return left.CloneShallow().Append(right);
+            return new ColoredString(left).Append(right);
         }
 
-        public static ColoredString operator +(ColoredString left, ColoredString right)
+        public static ColoredString operator +(ColoredString? left, ColoredString? right)
         {
-            return left.CloneShallow().Append(color: null, right);
+            return new ColoredString(left).Append(color: null, right);
         }
 
-        public static ColoredString operator +(string left, ColoredString right)
+        public static ColoredString operator +(string? left, ColoredString? right)
         {
             return New().Append(color: null, left).Append(color: null, right);
         }
 
-        public static implicit operator ColoredString(ColoredSubstring text)
+        public static implicit operator ColoredString(ColoredSubstring? text)
         {
             return New().Append(text);
         }
 
-        public static implicit operator ColoredString(string text)
+        public static implicit operator ColoredString(string? text)
         {
-            return New().Append(color: null, (object)text);
+            return New().Append(color: null, (object?)text);
         }
 
         #region ICollection<T>
