@@ -17,6 +17,8 @@
 using System;
 using System.Reflection;
 
+using AppMotor.Core.Utils;
+
 namespace AppMotor.Core.Logging
 {
     /// <summary>
@@ -30,6 +32,8 @@ namespace AppMotor.Core.Logging
         /// <inheritdoc />
         public virtual bool ExcludeProperty(PropertyInfo loggableProperty)
         {
+            Verify.Argument.IsNotNull(loggableProperty, nameof(loggableProperty));
+
             switch (loggableProperty.Name)
             {
                 // These properties are usually already present somewhere else in the exception log output.
@@ -46,6 +50,8 @@ namespace AppMotor.Core.Logging
         /// <inheritdoc />
         public virtual bool ExcludePropertyValue(object? propertyValue, PropertyInfo loggableProperty)
         {
+            Verify.Argument.IsNotNull(loggableProperty, nameof(loggableProperty));
+
             if (propertyValue is null)
             {
                 // No need to put empty values in the output.
