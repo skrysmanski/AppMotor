@@ -72,7 +72,7 @@ namespace AppMotor.Core.Tests.System
             }
         }
 
-        private static ColoredString.Substring CreateTextInClassInstance(ConsoleColor color, string? value)
+        private static ColoredSubstring CreateTextInClassInstance(ConsoleColor color, string? value)
         {
             var textInClassesAssembly = typeof(TextInBlack).Assembly;
             var textInClassesNamespace = typeof(TextInBlack).Namespace;
@@ -84,7 +84,7 @@ namespace AppMotor.Core.Tests.System
             var createOperator = textInType!.GetMethod("op_Explicit", BindingFlags.Static | BindingFlags.Public);
             createOperator.ShouldNotBeNull();
 
-            var textInValue = (ColoredString.Substring)createOperator!.Invoke(null, new object[] { value! })!;
+            var textInValue = (ColoredSubstring)createOperator!.Invoke(null, new object[] { value! })!;
             textInValue.ShouldNotBeNull();
 
             return textInValue;
@@ -153,14 +153,14 @@ namespace AppMotor.Core.Tests.System
                 object operand2
             )
         {
-            ColoredString.Substring CreateExpectedSubstring(object operand)
+            ColoredSubstring CreateExpectedSubstring(object operand)
             {
                 switch (operand)
                 {
                     case ColoredString coloredString:
                         return coloredString[0];
 
-                    case ColoredString.Substring coloredSubstring:
+                    case ColoredSubstring coloredSubstring:
                         return coloredSubstring;
 
                     case string uncoloredString:

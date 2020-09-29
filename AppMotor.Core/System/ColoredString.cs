@@ -28,18 +28,18 @@ namespace AppMotor.Core.System
 {
     /// <summary>
     /// Represents a string that contains (potentially) colored substrings. Each colored substring is represented
-    /// by a <see cref="Substring"/> instance - created through one of the <c>TextIn...</c> classes. The primary
+    /// by a <see cref="ColoredSubstring"/> instance - created through one of the <c>TextIn...</c> classes. The primary
     /// goal of this class is to be able to make color console output (via <see cref="Terminal"/>).
     /// </summary>
-    public sealed class ColoredString : IReadOnlyList<ColoredString.Substring>, IShallowCloneable<ColoredString>
+    public sealed class ColoredString : IReadOnlyList<ColoredSubstring>, IShallowCloneable<ColoredString>
     {
-        private readonly AppendOnlyList<Substring> m_substrings;
+        private readonly AppendOnlyList<ColoredSubstring> m_substrings;
 
         /// <inheritdoc />
         public int Count => this.m_substrings.Count;
 
         /// <inheritdoc />
-        public Substring this[int index] => this.m_substrings[index];
+        public ColoredSubstring this[int index] => this.m_substrings[index];
 
         private ColoredString(ColoredString? other)
         {
@@ -49,7 +49,7 @@ namespace AppMotor.Core.System
             }
             else
             {
-                this.m_substrings = new AppendOnlyList<Substring>();
+                this.m_substrings = new AppendOnlyList<ColoredSubstring>();
             }
         }
 
@@ -90,7 +90,7 @@ namespace AppMotor.Core.System
                 //
                 // Change color of uncolored substrings.
                 //
-                IReadOnlyList<Substring> substringsToAdd;
+                IReadOnlyList<ColoredSubstring> substringsToAdd;
 
                 if (ReferenceEquals(this.m_substrings, value.m_substrings))
                 {
@@ -108,7 +108,7 @@ namespace AppMotor.Core.System
                     if (coloredSubstring.Color == null)
                     {
                         // Set color.
-                        this.m_substrings.Append(new Substring(color, coloredSubstring.Text));
+                        this.m_substrings.Append(new ColoredSubstring(color, coloredSubstring.Text));
                     }
                     else
                     {
@@ -124,7 +124,7 @@ namespace AppMotor.Core.System
         /// Appends the string value with the specified color.
         /// </summary>
         /// <param name="color">The color to use for the string. Can be <c>null</c>. See
-        /// <see cref="Substring.Color"/> for more details.</param>
+        /// <see cref="ColoredSubstring.Color"/> for more details.</param>
         /// <param name="value">The value to append</param>
         /// <returns>Returns this instance (useful for chaining calls).</returns>
         /// <remarks>
@@ -134,7 +134,7 @@ namespace AppMotor.Core.System
         /// <see cref="Append(ConsoleColor?,object)"/> (resulting in unnecessary conversions).
         /// </remarks>
         [PublicAPI]
-        public ColoredString Append(ConsoleColor? color, Substring? value)
+        public ColoredString Append(ConsoleColor? color, ColoredSubstring? value)
         {
             if (value == null)
             {
@@ -152,7 +152,7 @@ namespace AppMotor.Core.System
         }
 
         [PublicAPI]
-        public ColoredString Append(Substring? substring)
+        public ColoredString Append(ColoredSubstring? substring)
         {
             if (substring == null || string.IsNullOrEmpty(substring.Text))
             {
@@ -169,7 +169,7 @@ namespace AppMotor.Core.System
         /// Appends the string value with the specified color.
         /// </summary>
         /// <param name="color">The color to use for the string. Can be <c>null</c>. See
-        /// <see cref="Substring.Color"/> for more details.</param>
+        /// <see cref="ColoredSubstring.Color"/> for more details.</param>
         /// <param name="value">The value to append</param>
         /// <returns>Returns this instance (useful for chaining calls).</returns>
         /// <remarks>
@@ -187,7 +187,7 @@ namespace AppMotor.Core.System
                 return this;
             }
 
-            this.m_substrings.Append(new Substring(color, value));
+            this.m_substrings.Append(new ColoredSubstring(color, value));
 
             return this;
         }
@@ -196,7 +196,7 @@ namespace AppMotor.Core.System
         /// Appends the value (converted to a string via <c>ToString()</c>) with the specified color.
         /// </summary>
         /// <param name="color">The color to use for the string. Can be <c>null</c>. See
-        /// <see cref="Substring.Color"/> for more details.</param>
+        /// <see cref="ColoredSubstring.Color"/> for more details.</param>
         /// <param name="value">The value to append</param>
         /// <returns>Returns this instance (useful for chaining calls).</returns>
         [PublicAPI]
@@ -207,7 +207,7 @@ namespace AppMotor.Core.System
                 case ColoredString coloredString:
                     return Append(color, coloredString);
 
-                case Substring substring:
+                case ColoredSubstring substring:
                     return Append(color, substring);
 
                 case null:
@@ -222,7 +222,7 @@ namespace AppMotor.Core.System
                 return this;
             }
 
-            this.m_substrings.Append(new Substring(color, valueAsString));
+            this.m_substrings.Append(new ColoredSubstring(color, valueAsString));
 
             return this;
         }
@@ -232,7 +232,7 @@ namespace AppMotor.Core.System
             return left.CloneShallow().Append(color: null, right);
         }
 
-        public static ColoredString operator +(ColoredString left, Substring right)
+        public static ColoredString operator +(ColoredString left, ColoredSubstring right)
         {
             return left.CloneShallow().Append(right);
         }
@@ -247,7 +247,7 @@ namespace AppMotor.Core.System
             return New().Append(color: null, left).Append(color: null, right);
         }
 
-        public static implicit operator ColoredString(Substring text)
+        public static implicit operator ColoredString(ColoredSubstring text)
         {
             return New().Append(text);
         }
@@ -259,7 +259,7 @@ namespace AppMotor.Core.System
 
         #region ICollection<T>
 
-        public IEnumerator<Substring> GetEnumerator()
+        public IEnumerator<ColoredSubstring> GetEnumerator()
         {
             return this.m_substrings.GetEnumerator();
         }
@@ -281,82 +281,82 @@ namespace AppMotor.Core.System
         {
             return string.Join("", this.m_substrings.Select(sub => sub.Text));
         }
+    }
+
+    /// <summary>
+    /// Represents a (potentially) colored string. Note that unlike <see cref="ColoredString"/>,
+    /// instances of this class represent strings where the whole(!) string has the same color.
+    ///
+    /// <para>Note: To create instances of this class, use the various <c>TextIn...</c> classes.</para>
+    /// </summary>
+    public class ColoredSubstring : IEquatable<ColoredSubstring>
+    {
+        /// <summary>
+        /// The text value of this colored string. Is never null but may be empty (when
+        /// created via one of the <c>TextIn...</c> classes).
+        /// </summary>
+        [PublicAPI]
+        public string Text { get; }
 
         /// <summary>
-        /// Represents a (potentially) colored string. Note that unlike <see cref="ColoredString"/>,
-        /// instances of this class represent strings where the whole(!) string has the same color.
-        ///
-        /// <para>Note: To create instances of this class, use the various <c>TextIn...</c> classes.</para>
+        /// The color of this string. Can be <c>null</c> in which case the color is
+        /// "inherited" (e.g. it's the console's default color).
         /// </summary>
-        public class Substring : IEquatable<Substring>
+        [PublicAPI]
+        public ConsoleColor? Color { get; }
+
+        internal ColoredSubstring(ConsoleColor? color, string? text)
         {
-            /// <summary>
-            /// The text value of this colored string. Is never null but may be empty (when
-            /// created via one of the <c>TextIn...</c> classes).
-            /// </summary>
-            [PublicAPI]
-            public string Text { get; }
+            this.Text = text ?? "";
+            this.Color = color;
+        }
 
-            /// <summary>
-            /// The color of this string. Can be <c>null</c> in which case the color is
-            /// "inherited" (e.g. it's the console's default color).
-            /// </summary>
-            [PublicAPI]
-            public ConsoleColor? Color { get; }
+        public static ColoredString operator +(ColoredSubstring left, string? right)
+        {
+            return ColoredString.New().Append(left).Append(null, right);
+        }
 
-            internal Substring(ConsoleColor? color, string? text)
+        public static ColoredString operator +(string? left, ColoredSubstring right)
+        {
+            return ColoredString.New().Append(null, left).Append(right);
+        }
+
+        public static ColoredString operator +(ColoredSubstring left, ColoredSubstring right)
+        {
+            return ColoredString.New().Append(left).Append(right);
+        }
+
+        /// <inheritdoc />
+        public bool Equals(ColoredSubstring? other)
+        {
+            if (other is null)
             {
-                this.Text = text ?? "";
-                this.Color = color;
+                return false;
             }
 
-            public static ColoredString operator +(Substring left, string? right)
+            if (ReferenceEquals(this, other))
             {
-                return New().Append(left).Append(null, right);
+                return true;
             }
 
-            public static ColoredString operator +(string? left, Substring right)
-            {
-                return New().Append(null, left).Append(right);
-            }
+            return this.Text == other.Text && this.Color == other.Color;
+        }
 
-            public static ColoredString operator +(Substring left, Substring right)
-            {
-                return New().Append(left).Append(right);
-            }
+        /// <inheritdoc />
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as ColoredSubstring);
+        }
 
-            /// <inheritdoc />
-            public bool Equals(Substring? other)
-            {
-                if (other is null)
-                {
-                    return false;
-                }
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(this.Text, this.Color);
+        }
 
-                if (ReferenceEquals(this, other))
-                {
-                    return true;
-                }
-
-                return this.Text == other.Text && this.Color == other.Color;
-            }
-
-            /// <inheritdoc />
-            public override bool Equals(object? obj)
-            {
-                return Equals(obj as Substring);
-            }
-
-            /// <inheritdoc />
-            public override int GetHashCode()
-            {
-                return HashCode.Combine(this.Text, this.Color);
-            }
-
-            public override string ToString()
-            {
-                return this.Text;
-            }
+        public override string ToString()
+        {
+            return this.Text;
         }
     }
 
@@ -366,7 +366,7 @@ namespace AppMotor.Core.System
     /// <para>Use it like this: <c>(TextInBlack)"some text here"</c></para>
     /// </summary>
     [PublicAPI]
-    public sealed class TextInBlack : ColoredString.Substring
+    public sealed class TextInBlack : ColoredSubstring
     {
         private TextInBlack(string text)
             : base(ConsoleColor.Black, text)
@@ -385,7 +385,7 @@ namespace AppMotor.Core.System
     /// <para>Use it like this: <c>(TextInDarkGray)"some text here"</c></para>
     /// </summary>
     [PublicAPI]
-    public sealed class TextInDarkGray : ColoredString.Substring
+    public sealed class TextInDarkGray : ColoredSubstring
     {
         private TextInDarkGray(string text)
             : base(ConsoleColor.DarkGray, text)
@@ -404,7 +404,7 @@ namespace AppMotor.Core.System
     /// <para>Use it like this: <c>(TextInGray)"some text here"</c></para>
     /// </summary>
     [PublicAPI]
-    public sealed class TextInGray : ColoredString.Substring
+    public sealed class TextInGray : ColoredSubstring
     {
         private TextInGray(string text)
             : base(ConsoleColor.Gray, text)
@@ -424,7 +424,7 @@ namespace AppMotor.Core.System
     /// <para>Use it like this: <c>(TextInWhite)"some text here"</c></para>
     /// </summary>
     [PublicAPI]
-    public sealed class TextInWhite : ColoredString.Substring
+    public sealed class TextInWhite : ColoredSubstring
     {
         private TextInWhite(string text)
             : base(ConsoleColor.White, text)
@@ -443,7 +443,7 @@ namespace AppMotor.Core.System
     /// <para>Use it like this: <c>(TextInDarkBlue)"some text here"</c></para>
     /// </summary>
     [PublicAPI]
-    public sealed class TextInDarkBlue : ColoredString.Substring
+    public sealed class TextInDarkBlue : ColoredSubstring
     {
         private TextInDarkBlue(string text)
             : base(ConsoleColor.DarkBlue, text)
@@ -462,7 +462,7 @@ namespace AppMotor.Core.System
     /// <para>Use it like this: <c>(TextInBlue)"some text here"</c></para>
     /// </summary>
     [PublicAPI]
-    public sealed class TextInBlue : ColoredString.Substring
+    public sealed class TextInBlue : ColoredSubstring
     {
         private TextInBlue(string text)
             : base(ConsoleColor.Blue, text)
@@ -481,7 +481,7 @@ namespace AppMotor.Core.System
     /// <para>Use it like this: <c>(TextInDarkGreen)"some text here"</c></para>
     /// </summary>
     [PublicAPI]
-    public sealed class TextInDarkGreen : ColoredString.Substring
+    public sealed class TextInDarkGreen : ColoredSubstring
     {
         private TextInDarkGreen(string text)
             : base(ConsoleColor.DarkGreen, text)
@@ -500,7 +500,7 @@ namespace AppMotor.Core.System
     /// <para>Use it like this: <c>(TextInGreen)"some text here"</c></para>
     /// </summary>
     [PublicAPI]
-    public sealed class TextInGreen : ColoredString.Substring
+    public sealed class TextInGreen : ColoredSubstring
     {
         private TextInGreen(string text)
             : base(ConsoleColor.Green, text)
@@ -519,7 +519,7 @@ namespace AppMotor.Core.System
     /// <para>Use it like this: <c>(TextInDarkCyan)"some text here"</c></para>
     /// </summary>
     [PublicAPI]
-    public sealed class TextInDarkCyan : ColoredString.Substring
+    public sealed class TextInDarkCyan : ColoredSubstring
     {
         private TextInDarkCyan(string text)
             : base(ConsoleColor.DarkCyan, text)
@@ -538,7 +538,7 @@ namespace AppMotor.Core.System
     /// <para>Use it like this: <c>(TextInCyan)"some text here"</c></para>
     /// </summary>
     [PublicAPI]
-    public sealed class TextInCyan : ColoredString.Substring
+    public sealed class TextInCyan : ColoredSubstring
     {
         private TextInCyan(string text)
             : base(ConsoleColor.Cyan, text)
@@ -557,7 +557,7 @@ namespace AppMotor.Core.System
     /// <para>Use it like this: <c>(TextInDarkRed)"some text here"</c></para>
     /// </summary>
     [PublicAPI]
-    public sealed class TextInDarkRed : ColoredString.Substring
+    public sealed class TextInDarkRed : ColoredSubstring
     {
         private TextInDarkRed(string text)
             : base(ConsoleColor.DarkRed, text)
@@ -576,7 +576,7 @@ namespace AppMotor.Core.System
     /// <para>Use it like this: <c>(TextInRed)"some text here"</c></para>
     /// </summary>
     [PublicAPI]
-    public sealed class TextInRed : ColoredString.Substring
+    public sealed class TextInRed : ColoredSubstring
     {
         private TextInRed(string text)
             : base(ConsoleColor.Red, text)
@@ -595,7 +595,7 @@ namespace AppMotor.Core.System
     /// <para>Use it like this: <c>(TextInDarkMagenta)"some text here"</c></para>
     /// </summary>
     [PublicAPI]
-    public sealed class TextInDarkMagenta : ColoredString.Substring
+    public sealed class TextInDarkMagenta : ColoredSubstring
     {
         private TextInDarkMagenta(string text)
             : base(ConsoleColor.DarkMagenta, text)
@@ -614,7 +614,7 @@ namespace AppMotor.Core.System
     /// <para>Use it like this: <c>(TextInMagenta)"some text here"</c></para>
     /// </summary>
     [PublicAPI]
-    public sealed class TextInMagenta : ColoredString.Substring
+    public sealed class TextInMagenta : ColoredSubstring
     {
         private TextInMagenta(string text)
             : base(ConsoleColor.Magenta, text)
@@ -633,7 +633,7 @@ namespace AppMotor.Core.System
     /// <para>Use it like this: <c>(TextInDarkYellow)"some text here"</c></para>
     /// </summary>
     [PublicAPI]
-    public sealed class TextInDarkYellow : ColoredString.Substring
+    public sealed class TextInDarkYellow : ColoredSubstring
     {
         private TextInDarkYellow(string text)
             : base(ConsoleColor.DarkYellow, text)
@@ -652,7 +652,7 @@ namespace AppMotor.Core.System
     /// <para>Use it like this: <c>(TextInYellow)"some text here"</c></para>
     /// </summary>
     [PublicAPI]
-    public sealed class TextInYellow : ColoredString.Substring
+    public sealed class TextInYellow : ColoredSubstring
     {
         private TextInYellow(string text)
             : base(ConsoleColor.Yellow, text)
