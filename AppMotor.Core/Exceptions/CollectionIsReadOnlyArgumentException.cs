@@ -27,6 +27,5 @@ namespace AppMotor.Core.Exceptions
             : base(CollectionIsReadOnlyException.DEFAULT_MESSAGE, paramName: paramName)
         {
         }
-
     }
 }
