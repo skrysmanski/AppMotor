@@ -57,6 +57,36 @@ dotnet_style_qualification_for_event = true:suggestion
 
 dotnet_sort_system_directives_first = true:suggestion
 
+#
+# Code analysis rules
+#
+# For each rule, see: https://docs.microsoft.com/en-us/visualstudio/code-quality/caXXXX
+#
+
+# CA1031: Do not catch general exception types
+# Reason: There are lots of places (especially in reusable library code) that make catching "Exception"
+# necessary/useful. In my experience with this rule, it's suppressed 99% of the time - making it more of
+# an annoyance than a helpful rule.
+dotnet_diagnostic.CA1031.severity = none
+
+# CA1032: Implement standard exception constructors
+# Reason: This rule does not provide any real benefit but on the other hand limits the code design unnecessarily.
+dotnet_diagnostic.CA1032.severity = none
+
+# CA1040: Avoid empty interfaces
+# Reason: This rule does not provide any real benefit but on the other hand limits the code design unnecessarily.
+dotnet_diagnostic.CA1040.severity = none
+
+# CA1707: Identifiers should not contain underscores
+# Reason: Our style guide uses underscores for constants.
+dotnet_diagnostic.CA1707.severity = none
+
+# CA2225: Operator overloads have named alternates
+# Reason: This rule is "nice" but makes writing operators more cumbersome. The primary reason for this rule
+# is "It's provided for developers who program in languages that do not support overloaded operators." but
+# we don't really care about these language (whatever they are).
+dotnet_diagnostic.CA2225.severity = none
+
 
 #
 # VS project files

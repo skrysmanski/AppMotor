@@ -41,4 +41,12 @@
     </AssemblyAttribute>
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Code analysis for .NET; See: https://docs.microsoft.com/en-us/visualstudio/code-quality/install-fxcop-analyzers -->
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
 </Project>
