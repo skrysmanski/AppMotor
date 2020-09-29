@@ -10,12 +10,27 @@
 
   <Import Project="$(MSBuildThisFileDirectory)Project.Shared.props" />
 
+  <!--
+    NuGet (and assembly) properties
+
+    Additional properties to specify on each project: <PackageId>, <Description>, <Version>, <Authors>
+
+    See:
+    * https://docs.microsoft.com/en-us/dotnet/core/tools/csproj#nuget-metadata-properties
+    * https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets#pack-target
+    * https://docs.microsoft.com/en-us/nuget/reference/nuspec
+  -->
   <PropertyGroup>
-    <!-- See: https://docs.microsoft.com/de-de/dotnet/core/tools/csproj#nuget-metadata-properties -->
-    <Copyright>Copyright © Sebastian Krysmanski 2020</Copyright>
+    <Copyright>Copyright © Sebastian Krysmanski $([System.DateTime]::Now.ToString(yyyy))</Copyright>
+
     <!-- See: https://spdx.org/licenses/ -->
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+
     <RepositoryUrl>https://github.com/skrysmanski/AppMotor</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+
+    <!-- Why would this ever by "false"? -->
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>
