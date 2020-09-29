@@ -31,7 +31,9 @@ namespace AppMotor.Core.Utils
     {
         #region Argument Verification
 
+#pragma warning disable CA1034 // Nested types should not be visible
         public static class Argument
+#pragma warning restore CA1034 // Nested types should not be visible
         {
             private static readonly ArgumentVerifier VERIFIER = new ArgumentVerifier();
 
@@ -103,7 +105,9 @@ namespace AppMotor.Core.Utils
 
         #region Value Verification
 
+#pragma warning disable CA1034 // Nested types should not be visible
         public static class Value
+#pragma warning restore CA1034 // Nested types should not be visible
         {
             private static readonly ValueVerifier VERIFIER = new ValueVerifier();
 
