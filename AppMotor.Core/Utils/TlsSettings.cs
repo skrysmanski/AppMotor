@@ -1,12 +1,12 @@
 ﻿#region License
 // Copyright 2020 AppMotor Framework (https://github.com/skrysmanski/AppMotor)
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,6 +40,7 @@ namespace AppMotor.Core.Utils
             EnableProtocol(TLS_13); // TLS 1.3
             EnableProtocol(SecurityProtocolType.Tls12); // TLS 1.2
 
+#pragma warning disable CA5364 // Do Not Use Deprecated Security Protocols
             // NOTE: TLS 1.0 and 1.1 are considered obsolete/outdated nowadays and are disabled on more and more
             //   server. To avoid downgrade attacks, we'll disable them for clients as well.
             DisableProtocol(SecurityProtocolType.Tls); // TLS 1.0
@@ -49,6 +50,7 @@ namespace AppMotor.Core.Utils
             // SSL 3 is generally considered insecure and should never be used anymore.
             DisableProtocol(SecurityProtocolType.Ssl3);
 #pragma warning restore 618
+#pragma warning restore CA5364 // Do Not Use Deprecated Security Protocols
         }
 
         /// <summary>
