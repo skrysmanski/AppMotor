@@ -38,7 +38,7 @@ namespace AppMotor.Core.DataModel
         [PublicAPI, Pure]
         public static bool IsSensitiveValue<T>(this T value)
         {
-            Validate.Argument.IsNotNull(value, nameof(value));
+            Validate.Argument.IsNotNullUnconstrained(value, nameof(value));
 
             if (value is SecureString || value is ISensitiveValue)
             {

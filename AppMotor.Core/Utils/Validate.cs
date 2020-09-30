@@ -44,14 +44,50 @@ namespace AppMotor.Core.Utils
         {
             private static readonly ArgumentValidator VALIDATOR = new ArgumentValidator();
 
+            /// <summary>
+            /// Validates that the given reference type argument is not null.
+            /// </summary>
+            /// <seealso cref="IsNotNullUnconstrained{T}"/>
             [PublicAPI]
             [ContractAnnotation("value:null => halt")]
             public static void IsNotNull<T>(
+                    [InstantHandle, NoEnumeration, ValidatedNotNull] T? value,
+                    [InvokerParameterName] string paramName
+                )
+                    where T : class
+            {
+                VALIDATOR.IsNotNull(value, paramName);
+            }
+
+            /// <summary>
+            /// Validates that the given value type argument is not null.
+            /// </summary>
+            /// <seealso cref="IsNotNullUnconstrained{T}"/>
+            [PublicAPI]
+            [ContractAnnotation("value:null => halt")]
+            public static void IsNotNull<T>(
+                    [InstantHandle, NoEnumeration, ValidatedNotNull] T? value,
+                    [InvokerParameterName] string paramName
+                )
+                    where T : struct
+            {
+                VALIDATOR.IsNotNull(value, paramName);
+            }
+
+            /// <summary>
+            /// Validates that the given unconstrained generic type argument is not null.
+            ///
+            /// <para>Note: You should prefer <c>IsNotNull()</c> instead. Only use this method
+            /// if you have an argument with a generic type that is unconstrained.</para>
+            /// </summary>
+            [PublicAPI]
+            [ContractAnnotation("value:null => halt")]
+            public static void IsNotNullUnconstrained<T>(
                     [InstantHandle, NoEnumeration, ValidatedNotNull] T value,
                     [InvokerParameterName] string paramName
                 )
             {
-                VALIDATOR.IsNotNull(value, paramName);
+                VALIDATOR.IsNotNullUnconstrained(value, paramName);
             }
 
             [PublicAPI]
@@ -116,7 +152,7 @@ namespace AppMotor.Core.Utils
         #region Argument Validation Extension Methods
 
         /// <summary>
-        /// This method does the same thing as <see cref="Argument.IsNotNull{T}"/> and primarily
+        /// This method does the same thing as <see cref="Argument.IsNotNull{T}(T,string)"/> and primarily
         /// exists for constructor chaining where argument members are passed to another constructor
         /// and thus can't be validated with a statement.
         /// </summary>
@@ -125,12 +161,50 @@ namespace AppMotor.Core.Utils
         [MustUseReturnValue]
         [ContractAnnotation("value:null => halt")]
         public static T AsNotNullArgument<T>(
+                [InstantHandle, NoEnumeration, ValidatedNotNull] this T? value,
+                [InvokerParameterName] string paramName
+            )
+                where T : class
+        {
+            Argument.IsNotNull(value, paramName);
+            return value!;
+        }
+
+        /// <summary>
+        /// This method does the same thing as <see cref="Argument.IsNotNull{T}(T?,string)"/> and primarily
+        /// exists for constructor chaining where argument members are passed to another constructor
+        /// and thus can't be validated with a statement.
+        /// </summary>
+        /// <returns>Simply returns <paramref name="value"/>.</returns>
+        [PublicAPI]
+        [MustUseReturnValue]
+        [ContractAnnotation("value:null => halt")]
+        public static T AsNotNullArgument<T>(
+                [InstantHandle, NoEnumeration, ValidatedNotNull] this T? value,
+                [InvokerParameterName] string paramName
+            )
+                where T : struct
+        {
+            Argument.IsNotNull(value, paramName);
+            return value!.Value;
+        }
+
+        /// <summary>
+        /// This method does the same thing as <see cref="Argument.IsNotNullUnconstrained{T}"/> and primarily
+        /// exists for constructor chaining where argument members are passed to another constructor
+        /// and thus can't be validated with a statement.
+        /// </summary>
+        /// <returns>Simply returns <paramref name="value"/>.</returns>
+        [PublicAPI]
+        [MustUseReturnValue]
+        [ContractAnnotation("value:null => halt")]
+        public static T AsNotNullArgumentUnconstrained<T>(
                 [InstantHandle, NoEnumeration, ValidatedNotNull] this T value,
                 [InvokerParameterName] string paramName
             )
         {
-            Argument.IsNotNull(value, paramName);
-            return value;
+            Argument.IsNotNullUnconstrained(value, paramName);
+            return value!;
         }
 
         #endregion Argument Validation Extension Methods
@@ -143,14 +217,50 @@ namespace AppMotor.Core.Utils
         {
             private static readonly ValueValidator VALIDATOR = new ValueValidator();
 
+            /// <summary>
+            /// Validates that the given reference type value is not null.
+            /// </summary>
+            /// <seealso cref="IsNotNullUnconstrained{T}"/>
             [PublicAPI]
             [ContractAnnotation("value:null => halt")]
             public static void IsNotNull<T>(
+                    [InstantHandle, NoEnumeration, ValidatedNotNull] T? value,
+                    string valueName
+                )
+                    where T : class
+            {
+                VALIDATOR.IsNotNull(value, valueName);
+            }
+
+            /// <summary>
+            /// Validates that the given reference type value is not null.
+            /// </summary>
+            /// <seealso cref="IsNotNullUnconstrained{T}"/>
+            [PublicAPI]
+            [ContractAnnotation("value:null => halt")]
+            public static void IsNotNull<T>(
+                    [InstantHandle, NoEnumeration, ValidatedNotNull] T? value,
+                    string valueName
+                )
+                    where T : struct
+            {
+                VALIDATOR.IsNotNull(value, valueName);
+            }
+
+            /// <summary>
+            /// Validates that the given unconstrained generic type value is not null.
+            ///
+            /// <para>Note: You should prefer <c>IsNotNull()</c> instead. Only use this method
+            /// if you have a value with a generic type that is unconstrained.</para>
+            /// </summary>
+            [PublicAPI]
+            [ContractAnnotation("value:null => halt")]
+            public static void IsNotNullUnconstrained<T>(
                     [InstantHandle, NoEnumeration, ValidatedNotNull] T value,
                     string valueName
                 )
             {
-                VALIDATOR.IsNotNull(value, valueName);
+                VALIDATOR.IsNotNullUnconstrained(value, valueName);
             }
 
             [PublicAPI]
@@ -219,8 +329,50 @@ namespace AppMotor.Core.Utils
 
             protected abstract TBaseException CreateRootException(string message, string? valueName);
 
+            /// <summary>
+            /// Validates that the given reference type value is not null.
+            /// </summary>
+            /// <remarks>
+            /// This check is split into this method and the other overload so that it can't be
+            /// accidentally called for non-nullable value types. Especially structs may be misinterpreted
+            /// as classes and thus unnecessarily checked for null.
+            ///
+            /// <para>Also, the overload for value types becomes faster this way as it avoids any boxing. See:
+            /// https://sharplab.io/#v2:EYLgtghgzgLgpgJwDQxASwDYB8ACAmARgFgAoHAZgAJ9KBhSgb1MpcuAHt2NKBZAgHgAqAPgAUgygA8AlJQDuAC0RxKEkNTyUAvMKmU0USgDsArhgwBuUgEgOXXniFjBAfimzFy1ZXWwEJgGMYbV1JfUNTcysSAF8gA=
+            /// </para>
+            ///
+            /// <para>Only downside is that we can no longer use this to check values with unconstrained generic types.
+            /// Instead, <see cref="IsNotNullUnconstrained{T}"/> must be used.</para>
+            /// </remarks>
             [ContractAnnotation("value:null => halt")]
-            public void IsNotNull<T>([InstantHandle, NoEnumeration] T value, string valueName)
+            public void IsNotNull<T>([InstantHandle, NoEnumeration] T? value, string valueName) where T : class
+            {
+                if (value is null)
+                {
+                    throw CreateNullException(valueName);
+                }
+            }
+
+            /// <summary>
+            /// Validates that the given value type value is not null.
+            /// </summary>
+            /// <remarks>
+            /// This check is split into this method and the other overload. See other overload for more details.
+            /// </remarks>
+            [ContractAnnotation("value:null => halt")]
+            public void IsNotNull<T>([InstantHandle, NoEnumeration] T? value, string valueName) where T : struct
+            {
+                if (!value.HasValue)
+                {
+                    throw CreateNullException(valueName);
+                }
+            }
+
+            /// <summary>
+            /// Validates that the given unconstrained generic type value is not null.
+            /// </summary>
+            [ContractAnnotation("value:null => halt")]
+            public void IsNotNullUnconstrained<T>([InstantHandle, NoEnumeration] T value, string valueName)
             {
                 if (value is null)
                 {
