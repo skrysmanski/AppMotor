@@ -36,7 +36,7 @@ namespace AppMotor.Core.DataModel
         /// </summary>
         /// <seealso cref="IsSensitiveValueType"/>
         [PublicAPI, Pure]
-        public static bool IsSensitiveValue<T>(this T value)
+        public static bool IsSensitiveValue<T>([NotNull] this T value)
         {
             Validate.Argument.IsNotNullUnconstrained(value, nameof(value));
 
