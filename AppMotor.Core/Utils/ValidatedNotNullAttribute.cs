@@ -15,11 +15,15 @@
 #endregion
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AppMotor.Core.Utils
 {
+    // TODO: Remove, when https://github.com/dotnet/roslyn-analyzers/issues/4248 got implemented
     /// <summary>
-    /// Tells the fxcop code analyzers (rule CA1062) that the parameter will be checked for null.
+    /// Tells the FxCop code analyzers (rule CA1062) that the parameter will be checked for null.
+    ///
+    /// <para>Note: This attribute should always be specified together with <see cref="NotNullAttribute"/>.</para>
     /// </summary>
     /// <remarks>
     /// The rule CA1062 checks for an attribute with this exact name (namespace doesn't matter).
