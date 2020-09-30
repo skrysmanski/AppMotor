@@ -31,7 +31,7 @@ namespace AppMotor.Core.Tests.Exceptions
             var ex = new ValueException();
 
             ex.ValueName.ShouldBe(null);
-            ex.Message.ShouldBe(Verify.ExceptionMessages.DEFAULT_MESSAGE);
+            ex.Message.ShouldBe(Validate.ExceptionMessages.DEFAULT_MESSAGE);
         }
     }
 }

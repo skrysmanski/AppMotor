@@ -24,45 +24,52 @@ using JetBrains.Annotations;
 namespace AppMotor.Core.Utils
 {
     /// <summary>
-    /// Provides various verification methods for parameters and values in general. Raises <see cref="ArgumentException"/>s
+    /// Provides various validation methods for parameters and values in general. Raises <see cref="ArgumentException"/>s
     /// and <see cref="ValueException"/>s.
     /// </summary>
-    public static class Verify
+    public static class Validate
     {
-        #region Argument Verification
+        #region Argument Validation
 
+        /// <summary>
+        /// Validates arguments/parameters.
+        /// </summary>
+        /// <remarks>
+        /// This class is called <c>Argument</c> rather than <c>Parameter</c> because all of its
+        /// methods throw <see cref="ArgumentException"/>s.
+        /// </remarks>
 #pragma warning disable CA1034 // Nested types should not be visible
         public static class Argument
 #pragma warning restore CA1034 // Nested types should not be visible
         {
-            private static readonly ArgumentVerifier VERIFIER = new ArgumentVerifier();
+            private static readonly ArgumentValidator VALIDATOR = new ArgumentValidator();
 
             [PublicAPI]
             [ContractAnnotation("obj:null => halt")]
             public static void IsNotNull<T>([InstantHandle, NoEnumeration, ValidatedNotNull] T obj, [InvokerParameterName] string paramName)
             {
-                VERIFIER.IsNotNull(obj, paramName);
+                VALIDATOR.IsNotNull(obj, paramName);
             }
 
             [PublicAPI]
             [ContractAnnotation("obj:null => halt")]
             public static void IsNotNullOrEmpty([ValidatedNotNull] string? obj, [InvokerParameterName] string paramName)
             {
-                VERIFIER.IsNotNullOrEmpty(obj, paramName);
+                VALIDATOR.IsNotNullOrEmpty(obj, paramName);
             }
 
             [PublicAPI]
             [ContractAnnotation("obj:null => halt")]
             public static void IsNotNullOrWhiteSpace([ValidatedNotNull] string? obj, [InvokerParameterName] string paramName)
             {
-                VERIFIER.IsNotNullOrWhiteSpace(obj, paramName);
+                VALIDATOR.IsNotNullOrWhiteSpace(obj, paramName);
             }
 
             [PublicAPI]
             [ContractAnnotation("obj:null => halt")]
             public static void IsNotNullOrEmpty<T>([ValidatedNotNull] IReadOnlyCollection<T>? obj, [InvokerParameterName] string paramName)
             {
-                VERIFIER.IsNotNullOrEmpty(obj, paramName);
+                VALIDATOR.IsNotNullOrEmpty(obj, paramName);
             }
 
             /// <summary>
@@ -73,10 +80,10 @@ namespace AppMotor.Core.Utils
             [PublicAPI]
             public static void IsNotReadOnly<T>([ValidatedNotNull] ICollection<T> collectionToCheck, [InvokerParameterName] string paramName)
             {
-                VERIFIER.IsNotReadOnly(collectionToCheck, paramName);
+                VALIDATOR.IsNotReadOnly(collectionToCheck, paramName);
             }
 
-            private sealed class ArgumentVerifier : VerifierBase<ArgumentException>
+            private sealed class ArgumentValidator : ValidatorBase<ArgumentException>
             {
                 /// <inheritdoc />
                 protected override ArgumentException CreateNullException(string? valueName)
@@ -101,42 +108,42 @@ namespace AppMotor.Core.Utils
             }
         }
 
-        #endregion Argument Verification
+        #endregion Argument Validation
 
-        #region Value Verification
+        #region Value Validation
 
 #pragma warning disable CA1034 // Nested types should not be visible
         public static class Value
 #pragma warning restore CA1034 // Nested types should not be visible
         {
-            private static readonly ValueVerifier VERIFIER = new ValueVerifier();
+            private static readonly ValueValidator VALIDATOR = new ValueValidator();
 
             [PublicAPI]
             [ContractAnnotation("obj:null => halt")]
             public static void IsNotNull<T>([InstantHandle, NoEnumeration, ValidatedNotNull] T obj, string valueName)
             {
-                VERIFIER.IsNotNull(obj, valueName);
+                VALIDATOR.IsNotNull(obj, valueName);
             }
 
             [PublicAPI]
             [ContractAnnotation("obj:null => halt")]
             public static void IsNotNullOrEmpty([ValidatedNotNull] string? obj, string valueName)
             {
-                VERIFIER.IsNotNullOrEmpty(obj, valueName);
+                VALIDATOR.IsNotNullOrEmpty(obj, valueName);
             }
 
             [PublicAPI]
             [ContractAnnotation("obj:null => halt")]
             public static void IsNotNullOrWhiteSpace([ValidatedNotNull] string? obj, string valueName)
             {
-                VERIFIER.IsNotNullOrWhiteSpace(obj, valueName);
+                VALIDATOR.IsNotNullOrWhiteSpace(obj, valueName);
             }
 
             [PublicAPI]
             [ContractAnnotation("obj:null => halt")]
             public static void IsNotNullOrEmpty<T>([ValidatedNotNull] IReadOnlyCollection<T>? obj, string valueName)
             {
-                VERIFIER.IsNotNullOrEmpty(obj, valueName);
+                VALIDATOR.IsNotNullOrEmpty(obj, valueName);
             }
 
             /// <summary>
@@ -147,10 +154,10 @@ namespace AppMotor.Core.Utils
             [PublicAPI]
             public static void IsNotReadOnly<T>([ValidatedNotNull] ICollection<T> collectionToCheck, string valueName)
             {
-                VERIFIER.IsNotReadOnly(collectionToCheck, valueName);
+                VALIDATOR.IsNotReadOnly(collectionToCheck, valueName);
             }
 
-            private sealed class ValueVerifier : VerifierBase<ValueException>
+            private sealed class ValueValidator : ValidatorBase<ValueException>
             {
                 /// <inheritdoc />
                 protected override ValueException CreateNullException(string? valueName)
@@ -172,11 +179,11 @@ namespace AppMotor.Core.Utils
             }
         }
 
-        #endregion Value Verification
+        #endregion Value Validation
 
         // ReSharper disable ParameterOnlyUsedForPreconditionCheck.Local
 
-        private abstract class VerifierBase<TBaseException> where TBaseException : Exception
+        private abstract class ValidatorBase<TBaseException> where TBaseException : Exception
         {
             protected abstract TBaseException CreateNullException(string? valueName);
 

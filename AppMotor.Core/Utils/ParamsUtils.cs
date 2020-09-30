@@ -30,7 +30,7 @@ namespace AppMotor.Core.Utils
         /// </summary>
         public static IEnumerable<T> Combine<T>(T first, T[] others)
         {
-            Verify.Argument.IsNotNull(others, nameof(others));
+            Validate.Argument.IsNotNull(others, nameof(others));
 
             yield return first;
 
@@ -48,7 +48,7 @@ namespace AppMotor.Core.Utils
         /// </summary>
         public static IEnumerable<T> Combine<T>(T first, T second, T[] others)
         {
-            Verify.Argument.IsNotNull(others, nameof(others));
+            Validate.Argument.IsNotNull(others, nameof(others));
 
             yield return first;
             yield return second;

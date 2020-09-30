@@ -33,9 +33,9 @@ namespace AppMotor.Core.Extensions
         [PublicAPI]
         public static void AddRange<T>(this ICollection<T> collection, IEnumerable<T> itemsToAdd)
         {
-            Verify.Argument.IsNotNull(collection, nameof(collection));
-            Verify.Argument.IsNotNull(itemsToAdd, nameof(itemsToAdd));
-            Verify.Argument.IsNotReadOnly(collection, nameof(collection));
+            Validate.Argument.IsNotNull(collection, nameof(collection));
+            Validate.Argument.IsNotNull(itemsToAdd, nameof(itemsToAdd));
+            Validate.Argument.IsNotReadOnly(collection, nameof(collection));
 
             foreach (var item in itemsToAdd)
             {
@@ -52,9 +52,9 @@ namespace AppMotor.Core.Extensions
         [PublicAPI]
         public static List<T> RemoveWhere<T>(this ICollection<T> collection, Predicate<T> predicate)
         {
-            Verify.Argument.IsNotNull(collection, nameof(collection));
-            Verify.Argument.IsNotNull(predicate, nameof(predicate));
-            Verify.Argument.IsNotReadOnly(collection, nameof(collection));
+            Validate.Argument.IsNotNull(collection, nameof(collection));
+            Validate.Argument.IsNotNull(predicate, nameof(predicate));
+            Validate.Argument.IsNotReadOnly(collection, nameof(collection));
 
             var leftOver = new List<T>(collection.Count);
             var removed = new List<T>(collection.Count);

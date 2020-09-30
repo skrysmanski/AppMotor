@@ -101,7 +101,7 @@ namespace AppMotor.Core.IO
         /// collection is empty, no exception will be thrown.</param>
         public CombinedStream(bool closeStreams, IEnumerable<Stream> source)
         {
-            Verify.Argument.IsNotNull(source, nameof(source));
+            Validate.Argument.IsNotNull(source, nameof(source));
 
             this.m_iterator = source.GetEnumerator();
             this.m_closeStreams = closeStreams;

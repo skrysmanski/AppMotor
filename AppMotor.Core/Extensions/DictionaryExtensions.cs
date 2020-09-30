@@ -37,9 +37,9 @@ namespace AppMotor.Core.Extensions
                 IEnumerable<KeyValuePair<TKey, TValue>> itemsToAdd
             )
         {
-            Verify.Argument.IsNotNull(dictionary, nameof(dictionary));
-            Verify.Argument.IsNotNull(itemsToAdd, nameof(itemsToAdd));
-            Verify.Argument.IsNotReadOnly(dictionary, nameof(dictionary));
+            Validate.Argument.IsNotNull(dictionary, nameof(dictionary));
+            Validate.Argument.IsNotNull(itemsToAdd, nameof(itemsToAdd));
+            Validate.Argument.IsNotReadOnly(dictionary, nameof(dictionary));
 
             foreach (var item in itemsToAdd)
             {

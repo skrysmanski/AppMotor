@@ -73,7 +73,7 @@ namespace AppMotor.Core.Exceptions
 
         [PublicAPI]
         public ValueException(string? message, string? valueName, Exception? innerException)
-            : base(message ?? Verify.ExceptionMessages.DEFAULT_MESSAGE, innerException)
+            : base(message ?? Validate.ExceptionMessages.DEFAULT_MESSAGE, innerException)
         {
             this.ValueName = valueName;
         }

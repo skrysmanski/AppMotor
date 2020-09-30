@@ -36,7 +36,7 @@ namespace AppMotor.Core.Logging
 
         public LoggabilityChangedEventArgs(Type type)
         {
-            Verify.Argument.IsNotNull(type, nameof(type));
+            Validate.Argument.IsNotNull(type, nameof(type));
 
             this.Type = type;
         }

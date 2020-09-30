@@ -64,7 +64,7 @@ namespace AppMotor.Core.Logging
         [PublicAPI, Pure]
         public static bool IsSimpleLoggableType(Type typeToCheck)
         {
-            Verify.Argument.IsNotNull(typeToCheck, nameof(typeToCheck));
+            Validate.Argument.IsNotNull(typeToCheck, nameof(typeToCheck));
 
             // Sensitive values must never be logged.
             // NOTE: This also takes precedence before "ISimpleLoggableValue"/"SimpleLoggableValueMarker".

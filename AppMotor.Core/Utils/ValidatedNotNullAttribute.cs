@@ -25,6 +25,7 @@ namespace AppMotor.Core.Utils
     /// The rule CA1062 checks for an attribute with this exact name (namespace doesn't matter).
     /// So the attribute MOST NOT BE RENAMED.
     /// </remarks>
+    /// <seealso cref="Validate"/>
     [AttributeUsage(AttributeTargets.Parameter)]
     public sealed class ValidatedNotNullAttribute : Attribute
     {

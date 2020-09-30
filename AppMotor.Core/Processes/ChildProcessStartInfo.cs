@@ -75,7 +75,7 @@ namespace AppMotor.Core.Processes
 
         public ChildProcessStartInfo(string processFileName)
         {
-            Verify.Argument.IsNotNullOrWhiteSpace(processFileName, nameof(processFileName));
+            Validate.Argument.IsNotNullOrWhiteSpace(processFileName, nameof(processFileName));
 
             this.ProcessFileName = processFileName;
         }

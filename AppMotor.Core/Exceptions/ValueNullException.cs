@@ -49,7 +49,7 @@ namespace AppMotor.Core.Exceptions
         }
 
         public ValueNullException(string? message, string? valueName, Exception? innerException)
-            : base(message ?? Verify.ExceptionMessages.VALUE_IS_NULL, valueName, innerException)
+            : base(message ?? Validate.ExceptionMessages.VALUE_IS_NULL, valueName, innerException)
         {
         }
     }
