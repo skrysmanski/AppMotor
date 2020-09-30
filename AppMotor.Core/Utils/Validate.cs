@@ -21,6 +21,8 @@ using AppMotor.Core.Exceptions;
 
 using JetBrains.Annotations;
 
+using NotNullOnExitAttribute = System.Diagnostics.CodeAnalysis.NotNullAttribute;
+
 namespace AppMotor.Core.Utils
 {
     /// <summary>
@@ -51,7 +53,7 @@ namespace AppMotor.Core.Utils
             [PublicAPI]
             [ContractAnnotation("value:null => halt")]
             public static void IsNotNull<T>(
-                    [InstantHandle, NoEnumeration, ValidatedNotNull] T? value,
+                    [InstantHandle, NoEnumeration, ValidatedNotNull, NotNullOnExit] T? value,
                     [InvokerParameterName] string paramName
                 )
                     where T : class
@@ -66,7 +68,7 @@ namespace AppMotor.Core.Utils
             [PublicAPI]
             [ContractAnnotation("value:null => halt")]
             public static void IsNotNull<T>(
-                    [InstantHandle, NoEnumeration, ValidatedNotNull] T? value,
+                    [InstantHandle, NoEnumeration, ValidatedNotNull, NotNullOnExit] T? value,
                     [InvokerParameterName] string paramName
                 )
                     where T : struct
@@ -83,7 +85,7 @@ namespace AppMotor.Core.Utils
             [PublicAPI]
             [ContractAnnotation("value:null => halt")]
             public static void IsNotNullUnconstrained<T>(
-                    [InstantHandle, NoEnumeration, ValidatedNotNull] T value,
+                    [InstantHandle, NoEnumeration, ValidatedNotNull, NotNullOnExit] T value,
                     [InvokerParameterName] string paramName
                 )
             {
@@ -92,21 +94,21 @@ namespace AppMotor.Core.Utils
 
             [PublicAPI]
             [ContractAnnotation("value:null => halt")]
-            public static void IsNotNullOrEmpty([ValidatedNotNull] string? value, [InvokerParameterName] string paramName)
+            public static void IsNotNullOrEmpty([ValidatedNotNull, NotNullOnExit] string? value, [InvokerParameterName] string paramName)
             {
                 VALIDATOR.IsNotNullOrEmpty(value, paramName);
             }
 
             [PublicAPI]
             [ContractAnnotation("value:null => halt")]
-            public static void IsNotNullOrWhiteSpace([ValidatedNotNull] string? value, [InvokerParameterName] string paramName)
+            public static void IsNotNullOrWhiteSpace([ValidatedNotNull, NotNullOnExit] string? value, [InvokerParameterName] string paramName)
             {
                 VALIDATOR.IsNotNullOrWhiteSpace(value, paramName);
             }
 
             [PublicAPI]
             [ContractAnnotation("value:null => halt")]
-            public static void IsNotNullOrEmpty<T>([ValidatedNotNull] IReadOnlyCollection<T>? value, [InvokerParameterName] string paramName)
+            public static void IsNotNullOrEmpty<T>([ValidatedNotNull, NotNullOnExit] IReadOnlyCollection<T>? value, [InvokerParameterName] string paramName)
             {
                 VALIDATOR.IsNotNullOrEmpty(value, paramName);
             }
@@ -117,7 +119,7 @@ namespace AppMotor.Core.Utils
             /// </summary>
             /// <exception cref="CollectionIsReadOnlyArgumentException">Thrown if the collection is read-only.</exception>
             [PublicAPI]
-            public static void IsNotReadOnly<T>([ValidatedNotNull] ICollection<T> value, [InvokerParameterName] string paramName)
+            public static void IsNotReadOnly<T>([ValidatedNotNull, NotNullOnExit] ICollection<T> value, [InvokerParameterName] string paramName)
             {
                 VALIDATOR.IsNotReadOnly(value, paramName);
             }
@@ -168,8 +170,7 @@ namespace AppMotor.Core.Utils
         {
             Argument.IsNotNull(value, paramName);
 
-            // TODO #1: Remove null-forgiving operator once Validate is recognized by the C# compiler
-            return value!;
+            return value;
         }
 
         /// <summary>
@@ -189,8 +190,7 @@ namespace AppMotor.Core.Utils
         {
             Argument.IsNotNull(value, paramName);
 
-            // TODO #1: Remove null-forgiving operator once Validate is recognized by the C# compiler
-            return value!.Value;
+            return value.Value;
         }
 
         /// <summary>
@@ -230,7 +230,7 @@ namespace AppMotor.Core.Utils
             [PublicAPI]
             [ContractAnnotation("value:null => halt")]
             public static void IsNotNull<T>(
-                    [InstantHandle, NoEnumeration, ValidatedNotNull] T? value,
+                    [InstantHandle, NoEnumeration, ValidatedNotNull, NotNullOnExit] T? value,
                     string valueName
                 )
                     where T : class
@@ -245,7 +245,7 @@ namespace AppMotor.Core.Utils
             [PublicAPI]
             [ContractAnnotation("value:null => halt")]
             public static void IsNotNull<T>(
-                    [InstantHandle, NoEnumeration, ValidatedNotNull] T? value,
+                    [InstantHandle, NoEnumeration, ValidatedNotNull, NotNullOnExit] T? value,
                     string valueName
                 )
                     where T : struct
@@ -262,7 +262,7 @@ namespace AppMotor.Core.Utils
             [PublicAPI]
             [ContractAnnotation("value:null => halt")]
             public static void IsNotNullUnconstrained<T>(
-                    [InstantHandle, NoEnumeration, ValidatedNotNull] T value,
+                    [InstantHandle, NoEnumeration, ValidatedNotNull, NotNullOnExit] T value,
                     string valueName
                 )
             {
@@ -271,21 +271,21 @@ namespace AppMotor.Core.Utils
 
             [PublicAPI]
             [ContractAnnotation("value:null => halt")]
-            public static void IsNotNullOrEmpty([ValidatedNotNull] string? value, string valueName)
+            public static void IsNotNullOrEmpty([ValidatedNotNull, NotNullOnExit] string? value, string valueName)
             {
                 VALIDATOR.IsNotNullOrEmpty(value, valueName);
             }
 
             [PublicAPI]
             [ContractAnnotation("value:null => halt")]
-            public static void IsNotNullOrWhiteSpace([ValidatedNotNull] string? value, string valueName)
+            public static void IsNotNullOrWhiteSpace([ValidatedNotNull, NotNullOnExit] string? value, string valueName)
             {
                 VALIDATOR.IsNotNullOrWhiteSpace(value, valueName);
             }
 
             [PublicAPI]
             [ContractAnnotation("value:null => halt")]
-            public static void IsNotNullOrEmpty<T>([ValidatedNotNull] IReadOnlyCollection<T>? value, string valueName)
+            public static void IsNotNullOrEmpty<T>([ValidatedNotNull, NotNullOnExit] IReadOnlyCollection<T>? value, string valueName)
             {
                 VALIDATOR.IsNotNullOrEmpty(value, valueName);
             }
@@ -296,7 +296,7 @@ namespace AppMotor.Core.Utils
             /// </summary>
             /// <exception cref="CollectionIsReadOnlyValueException">Thrown if the collection is read-only.</exception>
             [PublicAPI]
-            public static void IsNotReadOnly<T>([ValidatedNotNull] ICollection<T> value, string valueName)
+            public static void IsNotReadOnly<T>([ValidatedNotNull, NotNullOnExit] ICollection<T> value, string valueName)
             {
                 VALIDATOR.IsNotReadOnly(value, valueName);
             }
@@ -351,7 +351,7 @@ namespace AppMotor.Core.Utils
             /// Instead, <see cref="IsNotNullUnconstrained{T}"/> must be used.</para>
             /// </remarks>
             [ContractAnnotation("value:null => halt")]
-            public void IsNotNull<T>([InstantHandle, NoEnumeration] T? value, string valueName) where T : class
+            public void IsNotNull<T>([InstantHandle, NoEnumeration, NotNullOnExit] T? value, string valueName) where T : class
             {
                 if (value is null)
                 {
@@ -366,7 +366,7 @@ namespace AppMotor.Core.Utils
             /// This check is split into this method and the other overload. See other overload for more details.
             /// </remarks>
             [ContractAnnotation("value:null => halt")]
-            public void IsNotNull<T>([InstantHandle, NoEnumeration] T? value, string valueName) where T : struct
+            public void IsNotNull<T>([InstantHandle, NoEnumeration, NotNullOnExit] T? value, string valueName) where T : struct
             {
                 if (!value.HasValue)
                 {
@@ -378,7 +378,7 @@ namespace AppMotor.Core.Utils
             /// Validates that the given unconstrained generic type value is not null.
             /// </summary>
             [ContractAnnotation("value:null => halt")]
-            public void IsNotNullUnconstrained<T>([InstantHandle, NoEnumeration] T value, string valueName)
+            public void IsNotNullUnconstrained<T>([InstantHandle, NoEnumeration, NotNullOnExit] T value, string valueName)
             {
                 if (value is null)
                 {
@@ -387,7 +387,7 @@ namespace AppMotor.Core.Utils
             }
 
             [ContractAnnotation("value:null => halt")]
-            public void IsNotNullOrEmpty(string? value, string valueName)
+            public void IsNotNullOrEmpty([NotNullOnExit] string? value, string valueName)
             {
                 if (value is null)
                 {
@@ -401,7 +401,7 @@ namespace AppMotor.Core.Utils
             }
 
             [ContractAnnotation("value:null => halt")]
-            public void IsNotNullOrWhiteSpace(string? value, string valueName)
+            public void IsNotNullOrWhiteSpace([NotNullOnExit] string? value, string valueName)
             {
                 // NOTE: For performance reasons (in case this check passes), we use this check first. If it fails,
                 //   we're already in an exception situation and then performance is no longer this important.
@@ -422,7 +422,7 @@ namespace AppMotor.Core.Utils
             }
 
             [ContractAnnotation("value:null => halt")]
-            public void IsNotNullOrEmpty<T>(IReadOnlyCollection<T>? value, string valueName)
+            public void IsNotNullOrEmpty<T>([NotNullOnExit] IReadOnlyCollection<T>? value, string valueName)
             {
                 if (value is null)
                 {
@@ -440,7 +440,7 @@ namespace AppMotor.Core.Utils
             /// is <c>true</c>; otherwise a <see cref="CollectionIsReadOnlyArgumentException"/> will be thrown.
             /// </summary>
             /// <exception cref="CollectionIsReadOnlyArgumentException">Thrown if the collection is read-only.</exception>
-            public void IsNotReadOnly<T>(ICollection<T> value, string valueName)
+            public void IsNotReadOnly<T>([NotNullOnExit] ICollection<T> value, string valueName)
             {
                 if (value is null)
                 {

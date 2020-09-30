@@ -22,6 +22,8 @@ using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
+using NotNullOnExitAttribute = System.Diagnostics.CodeAnalysis.NotNullAttribute;
+
 namespace AppMotor.Core.DataModel
 {
     /// <summary>
@@ -36,7 +38,7 @@ namespace AppMotor.Core.DataModel
         /// </summary>
         /// <seealso cref="IsSensitiveValueType"/>
         [PublicAPI, Pure]
-        public static bool IsSensitiveValue<T>([NotNull] this T value)
+        public static bool IsSensitiveValue<T>([NotNull, NotNullOnExit] this T value)
         {
             Validate.Argument.IsNotNullUnconstrained(value, nameof(value));
 
@@ -45,8 +47,7 @@ namespace AppMotor.Core.DataModel
                 return true;
             }
 
-            // TODO #1: Remove null-forgiving operator once Validate is recognized by the C# compiler
-            if (value!.GetType().IsMarkedWith<SensitiveValueMarker>())
+            if (value.GetType().IsMarkedWith<SensitiveValueMarker>())
             {
                 return true;
             }
