@@ -201,6 +201,7 @@ namespace AppMotor.Core.Utils
         /// <returns>Simply returns <paramref name="value"/>.</returns>
         [PublicAPI]
         [MustUseReturnValue]
+        [NotNull]
         [ContractAnnotation("value:null => halt")]
         public static T AsNotNullArgumentUnconstrained<T>(
                 [InstantHandle, NoEnumeration, ValidatedNotNull] this T value,
@@ -209,8 +210,7 @@ namespace AppMotor.Core.Utils
         {
             Argument.IsNotNullUnconstrained(value, paramName);
 
-            // TODO #1: Remove null-forgiving operator once Validate is recognized by the C# compiler
-            return value!;
+            return value;
         }
 
         #endregion Argument Validation Extension Methods
