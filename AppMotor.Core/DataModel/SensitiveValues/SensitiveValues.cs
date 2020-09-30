@@ -45,6 +45,7 @@ namespace AppMotor.Core.DataModel
                 return true;
             }
 
+            // TODO #1: Remove null-forgiving operator once Validate is recognized by the C# compiler
             if (value!.GetType().IsMarkedWith<SensitiveValueMarker>())
             {
                 return true;

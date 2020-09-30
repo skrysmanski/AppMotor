@@ -167,6 +167,8 @@ namespace AppMotor.Core.Utils
                 where T : class
         {
             Argument.IsNotNull(value, paramName);
+
+            // TODO #1: Remove null-forgiving operator once Validate is recognized by the C# compiler
             return value!;
         }
 
@@ -186,6 +188,8 @@ namespace AppMotor.Core.Utils
                 where T : struct
         {
             Argument.IsNotNull(value, paramName);
+
+            // TODO #1: Remove null-forgiving operator once Validate is recognized by the C# compiler
             return value!.Value;
         }
 
@@ -204,6 +208,8 @@ namespace AppMotor.Core.Utils
             )
         {
             Argument.IsNotNullUnconstrained(value, paramName);
+
+            // TODO #1: Remove null-forgiving operator once Validate is recognized by the C# compiler
             return value!;
         }
 
