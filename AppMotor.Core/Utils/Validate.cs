@@ -397,18 +397,20 @@ namespace AppMotor.Core.Utils
             [ContractAnnotation("value:null => halt")]
             public void IsNotNullOrWhiteSpace(string? value, string valueName)
             {
-                if (value is null)
-                {
-                    throw CreateNullException(valueName);
-                }
-
-                if (value.Length == 0)
-                {
-                    throw CreateRootException(ExceptionMessages.STRING_IS_EMPTY, valueName);
-                }
-
+                // NOTE: For performance reasons (in case this check passes), we use this check first. If it fails,
+                //   we're already in an exception situation and then performance is no longer this important.
                 if (string.IsNullOrWhiteSpace(value))
                 {
+                    if (value is null)
+                    {
+                        throw CreateNullException(valueName);
+                    }
+
+                    if (value.Length == 0)
+                    {
+                        throw CreateRootException(ExceptionMessages.STRING_IS_EMPTY, valueName);
+                    }
+
                     throw CreateRootException(ExceptionMessages.STRING_IS_WHITE_SPACES, valueName);
                 }
             }
