@@ -45,45 +45,45 @@ namespace AppMotor.Core.Utils
             private static readonly ArgumentValidator VALIDATOR = new ArgumentValidator();
 
             [PublicAPI]
-            [ContractAnnotation("obj:null => halt")]
+            [ContractAnnotation("value:null => halt")]
             public static void IsNotNull<T>(
-                    [InstantHandle, NoEnumeration, ValidatedNotNull] T obj,
+                    [InstantHandle, NoEnumeration, ValidatedNotNull] T value,
                     [InvokerParameterName] string paramName
                 )
             {
-                VALIDATOR.IsNotNull(obj, paramName);
+                VALIDATOR.IsNotNull(value, paramName);
             }
 
             [PublicAPI]
-            [ContractAnnotation("obj:null => halt")]
-            public static void IsNotNullOrEmpty([ValidatedNotNull] string? obj, [InvokerParameterName] string paramName)
+            [ContractAnnotation("value:null => halt")]
+            public static void IsNotNullOrEmpty([ValidatedNotNull] string? value, [InvokerParameterName] string paramName)
             {
-                VALIDATOR.IsNotNullOrEmpty(obj, paramName);
+                VALIDATOR.IsNotNullOrEmpty(value, paramName);
             }
 
             [PublicAPI]
-            [ContractAnnotation("obj:null => halt")]
-            public static void IsNotNullOrWhiteSpace([ValidatedNotNull] string? obj, [InvokerParameterName] string paramName)
+            [ContractAnnotation("value:null => halt")]
+            public static void IsNotNullOrWhiteSpace([ValidatedNotNull] string? value, [InvokerParameterName] string paramName)
             {
-                VALIDATOR.IsNotNullOrWhiteSpace(obj, paramName);
+                VALIDATOR.IsNotNullOrWhiteSpace(value, paramName);
             }
 
             [PublicAPI]
-            [ContractAnnotation("obj:null => halt")]
-            public static void IsNotNullOrEmpty<T>([ValidatedNotNull] IReadOnlyCollection<T>? obj, [InvokerParameterName] string paramName)
+            [ContractAnnotation("value:null => halt")]
+            public static void IsNotNullOrEmpty<T>([ValidatedNotNull] IReadOnlyCollection<T>? value, [InvokerParameterName] string paramName)
             {
-                VALIDATOR.IsNotNullOrEmpty(obj, paramName);
+                VALIDATOR.IsNotNullOrEmpty(value, paramName);
             }
 
             /// <summary>
-            /// Verifies that the <see cref="ICollection{T}.IsReadOnly"/> property of <paramref name="collectionToCheck"/>
+            /// Verifies that the <see cref="ICollection{T}.IsReadOnly"/> property of <paramref name="value"/>
             /// is <c>true</c>; otherwise a <see cref="CollectionIsReadOnlyArgumentException"/> will be thrown.
             /// </summary>
             /// <exception cref="CollectionIsReadOnlyArgumentException">Thrown if the collection is read-only.</exception>
             [PublicAPI]
-            public static void IsNotReadOnly<T>([ValidatedNotNull] ICollection<T> collectionToCheck, [InvokerParameterName] string paramName)
+            public static void IsNotReadOnly<T>([ValidatedNotNull] ICollection<T> value, [InvokerParameterName] string paramName)
             {
-                VALIDATOR.IsNotReadOnly(collectionToCheck, paramName);
+                VALIDATOR.IsNotReadOnly(value, paramName);
             }
 
             private sealed class ArgumentValidator : ValidatorBase<ArgumentException>
@@ -120,17 +120,17 @@ namespace AppMotor.Core.Utils
         /// exists for constructor chaining where argument members are passed to another constructor
         /// and thus can't be validated with a statement.
         /// </summary>
-        /// <returns>Simply returns <paramref name="obj"/>.</returns>
+        /// <returns>Simply returns <paramref name="value"/>.</returns>
         [PublicAPI]
         [MustUseReturnValue]
-        [ContractAnnotation("obj:null => halt")]
+        [ContractAnnotation("value:null => halt")]
         public static T AsNotNullArgument<T>(
-                [InstantHandle, NoEnumeration, ValidatedNotNull] this T obj,
+                [InstantHandle, NoEnumeration, ValidatedNotNull] this T value,
                 [InvokerParameterName] string paramName
             )
         {
-            Argument.IsNotNull(obj, paramName);
-            return obj;
+            Argument.IsNotNull(value, paramName);
+            return value;
         }
 
         #endregion Argument Validation Extension Methods
@@ -144,45 +144,45 @@ namespace AppMotor.Core.Utils
             private static readonly ValueValidator VALIDATOR = new ValueValidator();
 
             [PublicAPI]
-            [ContractAnnotation("obj:null => halt")]
+            [ContractAnnotation("value:null => halt")]
             public static void IsNotNull<T>(
-                    [InstantHandle, NoEnumeration, ValidatedNotNull] T obj,
+                    [InstantHandle, NoEnumeration, ValidatedNotNull] T value,
                     string valueName
                 )
             {
-                VALIDATOR.IsNotNull(obj, valueName);
+                VALIDATOR.IsNotNull(value, valueName);
             }
 
             [PublicAPI]
-            [ContractAnnotation("obj:null => halt")]
-            public static void IsNotNullOrEmpty([ValidatedNotNull] string? obj, string valueName)
+            [ContractAnnotation("value:null => halt")]
+            public static void IsNotNullOrEmpty([ValidatedNotNull] string? value, string valueName)
             {
-                VALIDATOR.IsNotNullOrEmpty(obj, valueName);
+                VALIDATOR.IsNotNullOrEmpty(value, valueName);
             }
 
             [PublicAPI]
-            [ContractAnnotation("obj:null => halt")]
-            public static void IsNotNullOrWhiteSpace([ValidatedNotNull] string? obj, string valueName)
+            [ContractAnnotation("value:null => halt")]
+            public static void IsNotNullOrWhiteSpace([ValidatedNotNull] string? value, string valueName)
             {
-                VALIDATOR.IsNotNullOrWhiteSpace(obj, valueName);
+                VALIDATOR.IsNotNullOrWhiteSpace(value, valueName);
             }
 
             [PublicAPI]
-            [ContractAnnotation("obj:null => halt")]
-            public static void IsNotNullOrEmpty<T>([ValidatedNotNull] IReadOnlyCollection<T>? obj, string valueName)
+            [ContractAnnotation("value:null => halt")]
+            public static void IsNotNullOrEmpty<T>([ValidatedNotNull] IReadOnlyCollection<T>? value, string valueName)
             {
-                VALIDATOR.IsNotNullOrEmpty(obj, valueName);
+                VALIDATOR.IsNotNullOrEmpty(value, valueName);
             }
 
             /// <summary>
-            /// Verifies that the <see cref="ICollection{T}.IsReadOnly"/> property of <paramref name="collectionToCheck"/>
+            /// Verifies that the <see cref="ICollection{T}.IsReadOnly"/> property of <paramref name="value"/>
             /// is <c>true</c>; otherwise a <see cref="CollectionIsReadOnlyValueException"/> will be thrown.
             /// </summary>
             /// <exception cref="CollectionIsReadOnlyValueException">Thrown if the collection is read-only.</exception>
             [PublicAPI]
-            public static void IsNotReadOnly<T>([ValidatedNotNull] ICollection<T> collectionToCheck, string valueName)
+            public static void IsNotReadOnly<T>([ValidatedNotNull] ICollection<T> value, string valueName)
             {
-                VALIDATOR.IsNotReadOnly(collectionToCheck, valueName);
+                VALIDATOR.IsNotReadOnly(value, valueName);
             }
 
             private sealed class ValueValidator : ValidatorBase<ValueException>
@@ -219,75 +219,75 @@ namespace AppMotor.Core.Utils
 
             protected abstract TBaseException CreateRootException(string message, string? valueName);
 
-            [ContractAnnotation("obj:null => halt")]
-            public void IsNotNull<T>([InstantHandle, NoEnumeration] T obj, string valueName)
+            [ContractAnnotation("value:null => halt")]
+            public void IsNotNull<T>([InstantHandle, NoEnumeration] T value, string valueName)
             {
-                if (obj is null)
+                if (value is null)
                 {
                     throw CreateNullException(valueName);
                 }
             }
 
-            [ContractAnnotation("obj:null => halt")]
-            public void IsNotNullOrEmpty(string? obj, string valueName)
+            [ContractAnnotation("value:null => halt")]
+            public void IsNotNullOrEmpty(string? value, string valueName)
             {
-                if (obj is null)
+                if (value is null)
                 {
                     throw CreateNullException(valueName);
                 }
 
-                if (obj.Length == 0)
+                if (value.Length == 0)
                 {
                     throw CreateRootException(ExceptionMessages.STRING_IS_EMPTY, valueName);
                 }
             }
 
-            [ContractAnnotation("obj:null => halt")]
-            public void IsNotNullOrWhiteSpace(string? obj, string valueName)
+            [ContractAnnotation("value:null => halt")]
+            public void IsNotNullOrWhiteSpace(string? value, string valueName)
             {
-                if (obj is null)
+                if (value is null)
                 {
                     throw CreateNullException(valueName);
                 }
 
-                if (obj.Length == 0)
+                if (value.Length == 0)
                 {
                     throw CreateRootException(ExceptionMessages.STRING_IS_EMPTY, valueName);
                 }
 
-                if (string.IsNullOrWhiteSpace(obj))
+                if (string.IsNullOrWhiteSpace(value))
                 {
                     throw CreateRootException(ExceptionMessages.STRING_IS_WHITE_SPACES, valueName);
                 }
             }
 
-            [ContractAnnotation("obj:null => halt")]
-            public void IsNotNullOrEmpty<T>(IReadOnlyCollection<T>? obj, string valueName)
+            [ContractAnnotation("value:null => halt")]
+            public void IsNotNullOrEmpty<T>(IReadOnlyCollection<T>? value, string valueName)
             {
-                if (obj is null)
+                if (value is null)
                 {
                     throw CreateNullException(valueName);
                 }
 
-                if (obj.Count == 0)
+                if (value.Count == 0)
                 {
                     throw CreateRootException(ExceptionMessages.COLLECTION_IS_EMPTY, valueName);
                 }
             }
 
             /// <summary>
-            /// Verifies that the <see cref="ICollection{T}.IsReadOnly"/> property of <paramref name="collectionToCheck"/>
+            /// Verifies that the <see cref="ICollection{T}.IsReadOnly"/> property of <paramref name="value"/>
             /// is <c>true</c>; otherwise a <see cref="CollectionIsReadOnlyArgumentException"/> will be thrown.
             /// </summary>
             /// <exception cref="CollectionIsReadOnlyArgumentException">Thrown if the collection is read-only.</exception>
-            public void IsNotReadOnly<T>(ICollection<T> collectionToCheck, string valueName)
+            public void IsNotReadOnly<T>(ICollection<T> value, string valueName)
             {
-                if (collectionToCheck is null)
+                if (value is null)
                 {
                     throw CreateNullException(valueName);
                 }
 
-                if (collectionToCheck.IsReadOnly)
+                if (value.IsReadOnly)
                 {
                     throw CreateCollectionIsReadOnlyException(valueName);
                 }
