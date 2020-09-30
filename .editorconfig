@@ -1,5 +1,12 @@
-# Editor configuration
+#################################################################################
+#
+# Editor Configurations
+#
 # For details, see: https://editorconfig.org/#file-format-details
+#
+# For Visual Studio additions, see: https://aka.ms/editorconfigdocs
+#
+#################################################################################
 
 root = true
 
