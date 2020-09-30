@@ -110,6 +110,28 @@ namespace AppMotor.Core.Utils
 
         #endregion Argument Validation
 
+        #region Argument Validation Extension Methods
+
+        /// <summary>
+        /// This method does the same thing as <see cref="Argument.IsNotNull{T}"/> and primarily
+        /// exists for constructor chaining where argument members are passed to another constructor
+        /// and thus can't be validated with a statement.
+        /// </summary>
+        /// <returns>Simply returns <paramref name="obj"/>.</returns>
+        [PublicAPI]
+        [MustUseReturnValue]
+        [ContractAnnotation("obj:null => halt")]
+        public static T AsNotNullArgument<T>(
+                [InstantHandle, NoEnumeration, ValidatedNotNull] this T obj,
+                [InvokerParameterName] string paramName
+            )
+        {
+            Argument.IsNotNull(obj, paramName);
+            return obj;
+        }
+
+        #endregion Argument Validation Extension Methods
+
         #region Value Validation
 
 #pragma warning disable CA1034 // Nested types should not be visible
