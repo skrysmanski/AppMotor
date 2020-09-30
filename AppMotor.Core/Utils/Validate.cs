@@ -46,7 +46,10 @@ namespace AppMotor.Core.Utils
 
             [PublicAPI]
             [ContractAnnotation("obj:null => halt")]
-            public static void IsNotNull<T>([InstantHandle, NoEnumeration, ValidatedNotNull] T obj, [InvokerParameterName] string paramName)
+            public static void IsNotNull<T>(
+                    [InstantHandle, NoEnumeration, ValidatedNotNull] T obj,
+                    [InvokerParameterName] string paramName
+                )
             {
                 VALIDATOR.IsNotNull(obj, paramName);
             }
@@ -142,7 +145,10 @@ namespace AppMotor.Core.Utils
 
             [PublicAPI]
             [ContractAnnotation("obj:null => halt")]
-            public static void IsNotNull<T>([InstantHandle, NoEnumeration, ValidatedNotNull] T obj, string valueName)
+            public static void IsNotNull<T>(
+                    [InstantHandle, NoEnumeration, ValidatedNotNull] T obj,
+                    string valueName
+                )
             {
                 VALIDATOR.IsNotNull(obj, valueName);
             }
