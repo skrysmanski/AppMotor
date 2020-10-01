@@ -191,7 +191,7 @@ namespace AppMotor.Core.Logging
                 //   exception type. This especially excludes properties that hide properties
                 //   from the base class with the same name. But that's ok. We don't need
                 //   to return two properties with the same name.
-                this.m_allPropertiesOrderedByName = exceptionType.GetProperties(BindingFlags.Public|BindingFlags.Instance)
+                this.m_allPropertiesOrderedByName = exceptionType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                                                                  .OrderBy(prop => prop.Name)
                                                                  .ToArray();
 
