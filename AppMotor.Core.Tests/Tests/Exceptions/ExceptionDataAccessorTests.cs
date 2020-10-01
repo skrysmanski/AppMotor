@@ -18,7 +18,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
 
 using AppMotor.Core.Exceptions;
 
@@ -64,7 +63,6 @@ namespace AppMotor.Core.Tests.Exceptions
         }
 
         [Fact]
-        [SuppressMessage("ReSharper", "HeuristicUnreachableCode")]
         public void TestNullData()
         {
             // setup
@@ -215,7 +213,7 @@ namespace AppMotor.Core.Tests.Exceptions
                 /// <inheritdoc />
                 public bool TryGetValue(object key, out object value)
                 {
-                    throw new NotImplementedException();
+                    throw new NotSupportedException("No yet implemented");
                 }
 
                 /// <inheritdoc />
