@@ -280,7 +280,7 @@ namespace AppMotor.Core.Tests.IO
             public bool IsDisposed { get; private set; }
 
             /// <inheritdoc />
-            public TestMemoryStream([NotNull] byte[] buffer, bool writable) : base(buffer, writable)
+            public TestMemoryStream(byte[] buffer, bool writable) : base(buffer, writable)
             {
             }
 

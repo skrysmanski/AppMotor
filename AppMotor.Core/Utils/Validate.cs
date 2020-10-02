@@ -193,7 +193,7 @@ namespace AppMotor.Core.Utils
         /// <returns>Simply returns <paramref name="value"/>.</returns>
         [PublicAPI]
         [MustUseReturnValue]
-        [NotNull]
+        [return: NotNullOnExit]
         public static T AsNotNullArgumentUnconstrained<T>(
                 [InstantHandle, NoEnumeration, ValidatedNotNull, NotNullOnExit] this T value,
                 [InvokerParameterName] string paramName
