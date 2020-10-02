@@ -19,7 +19,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace AppMotor.Core.Utils
 {
-    // TODO: Remove, when https://github.com/dotnet/roslyn-analyzers/issues/4248 got implemented
+    // TODO #2: Remove, when https://github.com/dotnet/roslyn-analyzers/issues/4248 got implemented
     /// <summary>
     /// Tells the FxCop code analyzers (rule CA1062) that the parameter will be checked for null.
     ///
