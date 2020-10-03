@@ -15,7 +15,6 @@
 #endregion
 
 using System;
-using System.Buffers;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -42,55 +41,28 @@ namespace AppMotor.Core.IO
 
         TimeSpan WriteTimeout { get; set; }
 
-        void CopyTo(Stream destination)
-        {
-            CopyTo(destination, bufferSize: null);
-        }
+        void CopyTo(Stream destination);
 
         void CopyTo(Stream destination, int? bufferSize);
 
-        Task CopyToAsync(Stream destination)
-        {
-            return CopyToAsync(destination, CancellationToken.None);
-        }
+        Task CopyToAsync(Stream destination);
 
-        Task CopyToAsync(Stream destination, int? bufferSize)
-        {
-            return CopyToAsync(destination, bufferSize, CancellationToken.None);
-        }
+        Task CopyToAsync(Stream destination, int? bufferSize);
 
-        Task CopyToAsync(Stream destination, CancellationToken cancellationToken)
-        {
-            return CopyToAsync(destination, bufferSize: null, cancellationToken);
-        }
+        Task CopyToAsync(Stream destination, CancellationToken cancellationToken);
 
         Task CopyToAsync(Stream destination, int? bufferSize, CancellationToken cancellationToken);
 
+        [MustUseReturnValue]
+        int Read(byte[] buffer);
+
+        [MustUseReturnValue]
         int Read(byte[] buffer, int offset, int count);
 
-        byte? ReadByte()
-        {
-            byte[] sharedBuffer = ArrayPool<byte>.Shared.Rent(1);
-            try
-            {
-                var numRead = Read(sharedBuffer, 0, 1);
-                if (numRead == 0)
-                {
-                    return null;
-                }
+        [MustUseReturnValue]
+        byte? ReadByte();
 
-                return sharedBuffer[0];
-            }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(sharedBuffer);
-            }
-        }
-
-        ValueTask<int> ReadAsync(Memory<byte> buffer)
-        {
-            return ReadAsync(buffer, CancellationToken.None);
-        }
+        ValueTask<int> ReadAsync(Memory<byte> buffer);
 
         ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken);
 
