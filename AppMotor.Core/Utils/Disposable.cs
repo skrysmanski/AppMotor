@@ -26,9 +26,16 @@ namespace AppMotor.Core.Utils
     /// <see cref="DisposeManagedResources"/> and/or <see cref="DisposeUnmanagedResources"/>.
     /// If a child class defines a finalizer, it must call <see cref="DisposeFromFinalizer"/>.
     /// </summary>
+    /// <seealso cref="AsyncDisposable"/>
     public abstract class Disposable : IDisposable
     {
-        private int m_disposeState = DisposeStates.NOT_DISPOSED;
+        private int m_disposeState = DisposedStatesAsIntegers.NOT_DISPOSED;
+
+        /// <summary>
+        /// The "disposed" state of this instance.
+        /// </summary>
+        [PublicAPI]
+        public DisposedStates DisposedState => (DisposedStates)this.m_disposeState;
 
         /// <inheritdoc />
         public void Dispose()
@@ -53,22 +60,51 @@ namespace AppMotor.Core.Utils
         private void Dispose(bool disposing)
 #pragma warning restore CA1063 // Implement IDisposable Correctly
         {
-            var origValue = Interlocked.CompareExchange(ref this.m_disposeState, DisposeStates.DISPOSING, comparand: DisposeStates.NOT_DISPOSED);
-            if (origValue != DisposeStates.NOT_DISPOSED)
+            if (BeginDispose())
+            {
+                try
+                {
+                    // Always dispose un(!)-managed resources
+                    DisposeUnmanagedResources();
+
+                    if (disposing)
+                    {
+                        DisposeManagedResources();
+                    }
+                }
+                catch (Exception)
+                {
+                    EndDispose(exception: true);
+                    throw;
+                }
+
+                EndDispose(exception: false);
+            }
+        }
+
+        [MustUseReturnValue]
+        internal bool BeginDispose()
+        {
+            var origValue = Interlocked.CompareExchange(ref this.m_disposeState, DisposedStatesAsIntegers.DISPOSING, comparand: DisposedStatesAsIntegers.NOT_DISPOSED);
+            if (origValue != DisposedStatesAsIntegers.NOT_DISPOSED)
             {
                 // Already disposed or disposing.
-                return;
+                return false;
             }
 
-            // Always dispose un(!)-managed resources
-            DisposeUnmanagedResources();
+            return true;
+        }
 
-            if (disposing)
+        internal void EndDispose(bool exception)
+        {
+            if (exception)
             {
-                DisposeManagedResources();
+                Interlocked.Exchange(ref this.m_disposeState, DisposedStatesAsIntegers.NOT_DISPOSED);
             }
-
-            Interlocked.Exchange(ref this.m_disposeState, DisposeStates.DISPOSED);
+            else
+            {
+                Interlocked.Exchange(ref this.m_disposeState, DisposedStatesAsIntegers.DISPOSED);
+            }
         }
 
         /// <summary>
@@ -77,6 +113,7 @@ namespace AppMotor.Core.Utils
         /// <para>Note: Do not call this method directly!</para>
         /// </summary>
         /// <seealso cref="DisposeUnmanagedResources"/>
+        [PublicAPI]
         protected virtual void DisposeManagedResources()
         {
             // Does nothing by default.
@@ -88,6 +125,7 @@ namespace AppMotor.Core.Utils
         /// <para>Note: Do not call this method directly!</para>
         /// </summary>
         /// <seealso cref="DisposeManagedResources"/>
+        [PublicAPI]
         protected virtual void DisposeUnmanagedResources()
         {
             // Does nothing by default.
@@ -98,21 +136,21 @@ namespace AppMotor.Core.Utils
         /// if it has already been disposed.
         /// </summary>
         [PublicAPI]
-        protected void VerifyNotDisposed()
+        public void VerifyNotDisposed()
         {
-            var value = Interlocked.CompareExchange(ref this.m_disposeState, DisposeStates.NOT_DISPOSED, DisposeStates.NOT_DISPOSED);
-            if (value != DisposeStates.NOT_DISPOSED)
+            var value = Interlocked.CompareExchange(ref this.m_disposeState, DisposedStatesAsIntegers.NOT_DISPOSED, DisposedStatesAsIntegers.NOT_DISPOSED);
+            if (value != DisposedStatesAsIntegers.NOT_DISPOSED)
             {
                 throw new ObjectDisposedException(GetType().Name);
             }
         }
 
         // NOTE: This should be an enum but it can't be because "Interlocked" requires an int field.
-        private static class DisposeStates
+        private static class DisposedStatesAsIntegers
         {
-            public const int NOT_DISPOSED = 0;
-            public const int DISPOSING = 1;
-            public const int DISPOSED = 2;
+            public const int NOT_DISPOSED = (int)DisposedStates.NotDisposed;
+            public const int DISPOSING = (int)DisposedStates.Disposing;
+            public const int DISPOSED = (int)DisposedStates.Disposed;
         }
     }
 }

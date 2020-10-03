@@ -74,8 +74,8 @@ dotnet_sort_system_directives_first = true:suggestion
 
 # CA1031: Do not catch general exception types
 # Reason: There are lots of places (especially in reusable library code) that make catching "Exception"
-# necessary/useful. In my experience with this rule, it's suppressed 99% of the time - making it more of
-# an annoyance than a helpful rule.
+#   necessary/useful. In my experience with this rule, it's suppressed 99% of the time - making it more of
+#   an annoyance than a helpful rule.
 dotnet_diagnostic.CA1031.severity = none
 
 # CA1032: Implement standard exception constructors
@@ -90,10 +90,15 @@ dotnet_diagnostic.CA1040.severity = none
 # Reason: Our style guide uses underscores for constants.
 dotnet_diagnostic.CA1707.severity = none
 
+# CA1717: Only FlagsAttribute enums should have plural names
+# Reason: That's a matter of preference. On the other hand, allowing plural enum name resolves name conflicts if
+#   the enum is a nested enum and there's a property for that enum in the outer class.
+dotnet_diagnostic.CA1717.severity = none
+
 # CA2225: Operator overloads have named alternates
 # Reason: This rule is "nice" but makes writing operators more cumbersome. The primary reason for this rule
-# is "It's provided for developers who program in languages that do not support overloaded operators." but
-# we don't really care about these language (whatever they are).
+#   is "It's provided for developers who program in languages that do not support overloaded operators." but
+#   we don't really care about these language (whatever they are).
 dotnet_diagnostic.CA2225.severity = none
 
 
