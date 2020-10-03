@@ -269,7 +269,7 @@ namespace AppMotor.Core.Utils
 
         private sealed class ReadableBase32SymbolGroupStream
         {
-            private const ulong BIT_MASK = (1 << BITS_PER_SYMBOL) - 1;
+            private const ulong SYMBOL_BIT_MASK = (1 << BITS_PER_SYMBOL) - 1;
 
             private readonly byte[] m_data;
 
@@ -312,26 +312,26 @@ namespace AppMotor.Core.Utils
 
                 int symbolCount;
 
-                this.SymbolBuffer[0] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 1) * BITS_PER_SYMBOL)) & BIT_MASK);
-                this.SymbolBuffer[1] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 2) * BITS_PER_SYMBOL)) & BIT_MASK);
+                this.SymbolBuffer[0] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 1) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
+                this.SymbolBuffer[1] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 2) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
 
                 if (bytesToRead > 1)
                 {
-                    this.SymbolBuffer[2] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 3) * BITS_PER_SYMBOL)) & BIT_MASK);
-                    this.SymbolBuffer[3] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 4) * BITS_PER_SYMBOL)) & BIT_MASK);
+                    this.SymbolBuffer[2] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 3) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
+                    this.SymbolBuffer[3] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 4) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
 
                     if (bytesToRead > 2)
                     {
-                        this.SymbolBuffer[4] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 5) * BITS_PER_SYMBOL)) & BIT_MASK);
+                        this.SymbolBuffer[4] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 5) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
 
                         if (bytesToRead > 3)
                         {
-                            this.SymbolBuffer[5] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 6) * BITS_PER_SYMBOL)) & BIT_MASK);
-                            this.SymbolBuffer[6] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 7) * BITS_PER_SYMBOL)) & BIT_MASK);
+                            this.SymbolBuffer[5] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 6) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
+                            this.SymbolBuffer[6] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 7) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
 
                             if (bytesToRead == 5)
                             {
-                                this.SymbolBuffer[7] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 8) * BITS_PER_SYMBOL)) & BIT_MASK);
+                                this.SymbolBuffer[7] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 8) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
                                 symbolCount = 8;
                             }
                             else
@@ -363,7 +363,7 @@ namespace AppMotor.Core.Utils
 
         private sealed class WritableBase32SymbolGroupStream
         {
-            private const int BYTE_MASK = 0xFF;
+            private const int BYTE_BIT_MASK = 0xFF;
 
             private readonly byte[] m_buffer;
 
@@ -409,7 +409,7 @@ namespace AppMotor.Core.Utils
 
                 for (int i = 0; i < byteCountToWrite; i++)
                 {
-                    byte byteToWrite = (byte)((allBits >> ((BYTES_PER_GROUP - i - 1) * BITS_PER_BYTE)) & BYTE_MASK);
+                    byte byteToWrite = (byte)((allBits >> ((BYTES_PER_GROUP - i - 1) * BITS_PER_BYTE)) & BYTE_BIT_MASK);
                     this.m_buffer[this.WrittenBytes] = byteToWrite;
                     this.WrittenBytes++;
                 }
