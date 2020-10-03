@@ -14,6 +14,7 @@
 // limitations under the License.
 #endregion
 
+using System;
 using System.IO;
 
 using JetBrains.Annotations;
@@ -34,6 +35,32 @@ namespace AppMotor.Core.IO
         public ReadOnlyMemoryStream(byte[] buffer, int index, int count)
             : base(new MemoryStream(buffer, index, count, writable: false))
         {
+        }
+
+        public ReadOnlyMemoryStream(ArraySegment<byte> buffer)
+            : base(CreateMemoryStreamFromArraySegment(buffer))
+        {
+        }
+
+        [MustUseReturnValue]
+        private static MemoryStream CreateMemoryStreamFromArraySegment(ArraySegment<byte> buffer)
+        {
+            if (buffer.Array is null)
+            {
+                if (buffer.Offset == 0 && buffer.Count == 0)
+                {
+                    return new MemoryStream(Array.Empty<byte>(), 0, 0, writable: false);
+                }
+                else
+                {
+                    // Judging from the code of ArraySegment, this should never happen.
+                    throw new ArgumentException("The array segment contains no array.", nameof(buffer));
+                }
+            }
+            else
+            {
+                return new MemoryStream(buffer.Array, buffer.Offset, buffer.Count, writable: false);
+            }
         }
     }
 }
