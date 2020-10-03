@@ -67,7 +67,9 @@ dotnet_sort_system_directives_first = true:suggestion
 #
 # Code analysis rules
 #
-# For each rule, see: https://docs.microsoft.com/en-us/visualstudio/code-quality/caXXXX
+# For each rule, see: https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/caXXXX
+#
+# The FxCop project: https://github.com/dotnet/roslyn-analyzers
 #
 
 # CA1031: Do not catch general exception types
