@@ -46,10 +46,10 @@ namespace AppMotor.Core.IO
         Task CopyToAsync(Stream destination, int? bufferSize = null, CancellationToken cancellationToken = default);
 
         [MustUseReturnValue]
-        int Read(ArraySegment<byte> buffer);
+        byte? ReadByte();
 
         [MustUseReturnValue]
-        byte? ReadByte();
+        int Read(Span<byte> buffer);
 
         ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default);
 

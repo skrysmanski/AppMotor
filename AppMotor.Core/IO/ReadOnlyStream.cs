@@ -117,18 +117,12 @@ namespace AppMotor.Core.IO
         }
 
         /// <inheritdoc />
-        public int Read(ArraySegment<byte> buffer)
-        {
-            return this.m_underlyingStream.Read(buffer.Array!, buffer.Offset, buffer.Count);
-        }
-
-        /// <inheritdoc />
         public byte? ReadByte()
         {
             byte[] sharedBuffer = ArrayPool<byte>.Shared.Rent(1);
             try
             {
-                var numRead = Read(sharedBuffer[0..1]);
+                var numRead = Read(sharedBuffer.AsSpan());
                 if (numRead == 0)
                 {
                     return null;
@@ -140,6 +134,18 @@ namespace AppMotor.Core.IO
             {
                 ArrayPool<byte>.Shared.Return(sharedBuffer);
             }
+        }
+
+        /// <inheritdoc />
+        public int Read(Span<byte> buffer)
+        {
+            // NOTE: While the default implementation of "Stream.Read(Span)" may seem to have
+            //   worse performance than "Read(byte[],int,int)" (because of the array being copied),
+            //   most Stream implementations override this method to have a similar performance as
+            //   "Read(byte[],int,int)". Although there is no way to detect this, the Span-based API
+            //   is the newer one - so we're going to support it (instead of the older API).
+
+            return this.m_underlyingStream.Read(buffer);
         }
 
         /// <inheritdoc />
