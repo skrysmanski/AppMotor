@@ -41,30 +41,17 @@ namespace AppMotor.Core.IO
 
         TimeSpan WriteTimeout { get; set; }
 
-        void CopyTo(Stream destination);
+        void CopyTo(Stream destination, int? bufferSize = null);
 
-        void CopyTo(Stream destination, int? bufferSize);
-
-        Task CopyToAsync(Stream destination);
-
-        Task CopyToAsync(Stream destination, int? bufferSize);
-
-        Task CopyToAsync(Stream destination, CancellationToken cancellationToken);
-
-        Task CopyToAsync(Stream destination, int? bufferSize, CancellationToken cancellationToken);
+        Task CopyToAsync(Stream destination, int? bufferSize = null, CancellationToken cancellationToken = default);
 
         [MustUseReturnValue]
-        int Read(byte[] buffer);
-
-        [MustUseReturnValue]
-        int Read(byte[] buffer, int offset, int count);
+        int Read(ArraySegment<byte> buffer);
 
         [MustUseReturnValue]
         byte? ReadByte();
 
-        ValueTask<int> ReadAsync(Memory<byte> buffer);
-
-        ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken);
+        ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default);
 
         long Seek(long offset, SeekOrigin origin);
     }

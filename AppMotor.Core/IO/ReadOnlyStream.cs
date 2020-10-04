@@ -91,13 +91,7 @@ namespace AppMotor.Core.IO
         }
 
         /// <inheritdoc />
-        public void CopyTo(Stream destination)
-        {
-            CopyTo(destination, bufferSize: null);
-        }
-
-        /// <inheritdoc />
-        public void CopyTo(Stream destination, int? bufferSize)
+        public void CopyTo(Stream destination, int? bufferSize = null)
         {
             if (bufferSize == null)
             {
@@ -110,25 +104,7 @@ namespace AppMotor.Core.IO
         }
 
         /// <inheritdoc />
-        public Task CopyToAsync(Stream destination)
-        {
-            return CopyToAsync(destination, bufferSize: null, CancellationToken.None);
-        }
-
-        /// <inheritdoc />
-        public Task CopyToAsync(Stream destination, int? bufferSize)
-        {
-            return CopyToAsync(destination, bufferSize, CancellationToken.None);
-        }
-
-        /// <inheritdoc />
-        public Task CopyToAsync(Stream destination, CancellationToken cancellationToken)
-        {
-            return CopyToAsync(destination, bufferSize: null, CancellationToken.None);
-        }
-
-        /// <inheritdoc />
-        public async Task CopyToAsync(Stream destination, int? bufferSize, CancellationToken cancellationToken)
+        public async Task CopyToAsync(Stream destination, int? bufferSize = null, CancellationToken cancellationToken = default)
         {
             if (bufferSize == null)
             {
@@ -141,17 +117,9 @@ namespace AppMotor.Core.IO
         }
 
         /// <inheritdoc />
-        public int Read(byte[] buffer)
+        public int Read(ArraySegment<byte> buffer)
         {
-            Validate.Argument.IsNotNull(buffer, nameof(buffer));
-
-            return Read(buffer, 0, buffer.Length);
-        }
-
-        /// <inheritdoc />
-        public int Read(byte[] buffer, int offset, int count)
-        {
-            return this.m_underlyingStream.Read(buffer, offset, count);
+            return this.m_underlyingStream.Read(buffer.Array!, buffer.Offset, buffer.Count);
         }
 
         /// <inheritdoc />
@@ -160,7 +128,7 @@ namespace AppMotor.Core.IO
             byte[] sharedBuffer = ArrayPool<byte>.Shared.Rent(1);
             try
             {
-                var numRead = Read(sharedBuffer, 0, 1);
+                var numRead = Read(sharedBuffer[0..1]);
                 if (numRead == 0)
                 {
                     return null;
@@ -175,13 +143,7 @@ namespace AppMotor.Core.IO
         }
 
         /// <inheritdoc />
-        public ValueTask<int> ReadAsync(Memory<byte> buffer)
-        {
-            return ReadAsync(buffer, CancellationToken.None);
-        }
-
-        /// <inheritdoc />
-        public ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken)
+        public ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
         {
             return this.m_underlyingStream.ReadAsync(buffer, cancellationToken);
         }
