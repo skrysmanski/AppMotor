@@ -127,16 +127,16 @@ namespace AppMotor.Core.Utils
         }
 
         [Pure]
-        public string Encode(ArraySegment<byte> data)
+        public string Encode(Memory<byte> data)
         {
-            if (data.Count == 0)
+            if (data.Length == 0)
             {
                 return "";
             }
 
-            var result = new StringBuilder(CalcEncodedStringLength(data.Count));
+            var result = new StringBuilder(CalcEncodedStringLength(data.Length));
 
-            var groupStream = new ReadableBase32SymbolGroupStream(data);
+            using var groupStream = new MemoryBasedSymbolGroupReader(data);
 
             while (true)
             {
@@ -267,39 +267,41 @@ namespace AppMotor.Core.Utils
             return groupCount * BYTES_PER_GROUP;
         }
 
-        private sealed class ReadableBase32SymbolGroupStream
+        private abstract class SymbolGroupReaderBase : Disposable
         {
             private const ulong SYMBOL_BIT_MASK = (1 << BITS_PER_SYMBOL) - 1;
 
-            private readonly byte[] m_data;
+            public readonly byte[] SymbolBuffer;
 
-            private int m_offset;
-
-            private int m_count;
-
-            public readonly byte[] SymbolBuffer = new byte[SYMBOLS_PER_GROUP];
-
-            public ReadableBase32SymbolGroupStream(ArraySegment<byte> data)
+            protected SymbolGroupReaderBase()
             {
-                this.m_data = data.Array ?? throw new ArgumentException("The array of this segment is null.", nameof(data));
-                this.m_offset = data.Offset;
-                this.m_count = data.Count;
+                this.SymbolBuffer = ArrayPool<byte>.Shared.Rent(SYMBOLS_PER_GROUP);
             }
 
-            public int ReadNextGroup()
+            /// <inheritdoc />
+            protected override void DisposeManagedResources()
             {
-                if (this.m_count == 0)
-                {
-                    return 0;
-                }
+                ArrayPool<byte>.Shared.Return(this.SymbolBuffer);
 
-                int bytesToRead = this.m_count < BYTES_PER_GROUP ? this.m_count : BYTES_PER_GROUP;
+                base.DisposeManagedResources();
+            }
 
+            /// <summary>
+            /// Reads the next group of symbols.
+            /// </summary>
+            /// <returns>The number of symbols read.</returns>
+            [MustUseReturnValue]
+            // ReSharper disable once UnusedMemberInSuper.Global
+            public abstract int ReadNextGroup();
+
+            [MustUseReturnValue]
+            protected int ReadNextGroup(Span<byte> readBuffer)
+            {
                 ulong allBits = 0;
 
-                for (int i = 0; i < bytesToRead; i++)
+                for (int i = 0; i < readBuffer.Length; i++)
                 {
-                    allBits |= (ulong)this.m_data[this.m_offset + i] << ((BYTES_PER_GROUP - i - 1) * BITS_PER_BYTE);
+                    allBits |= (ulong)readBuffer[i] << ((BYTES_PER_GROUP - i - 1) * BITS_PER_BYTE);
                 }
 
                 // Byte layout:
@@ -315,21 +317,21 @@ namespace AppMotor.Core.Utils
                 this.SymbolBuffer[0] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 1) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
                 this.SymbolBuffer[1] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 2) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
 
-                if (bytesToRead > 1)
+                if (readBuffer.Length > 1)
                 {
                     this.SymbolBuffer[2] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 3) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
                     this.SymbolBuffer[3] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 4) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
 
-                    if (bytesToRead > 2)
+                    if (readBuffer.Length > 2)
                     {
                         this.SymbolBuffer[4] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 5) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
 
-                        if (bytesToRead > 3)
+                        if (readBuffer.Length > 3)
                         {
                             this.SymbolBuffer[5] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 6) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
                             this.SymbolBuffer[6] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 7) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
 
-                            if (bytesToRead == 5)
+                            if (readBuffer.Length == 5)
                             {
                                 this.SymbolBuffer[7] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 8) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
                                 symbolCount = 8;
@@ -353,6 +355,36 @@ namespace AppMotor.Core.Utils
                 {
                     symbolCount = 2;
                 }
+
+                return symbolCount;
+            }
+        }
+
+        private sealed class MemoryBasedSymbolGroupReader : SymbolGroupReaderBase
+        {
+            private readonly Memory<byte> m_data;
+
+            private int m_offset;
+
+            private int m_count;
+
+            public MemoryBasedSymbolGroupReader(Memory<byte> data)
+            {
+                this.m_data = data;
+                this.m_count = data.Length;
+            }
+
+            /// <inheritdoc />
+            public override int ReadNextGroup()
+            {
+                if (this.m_count == 0)
+                {
+                    return 0;
+                }
+
+                int bytesToRead = this.m_count < BYTES_PER_GROUP ? this.m_count : BYTES_PER_GROUP;
+
+                var symbolCount = ReadNextGroup(this.m_data.Slice(this.m_offset, bytesToRead).Span);
 
                 this.m_offset += bytesToRead;
                 this.m_count -= bytesToRead;
