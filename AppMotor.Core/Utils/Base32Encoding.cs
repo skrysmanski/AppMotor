@@ -30,7 +30,7 @@ namespace AppMotor.Core.Utils
     /// <summary>
     /// Represents a Base32 converter (as defined by RFC 4648) with a customizable symbol list.
     /// </summary>
-    public class Base32Encoding
+    public class Base32Encoding : Rfc4648Encoding
     {
         /// <summary>
         /// The default Base32 symbols - as defined by RFC 4648.
@@ -77,7 +77,10 @@ namespace AppMotor.Core.Utils
         /// The padding character. If <c>null</c>, no padding will be used.
         /// </summary>
         [PublicAPI]
-        public char? PaddingChar { get; }
+        public sealed override char? PaddingChar { get; }
+
+        /// <inheritdoc />
+        public sealed override int Base => 32;
 
         [PublicAPI]
         public Base32Encoding(string symbols, char? paddingChar = DEFAULT_PADDING_CHAR)
@@ -130,8 +133,7 @@ namespace AppMotor.Core.Utils
             }
         }
 
-        [Pure]
-        public string Encode(Memory<byte> data)
+        public override string Encode(Memory<byte> data)
         {
             if (data.Length == 0)
             {
@@ -156,7 +158,7 @@ namespace AppMotor.Core.Utils
             return resultBuilder.ToString();
         }
 
-        public void Encode(IReadOnlyStream data, StringWriter outputWriter)
+        public override void Encode(IReadOnlyStream data, StringWriter outputWriter)
         {
             Validate.Argument.IsNotNull(outputWriter, nameof(outputWriter));
             Validate.Argument.IsNotNull(data, nameof(data));
@@ -175,7 +177,7 @@ namespace AppMotor.Core.Utils
             }
         }
 
-        public async Task EncodeAsync(IReadOnlyStream data, StringWriter outputWriter)
+        public override async Task EncodeAsync(IReadOnlyStream data, StringWriter outputWriter)
         {
             Validate.Argument.IsNotNull(outputWriter, nameof(outputWriter));
             Validate.Argument.IsNotNull(data, nameof(data));
@@ -215,8 +217,7 @@ namespace AppMotor.Core.Utils
             return groupCount * SYMBOLS_PER_GROUP;
         }
 
-        [Pure]
-        public byte[] Decode(string encodedString)
+        public override byte[] Decode(string encodedString)
         {
             Validate.Argument.IsNotNull(encodedString, nameof(encodedString));
 
@@ -256,7 +257,7 @@ namespace AppMotor.Core.Utils
             }
         }
 
-        public void Decode(StringReader encodedString, Stream destination)
+        public override void Decode(StringReader encodedString, Stream destination)
         {
             Validate.Argument.IsNotNull(encodedString, nameof(encodedString));
             Validate.Argument.IsNotNull(destination, nameof(destination));
@@ -275,7 +276,7 @@ namespace AppMotor.Core.Utils
             }
         }
 
-        public async Task DecodeAsync(StringReader encodedString, Stream destination)
+        public override async Task DecodeAsync(StringReader encodedString, Stream destination)
         {
             Validate.Argument.IsNotNull(encodedString, nameof(encodedString));
             Validate.Argument.IsNotNull(destination, nameof(destination));
