@@ -207,50 +207,31 @@ namespace AppMotor.Core.Utils
 
             int bufferSize = CalcDecodedByteCount(encodedString.Length);
             byte[] sharedWriteBuffer = ArrayPool<byte>.Shared.Rent(bufferSize);
-            byte[] symbolGroupBuffer = ArrayPool<byte>.Shared.Rent(SYMBOLS_PER_GROUP);
             try
             {
-                var groupStream = new SymbolGroupWriter(sharedWriteBuffer);
+                using var groupStream = new StringBasedSymbolGroupDecoder(encodedString, this.m_reverseSymbols, this.PaddingChar);
 
-                int symbolGroupBufferIndex = 0;
-                foreach (var symbol in encodedString)
+                int offset = 0;
+
+                while (true)
                 {
-                    if (symbol == this.PaddingChar)
+                    var nextDecodedGroup = groupStream.DecodeNextGroup();
+                    if (nextDecodedGroup.Count == 0)
                     {
                         break;
                     }
 
-                    if (!this.m_reverseSymbols.TryGetValue(symbol, out var value))
-                    {
-                        throw new FormatException($"The symbol '{symbol}' is not a valid Base32 symbol.");
-                    }
-
-                    symbolGroupBuffer[symbolGroupBufferIndex] = value;
-
-                    if (symbolGroupBufferIndex == SYMBOLS_PER_GROUP - 1)
-                    {
-                        symbolGroupBufferIndex = 0;
-                        groupStream.WriteGroup(symbolGroupBuffer.AsSpan(0, SYMBOLS_PER_GROUP));
-                    }
-                    else
-                    {
-                        symbolGroupBufferIndex++;
-                    }
+                    nextDecodedGroup.CopyTo(sharedWriteBuffer, offset);
+                    offset += nextDecodedGroup.Count;
                 }
 
-                if (symbolGroupBufferIndex != 0)
-                {
-                    groupStream.WriteGroup(symbolGroupBuffer.AsSpan(0, symbolGroupBufferIndex));
-                }
-
-                var decodedBytes = new byte[groupStream.WrittenBytes];
-                sharedWriteBuffer.AsSpan(0, groupStream.WrittenBytes).CopyTo(decodedBytes);
+                var decodedBytes = new byte[offset];
+                sharedWriteBuffer.AsSpan(0, offset).CopyTo(decodedBytes);
 
                 return decodedBytes;
             }
             finally
             {
-                ArrayPool<byte>.Shared.Return(symbolGroupBuffer);
                 ArrayPool<byte>.Shared.Return(sharedWriteBuffer);
             }
         }
@@ -278,9 +259,9 @@ namespace AppMotor.Core.Utils
 
             private readonly char[] m_symbols;
 
-            private readonly char[] m_encodeBuffer;
-
             private readonly char? m_paddingChar;
+
+            private readonly char[] m_encodeBuffer;
 
             protected SymbolGroupReaderBase(char[] symbols, char? paddingChar)
             {
@@ -446,31 +427,58 @@ namespace AppMotor.Core.Utils
             }
         }
 
-        private sealed class SymbolGroupWriter
+        private abstract class SymbolGroupDecoder : Disposable
         {
             private const int BYTE_BIT_MASK = 0xFF;
 
-            private readonly byte[] m_buffer;
+            private readonly Dictionary<char, byte> m_reverseSymbols;
 
-            public int WrittenBytes { get; private set; }
+            private readonly char? m_paddingChar;
 
-            public SymbolGroupWriter(byte[] buffer)
+            private readonly byte[] m_decoderBuffer;
+
+            protected SymbolGroupDecoder(Dictionary<char, byte> reverseSymbols, char? paddingChar)
             {
-                this.m_buffer = buffer;
+                this.m_reverseSymbols = reverseSymbols;
+                this.m_paddingChar = paddingChar;
+
+                this.m_decoderBuffer = ArrayPool<byte>.Shared.Rent(BYTES_PER_GROUP);
             }
 
-            public void WriteGroup(ReadOnlySpan<byte> symbolGroup)
+            /// <inheritdoc />
+            protected override void DisposeManagedResources()
+            {
+                ArrayPool<byte>.Shared.Return(this.m_decoderBuffer);
+
+                base.DisposeManagedResources();
+            }
+
+            protected ArraySegment<byte> DecodeGroup(ReadOnlySpan<char> symbolGroup)
             {
                 ulong allBits = 0;
 
-                for (int i = 0; i < symbolGroup.Length; i++)
+                int symbolCount;
+
+                for (symbolCount = 0; symbolCount < symbolGroup.Length; symbolCount++)
                 {
-                    allBits |= (ulong)symbolGroup[i] << ((SYMBOLS_PER_GROUP - i - 1) * BITS_PER_SYMBOL);
+                    var symbol = symbolGroup[symbolCount];
+
+                    if (symbol == this.m_paddingChar)
+                    {
+                        break;
+                    }
+
+                    if (!this.m_reverseSymbols.TryGetValue(symbol, out var value))
+                    {
+                        throw new FormatException($"The symbol '{symbol}' is not a valid Base32 symbol.");
+                    }
+
+                    allBits |= (ulong)value << ((SYMBOLS_PER_GROUP - symbolCount - 1) * BITS_PER_SYMBOL);
                 }
 
                 int byteCountToWrite;
 
-                switch (symbolGroup.Length)
+                switch (symbolCount)
                 {
                     case 2:
                         byteCountToWrite = 1;
@@ -495,9 +503,51 @@ namespace AppMotor.Core.Utils
                 for (int i = 0; i < byteCountToWrite; i++)
                 {
                     byte byteToWrite = (byte)((allBits >> ((BYTES_PER_GROUP - i - 1) * BITS_PER_BYTE)) & BYTE_BIT_MASK);
-                    this.m_buffer[this.WrittenBytes] = byteToWrite;
-                    this.WrittenBytes++;
+                    this.m_decoderBuffer[i] = byteToWrite;
                 }
+
+                return this.m_decoderBuffer[0..byteCountToWrite];
+            }
+        }
+
+        private sealed class StringBasedSymbolGroupDecoder : SymbolGroupDecoder
+        {
+            private readonly string m_encodedString;
+
+            private int m_offset;
+
+            private int m_count;
+
+            /// <inheritdoc />
+            public StringBasedSymbolGroupDecoder(
+                    string encodedString,
+                    [NotNull] Dictionary<char, byte> reverseSymbols,
+                    char? paddingChar
+                )
+                    : base(reverseSymbols, paddingChar)
+            {
+                this.m_encodedString = encodedString;
+                this.m_count = encodedString.Length;
+            }
+
+            [MustUseReturnValue]
+            public ArraySegment<byte> DecodeNextGroup()
+            {
+                if (this.m_count == 0)
+                {
+                    return ArraySegment<byte>.Empty;
+                }
+
+                int charsToRead = this.m_count < SYMBOLS_PER_GROUP ? this.m_count : SYMBOLS_PER_GROUP;
+
+                var nextEncodedGroup = this.m_encodedString.AsSpan(this.m_offset, charsToRead);
+
+                var decodedGroup = DecodeGroup(nextEncodedGroup);
+
+                this.m_offset += charsToRead;
+                this.m_count -= charsToRead;
+
+                return decodedGroup;
             }
         }
     }
