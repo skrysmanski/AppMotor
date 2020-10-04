@@ -140,11 +140,11 @@ namespace AppMotor.Core.Utils
 
             var resultBuilder = new StringBuilder(CalcEncodedStringLength(data.Length));
 
-            using var groupReader = new MemoryBasedSymbolGroupReader(data, this.m_symbols, this.PaddingChar);
+            using var encoder = new MemoryBasedSymbolGroupEncoder(data, this.m_symbols, this.PaddingChar);
 
             while (true)
             {
-                var readSymbols = groupReader.ReadNextGroup();
+                var readSymbols = encoder.EncodeNextGroup();
                 if (readSymbols.Count == 0)
                 {
                     break;
@@ -161,11 +161,11 @@ namespace AppMotor.Core.Utils
             Validate.Argument.IsNotNull(outputWriter, nameof(outputWriter));
             Validate.Argument.IsNotNull(data, nameof(data));
 
-            using var groupReader = new StreamBasedSymbolGroupReader(data, this.m_symbols, this.PaddingChar);
+            using var encoder = new StreamBasedSymbolGroupEncoder(data, this.m_symbols, this.PaddingChar);
 
             while (true)
             {
-                var readSymbols = groupReader.ReadNextGroup();
+                var readSymbols = encoder.EncodeNextGroup();
                 if (readSymbols.Count == 0)
                 {
                     break;
@@ -292,7 +292,7 @@ namespace AppMotor.Core.Utils
             return groupCount * BYTES_PER_GROUP;
         }
 
-        private abstract class SymbolGroupReaderBase : Disposable
+        private abstract class SymbolGroupEncoder : Disposable
         {
             private const ulong SYMBOL_BIT_MASK = (1 << BITS_PER_SYMBOL) - 1;
 
@@ -302,7 +302,7 @@ namespace AppMotor.Core.Utils
 
             private readonly char[] m_encodeBuffer;
 
-            protected SymbolGroupReaderBase(char[] symbols, char? paddingChar)
+            protected SymbolGroupEncoder(char[] symbols, char? paddingChar)
             {
                 this.m_symbols = symbols;
                 this.m_paddingChar = paddingChar;
@@ -319,7 +319,7 @@ namespace AppMotor.Core.Utils
             }
 
             [MustUseReturnValue]
-            protected ArraySegment<char> ReadNextGroup(Span<byte> readBytes)
+            protected ArraySegment<char> EncodeGroup(Span<byte> readBytes)
             {
                 ulong allBits = 0;
 
@@ -401,7 +401,7 @@ namespace AppMotor.Core.Utils
             }
         }
 
-        private sealed class MemoryBasedSymbolGroupReader : SymbolGroupReaderBase
+        private sealed class MemoryBasedSymbolGroupEncoder : SymbolGroupEncoder
         {
             private readonly Memory<byte> m_data;
 
@@ -409,18 +409,15 @@ namespace AppMotor.Core.Utils
 
             private int m_count;
 
-            public MemoryBasedSymbolGroupReader(Memory<byte> data, char[] symbols, char? paddingChar)
+            public MemoryBasedSymbolGroupEncoder(Memory<byte> data, char[] symbols, char? paddingChar)
                 : base(symbols, paddingChar)
             {
                 this.m_data = data;
                 this.m_count = data.Length;
             }
 
-            /// <summary>
-            /// Reads the next group of symbols.
-            /// </summary>
             [MustUseReturnValue]
-            public ArraySegment<char> ReadNextGroup()
+            public ArraySegment<char> EncodeNextGroup()
             {
                 if (this.m_count == 0)
                 {
@@ -429,7 +426,7 @@ namespace AppMotor.Core.Utils
 
                 int bytesToRead = this.m_count < BYTES_PER_GROUP ? this.m_count : BYTES_PER_GROUP;
 
-                var symbols = ReadNextGroup(this.m_data.Slice(this.m_offset, bytesToRead).Span);
+                var symbols = EncodeGroup(this.m_data.Slice(this.m_offset, bytesToRead).Span);
 
                 this.m_offset += bytesToRead;
                 this.m_count -= bytesToRead;
@@ -438,21 +435,18 @@ namespace AppMotor.Core.Utils
             }
         }
 
-        private sealed class StreamBasedSymbolGroupReader : SymbolGroupReaderBase
+        private sealed class StreamBasedSymbolGroupEncoder : SymbolGroupEncoder
         {
             private readonly IReadOnlyStream m_dataStream;
 
-            public StreamBasedSymbolGroupReader(IReadOnlyStream dataStream, char[] symbols, char? paddingChar)
+            public StreamBasedSymbolGroupEncoder(IReadOnlyStream dataStream, char[] symbols, char? paddingChar)
                 : base(symbols, paddingChar)
             {
                 this.m_dataStream = dataStream;
             }
 
-            /// <summary>
-            /// Reads the next group of symbols.
-            /// </summary>
             [MustUseReturnValue]
-            public ArraySegment<char> ReadNextGroup()
+            public ArraySegment<char> EncodeNextGroup()
             {
                 Span<byte> readBuffer = stackalloc byte[BYTES_PER_GROUP];
 
@@ -462,7 +456,7 @@ namespace AppMotor.Core.Utils
                     return ArraySegment<char>.Empty;
                 }
 
-                return ReadNextGroup(readBuffer.Slice(0, readBytes));
+                return EncodeGroup(readBuffer.Slice(0, readBytes));
             }
         }
 
