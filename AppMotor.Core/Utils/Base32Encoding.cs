@@ -175,6 +175,25 @@ namespace AppMotor.Core.Utils
             }
         }
 
+        public async Task EncodeAsync(IReadOnlyStream data, StringWriter outputWriter)
+        {
+            Validate.Argument.IsNotNull(outputWriter, nameof(outputWriter));
+            Validate.Argument.IsNotNull(data, nameof(data));
+
+            using var encoder = new StreamBasedSymbolGroupEncoder(data, this.m_symbols, this.PaddingChar);
+
+            while (true)
+            {
+                var readSymbols = await encoder.EncodeNextGroupAsync().ConfigureAwait(false);
+                if (readSymbols.Count == 0)
+                {
+                    break;
+                }
+
+                await outputWriter.WriteAsync(readSymbols.AsMemory()).ConfigureAwait(false);
+            }
+        }
+
         /// <summary>
         /// Returns the length of a Base32 string based on the specified number of bytes. Note
         /// that for simplicity reasons, we don't return a smaller number if padding is disabled.
@@ -457,6 +476,26 @@ namespace AppMotor.Core.Utils
                 }
 
                 return EncodeGroup(readBuffer.Slice(0, readBytes));
+            }
+
+            [MustUseReturnValue]
+            public async Task<ArraySegment<char>> EncodeNextGroupAsync()
+            {
+                var readBuffer = ArrayPool<byte>.Shared.Rent(BYTES_PER_GROUP);
+                try
+                {
+                    int readBytes = await this.m_dataStream.ReadUntilFullAsync(readBuffer.AsMemory(0, BYTES_PER_GROUP)).ConfigureAwait(false);
+                    if (readBytes == 0)
+                    {
+                        return ArraySegment<char>.Empty;
+                    }
+
+                    return EncodeGroup(readBuffer.AsSpan(0, readBytes));
+                }
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(readBuffer);
+                }
             }
         }
 
