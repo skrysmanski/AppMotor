@@ -19,6 +19,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 using AppMotor.Core.IO;
 
@@ -252,6 +253,25 @@ namespace AppMotor.Core.Utils
                 }
 
                 destination.Write(nextDecodedGroup);
+            }
+        }
+
+        public async Task DecodeAsync(StringReader encodedString, Stream destination)
+        {
+            Validate.Argument.IsNotNull(encodedString, nameof(encodedString));
+            Validate.Argument.IsNotNull(destination, nameof(destination));
+
+            using var decoder = new StringReaderBasedSymbolGroupDecoder(encodedString, this.m_reverseSymbols, this.PaddingChar);
+
+            while (true)
+            {
+                var nextDecodedGroup = await decoder.DecodeNextGroupAsync().ConfigureAwait(false);
+                if (nextDecodedGroup.Count == 0)
+                {
+                    break;
+                }
+
+                await destination.WriteAsync(nextDecodedGroup).ConfigureAwait(false);
             }
         }
 
@@ -593,6 +613,27 @@ namespace AppMotor.Core.Utils
                 return DecodeGroup(nextEncodedGroup);
             }
 
+            [MustUseReturnValue]
+            public async Task<ArraySegment<byte>> DecodeNextGroupAsync()
+            {
+                var readBuffer = ArrayPool<char>.Shared.Rent(SYMBOLS_PER_GROUP);
+                try
+                {
+                    int readChars = await this.m_stringReader.ReadAsync(readBuffer.AsMemory(0, SYMBOLS_PER_GROUP)).ConfigureAwait(false);
+                    if (readChars == 0)
+                    {
+                        return ArraySegment<byte>.Empty;
+                    }
+
+                    var nextEncodedGroup = readBuffer[0..readChars];
+
+                    return DecodeGroup(nextEncodedGroup);
+                }
+                finally
+                {
+                    ArrayPool<char>.Shared.Return(readBuffer);
+                }
+            }
         }
     }
 }
