@@ -137,13 +137,22 @@ namespace AppMotor.Core.Utils
                 return "";
             }
 
-            var result = new StringBuilder(CalcEncodedStringLength(data.Length));
+            var resultBuilder = new StringBuilder(CalcEncodedStringLength(data.Length));
 
-            using var groupReader = new MemoryBasedSymbolGroupReader(data);
+            using var groupReader = new MemoryBasedSymbolGroupReader(data, this.m_symbols, this.PaddingChar);
 
-            Encode(groupReader, ch => result.Append(ch));
+            while (true)
+            {
+                var readSymbols = groupReader.ReadNextGroup();
+                if (readSymbols.Count == 0)
+                {
+                    break;
+                }
 
-            return result.ToString();
+                resultBuilder.Append(readSymbols.AsSpan());
+            }
+
+            return resultBuilder.ToString();
         }
 
         public void Encode(IReadOnlyStream data, StringWriter outputWriter)
@@ -151,39 +160,17 @@ namespace AppMotor.Core.Utils
             Validate.Argument.IsNotNull(outputWriter, nameof(outputWriter));
             Validate.Argument.IsNotNull(data, nameof(data));
 
-            using var groupReader = new StreamBasedSymbolGroupReader(data);
+            using var groupReader = new StreamBasedSymbolGroupReader(data, this.m_symbols, this.PaddingChar);
 
-            Encode(groupReader, outputWriter.Write);
-        }
-
-        private void Encode(SymbolGroupReaderBase groupReader, Action<char> writeCharFunc)
-        {
             while (true)
             {
-                int readSymbols = groupReader.ReadNextGroup();
-                if (readSymbols == 0)
+                var readSymbols = groupReader.ReadNextGroup();
+                if (readSymbols.Count == 0)
                 {
                     break;
                 }
 
-                for (int i = 0; i < readSymbols; i++)
-                {
-                    var symbol = this.m_symbols[groupReader.SymbolBuffer[i]];
-                    writeCharFunc(symbol);
-                }
-
-                if (readSymbols < SYMBOLS_PER_GROUP)
-                {
-                    if (this.PaddingChar != null)
-                    {
-                        for (int i = readSymbols; i < SYMBOLS_PER_GROUP; i++)
-                        {
-                            writeCharFunc(this.PaddingChar.Value);
-                        }
-                    }
-
-                    break;
-                }
+                outputWriter.Write(readSymbols.AsSpan());
             }
         }
 
@@ -223,7 +210,7 @@ namespace AppMotor.Core.Utils
             byte[] symbolGroupBuffer = ArrayPool<byte>.Shared.Rent(SYMBOLS_PER_GROUP);
             try
             {
-                var groupStream = new WritableBase32SymbolGroupStream(sharedWriteBuffer);
+                var groupStream = new SymbolGroupWriter(sharedWriteBuffer);
 
                 int symbolGroupBufferIndex = 0;
                 foreach (var symbol in encodedString)
@@ -289,36 +276,36 @@ namespace AppMotor.Core.Utils
         {
             private const ulong SYMBOL_BIT_MASK = (1 << BITS_PER_SYMBOL) - 1;
 
-            public readonly byte[] SymbolBuffer;
+            private readonly char[] m_symbols;
 
-            protected SymbolGroupReaderBase()
+            private readonly char[] m_encodeBuffer;
+
+            private readonly char? m_paddingChar;
+
+            protected SymbolGroupReaderBase(char[] symbols, char? paddingChar)
             {
-                this.SymbolBuffer = ArrayPool<byte>.Shared.Rent(SYMBOLS_PER_GROUP);
+                this.m_symbols = symbols;
+                this.m_paddingChar = paddingChar;
+
+                this.m_encodeBuffer = ArrayPool<char>.Shared.Rent(SYMBOLS_PER_GROUP);
             }
 
             /// <inheritdoc />
             protected override void DisposeManagedResources()
             {
-                ArrayPool<byte>.Shared.Return(this.SymbolBuffer);
+                ArrayPool<char>.Shared.Return(this.m_encodeBuffer);
 
                 base.DisposeManagedResources();
             }
 
-            /// <summary>
-            /// Reads the next group of symbols.
-            /// </summary>
-            /// <returns>The number of symbols read.</returns>
             [MustUseReturnValue]
-            public abstract int ReadNextGroup();
-
-            [MustUseReturnValue]
-            protected int ReadNextGroup(Span<byte> readBuffer)
+            protected ArraySegment<char> ReadNextGroup(Span<byte> readBytes)
             {
                 ulong allBits = 0;
 
-                for (int i = 0; i < readBuffer.Length; i++)
+                for (int i = 0; i < readBytes.Length; i++)
                 {
-                    allBits |= (ulong)readBuffer[i] << ((BYTES_PER_GROUP - i - 1) * BITS_PER_BYTE);
+                    allBits |= (ulong)readBytes[i] << ((BYTES_PER_GROUP - i - 1) * BITS_PER_BYTE);
                 }
 
                 // Byte layout:
@@ -331,26 +318,28 @@ namespace AppMotor.Core.Utils
 
                 int symbolCount;
 
-                this.SymbolBuffer[0] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 1) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
-                this.SymbolBuffer[1] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 2) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
+                Span<byte> values = stackalloc byte[SYMBOLS_PER_GROUP];
 
-                if (readBuffer.Length > 1)
+                values[0] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 1) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
+                values[1] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 2) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
+
+                if (readBytes.Length > 1)
                 {
-                    this.SymbolBuffer[2] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 3) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
-                    this.SymbolBuffer[3] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 4) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
+                    values[2] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 3) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
+                    values[3] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 4) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
 
-                    if (readBuffer.Length > 2)
+                    if (readBytes.Length > 2)
                     {
-                        this.SymbolBuffer[4] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 5) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
+                        values[4] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 5) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
 
-                        if (readBuffer.Length > 3)
+                        if (readBytes.Length > 3)
                         {
-                            this.SymbolBuffer[5] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 6) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
-                            this.SymbolBuffer[6] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 7) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
+                            values[5] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 6) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
+                            values[6] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 7) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
 
-                            if (readBuffer.Length == 5)
+                            if (readBytes.Length == 5)
                             {
-                                this.SymbolBuffer[7] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 8) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
+                                values[7] = (byte)((allBits >> ((SYMBOLS_PER_GROUP - 8) * BITS_PER_SYMBOL)) & SYMBOL_BIT_MASK);
                                 symbolCount = 8;
                             }
                             else
@@ -373,7 +362,22 @@ namespace AppMotor.Core.Utils
                     symbolCount = 2;
                 }
 
-                return symbolCount;
+                for (int i = 0; i < symbolCount; i++)
+                {
+                    this.m_encodeBuffer[i] = this.m_symbols[values[i]];
+                }
+
+                if (symbolCount < SYMBOLS_PER_GROUP && this.m_paddingChar != null)
+                {
+                    for (int i = symbolCount; i < SYMBOLS_PER_GROUP; i++)
+                    {
+                        this.m_encodeBuffer[i] = this.m_paddingChar.Value;
+                    }
+
+                    return this.m_encodeBuffer[0..SYMBOLS_PER_GROUP];
+                }
+
+                return this.m_encodeBuffer[0..symbolCount];
             }
         }
 
@@ -385,28 +389,32 @@ namespace AppMotor.Core.Utils
 
             private int m_count;
 
-            public MemoryBasedSymbolGroupReader(Memory<byte> data)
+            public MemoryBasedSymbolGroupReader(Memory<byte> data, char[] symbols, char? paddingChar)
+                : base(symbols, paddingChar)
             {
                 this.m_data = data;
                 this.m_count = data.Length;
             }
 
-            /// <inheritdoc />
-            public override int ReadNextGroup()
+            /// <summary>
+            /// Reads the next group of symbols.
+            /// </summary>
+            [MustUseReturnValue]
+            public ArraySegment<char> ReadNextGroup()
             {
                 if (this.m_count == 0)
                 {
-                    return 0;
+                    return ArraySegment<char>.Empty;
                 }
 
                 int bytesToRead = this.m_count < BYTES_PER_GROUP ? this.m_count : BYTES_PER_GROUP;
 
-                var symbolCount = ReadNextGroup(this.m_data.Slice(this.m_offset, bytesToRead).Span);
+                var symbols = ReadNextGroup(this.m_data.Slice(this.m_offset, bytesToRead).Span);
 
                 this.m_offset += bytesToRead;
                 this.m_count -= bytesToRead;
 
-                return symbolCount;
+                return symbols;
             }
         }
 
@@ -414,28 +422,31 @@ namespace AppMotor.Core.Utils
         {
             private readonly IReadOnlyStream m_dataStream;
 
-            /// <inheritdoc />
-            public StreamBasedSymbolGroupReader(IReadOnlyStream dataStream)
+            public StreamBasedSymbolGroupReader(IReadOnlyStream dataStream, char[] symbols, char? paddingChar)
+                : base(symbols, paddingChar)
             {
                 this.m_dataStream = dataStream;
             }
 
-            /// <inheritdoc />
-            public override int ReadNextGroup()
+            /// <summary>
+            /// Reads the next group of symbols.
+            /// </summary>
+            [MustUseReturnValue]
+            public ArraySegment<char> ReadNextGroup()
             {
                 Span<byte> readBuffer = stackalloc byte[BYTES_PER_GROUP];
 
                 int readBytes = this.m_dataStream.ReadUntilFull(readBuffer);
                 if (readBytes == 0)
                 {
-                    return 0;
+                    return ArraySegment<char>.Empty;
                 }
 
                 return ReadNextGroup(readBuffer.Slice(0, readBytes));
             }
         }
 
-        private sealed class WritableBase32SymbolGroupStream
+        private sealed class SymbolGroupWriter
         {
             private const int BYTE_BIT_MASK = 0xFF;
 
@@ -443,7 +454,7 @@ namespace AppMotor.Core.Utils
 
             public int WrittenBytes { get; private set; }
 
-            public WritableBase32SymbolGroupStream(byte[] buffer)
+            public SymbolGroupWriter(byte[] buffer)
             {
                 this.m_buffer = buffer;
             }
