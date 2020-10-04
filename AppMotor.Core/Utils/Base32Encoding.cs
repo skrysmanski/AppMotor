@@ -158,7 +158,7 @@ namespace AppMotor.Core.Utils
             return resultBuilder.ToString();
         }
 
-        public override void Encode(IReadOnlyStream data, StringWriter outputWriter)
+        public override void Encode(IReadOnlyStream data, TextWriter outputWriter)
         {
             Validate.Argument.IsNotNull(outputWriter, nameof(outputWriter));
             Validate.Argument.IsNotNull(data, nameof(data));
@@ -177,7 +177,7 @@ namespace AppMotor.Core.Utils
             }
         }
 
-        public override async Task EncodeAsync(IReadOnlyStream data, StringWriter outputWriter)
+        public override async Task EncodeAsync(IReadOnlyStream data, TextWriter outputWriter)
         {
             Validate.Argument.IsNotNull(outputWriter, nameof(outputWriter));
             Validate.Argument.IsNotNull(data, nameof(data));
@@ -257,7 +257,7 @@ namespace AppMotor.Core.Utils
             }
         }
 
-        public override void Decode(StringReader encodedString, Stream destination)
+        public override void Decode(TextReader encodedString, Stream destination)
         {
             Validate.Argument.IsNotNull(encodedString, nameof(encodedString));
             Validate.Argument.IsNotNull(destination, nameof(destination));
@@ -276,7 +276,7 @@ namespace AppMotor.Core.Utils
             }
         }
 
-        public override async Task DecodeAsync(StringReader encodedString, Stream destination)
+        public override async Task DecodeAsync(TextReader encodedString, Stream destination)
         {
             Validate.Argument.IsNotNull(encodedString, nameof(encodedString));
             Validate.Argument.IsNotNull(destination, nameof(destination));
@@ -622,10 +622,10 @@ namespace AppMotor.Core.Utils
 
         private sealed class StringReaderBasedSymbolGroupDecoder : SymbolGroupDecoder
         {
-            private readonly StringReader m_stringReader;
+            private readonly TextReader m_stringReader;
 
             /// <inheritdoc />
-            public StringReaderBasedSymbolGroupDecoder(StringReader stringReader, Dictionary<char, byte> reverseSymbols, char? paddingChar)
+            public StringReaderBasedSymbolGroupDecoder(TextReader stringReader, Dictionary<char, byte> reverseSymbols, char? paddingChar)
                 : base(reverseSymbols, paddingChar)
             {
                 this.m_stringReader = stringReader;

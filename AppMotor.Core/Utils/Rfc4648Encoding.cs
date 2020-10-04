@@ -62,13 +62,13 @@ namespace AppMotor.Core.Utils
         /// Encodes the specified data as BaseX string.
         /// </summary>
         [PublicAPI]
-        public abstract void Encode(IReadOnlyStream data, StringWriter outputWriter);
+        public abstract void Encode(IReadOnlyStream data, TextWriter outputWriter);
 
         /// <summary>
         /// Encodes the specified data as BaseX string.
         /// </summary>
         [PublicAPI]
-        public abstract Task EncodeAsync(IReadOnlyStream data, StringWriter outputWriter);
+        public abstract Task EncodeAsync(IReadOnlyStream data, TextWriter outputWriter);
 
         /// <summary>
         /// Decodes the specified BaseX string.
@@ -80,12 +80,12 @@ namespace AppMotor.Core.Utils
         /// Decodes the specified BaseX string.
         /// </summary>
         [PublicAPI]
-        public abstract void Decode(StringReader encodedString, Stream destination);
+        public abstract void Decode(TextReader encodedString, Stream destination);
 
         /// <summary>
         /// Decodes the specified BaseX string.
         /// </summary>
         [PublicAPI]
-        public abstract Task DecodeAsync(StringReader encodedString, Stream destination);
+        public abstract Task DecodeAsync(TextReader encodedString, Stream destination);
     }
 }
