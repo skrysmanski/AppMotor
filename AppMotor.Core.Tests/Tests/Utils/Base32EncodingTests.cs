@@ -15,8 +15,11 @@
 #endregion
 
 using System;
+using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
+using AppMotor.Core.IO;
 using AppMotor.Core.Utils;
 
 using Shouldly;
@@ -38,7 +41,33 @@ namespace AppMotor.Core.Tests.Utils
         public void TestEncoding_WithPadding(string input, string expectedOutput)
         {
             var inputArray = Encoding.ASCII.GetBytes(input);
+            using var inputStream = new ReadOnlyMemoryStream(inputArray);
+            using var outputWriter = new StringWriter();
+
+            // Tests
             Base32Encoding.DefaultWithPadding.Encode(inputArray).ShouldBe(expectedOutput);
+
+            Base32Encoding.DefaultWithPadding.Encode(inputStream, outputWriter);
+            outputWriter.ToString().ShouldBe(expectedOutput);
+        }
+
+        [Theory]
+        [InlineData("", "")]
+        [InlineData("f", "MY======")]
+        [InlineData("fo", "MZXQ====")]
+        [InlineData("foo", "MZXW6===")]
+        [InlineData("foob", "MZXW6YQ=")]
+        [InlineData("fooba", "MZXW6YTB")]
+        [InlineData("foobar", "MZXW6YTBOI======")]
+        public async Task TestEncodingAsync_WithPadding(string input, string expectedOutput)
+        {
+            var inputArray = Encoding.ASCII.GetBytes(input);
+            await using var inputStream = new ReadOnlyMemoryStream(inputArray);
+            await using var outputWriter = new StringWriter();
+
+            // Tests
+            await Base32Encoding.DefaultWithPadding.EncodeAsync(inputStream, outputWriter);
+            outputWriter.ToString().ShouldBe(expectedOutput);
         }
 
         [Theory]
@@ -52,7 +81,33 @@ namespace AppMotor.Core.Tests.Utils
         public void TestEncoding_WithoutPadding(string input, string expectedOutput)
         {
             var inputArray = Encoding.ASCII.GetBytes(input);
+            using var inputStream = new ReadOnlyMemoryStream(inputArray);
+            using var outputWriter = new StringWriter();
+
+            // Tests
             Base32Encoding.DefaultWithoutPadding.Encode(inputArray).ShouldBe(expectedOutput);
+
+            Base32Encoding.DefaultWithoutPadding.Encode(inputStream, outputWriter);
+            outputWriter.ToString().ShouldBe(expectedOutput);
+        }
+
+        [Theory]
+        [InlineData("", "")]
+        [InlineData("f", "MY")]
+        [InlineData("fo", "MZXQ")]
+        [InlineData("foo", "MZXW6")]
+        [InlineData("foob", "MZXW6YQ")]
+        [InlineData("fooba", "MZXW6YTB")]
+        [InlineData("foobar", "MZXW6YTBOI")]
+        public async Task TestEncodingAsync_WithoutPadding(string input, string expectedOutput)
+        {
+            var inputArray = Encoding.ASCII.GetBytes(input);
+            await using var inputStream = new ReadOnlyMemoryStream(inputArray);
+            await using var outputWriter = new StringWriter();
+
+            // Tests
+            await Base32Encoding.DefaultWithoutPadding.EncodeAsync(inputStream, outputWriter);
+            outputWriter.ToString().ShouldBe(expectedOutput);
         }
 
         [Theory]
@@ -65,8 +120,34 @@ namespace AppMotor.Core.Tests.Utils
         [InlineData("foobar", "MZXW6YTBOI======")]
         public void TestDecoding_WithPadding(string expectedOutput, string input)
         {
+            using var inputReader = new StringReader(input);
+            using var outputStream = new MemoryStream();
             var expectedOutputArray = Encoding.ASCII.GetBytes(expectedOutput);
+
+            // Tests
             Base32Encoding.DefaultWithPadding.Decode(input).ShouldBe(expectedOutputArray);
+
+            Base32Encoding.DefaultWithPadding.Decode(inputReader, outputStream);
+            outputStream.ToArray().ShouldBe(expectedOutputArray);
+        }
+
+        [Theory]
+        [InlineData("", "")]
+        [InlineData("f", "MY======")]
+        [InlineData("fo", "MZXQ====")]
+        [InlineData("foo", "MZXW6===")]
+        [InlineData("foob", "MZXW6YQ=")]
+        [InlineData("fooba", "MZXW6YTB")]
+        [InlineData("foobar", "MZXW6YTBOI======")]
+        public async Task TestDecodingAsync_WithPadding(string expectedOutput, string input)
+        {
+            using var inputReader = new StringReader(input);
+            await using var outputStream = new MemoryStream();
+            var expectedOutputArray = Encoding.ASCII.GetBytes(expectedOutput);
+
+            // Tests
+            await Base32Encoding.DefaultWithPadding.DecodeAsync(inputReader, outputStream);
+            outputStream.ToArray().ShouldBe(expectedOutputArray);
         }
 
         [Theory]
@@ -79,8 +160,34 @@ namespace AppMotor.Core.Tests.Utils
         [InlineData("foobar", "MZXW6YTBOI")]
         public void TestDecoding_WithoutPadding(string expectedOutput, string input)
         {
+            using var inputReader = new StringReader(input);
+            using var outputStream = new MemoryStream();
             var expectedOutputArray = Encoding.ASCII.GetBytes(expectedOutput);
+
+            // Tests
             Base32Encoding.DefaultWithoutPadding.Decode(input).ShouldBe(expectedOutputArray);
+
+            Base32Encoding.DefaultWithoutPadding.Decode(inputReader, outputStream);
+            outputStream.ToArray().ShouldBe(expectedOutputArray);
+        }
+
+        [Theory]
+        [InlineData("", "")]
+        [InlineData("f", "MY")]
+        [InlineData("fo", "MZXQ")]
+        [InlineData("foo", "MZXW6")]
+        [InlineData("foob", "MZXW6YQ")]
+        [InlineData("fooba", "MZXW6YTB")]
+        [InlineData("foobar", "MZXW6YTBOI")]
+        public async Task TestDecodingAsync_WithoutPadding(string expectedOutput, string input)
+        {
+            using var inputReader = new StringReader(input);
+            await using var outputStream = new MemoryStream();
+            var expectedOutputArray = Encoding.ASCII.GetBytes(expectedOutput);
+
+            // Tests
+            await Base32Encoding.DefaultWithoutPadding.DecodeAsync(inputReader, outputStream);
+            outputStream.ToArray().ShouldBe(expectedOutputArray);
         }
 
         [Fact]
