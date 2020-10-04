@@ -209,13 +209,13 @@ namespace AppMotor.Core.Utils
             byte[] sharedWriteBuffer = ArrayPool<byte>.Shared.Rent(bufferSize);
             try
             {
-                using var groupStream = new StringBasedSymbolGroupDecoder(encodedString, this.m_reverseSymbols, this.PaddingChar);
+                using var decoder = new StringBasedSymbolGroupDecoder(encodedString, this.m_reverseSymbols, this.PaddingChar);
 
                 int offset = 0;
 
                 while (true)
                 {
-                    var nextDecodedGroup = groupStream.DecodeNextGroup();
+                    var nextDecodedGroup = decoder.DecodeNextGroup();
                     if (nextDecodedGroup.Count == 0)
                     {
                         break;
@@ -233,6 +233,25 @@ namespace AppMotor.Core.Utils
             finally
             {
                 ArrayPool<byte>.Shared.Return(sharedWriteBuffer);
+            }
+        }
+
+        public void Decode(StringReader encodedString, Stream destination)
+        {
+            Validate.Argument.IsNotNull(encodedString, nameof(encodedString));
+            Validate.Argument.IsNotNull(destination, nameof(destination));
+
+            using var decoder = new StringReaderBasedSymbolGroupDecoder(encodedString, this.m_reverseSymbols, this.PaddingChar);
+
+            while (true)
+            {
+                var nextDecodedGroup = decoder.DecodeNextGroup();
+                if (nextDecodedGroup.Count == 0)
+                {
+                    break;
+                }
+
+                destination.Write(nextDecodedGroup);
             }
         }
 
@@ -519,12 +538,8 @@ namespace AppMotor.Core.Utils
             private int m_count;
 
             /// <inheritdoc />
-            public StringBasedSymbolGroupDecoder(
-                    string encodedString,
-                    [NotNull] Dictionary<char, byte> reverseSymbols,
-                    char? paddingChar
-                )
-                    : base(reverseSymbols, paddingChar)
+            public StringBasedSymbolGroupDecoder(string encodedString, Dictionary<char, byte> reverseSymbols, char? paddingChar)
+                : base(reverseSymbols, paddingChar)
             {
                 this.m_encodedString = encodedString;
                 this.m_count = encodedString.Length;
@@ -549,6 +564,35 @@ namespace AppMotor.Core.Utils
 
                 return decodedGroup;
             }
+        }
+
+        private sealed class StringReaderBasedSymbolGroupDecoder : SymbolGroupDecoder
+        {
+            private readonly StringReader m_stringReader;
+
+            /// <inheritdoc />
+            public StringReaderBasedSymbolGroupDecoder(StringReader stringReader, Dictionary<char, byte> reverseSymbols, char? paddingChar)
+                : base(reverseSymbols, paddingChar)
+            {
+                this.m_stringReader = stringReader;
+            }
+
+            [MustUseReturnValue]
+            public ArraySegment<byte> DecodeNextGroup()
+            {
+                Span<char> readBuffer = stackalloc char[SYMBOLS_PER_GROUP];
+
+                int readChars = this.m_stringReader.Read(readBuffer);
+                if (readChars == 0)
+                {
+                    return ArraySegment<byte>.Empty;
+                }
+
+                var nextEncodedGroup = readBuffer.Slice(0, readChars);
+
+                return DecodeGroup(nextEncodedGroup);
+            }
+
         }
     }
 }
