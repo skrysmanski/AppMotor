@@ -17,7 +17,10 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
+
+using AppMotor.Core.IO;
 
 using JetBrains.Annotations;
 
@@ -136,11 +139,28 @@ namespace AppMotor.Core.Utils
 
             var result = new StringBuilder(CalcEncodedStringLength(data.Length));
 
-            using var groupStream = new MemoryBasedSymbolGroupReader(data);
+            using var groupReader = new MemoryBasedSymbolGroupReader(data);
 
+            Encode(groupReader, ch => result.Append(ch));
+
+            return result.ToString();
+        }
+
+        public void Encode(IReadOnlyStream data, StringWriter outputWriter)
+        {
+            Validate.Argument.IsNotNull(outputWriter, nameof(outputWriter));
+            Validate.Argument.IsNotNull(data, nameof(data));
+
+            using var groupReader = new StreamBasedSymbolGroupReader(data);
+
+            Encode(groupReader, outputWriter.Write);
+        }
+
+        private void Encode(SymbolGroupReaderBase groupReader, Action<char> writeCharFunc)
+        {
             while (true)
             {
-                int readSymbols = groupStream.ReadNextGroup();
+                int readSymbols = groupReader.ReadNextGroup();
                 if (readSymbols == 0)
                 {
                     break;
@@ -148,8 +168,8 @@ namespace AppMotor.Core.Utils
 
                 for (int i = 0; i < readSymbols; i++)
                 {
-                    var symbol = this.m_symbols[groupStream.SymbolBuffer[i]];
-                    result.Append(symbol);
+                    var symbol = this.m_symbols[groupReader.SymbolBuffer[i]];
+                    writeCharFunc(symbol);
                 }
 
                 if (readSymbols < SYMBOLS_PER_GROUP)
@@ -158,15 +178,13 @@ namespace AppMotor.Core.Utils
                     {
                         for (int i = readSymbols; i < SYMBOLS_PER_GROUP; i++)
                         {
-                            result.Append(this.PaddingChar.Value);
+                            writeCharFunc(this.PaddingChar.Value);
                         }
                     }
 
                     break;
                 }
             }
-
-            return result.ToString();
         }
 
         /// <summary>
@@ -291,7 +309,6 @@ namespace AppMotor.Core.Utils
             /// </summary>
             /// <returns>The number of symbols read.</returns>
             [MustUseReturnValue]
-            // ReSharper disable once UnusedMemberInSuper.Global
             public abstract int ReadNextGroup();
 
             [MustUseReturnValue]
@@ -390,6 +407,31 @@ namespace AppMotor.Core.Utils
                 this.m_count -= bytesToRead;
 
                 return symbolCount;
+            }
+        }
+
+        private sealed class StreamBasedSymbolGroupReader : SymbolGroupReaderBase
+        {
+            private readonly IReadOnlyStream m_dataStream;
+
+            /// <inheritdoc />
+            public StreamBasedSymbolGroupReader(IReadOnlyStream dataStream)
+            {
+                this.m_dataStream = dataStream;
+            }
+
+            /// <inheritdoc />
+            public override int ReadNextGroup()
+            {
+                Span<byte> readBuffer = stackalloc byte[BYTES_PER_GROUP];
+
+                int readBytes = this.m_dataStream.ReadUntilFull(readBuffer);
+                if (readBytes == 0)
+                {
+                    return 0;
+                }
+
+                return ReadNextGroup(readBuffer.Slice(0, readBytes));
             }
         }
 
