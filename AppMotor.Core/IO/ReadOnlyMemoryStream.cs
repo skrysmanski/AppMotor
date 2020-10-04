@@ -27,16 +27,6 @@ namespace AppMotor.Core.IO
     [PublicAPI]
     public class ReadOnlyMemoryStream : ReadOnlyStream
     {
-        public ReadOnlyMemoryStream(byte[] buffer)
-            : base(new MemoryStream(buffer, writable: false))
-        {
-        }
-
-        public ReadOnlyMemoryStream(byte[] buffer, int index, int count)
-            : base(new MemoryStream(buffer, index, count, writable: false))
-        {
-        }
-
         public ReadOnlyMemoryStream(ArraySegment<byte> buffer)
             : base(CreateMemoryStreamFromArraySegment(buffer))
         {
