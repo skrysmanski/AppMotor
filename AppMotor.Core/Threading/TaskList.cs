@@ -81,6 +81,11 @@ namespace AppMotor.Core.Threading
         [PublicAPI]
         public Task WhenAll()
         {
+            if (this.m_underlyingList is null || this.m_underlyingList.Count == 0)
+            {
+                return Task.CompletedTask;
+            }
+
             return Task.WhenAll(this.m_underlyingList);
         }
 
@@ -90,6 +95,11 @@ namespace AppMotor.Core.Threading
         [PublicAPI]
         public Task<Task> WhenAny()
         {
+            if (this.m_underlyingList is null || this.m_underlyingList.Count == 0)
+            {
+                throw new InvalidOperationException("The task list is empty.");
+            }
+
             return Task.WhenAny(this.m_underlyingList);
         }
 
@@ -168,6 +178,11 @@ namespace AppMotor.Core.Threading
         [PublicAPI]
         public Task<T[]> WhenAll()
         {
+            if (this.m_underlyingList is null || this.m_underlyingList.Count == 0)
+            {
+                return Task.FromResult(Array.Empty<T>());
+            }
+
             return Task.WhenAll(this.m_underlyingList);
         }
 
@@ -177,6 +192,11 @@ namespace AppMotor.Core.Threading
         [PublicAPI]
         public Task<Task<T>> WhenAny()
         {
+            if (this.m_underlyingList is null || this.m_underlyingList.Count == 0)
+            {
+                throw new InvalidOperationException("The task list is empty.");
+            }
+
             return Task.WhenAny(this.m_underlyingList);
         }
 

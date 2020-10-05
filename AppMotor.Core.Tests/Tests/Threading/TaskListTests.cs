@@ -38,6 +38,9 @@ namespace AppMotor.Core.Tests.Threading
             taskList.ExecuteNonGenericEnumerator<Task>().Count.ShouldBe(0);
 
             Should.Throw<ArgumentOutOfRangeException>(() => taskList[0]);
+
+            Should.NotThrow(() => taskList.WhenAll());
+            Should.Throw<InvalidOperationException>(() => taskList.WhenAny());
         }
 
         [Fact]
@@ -50,6 +53,9 @@ namespace AppMotor.Core.Tests.Threading
             taskList.ExecuteNonGenericEnumerator<Task<int>>().Count.ShouldBe(0);
 
             Should.Throw<ArgumentOutOfRangeException>(() => taskList[0]);
+
+            Should.NotThrow(() => taskList.WhenAll());
+            Should.Throw<InvalidOperationException>(() => taskList.WhenAny());
         }
 
         /// <summary>
