@@ -3,7 +3,7 @@
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Project.Code.props', '$(MSBuildThisFileDirectory)'))" />
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
 
     <!-- See also: https://docs.microsoft.com/en-us/nuget/create-packages/prerelease-packages -->
     <Version>0.2.3</Version>

@@ -41,7 +41,7 @@ namespace AppMotor.Core.Logging
 
             foreach (var fieldInfo in fieldInfos.Where(fi => fi.IsLiteral && !fi.IsInitOnly))
             {
-                int hResult = (int)fieldInfo.GetRawConstantValue();
+                int hResult = (int)fieldInfo.GetRawConstantValue()!;
                 hResultNames[hResult] = fieldInfo.Name;
             }
 

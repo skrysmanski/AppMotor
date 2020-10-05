@@ -216,7 +216,7 @@ namespace AppMotor.Core.System
             }
 
             var valueAsString = value.ToString();
-            if (valueAsString.Length == 0)
+            if (string.IsNullOrEmpty(valueAsString))
             {
                 // If it's empty, don't add it (wouldn't be visible anyways).
                 return this;

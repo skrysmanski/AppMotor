@@ -44,7 +44,7 @@ namespace AppMotor.Core.Logging
             TypeMarkers.TypeMarkerAdded += OnTypeMarkerAdded;
         }
 
-        private static void OnTypeMarkerAdded(object sender, TypeMarkerAddedEventArgs e)
+        private static void OnTypeMarkerAdded(object? sender, TypeMarkerAddedEventArgs e)
         {
             if (e.TypeMarkerType == typeof(SimpleLoggableValueMarker) || e.TypeMarkerType == typeof(SensitiveValueMarker))
             {

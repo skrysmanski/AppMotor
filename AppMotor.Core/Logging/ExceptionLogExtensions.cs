@@ -54,7 +54,7 @@ namespace AppMotor.Core.Logging
 
             var exceptionType = exception.GetType();
 
-            LoggablePropertiesList loggableProperties;
+            LoggablePropertiesList? loggableProperties;
 
             lock (s_loggablePropertiesCache)
             {
@@ -205,7 +205,7 @@ namespace AppMotor.Core.Logging
                 LoggableValues.LoggabilityChanged += OnLoggabilityChanged;
             }
 
-            private void OnLoggabilityChanged(object sender, LoggabilityChangedEventArgs e)
+            private void OnLoggabilityChanged(object? sender, LoggabilityChangedEventArgs e)
             {
                 // If any of our types changed loggability, re-create the list of loggable properties.
                 if (this.m_allPropertyTypes.Contains(e.Type))

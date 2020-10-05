@@ -15,7 +15,6 @@
 #endregion
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Security;
 
 using AppMotor.Core.Extensions;
@@ -39,7 +38,7 @@ namespace AppMotor.Core.DataModel
         /// </summary>
         /// <seealso cref="IsSensitiveValueType"/>
         [PublicAPI, Pure]
-        public static bool IsSensitiveValue<T>([DisallowNull, NotNullOnExit] this T value)
+        public static bool IsSensitiveValue<T>([NotNullOnExit] this T value) where T : notnull
         {
             Validate.Argument.IsNotNullUnconstrained(value, nameof(value));
 

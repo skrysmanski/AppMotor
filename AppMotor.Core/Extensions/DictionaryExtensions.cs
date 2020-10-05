@@ -36,6 +36,7 @@ namespace AppMotor.Core.Extensions
                 this IDictionary<TKey, TValue> dictionary,
                 IEnumerable<KeyValuePair<TKey, TValue>> itemsToAdd
             )
+                where TKey : notnull
         {
             Validate.Argument.IsNotNull(dictionary, nameof(dictionary));
             Validate.Argument.IsNotNull(itemsToAdd, nameof(itemsToAdd));

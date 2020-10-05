@@ -43,7 +43,7 @@ namespace AppMotor.Core.Exceptions
     /// use <c>foreach (var entry : ...)</c> where entry will be a proper key value pair.</para>
     /// </summary>
 #pragma warning disable CA1815 // Override equals and operator equals on value types
-    public readonly struct ExceptionDataAccessor : IReadOnlyCollection<KeyValuePair<object, object>>
+    public readonly struct ExceptionDataAccessor : IReadOnlyCollection<KeyValuePair<object, object?>>
 #pragma warning restore CA1815 // Override equals and operator equals on value types
     {
         private readonly IDictionary? m_data;
@@ -138,13 +138,16 @@ namespace AppMotor.Core.Exceptions
         }
 
         /// <inheritdoc />
-        public IEnumerator<KeyValuePair<object, object>> GetEnumerator()
+        public IEnumerator<KeyValuePair<object, object?>> GetEnumerator()
         {
             if (this.m_data != null)
             {
-                foreach (DictionaryEntry entry in this.m_data)
+                foreach (var entry in this.m_data)
                 {
-                    yield return new KeyValuePair<object, object>(entry.Key, entry.Value);
+                    if (entry is DictionaryEntry dictionaryEntry)
+                    {
+                        yield return new KeyValuePair<object, object?>(dictionaryEntry.Key, dictionaryEntry.Value);
+                    }
                 }
             }
         }

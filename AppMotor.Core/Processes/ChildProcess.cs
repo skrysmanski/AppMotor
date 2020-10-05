@@ -318,7 +318,7 @@ namespace AppMotor.Core.Processes
                     throw new ChildProcessErrorException($"The process has failed with exit code {this.m_process.ExitCode}.");
                 }
 
-                return new ChildProcessResult(this.m_process.ExitCode, stdOutReadTask.Result ?? "", errorOutput);
+                return new ChildProcessResult(this.m_process.ExitCode, stdOutReadTask.Result, errorOutput);
             }
         }
     }
