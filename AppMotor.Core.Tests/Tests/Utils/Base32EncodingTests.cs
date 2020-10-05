@@ -206,5 +206,29 @@ namespace AppMotor.Core.Tests.Utils
         {
             Should.Throw<FormatException>(() => Base32Encoding.DefaultWithPadding.Decode("MZX"));
         }
+
+        [Fact]
+        public void TestBase()
+        {
+            Base32Encoding.DefaultWithPadding.Base.ShouldBe(32);
+            Base32Encoding.DefaultWithoutPadding.Base.ShouldBe(32);
+        }
+
+        [Fact]
+        public void TestArrayConstructor()
+        {
+            var symbols = Base32Encoding.DEFAULT_SYMBOLS.ToLowerInvariant().ToCharArray();
+
+            var foobarAsByteArray = Encoding.ASCII.GetBytes("foobar");
+
+            var encoding = new Base32Encoding(symbols, paddingChar: null);
+
+            encoding.Encode(foobarAsByteArray).ShouldBe("mzxw6ytboi");
+
+            // Change input array. Test that it doesn't change the outcome (i.e. a copy of this array has been created).
+            symbols[12].ShouldBe('m'); // verify our assumption
+            symbols[12] = '0';
+            encoding.Encode(foobarAsByteArray).ShouldBe("mzxw6ytboi");
+        }
     }
 }
