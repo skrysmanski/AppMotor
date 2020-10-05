@@ -67,7 +67,7 @@ namespace AppMotor.Core.Threading
         /// <summary>
         /// Adds a task to this list.
         /// </summary>
-        public static TaskList operator+(TaskList taskList, Task task)
+        public static TaskList operator +(TaskList taskList, Task task)
         {
             var newList = taskList.m_underlyingList?.CloneShallow() ?? new AppendOnlyList<Task>();
             newList.Append(task);
@@ -154,7 +154,7 @@ namespace AppMotor.Core.Threading
         /// <summary>
         /// Adds a task to this list.
         /// </summary>
-        public static TaskList<T> operator+(TaskList<T> taskList, Task<T> task)
+        public static TaskList<T> operator +(TaskList<T> taskList, Task<T> task)
         {
             var newList = taskList.m_underlyingList?.CloneShallow() ?? new AppendOnlyList<Task<T>>();
             newList.Append(task);
