@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,14 +31,36 @@ namespace AppMotor.Core.Tests.Utils
 {
     public sealed class Base32EncodingTests
     {
+        public static IEnumerable<object[]> TestDataWithPadding
+        {
+            get
+            {
+                yield return new object[] { "", "" };
+                yield return new object[] { "f", "MY======" };
+                yield return new object[] { "fo", "MZXQ====" };
+                yield return new object[] { "foo", "MZXW6===" };
+                yield return new object[] { "foob", "MZXW6YQ=" };
+                yield return new object[] { "fooba", "MZXW6YTB" };
+                yield return new object[] { "foobar", "MZXW6YTBOI======" };
+            }
+        }
+
+        public static IEnumerable<object[]> TestDataWithoutPadding
+        {
+            get
+            {
+                yield return new object[] { "", "" };
+                yield return new object[] { "f", "MY" };
+                yield return new object[] { "fo", "MZXQ" };
+                yield return new object[] { "foo", "MZXW6" };
+                yield return new object[] { "foob", "MZXW6YQ" };
+                yield return new object[] { "fooba", "MZXW6YTB" };
+                yield return new object[] { "foobar", "MZXW6YTBOI" };
+            }
+        }
+
         [Theory]
-        [InlineData("", "")]
-        [InlineData("f", "MY======")]
-        [InlineData("fo", "MZXQ====")]
-        [InlineData("foo", "MZXW6===")]
-        [InlineData("foob", "MZXW6YQ=")]
-        [InlineData("fooba", "MZXW6YTB")]
-        [InlineData("foobar", "MZXW6YTBOI======")]
+        [MemberData(nameof(TestDataWithPadding))]
         public void TestEncoding_WithPadding(string input, string expectedOutput)
         {
             var inputArray = Encoding.ASCII.GetBytes(input);
@@ -52,13 +75,7 @@ namespace AppMotor.Core.Tests.Utils
         }
 
         [Theory]
-        [InlineData("", "")]
-        [InlineData("f", "MY======")]
-        [InlineData("fo", "MZXQ====")]
-        [InlineData("foo", "MZXW6===")]
-        [InlineData("foob", "MZXW6YQ=")]
-        [InlineData("fooba", "MZXW6YTB")]
-        [InlineData("foobar", "MZXW6YTBOI======")]
+        [MemberData(nameof(TestDataWithPadding))]
         public async Task TestEncodingAsync_WithPadding(string input, string expectedOutput)
         {
             var inputArray = Encoding.ASCII.GetBytes(input);
@@ -71,13 +88,7 @@ namespace AppMotor.Core.Tests.Utils
         }
 
         [Theory]
-        [InlineData("", "")]
-        [InlineData("f", "MY")]
-        [InlineData("fo", "MZXQ")]
-        [InlineData("foo", "MZXW6")]
-        [InlineData("foob", "MZXW6YQ")]
-        [InlineData("fooba", "MZXW6YTB")]
-        [InlineData("foobar", "MZXW6YTBOI")]
+        [MemberData(nameof(TestDataWithoutPadding))]
         public void TestEncoding_WithoutPadding(string input, string expectedOutput)
         {
             var inputArray = Encoding.ASCII.GetBytes(input);
@@ -92,13 +103,7 @@ namespace AppMotor.Core.Tests.Utils
         }
 
         [Theory]
-        [InlineData("", "")]
-        [InlineData("f", "MY")]
-        [InlineData("fo", "MZXQ")]
-        [InlineData("foo", "MZXW6")]
-        [InlineData("foob", "MZXW6YQ")]
-        [InlineData("fooba", "MZXW6YTB")]
-        [InlineData("foobar", "MZXW6YTBOI")]
+        [MemberData(nameof(TestDataWithoutPadding))]
         public async Task TestEncodingAsync_WithoutPadding(string input, string expectedOutput)
         {
             var inputArray = Encoding.ASCII.GetBytes(input);
@@ -111,13 +116,7 @@ namespace AppMotor.Core.Tests.Utils
         }
 
         [Theory]
-        [InlineData("", "")]
-        [InlineData("f", "MY======")]
-        [InlineData("fo", "MZXQ====")]
-        [InlineData("foo", "MZXW6===")]
-        [InlineData("foob", "MZXW6YQ=")]
-        [InlineData("fooba", "MZXW6YTB")]
-        [InlineData("foobar", "MZXW6YTBOI======")]
+        [MemberData(nameof(TestDataWithPadding))]
         public void TestDecoding_WithPadding(string expectedOutput, string input)
         {
             using var inputReader = new StringReader(input);
@@ -132,13 +131,7 @@ namespace AppMotor.Core.Tests.Utils
         }
 
         [Theory]
-        [InlineData("", "")]
-        [InlineData("f", "MY======")]
-        [InlineData("fo", "MZXQ====")]
-        [InlineData("foo", "MZXW6===")]
-        [InlineData("foob", "MZXW6YQ=")]
-        [InlineData("fooba", "MZXW6YTB")]
-        [InlineData("foobar", "MZXW6YTBOI======")]
+        [MemberData(nameof(TestDataWithPadding))]
         public async Task TestDecodingAsync_WithPadding(string expectedOutput, string input)
         {
             using var inputReader = new StringReader(input);
@@ -151,13 +144,7 @@ namespace AppMotor.Core.Tests.Utils
         }
 
         [Theory]
-        [InlineData("", "")]
-        [InlineData("f", "MY")]
-        [InlineData("fo", "MZXQ")]
-        [InlineData("foo", "MZXW6")]
-        [InlineData("foob", "MZXW6YQ")]
-        [InlineData("fooba", "MZXW6YTB")]
-        [InlineData("foobar", "MZXW6YTBOI")]
+        [MemberData(nameof(TestDataWithoutPadding))]
         public void TestDecoding_WithoutPadding(string expectedOutput, string input)
         {
             using var inputReader = new StringReader(input);
@@ -172,13 +159,7 @@ namespace AppMotor.Core.Tests.Utils
         }
 
         [Theory]
-        [InlineData("", "")]
-        [InlineData("f", "MY")]
-        [InlineData("fo", "MZXQ")]
-        [InlineData("foo", "MZXW6")]
-        [InlineData("foob", "MZXW6YQ")]
-        [InlineData("fooba", "MZXW6YTB")]
-        [InlineData("foobar", "MZXW6YTBOI")]
+        [MemberData(nameof(TestDataWithoutPadding))]
         public async Task TestDecodingAsync_WithoutPadding(string expectedOutput, string input)
         {
             using var inputReader = new StringReader(input);
