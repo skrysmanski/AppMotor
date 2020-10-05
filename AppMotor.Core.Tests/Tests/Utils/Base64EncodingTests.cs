@@ -14,6 +14,7 @@
 // limitations under the License.
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -59,6 +60,19 @@ namespace AppMotor.Core.Tests.Utils
 
             // Tests
             Base64Encoding.DefaultWithPadding.Decode(input).ShouldBe(expectedOutputArray);
+        }
+
+        [Fact]
+        public void TestDecodingInvalidChar()
+        {
+            // $ is an invalid symbol in the default Base64 symbols list.
+            Should.Throw<FormatException>(() => Base64Encoding.DefaultWithPadding.Decode("Zm9$"));
+        }
+
+        [Fact]
+        public void TestDecodingInvalidLength()
+        {
+            Should.Throw<FormatException>(() => Base64Encoding.DefaultWithPadding.Decode("Zm9"));
         }
     }
 }

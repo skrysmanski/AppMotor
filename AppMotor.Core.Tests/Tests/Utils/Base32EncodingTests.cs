@@ -200,5 +200,11 @@ namespace AppMotor.Core.Tests.Utils
             // 0 is an invalid symbol in the default Base32 symbols list.
             Should.Throw<FormatException>(() => Base32Encoding.DefaultWithPadding.Decode("MZX0"));
         }
+
+        [Fact]
+        public void TestDecodingInvalidLength()
+        {
+            Should.Throw<FormatException>(() => Base32Encoding.DefaultWithPadding.Decode("MZX"));
+        }
     }
 }

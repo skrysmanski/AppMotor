@@ -564,7 +564,7 @@ namespace AppMotor.Core.Utils
                         break;
 
                     default:
-                        throw new InvalidOperationException($"Invalid symbol group count: {symbolGroup.Length}");
+                        throw new FormatException($"This is not a valid Base32 string. (invalid symbol group size: {symbolGroup.Length})");
                 }
 
                 for (int i = 0; i < byteCountToWrite; i++)
