@@ -21,6 +21,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
+using AppMotor.Core.Extensions;
 using AppMotor.Core.IO;
 
 using JetBrains.Annotations;
@@ -333,7 +334,7 @@ namespace AppMotor.Core.Utils
             }
 
             [MustUseReturnValue]
-            protected ArraySegment<char> EncodeGroup(Span<byte> readBytes)
+            protected ArraySegment<char> EncodeGroup(ReadOnlySpan<byte> readBytes)
             {
                 ulong allBits = 0;
 
@@ -408,10 +409,10 @@ namespace AppMotor.Core.Utils
                         this.m_encodeBuffer[i] = this.m_paddingChar.Value;
                     }
 
-                    return this.m_encodeBuffer[0..SYMBOLS_PER_GROUP];
+                    return this.m_encodeBuffer.Slice(0, SYMBOLS_PER_GROUP);
                 }
 
-                return this.m_encodeBuffer[0..symbolCount];
+                return this.m_encodeBuffer.Slice(0, symbolCount);
             }
         }
 
@@ -573,7 +574,7 @@ namespace AppMotor.Core.Utils
                     this.m_decoderBuffer[i] = byteToWrite;
                 }
 
-                return this.m_decoderBuffer[0..byteCountToWrite];
+                return this.m_decoderBuffer.Slice(0, byteCountToWrite);
             }
         }
 
@@ -636,9 +637,7 @@ namespace AppMotor.Core.Utils
                     return ArraySegment<byte>.Empty;
                 }
 
-                var nextEncodedGroup = readBuffer.Slice(0, readChars);
-
-                return DecodeGroup(nextEncodedGroup);
+                return DecodeGroup(readBuffer.Slice(0, readChars));
             }
 
             [MustUseReturnValue]
@@ -653,9 +652,7 @@ namespace AppMotor.Core.Utils
                         return ArraySegment<byte>.Empty;
                     }
 
-                    var nextEncodedGroup = readBuffer[0..readChars];
-
-                    return DecodeGroup(nextEncodedGroup);
+                    return DecodeGroup(readBuffer.AsSpan(0, readChars));
                 }
                 finally
                 {
