@@ -32,7 +32,14 @@ namespace AppMotor.Core.Utils
     public abstract class Rfc4648Encoding
     {
         /// <summary>
-        /// The padding character. If <c>null</c>, no padding will be used.
+        /// The default padding character - as defined by RFC 4648.
+        /// </summary>
+        /// <seealso cref="PaddingChar"/>
+        [PublicAPI]
+        public const char DEFAULT_PADDING_CHAR = '=';
+
+        /// <summary>
+        /// The padding character (usually <see cref="DEFAULT_PADDING_CHAR"/>). If <c>null</c>, no padding will be used.
         /// </summary>
         /// <remarks>
         /// The RFC 4648 encodings encode bytes in groups of symbols. Base64 uses 4 symbols (à 6 bit) per group (3 bytes) and

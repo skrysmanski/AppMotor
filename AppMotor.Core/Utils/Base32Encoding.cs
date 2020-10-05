@@ -41,14 +41,8 @@ namespace AppMotor.Core.Utils
         public const string DEFAULT_SYMBOLS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 
         /// <summary>
-        /// The default padding character - as defined by RFC 4648.
-        /// </summary>
-        /// <seealso cref="PaddingChar"/>
-        [PublicAPI]
-        public const char DEFAULT_PADDING_CHAR = '=';
-
-        /// <summary>
-        /// The Base32 converter with the default symbols (see <see cref="DEFAULT_SYMBOLS"/>) and default padding character (see <see cref="DEFAULT_PADDING_CHAR"/>).
+        /// The Base32 converter with the default symbols (see <see cref="DEFAULT_SYMBOLS"/>) and default padding character
+        /// (see <see cref="Rfc4648Encoding.DEFAULT_PADDING_CHAR"/>).
         /// </summary>
         /// <seealso cref="DefaultWithoutPadding"/>
         [PublicAPI]
