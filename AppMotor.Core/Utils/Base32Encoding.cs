@@ -66,7 +66,7 @@ namespace AppMotor.Core.Utils
 
         private readonly char[] m_symbols;
 
-        private readonly Dictionary<char, byte> m_reverseSymbols;
+        private readonly Dictionary<char, byte> m_inverseSymbols;
 
         /// <summary>
         /// The padding character. If <c>null</c>, no padding will be used.
@@ -107,19 +107,11 @@ namespace AppMotor.Core.Utils
                 this.m_symbols = symbols;
             }
 
-            this.m_reverseSymbols = new Dictionary<char, byte>(this.m_symbols.Length);
-            for (byte i = 0; i < this.m_symbols.Length; i++)
-            {
-                var symbol = this.m_symbols[i];
-                if (!this.m_reverseSymbols.TryAdd(symbol, i))
-                {
-                    throw new ArgumentException($"The list of symbols contains '{symbol}' multiple times.", nameof(symbols));
-                }
-            }
+            this.m_inverseSymbols = CreateInverseSymbolsDictionary(this.m_symbols);
 
             if (paddingChar != null)
             {
-                if (this.m_reverseSymbols.ContainsKey(paddingChar.Value))
+                if (this.m_inverseSymbols.ContainsKey(paddingChar.Value))
                 {
                     throw new ArgumentException($"The padding character ('{paddingChar}') must not be in the list of symbols.", nameof(paddingChar));
                 }
@@ -225,7 +217,7 @@ namespace AppMotor.Core.Utils
             byte[] sharedWriteBuffer = ArrayPool<byte>.Shared.Rent(bufferSize);
             try
             {
-                using var decoder = new StringBasedSymbolGroupDecoder(encodedString, this.m_reverseSymbols, this.PaddingChar);
+                using var decoder = new StringBasedSymbolGroupDecoder(encodedString, this.m_inverseSymbols, this.PaddingChar);
 
                 int offset = 0;
 
@@ -257,7 +249,7 @@ namespace AppMotor.Core.Utils
             Validate.Argument.IsNotNull(encodedString, nameof(encodedString));
             Validate.Argument.IsNotNull(destination, nameof(destination));
 
-            using var decoder = new StringReaderBasedSymbolGroupDecoder(encodedString, this.m_reverseSymbols, this.PaddingChar);
+            using var decoder = new StringReaderBasedSymbolGroupDecoder(encodedString, this.m_inverseSymbols, this.PaddingChar);
 
             while (true)
             {
@@ -276,7 +268,7 @@ namespace AppMotor.Core.Utils
             Validate.Argument.IsNotNull(encodedString, nameof(encodedString));
             Validate.Argument.IsNotNull(destination, nameof(destination));
 
-            using var decoder = new StringReaderBasedSymbolGroupDecoder(encodedString, this.m_reverseSymbols, this.PaddingChar);
+            using var decoder = new StringReaderBasedSymbolGroupDecoder(encodedString, this.m_inverseSymbols, this.PaddingChar);
 
             while (true)
             {

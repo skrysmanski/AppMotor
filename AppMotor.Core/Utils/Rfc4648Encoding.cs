@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -94,5 +95,25 @@ namespace AppMotor.Core.Utils
         /// </summary>
         [PublicAPI]
         public abstract Task DecodeAsync(TextReader encodedString, Stream destination);
+
+        /// <summary>
+        /// Converts a list of symbols into their inverse lookup dictionary.
+        /// </summary>
+        [PublicAPI, MustUseReturnValue]
+        public static Dictionary<char, byte> CreateInverseSymbolsDictionary(ReadOnlySpan<char> symbols)
+        {
+            var inverseSymbols = new Dictionary<char, byte>(symbols.Length);
+
+            for (byte i = 0; i < symbols.Length; i++)
+            {
+                var symbol = symbols[i];
+                if (!inverseSymbols.TryAdd(symbol, i))
+                {
+                    throw new ArgumentException($"The list of symbols contains '{symbol}' multiple times.", nameof(symbols));
+                }
+            }
+
+            return inverseSymbols;
+        }
     }
 }
