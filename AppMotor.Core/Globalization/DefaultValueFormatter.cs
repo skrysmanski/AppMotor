@@ -23,7 +23,7 @@ namespace AppMotor.Core.Globalization
 {
     /// <summary>
     /// Default implementation of <see cref="IValueFormatter"/>. Supports <see cref="IConvertible"/>
-    /// and <see cref="IGlobalizable"/>. Does not provide any custom format strings in <see cref="FormatValue{T}"/>.
+    /// and <see cref="ILocalizable"/>. Does not provide any custom format strings in <see cref="FormatValue{T}"/>.
     /// </summary>
     public class DefaultValueFormatter : IValueFormatter
     {
@@ -50,8 +50,8 @@ namespace AppMotor.Core.Globalization
                 case IConvertible convertible:
                     return convertible.ToString(this.CultureForFormatting ?? CultureInfo.CurrentUICulture);
 
-                case IGlobalizable globalizable:
-                    return globalizable.ToString(this.CultureForFormatting ?? CultureInfo.CurrentUICulture);
+                case ILocalizable localizable:
+                    return localizable.ToString(this.CultureForFormatting ?? CultureInfo.CurrentUICulture);
 
                 default:
                     return value.ToString();
