@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using System.ComponentModel;
 using System.IO;
 using System.Text;
 
@@ -236,7 +237,7 @@ namespace AppMotor.Core.System
         /// Writes the specified object to the terminal's standard output.
         /// </summary>
         [PublicAPI]
-        public static void Write(object? value)
+        public static void Write([Localizable(true)] object? value)
         {
             Console.Write(value);
         }
@@ -245,7 +246,7 @@ namespace AppMotor.Core.System
         /// Writes the specified string to the terminal's standard output.
         /// </summary>
         [PublicAPI]
-        public static void Write(string? value)
+        public static void Write([Localizable(true)] string? value)
         {
             Console.Write(value);
         }
@@ -283,7 +284,7 @@ namespace AppMotor.Core.System
         /// and appends a line break at the end.
         /// </summary>
         [PublicAPI]
-        public static void WriteLine(object? value)
+        public static void WriteLine([Localizable(true)] object? value)
         {
             Console.WriteLine(value);
         }
@@ -293,7 +294,7 @@ namespace AppMotor.Core.System
         /// and appends a line break at the end.
         /// </summary>
         [PublicAPI]
-        public static void WriteLine(string? value)
+        public static void WriteLine([Localizable(true)] string? value)
         {
             Console.WriteLine(value);
         }
@@ -381,7 +382,7 @@ namespace AppMotor.Core.System
         /// on Windows, use <see cref="Console.Title"/>.
         /// </remarks>
         [PublicAPI]
-        public static void SetWindowTitle(string title)
+        public static void SetWindowTitle([Localizable(true)] string title)
         {
             Console.Title = title;
         }

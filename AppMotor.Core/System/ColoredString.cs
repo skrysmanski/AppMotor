@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 using AppMotor.Core.Collections;
@@ -179,7 +180,7 @@ namespace AppMotor.Core.System
         /// <see cref="Append(ConsoleColor?,object)"/> (resulting in unnecessary conversions).
         /// </remarks>
         [PublicAPI]
-        public ColoredString Append(ConsoleColor? color, string? value)
+        public ColoredString Append(ConsoleColor? color, [Localizable(true)] string? value)
         {
             if (string.IsNullOrEmpty(value))
             {
@@ -200,7 +201,7 @@ namespace AppMotor.Core.System
         /// <param name="value">The value to append</param>
         /// <returns>Returns this instance (useful for chaining calls).</returns>
         [PublicAPI]
-        public ColoredString Append(ConsoleColor? color, object? value)
+        public ColoredString Append(ConsoleColor? color, [Localizable(true)] object? value)
         {
             switch (value)
             {
@@ -227,7 +228,7 @@ namespace AppMotor.Core.System
             return this;
         }
 
-        public static ColoredString operator +(ColoredString? left, string? right)
+        public static ColoredString operator +(ColoredString? left, [Localizable(true)] string? right)
         {
             return new ColoredString(left).Append(color: null, right);
         }
@@ -242,7 +243,7 @@ namespace AppMotor.Core.System
             return new ColoredString(left).Append(color: null, right);
         }
 
-        public static ColoredString operator +(string? left, ColoredString? right)
+        public static ColoredString operator +([Localizable(true)] string? left, ColoredString? right)
         {
             return New().Append(color: null, left).Append(color: null, right);
         }
@@ -252,7 +253,7 @@ namespace AppMotor.Core.System
             return New().Append(text);
         }
 
-        public static implicit operator ColoredString(string? text)
+        public static implicit operator ColoredString([Localizable(true)] string? text)
         {
             return New().Append(color: null, (object?)text);
         }
@@ -311,12 +312,12 @@ namespace AppMotor.Core.System
             this.Color = color;
         }
 
-        public static ColoredString operator +(ColoredSubstring left, string? right)
+        public static ColoredString operator +(ColoredSubstring left, [Localizable(true)] string? right)
         {
             return ColoredString.New().Append(left).Append(null, right);
         }
 
-        public static ColoredString operator +(string? left, ColoredSubstring right)
+        public static ColoredString operator +([Localizable(true)] string? left, ColoredSubstring right)
         {
             return ColoredString.New().Append(null, left).Append(right);
         }
@@ -373,7 +374,7 @@ namespace AppMotor.Core.System
         {
         }
 
-        public static explicit operator TextInBlack(string? text)
+        public static explicit operator TextInBlack([Localizable(true)] string? text)
         {
             return new TextInBlack(text ?? "");
         }
@@ -392,7 +393,7 @@ namespace AppMotor.Core.System
         {
         }
 
-        public static explicit operator TextInDarkGray(string? text)
+        public static explicit operator TextInDarkGray([Localizable(true)] string? text)
         {
             return new TextInDarkGray(text ?? "");
         }
@@ -411,7 +412,7 @@ namespace AppMotor.Core.System
         {
         }
 
-        public static explicit operator TextInGray(string? text)
+        public static explicit operator TextInGray([Localizable(true)] string? text)
         {
             return new TextInGray(text ?? "");
         }
@@ -431,7 +432,7 @@ namespace AppMotor.Core.System
         {
         }
 
-        public static explicit operator TextInWhite(string? text)
+        public static explicit operator TextInWhite([Localizable(true)] string? text)
         {
             return new TextInWhite(text ?? "");
         }
@@ -450,7 +451,7 @@ namespace AppMotor.Core.System
         {
         }
 
-        public static explicit operator TextInDarkBlue(string? text)
+        public static explicit operator TextInDarkBlue([Localizable(true)] string? text)
         {
             return new TextInDarkBlue(text ?? "");
         }
@@ -469,7 +470,7 @@ namespace AppMotor.Core.System
         {
         }
 
-        public static explicit operator TextInBlue(string? text)
+        public static explicit operator TextInBlue([Localizable(true)] string? text)
         {
             return new TextInBlue(text ?? "");
         }
@@ -488,7 +489,7 @@ namespace AppMotor.Core.System
         {
         }
 
-        public static explicit operator TextInDarkGreen(string? text)
+        public static explicit operator TextInDarkGreen([Localizable(true)] string? text)
         {
             return new TextInDarkGreen(text ?? "");
         }
@@ -507,7 +508,7 @@ namespace AppMotor.Core.System
         {
         }
 
-        public static explicit operator TextInGreen(string? text)
+        public static explicit operator TextInGreen([Localizable(true)] string? text)
         {
             return new TextInGreen(text ?? "");
         }
@@ -526,7 +527,7 @@ namespace AppMotor.Core.System
         {
         }
 
-        public static explicit operator TextInDarkCyan(string? text)
+        public static explicit operator TextInDarkCyan([Localizable(true)] string? text)
         {
             return new TextInDarkCyan(text ?? "");
         }
@@ -545,7 +546,7 @@ namespace AppMotor.Core.System
         {
         }
 
-        public static explicit operator TextInCyan(string? text)
+        public static explicit operator TextInCyan([Localizable(true)] string? text)
         {
             return new TextInCyan(text ?? "");
         }
@@ -564,7 +565,7 @@ namespace AppMotor.Core.System
         {
         }
 
-        public static explicit operator TextInDarkRed(string? text)
+        public static explicit operator TextInDarkRed([Localizable(true)] string? text)
         {
             return new TextInDarkRed(text ?? "");
         }
@@ -583,7 +584,7 @@ namespace AppMotor.Core.System
         {
         }
 
-        public static explicit operator TextInRed(string? text)
+        public static explicit operator TextInRed([Localizable(true)] string? text)
         {
             return new TextInRed(text ?? "");
         }
@@ -602,7 +603,7 @@ namespace AppMotor.Core.System
         {
         }
 
-        public static explicit operator TextInDarkMagenta(string? text)
+        public static explicit operator TextInDarkMagenta([Localizable(true)] string? text)
         {
             return new TextInDarkMagenta(text ?? "");
         }
@@ -621,7 +622,7 @@ namespace AppMotor.Core.System
         {
         }
 
-        public static explicit operator TextInMagenta(string? text)
+        public static explicit operator TextInMagenta([Localizable(true)] string? text)
         {
             return new TextInMagenta(text ?? "");
         }
@@ -640,7 +641,7 @@ namespace AppMotor.Core.System
         {
         }
 
-        public static explicit operator TextInDarkYellow(string? text)
+        public static explicit operator TextInDarkYellow([Localizable(true)] string? text)
         {
             return new TextInDarkYellow(text ?? "");
         }
@@ -659,7 +660,7 @@ namespace AppMotor.Core.System
         {
         }
 
-        public static explicit operator TextInYellow(string? text)
+        public static explicit operator TextInYellow([Localizable(true)] string? text)
         {
             return new TextInYellow(text ?? "");
         }
