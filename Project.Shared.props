@@ -24,7 +24,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageOutputPath>$(MSBuildThisFileDirectory)packages-bin</PackageOutputPath>
+    <PackageOutputPath>$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'bin', 'Packages'))</PackageOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
