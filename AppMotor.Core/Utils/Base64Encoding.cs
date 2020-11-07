@@ -24,6 +24,9 @@ using JetBrains.Annotations;
 
 namespace AppMotor.Core.Utils
 {
+    /// <summary>
+    /// Represents the default Base64 encoding (as defined by RFC 4648).
+    /// </summary>
     public class Base64Encoding : Rfc4648Encoding
     {
         /// <summary>

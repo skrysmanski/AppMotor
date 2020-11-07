@@ -152,6 +152,10 @@ namespace AppMotor.Core.System
             }
         }
 
+        /// <summary>
+        /// Appends the substring to this string.
+        /// </summary>
+        /// <returns>Returns this instance (useful for chaining calls).</returns>
         [PublicAPI]
         public ColoredString Append(ColoredSubstring? substring)
         {
@@ -228,31 +232,49 @@ namespace AppMotor.Core.System
             return this;
         }
 
+        /// <summary>
+        /// Concatenates both strings into a <see cref="ColoredString"/>.
+        /// </summary>
         public static ColoredString operator +(ColoredString? left, [Localizable(true)] string? right)
         {
             return new ColoredString(left).Append(color: null, right);
         }
 
+        /// <summary>
+        /// Concatenates both strings into a <see cref="ColoredString"/>.
+        /// </summary>
         public static ColoredString operator +(ColoredString? left, ColoredSubstring? right)
         {
             return new ColoredString(left).Append(right);
         }
 
+        /// <summary>
+        /// Concatenates both strings into a <see cref="ColoredString"/>.
+        /// </summary>
         public static ColoredString operator +(ColoredString? left, ColoredString? right)
         {
             return new ColoredString(left).Append(color: null, right);
         }
 
+        /// <summary>
+        /// Concatenates both strings into a <see cref="ColoredString"/>.
+        /// </summary>
         public static ColoredString operator +([Localizable(true)] string? left, ColoredString? right)
         {
             return New().Append(color: null, left).Append(color: null, right);
         }
 
+        /// <summary>
+        /// Implicitly converts <see cref="ColoredSubstring"/> into <see cref="ColoredString"/>.
+        /// </summary>
         public static implicit operator ColoredString(ColoredSubstring? text)
         {
             return New().Append(text);
         }
 
+        /// <summary>
+        /// Implicitly converts <see cref="string"/> into <see cref="ColoredString"/>.
+        /// </summary>
         public static implicit operator ColoredString([Localizable(true)] string? text)
         {
             return New().Append(color: null, (object?)text);
@@ -260,6 +282,7 @@ namespace AppMotor.Core.System
 
         #region ICollection<T>
 
+        /// <inheritdoc />
         public IEnumerator<ColoredSubstring> GetEnumerator()
         {
             return this.m_substrings.GetEnumerator();
@@ -278,6 +301,9 @@ namespace AppMotor.Core.System
             return new ColoredString(this);
         }
 
+        /// <summary>
+        /// Returns this colored string as plain text.
+        /// </summary>
         public override string ToString()
         {
             return string.Join("", this.m_substrings.Select(sub => sub.Text));
@@ -312,16 +338,25 @@ namespace AppMotor.Core.System
             this.Color = color;
         }
 
+        /// <summary>
+        /// Concatenates both strings into a <see cref="ColoredString"/>.
+        /// </summary>
         public static ColoredString operator +(ColoredSubstring left, [Localizable(true)] string? right)
         {
             return ColoredString.New().Append(left).Append(null, right);
         }
 
+        /// <summary>
+        /// Concatenates both strings into a <see cref="ColoredString"/>.
+        /// </summary>
         public static ColoredString operator +([Localizable(true)] string? left, ColoredSubstring right)
         {
             return ColoredString.New().Append(null, left).Append(right);
         }
 
+        /// <summary>
+        /// Concatenates both strings into a <see cref="ColoredString"/>.
+        /// </summary>
         public static ColoredString operator +(ColoredSubstring left, ColoredSubstring right)
         {
             return ColoredString.New().Append(left).Append(right);
@@ -355,6 +390,9 @@ namespace AppMotor.Core.System
             return HashCode.Combine(this.Text, this.Color);
         }
 
+        /// <summary>
+        /// Returns the text value of this substring - i.e. <see cref="Text"/>.
+        /// </summary>
         public override string ToString()
         {
             return this.Text;
@@ -374,6 +412,9 @@ namespace AppMotor.Core.System
         {
         }
 
+        /// <summary>
+        /// Converts this text into a black text.
+        /// </summary>
         public static explicit operator TextInBlack([Localizable(true)] string? text)
         {
             return new TextInBlack(text ?? "");
@@ -393,6 +434,9 @@ namespace AppMotor.Core.System
         {
         }
 
+        /// <summary>
+        /// Converts this text into a dark gray text.
+        /// </summary>
         public static explicit operator TextInDarkGray([Localizable(true)] string? text)
         {
             return new TextInDarkGray(text ?? "");
@@ -412,6 +456,9 @@ namespace AppMotor.Core.System
         {
         }
 
+        /// <summary>
+        /// Converts this text into a gray text.
+        /// </summary>
         public static explicit operator TextInGray([Localizable(true)] string? text)
         {
             return new TextInGray(text ?? "");
@@ -432,6 +479,9 @@ namespace AppMotor.Core.System
         {
         }
 
+        /// <summary>
+        /// Converts this text into a white text.
+        /// </summary>
         public static explicit operator TextInWhite([Localizable(true)] string? text)
         {
             return new TextInWhite(text ?? "");
@@ -451,6 +501,9 @@ namespace AppMotor.Core.System
         {
         }
 
+        /// <summary>
+        /// Converts this text into a dark blue text.
+        /// </summary>
         public static explicit operator TextInDarkBlue([Localizable(true)] string? text)
         {
             return new TextInDarkBlue(text ?? "");
@@ -470,6 +523,9 @@ namespace AppMotor.Core.System
         {
         }
 
+        /// <summary>
+        /// Converts this text into a blue text.
+        /// </summary>
         public static explicit operator TextInBlue([Localizable(true)] string? text)
         {
             return new TextInBlue(text ?? "");
@@ -489,6 +545,9 @@ namespace AppMotor.Core.System
         {
         }
 
+        /// <summary>
+        /// Converts this text into a dark green text.
+        /// </summary>
         public static explicit operator TextInDarkGreen([Localizable(true)] string? text)
         {
             return new TextInDarkGreen(text ?? "");
@@ -508,6 +567,9 @@ namespace AppMotor.Core.System
         {
         }
 
+        /// <summary>
+        /// Converts this text into a green text.
+        /// </summary>
         public static explicit operator TextInGreen([Localizable(true)] string? text)
         {
             return new TextInGreen(text ?? "");
@@ -527,6 +589,9 @@ namespace AppMotor.Core.System
         {
         }
 
+        /// <summary>
+        /// Converts this text into a dark cyan text.
+        /// </summary>
         public static explicit operator TextInDarkCyan([Localizable(true)] string? text)
         {
             return new TextInDarkCyan(text ?? "");
@@ -546,6 +611,9 @@ namespace AppMotor.Core.System
         {
         }
 
+        /// <summary>
+        /// Converts this text into a cyan text.
+        /// </summary>
         public static explicit operator TextInCyan([Localizable(true)] string? text)
         {
             return new TextInCyan(text ?? "");
@@ -565,6 +633,9 @@ namespace AppMotor.Core.System
         {
         }
 
+        /// <summary>
+        /// Converts this text into a dark red text.
+        /// </summary>
         public static explicit operator TextInDarkRed([Localizable(true)] string? text)
         {
             return new TextInDarkRed(text ?? "");
@@ -584,6 +655,9 @@ namespace AppMotor.Core.System
         {
         }
 
+        /// <summary>
+        /// Converts this text into a red text.
+        /// </summary>
         public static explicit operator TextInRed([Localizable(true)] string? text)
         {
             return new TextInRed(text ?? "");
@@ -603,6 +677,9 @@ namespace AppMotor.Core.System
         {
         }
 
+        /// <summary>
+        /// Converts this text into a dark magenta text.
+        /// </summary>
         public static explicit operator TextInDarkMagenta([Localizable(true)] string? text)
         {
             return new TextInDarkMagenta(text ?? "");
@@ -622,6 +699,9 @@ namespace AppMotor.Core.System
         {
         }
 
+        /// <summary>
+        /// Converts this text into a magenta text.
+        /// </summary>
         public static explicit operator TextInMagenta([Localizable(true)] string? text)
         {
             return new TextInMagenta(text ?? "");
@@ -641,6 +721,9 @@ namespace AppMotor.Core.System
         {
         }
 
+        /// <summary>
+        /// Converts this text into a dark yellow text.
+        /// </summary>
         public static explicit operator TextInDarkYellow([Localizable(true)] string? text)
         {
             return new TextInDarkYellow(text ?? "");
@@ -660,6 +743,9 @@ namespace AppMotor.Core.System
         {
         }
 
+        /// <summary>
+        /// Converts this text into a yellow text.
+        /// </summary>
         public static explicit operator TextInYellow([Localizable(true)] string? text)
         {
             return new TextInYellow(text ?? "");

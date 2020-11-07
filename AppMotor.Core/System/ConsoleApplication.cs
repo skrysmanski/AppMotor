@@ -90,6 +90,12 @@ namespace AppMotor.Core.System
             PrintUnhandledException(exception, supportMessage: null);
         }
 
+        /// <summary>
+        /// Writes the specified exception to the Console.
+        /// </summary>
+        /// <param name="exception">The exception to print</param>
+        /// <param name="supportMessage">An optional message with information about what to do
+        /// with the exception (e.g. link to bug tracker).</param>
         [PublicAPI]
         public static void PrintUnhandledException(Exception exception, string? supportMessage)
         {
@@ -133,6 +139,11 @@ namespace AppMotor.Core.System
             return printSupportMessage;
         }
 
+        /// <summary>
+        /// Executes the actual program.
+        /// </summary>
+        /// <param name="args">The args passed from the command line.</param>
+        /// <returns>The exit code to return to the operating system.</returns>
         [PublicAPI, MustUseReturnValue]
         protected abstract int Run(string[] args);
     }

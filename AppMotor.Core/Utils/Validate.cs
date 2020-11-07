@@ -34,12 +34,14 @@ namespace AppMotor.Core.Utils
         #region Argument Validation
 
         /// <summary>
-        /// Validates arguments/parameters.
+        /// Validates arguments/parameters. Throws <see cref="ArgumentException"/> (or one of its child classes) in
+        /// case the validation fails.
         /// </summary>
         /// <remarks>
         /// This class is called <c>Argument</c> rather than <c>Parameter</c> because all of its
         /// methods throw <see cref="ArgumentException"/>s.
         /// </remarks>
+        /// <seealso cref="Value"/>
 #pragma warning disable CA1034 // Nested types should not be visible
         public static class Argument
 #pragma warning restore CA1034 // Nested types should not be visible
@@ -47,7 +49,7 @@ namespace AppMotor.Core.Utils
             private static readonly ArgumentValidator VALIDATOR = new ArgumentValidator();
 
             /// <summary>
-            /// Validates that the given reference type argument is not null.
+            /// Validates that the given (reference type) argument is not null.
             /// </summary>
             /// <seealso cref="IsNotNullUnconstrained{T}"/>
             [PublicAPI]
@@ -61,7 +63,7 @@ namespace AppMotor.Core.Utils
             }
 
             /// <summary>
-            /// Validates that the given value type argument is not null.
+            /// Validates that the given (value type) argument is not null.
             /// </summary>
             /// <seealso cref="IsNotNullUnconstrained{T}"/>
             [PublicAPI]
@@ -75,7 +77,7 @@ namespace AppMotor.Core.Utils
             }
 
             /// <summary>
-            /// Validates that the given unconstrained generic type argument is not null.
+            /// Validates that the given (unconstrained generic type) argument is not null.
             ///
             /// <para>Note: You should prefer <c>IsNotNull()</c> instead. Only use this method
             /// if you have an argument with a generic type that is unconstrained.</para>
@@ -89,18 +91,27 @@ namespace AppMotor.Core.Utils
                 VALIDATOR.IsNotNullUnconstrained(value, paramName);
             }
 
+            /// <summary>
+            /// Validates that the the given string argument is neither <c>null</c> nor empty.
+            /// </summary>
             [PublicAPI]
             public static void IsNotNullOrEmpty([ValidatedNotNull, NotNullOnExit] string? value, [InvokerParameterName] string paramName)
             {
                 VALIDATOR.IsNotNullOrEmpty(value, paramName);
             }
 
+            /// <summary>
+            /// Validates that the the given string argument is neither <c>null</c> nor empty nor only white space characters.
+            /// </summary>
             [PublicAPI]
             public static void IsNotNullOrWhiteSpace([ValidatedNotNull, NotNullOnExit] string? value, [InvokerParameterName] string paramName)
             {
                 VALIDATOR.IsNotNullOrWhiteSpace(value, paramName);
             }
 
+            /// <summary>
+            /// Validates that the the given collection argument is neither <c>null</c> nor empty.
+            /// </summary>
             [PublicAPI]
             public static void IsNotNullOrEmpty<T>([ValidatedNotNull, NotNullOnExit] IReadOnlyCollection<T>? value, [InvokerParameterName] string paramName)
             {
@@ -208,6 +219,11 @@ namespace AppMotor.Core.Utils
 
         #region Value Validation
 
+        /// <summary>
+        /// Validates regular values (i.e. everything that's not an argument/parameter). Throws <see cref="ValueException"/>
+        /// (or one of its child classes) in case the validation fails.
+        /// </summary>
+        /// <seealso cref="Argument"/>
 #pragma warning disable CA1034 // Nested types should not be visible
         public static class Value
 #pragma warning restore CA1034 // Nested types should not be visible
@@ -257,18 +273,27 @@ namespace AppMotor.Core.Utils
                 VALIDATOR.IsNotNullUnconstrained(value, valueName);
             }
 
+            /// <summary>
+            /// Validates that the the given string is neither <c>null</c> nor empty.
+            /// </summary>
             [PublicAPI]
             public static void IsNotNullOrEmpty([ValidatedNotNull, NotNullOnExit] string? value, string valueName)
             {
                 VALIDATOR.IsNotNullOrEmpty(value, valueName);
             }
 
+            /// <summary>
+            /// Validates that the the given string is neither <c>null</c> nor empty nor only white space characters.
+            /// </summary>
             [PublicAPI]
             public static void IsNotNullOrWhiteSpace([ValidatedNotNull, NotNullOnExit] string? value, string valueName)
             {
                 VALIDATOR.IsNotNullOrWhiteSpace(value, valueName);
             }
 
+            /// <summary>
+            /// Validates that the the given collection is neither <c>null</c> nor empty.
+            /// </summary>
             [PublicAPI]
             public static void IsNotNullOrEmpty<T>([ValidatedNotNull, NotNullOnExit] IReadOnlyCollection<T>? value, string valueName)
             {

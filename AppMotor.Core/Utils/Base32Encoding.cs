@@ -29,7 +29,7 @@ using JetBrains.Annotations;
 namespace AppMotor.Core.Utils
 {
     /// <summary>
-    /// Represents a Base32 converter (as defined by RFC 4648) with a customizable symbol list.
+    /// Represents a Base32 encoding (as defined by RFC 4648) with a customizable symbol list.
     /// </summary>
     public class Base32Encoding : Rfc4648Encoding
     {
@@ -77,12 +77,22 @@ namespace AppMotor.Core.Utils
         /// <inheritdoc />
         public sealed override int Base => 32;
 
+        /// <summary>
+        /// Creates a new Base32 encoding based on the provided symbols.
+        /// </summary>
+        /// <param name="symbols">The symbols as string; must be exactly 32.</param>
+        /// <param name="paddingChar">The padding character to use. If <c>null</c>, no padding will be used.</param>
         [PublicAPI]
         public Base32Encoding(string symbols, char? paddingChar = DEFAULT_PADDING_CHAR)
             : this(symbols.AsNotNullArgument(nameof(symbols)).ToCharArray(), createCopyOfSymbols: false, paddingChar)
         {
         }
 
+        /// <summary>
+        /// Creates a new Base32 encoding based on the provided symbols.
+        /// </summary>
+        /// <param name="symbols">The symbols as char array; must be exactly 32.</param>
+        /// <param name="paddingChar">The padding character to use. If <c>null</c>, no padding will be used.</param>
         [PublicAPI]
         public Base32Encoding(char[] symbols, char? paddingChar = DEFAULT_PADDING_CHAR)
             : this(symbols, createCopyOfSymbols: true, paddingChar)
@@ -120,6 +130,9 @@ namespace AppMotor.Core.Utils
             }
         }
 
+        /// <summary>
+        /// Encodes the specified data with this Base32 encoding and returns the encoded string.
+        /// </summary>
         public override string Encode(Memory<byte> data)
         {
             if (data.Length == 0)
@@ -145,6 +158,11 @@ namespace AppMotor.Core.Utils
             return resultBuilder.ToString();
         }
 
+        /// <summary>
+        /// Encodes the specified data with this Base32 encoding and writes the encoded string
+        /// into <paramref name="outputWriter"/>.
+        /// </summary>
+        /// <seealso cref="EncodeAsync"/>
         public override void Encode(IReadOnlyStream data, TextWriter outputWriter)
         {
             Validate.Argument.IsNotNull(outputWriter, nameof(outputWriter));
@@ -164,6 +182,11 @@ namespace AppMotor.Core.Utils
             }
         }
 
+        /// <summary>
+        /// Encodes the specified data with this Base32 encoding and writes the encoded string
+        /// into <paramref name="outputWriter"/>.
+        /// </summary>
+        /// <seealso cref="Encode(IReadOnlyStream,TextWriter)"/>
         public override async Task EncodeAsync(IReadOnlyStream data, TextWriter outputWriter)
         {
             Validate.Argument.IsNotNull(outputWriter, nameof(outputWriter));
@@ -204,6 +227,9 @@ namespace AppMotor.Core.Utils
             return groupCount * SYMBOLS_PER_GROUP;
         }
 
+        /// <summary>
+        /// Decodes the string with this Base32 encoding and returns the decoded bytes.
+        /// </summary>
         public override byte[] Decode(string encodedString)
         {
             Validate.Argument.IsNotNull(encodedString, nameof(encodedString));
@@ -244,6 +270,10 @@ namespace AppMotor.Core.Utils
             }
         }
 
+        /// <summary>
+        /// Decodes the string with this Base32 encoding and writes the decoded bytes into <paramref name="destination"/>.
+        /// </summary>
+        /// <seealso cref="DecodeAsync"/>
         public override void Decode(TextReader encodedString, Stream destination)
         {
             Validate.Argument.IsNotNull(encodedString, nameof(encodedString));
@@ -263,6 +293,10 @@ namespace AppMotor.Core.Utils
             }
         }
 
+        /// <summary>
+        /// Decodes the string with this Base32 encoding and writes the decoded bytes into <paramref name="destination"/>.
+        /// </summary>
+        /// <seealso cref="Decode(TextReader,Stream)"/>
         public override async Task DecodeAsync(TextReader encodedString, Stream destination)
         {
             Validate.Argument.IsNotNull(encodedString, nameof(encodedString));
