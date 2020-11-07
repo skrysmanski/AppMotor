@@ -11,6 +11,8 @@
   <Import Project="$(MSBuildThisFileDirectory)Project.Shared.props" />
 
   <PropertyGroup>
+    <OutputType>Library</OutputType>
+
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 

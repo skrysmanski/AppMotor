@@ -30,6 +30,11 @@
 
   <PropertyGroup>
     <!--
+      Mark this project as "packable" so that NuGet packages can be produced.
+    -->
+    <IsPackable>true</IsPackable>
+
+    <!--
       The output path for all produced NuGet packages.
     -->
     <PackageOutputPath>$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'bin', 'Packages'))</PackageOutputPath>

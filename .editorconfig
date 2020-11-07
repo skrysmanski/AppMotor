@@ -63,6 +63,7 @@ dotnet_style_qualification_for_method = false:suggestion
 dotnet_style_qualification_for_event = true:suggestion
 
 dotnet_sort_system_directives_first = true:suggestion
+dotnet_separate_import_directive_groups = true:suggestion
 
 #
 # Code analysis rules
@@ -72,6 +73,8 @@ dotnet_sort_system_directives_first = true:suggestion
 # For each rule, see: https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/caXXXX
 #
 # The FxCop project: https://github.com/dotnet/roslyn-analyzers
+#
+# TODO: This section can be moved to a central place once https://github.com/dotnet/roslyn/issues/47707 is implemented
 #
 
 # CA1031: Do not catch general exception types
