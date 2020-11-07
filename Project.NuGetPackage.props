@@ -1,0 +1,48 @@
+<!--
+  Default settings for all projects that produce NuGet packages.
+
+  To use it, add the following line after the import of 'Project.Code.props':
+
+  <Import Project="$(ProjectPropsDirectory)Project.NuGetPackage.props" />
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!--
+    NuGet (and assembly) properties
+
+    Additional properties to specify on each project: <PackageId>, <Description>, <Authors>
+
+    See:
+    * https://docs.microsoft.com/en-us/dotnet/core/tools/csproj#nuget-metadata-properties
+    * https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets#pack-target
+    * https://docs.microsoft.com/en-us/nuget/reference/nuspec
+  -->
+  <PropertyGroup>
+    <!-- See: https://spdx.org/licenses/ -->
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+
+    <RepositoryUrl>https://github.com/skrysmanski/AppMotor</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+
+    <!-- Why would this ever by "false"? -->
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!--
+      The output path for all produced NuGet packages.
+    -->
+    <PackageOutputPath>$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'bin', 'Packages'))</PackageOutputPath>
+
+    <!--
+      Generate NuGet package on build.
+    -->
+    <GeneratePackageOnBuild Condition="'$(Configuration)' == 'Release'">true</GeneratePackageOnBuild>
+
+    <!--
+      Generate XML documentation (to be included in the NuGet package).
+    -->
+    <GenerateDocumentationFile Condition="'$(Configuration)' == 'Release'">true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+</Project>

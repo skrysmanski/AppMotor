@@ -5,6 +5,8 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
+    <ProjectPropsDirectory>$(MSBuildThisFileDirectory)</ProjectPropsDirectory>
+
     <!--
       Enable nullable reference types.
       See: https://docs.microsoft.com/en-us/dotnet/csharp/nullable-references
@@ -21,10 +23,6 @@
     <WarningsAsErrors></WarningsAsErrors>
     <NoWarn></NoWarn>
     <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <PackageOutputPath>$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'bin', 'Packages'))</PackageOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
