@@ -120,6 +120,7 @@ namespace AppMotor.Core.IO
         {
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)

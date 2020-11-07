@@ -23,6 +23,9 @@ using JetBrains.Annotations;
 
 namespace AppMotor.Core.Extensions
 {
+    /// <summary>
+    /// Extension methods for <see cref="IDictionary{TKey,TValue}"/>.
+    /// </summary>
     public static class DictionaryExtensions
     {
         /// <summary>

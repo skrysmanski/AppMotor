@@ -23,6 +23,10 @@ namespace AppMotor.Core.Exceptions
     /// </summary>
     public class CollectionIsReadOnlyArgumentException : ArgumentException, ICollectionIsReadOnlyException
     {
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="paramName">The name of the parameter this exception applies to.</param>
         public CollectionIsReadOnlyArgumentException(string paramName)
             : base(CollectionIsReadOnlyException.DEFAULT_MESSAGE, paramName: paramName)
         {

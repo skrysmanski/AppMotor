@@ -1,12 +1,12 @@
 ﻿#region License
 // Copyright 2020 AppMotor Framework (https://github.com/skrysmanski/AppMotor)
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,8 +35,15 @@ namespace AppMotor.Core.Exceptions
     /// </remarks>
     public class CollectionIsReadOnlyException : NotSupportedException, ICollectionIsReadOnlyException
     {
+        /// <summary>
+        /// The message used as text for this exception - and its "cousins" <see cref="CollectionIsReadOnlyArgumentException"/>
+        /// and <see cref="CollectionIsReadOnlyValueException"/>.
+        /// </summary>
         public const string DEFAULT_MESSAGE = "This collection is read-only.";
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public CollectionIsReadOnlyException() : base(DEFAULT_MESSAGE)
         {
         }

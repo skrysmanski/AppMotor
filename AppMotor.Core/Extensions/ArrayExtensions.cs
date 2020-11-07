@@ -20,6 +20,9 @@ using JetBrains.Annotations;
 
 namespace AppMotor.Core.Extensions
 {
+    /// <summary>
+    /// Extension methods for array types.
+    /// </summary>
     public static class ArrayExtensions
     {
         /// <summary>

@@ -34,6 +34,10 @@ namespace AppMotor.Core.Globalization
         [PublicAPI]
         public CultureInfo? CultureForFormatting { get; }
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="cultureForFormatting">See <see cref="CultureForFormatting"/></param>
         public DefaultValueFormatter(CultureInfo? cultureForFormatting)
         {
             this.CultureForFormatting = cultureForFormatting;

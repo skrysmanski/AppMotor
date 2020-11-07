@@ -24,6 +24,9 @@ using JetBrains.Annotations;
 
 namespace AppMotor.Core.Extensions
 {
+    /// <summary>
+    /// Extension methods for <see cref="ICollection{T}"/>.
+    /// </summary>
     public static class CollectionExtensions
     {
         /// <summary>

@@ -22,6 +22,9 @@ using JetBrains.Annotations;
 
 namespace AppMotor.Core.DataModel
 {
+    /// <summary>
+    /// Companion class to provide static properties and events for the <see cref="TypeMarker"/> feature.
+    /// </summary>
     public static class TypeMarkers
     {
         private static readonly ConcurrentDictionary<Type, TypeMarkerCollection> s_markers = new ConcurrentDictionary<Type, TypeMarkerCollection>();
