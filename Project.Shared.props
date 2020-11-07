@@ -11,6 +11,12 @@
     -->
     <Nullable>enable</Nullable>
 
+    <!--
+      The language used as default language for .resx files (i.e. for .resx files without language code in their file name).
+      See also: https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1824
+    -->
+    <NeutralLanguage>en-US</NeutralLanguage>
+
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors></WarningsAsErrors>
     <NoWarn></NoWarn>

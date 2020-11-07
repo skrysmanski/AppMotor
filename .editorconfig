@@ -67,6 +67,8 @@ dotnet_sort_system_directives_first = true:suggestion
 #
 # Code analysis rules
 #
+# For configuration options, see: https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/configuration-options
+#
 # For each rule, see: https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/caXXXX
 #
 # The FxCop project: https://github.com/dotnet/roslyn-analyzers
@@ -85,6 +87,14 @@ dotnet_diagnostic.CA1032.severity = none
 # CA1040: Avoid empty interfaces
 # Reason: This rule does not provide any real benefit but on the other hand limits the code design unnecessarily.
 dotnet_diagnostic.CA1040.severity = none
+
+# CA1303: Do not pass literals as localized parameters
+# Reason: Library projects should have this enabled and provide a LocalizableResources.resx file (Resources File) for the
+#   texts they display to the user (English-only is sufficient; internal visibility is sufficient). This way they
+#   can later be translated by consumers of this library, if they want the texts in other languages as well. Application
+#   projects, on the other hand, may want to set this to "none" (possibly in a separate .editorconfig file) if there is
+#   no plan to translate the application into other languages.
+dotnet_diagnostic.CA1303.severity = error
 
 # CA1707: Identifiers should not contain underscores
 # Reason: Our style guide uses underscores for constants.
