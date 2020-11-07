@@ -15,7 +15,6 @@
 #endregion
 
 using System;
-using System.Globalization;
 
 using AppMotor.Core.DataModel;
 using AppMotor.Core.Extensions;
@@ -26,12 +25,15 @@ using JetBrains.Annotations;
 
 namespace AppMotor.Core.Logging
 {
+    /// <summary>
+    /// Provides utility methods for handling values for logging purposes.
+    /// </summary>
     public static class LoggableValues
     {
         /// <summary>
         /// The default value formatter used by this class.
         /// </summary>
-        public static readonly IValueFormatter DEFAULT_VALUE_FORMATTER = new DefaultLoggableValueFormatter(CultureInfo.InvariantCulture);
+        public static readonly IValueFormatter DEFAULT_VALUE_FORMATTER = new DefaultLoggableValueFormatter();
 
         /// <summary>
         /// This event is raised whenever the "loggability" of a type changes (or may have changed).

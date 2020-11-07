@@ -34,6 +34,10 @@ namespace AppMotor.Core.Logging
         [PublicAPI]
         public Type Type { get; }
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="type">The type for which the loggability has changed.</param>
         public LoggabilityChangedEventArgs(Type type)
         {
             Validate.Argument.IsNotNull(type, nameof(type));

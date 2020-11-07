@@ -23,10 +23,18 @@ using AppMotor.Core.Globalization;
 
 namespace AppMotor.Core.Logging
 {
+    /// <summary>
+    /// Like <see cref="DefaultValueFormatter"/> - just for the purpose of logging. Unlike <see cref="DefaultValueFormatter"/>,
+    /// it provides concrete format strings for various data types, hides sensitive information and its culture
+    /// defaults to <see cref="CultureInfo.InvariantCulture"/> instead of the current UI culture.
+    /// </summary>
     public class DefaultLoggableValueFormatter : DefaultValueFormatter
     {
-        /// <inheritdoc />
-        public DefaultLoggableValueFormatter(CultureInfo? cultureForFormatting)
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="cultureForFormatting"></param>
+        public DefaultLoggableValueFormatter(CultureInfo? cultureForFormatting = null)
             // NOTE: For logging purposes it's better to use "InvariantCulture" than "CurrentUICulture".
             : base(cultureForFormatting ?? CultureInfo.InvariantCulture)
         {

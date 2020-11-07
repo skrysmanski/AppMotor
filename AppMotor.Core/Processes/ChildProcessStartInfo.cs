@@ -28,7 +28,10 @@ namespace AppMotor.Core.Processes
     [PublicAPI]
     public sealed class ChildProcessStartInfo
     {
-        public static readonly TimeSpan DEFAULT_TIMEOUT = TimeSpan.FromSeconds(30);
+        /// <summary>
+        /// The default value for <see cref="ProcessTimeout"/>.
+        /// </summary>
+        public static readonly TimeSpan DEFAULT_PROCESS_TIMEOUT = TimeSpan.FromSeconds(30);
 
         /// <summary>
         /// The path to the file to execute.
@@ -51,9 +54,9 @@ namespace AppMotor.Core.Processes
         /// Can be <c>null</c> in which case <see cref="ChildProcess"/> will wait indefinitely for the process
         /// to finish (not recommended).
         ///
-        /// <para>Defaults to 30 seconds (see <see cref="DEFAULT_TIMEOUT"/>).</para>
+        /// <para>Defaults to 30 seconds (see <see cref="DEFAULT_PROCESS_TIMEOUT"/>).</para>
         /// </summary>
-        public TimeSpan? ProcessTimeout { get; set; } = DEFAULT_TIMEOUT;
+        public TimeSpan? ProcessTimeout { get; set; } = DEFAULT_PROCESS_TIMEOUT;
 
         /// <summary>
         /// The exit code that represents success. If the child process reports any other exit code,
@@ -73,6 +76,10 @@ namespace AppMotor.Core.Processes
         /// </summary>
         public bool TreatErrorOutputAsFailure { get; set; } = true;
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="processFileName">The path to the file to execute.</param>
         public ChildProcessStartInfo(string processFileName)
         {
             Validate.Argument.IsNotNullOrWhiteSpace(processFileName, nameof(processFileName));

@@ -27,6 +27,10 @@ namespace AppMotor.Core.IO
     [PublicAPI]
     public class ReadOnlyMemoryStream : ReadOnlyStream
     {
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="buffer">The buffer to wrap in this read-only stream</param>
         public ReadOnlyMemoryStream(ArraySegment<byte> buffer)
             : base(CreateMemoryStreamFromArraySegment(buffer))
         {

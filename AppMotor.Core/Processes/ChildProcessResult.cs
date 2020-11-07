@@ -44,6 +44,9 @@ namespace AppMotor.Core.Processes
         [PublicAPI]
         public string? ErrorOutput { get; }
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public ChildProcessResult(int exitCode, string output, string? errorOutput)
         {
             Validate.Argument.IsNotNull(output, nameof(output));
