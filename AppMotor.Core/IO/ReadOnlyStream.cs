@@ -57,13 +57,10 @@ namespace AppMotor.Core.IO
             set => this.m_underlyingStream.ReadTimeout = (int)value.TotalMilliseconds;
         }
 
-        /// <inheritdoc />
-        public TimeSpan WriteTimeout
-        {
-            get => TimeSpan.FromMilliseconds(this.m_underlyingStream.WriteTimeout);
-            set => this.m_underlyingStream.WriteTimeout = (int)value.TotalMilliseconds;
-        }
-
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="underlyingStream">The stream to wrap in this read-only stream.</param>
         public ReadOnlyStream(Stream underlyingStream)
         {
             Validate.Argument.IsNotNull(underlyingStream, nameof(underlyingStream));
