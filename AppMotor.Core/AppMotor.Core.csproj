@@ -12,7 +12,7 @@
 
   <!--
     NuGet (and assembly) properties
-    See 'Project.Code.props' for more details.
+    See 'Project.NuGetPackage.props' for more details.
   -->
   <PropertyGroup>
     <PackageId>AppMotor.Core</PackageId>
