@@ -252,6 +252,17 @@ namespace AppMotor.Core.System
         }
 
         /// <summary>
+        /// Formats <paramref name="format"/> with <paramref name="args"/> and writes the result
+        /// to the terminal's standard output.
+        /// </summary>
+        [PublicAPI]
+        [StringFormatMethod("format")]
+        public static void Write([Localizable(true)] string format, params object[] args)
+        {
+            Console.WriteLine(format, args);
+        }
+
+        /// <summary>
         /// Writes the specified colored string to the terminal's standard output.
         /// </summary>
         [PublicAPI]
@@ -297,6 +308,17 @@ namespace AppMotor.Core.System
         public static void WriteLine([Localizable(true)] string? value)
         {
             Console.WriteLine(value);
+        }
+
+        /// <summary>
+        /// Formats <paramref name="format"/> with <paramref name="args"/> and writes the result
+        /// to the terminal's standard output and appends a line break at the end.
+        /// </summary>
+        [PublicAPI]
+        [StringFormatMethod("format")]
+        public static void WriteLine([Localizable(true)] string format, params object[] args)
+        {
+            Console.WriteLine(format, args);
         }
 
         /// <summary>
