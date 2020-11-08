@@ -14,11 +14,16 @@
 // limitations under the License.
 #endregion
 
-namespace AppMotor.Core.Globalization
+using System;
+
+namespace AppMotor.Core.Utils
 {
     /// <summary>
     /// Provides a method to convert an arbitrary value into a string.
     /// </summary>
+    /// <remarks>
+    /// This interface is basically a simplified version of <see cref="ICustomFormatter"/>.
+    /// </remarks>
     public interface IValueFormatter
     {
         /// <summary>
