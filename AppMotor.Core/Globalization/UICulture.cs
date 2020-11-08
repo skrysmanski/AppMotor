@@ -14,6 +14,7 @@
 // limitations under the License.
 #endregion
 
+using System;
 using System.Globalization;
 
 using JetBrains.Annotations;
@@ -37,7 +38,7 @@ namespace AppMotor.Core.Globalization
         /// <see cref="CurrentLanguageCulture"/> instead.</para>
         /// </summary>
         [PublicAPI]
-        public static CultureInfo CurrentFormatsCulture => CultureInfo.CurrentCulture;
+        public static IFormatProvider CurrentFormatsCulture => CultureInfo.CurrentCulture;
 
         /// <summary>
         /// The display language used for translating texts in applications.
