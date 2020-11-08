@@ -7,7 +7,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
 
     <!-- See also: https://docs.microsoft.com/en-us/nuget/create-packages/prerelease-packages -->
-    <Version>0.6.1</Version>
+    <Version>0.7.0</Version>
   </PropertyGroup>
 
   <!--
