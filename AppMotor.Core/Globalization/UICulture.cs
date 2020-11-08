@@ -34,18 +34,18 @@ namespace AppMotor.Core.Globalization
         /// This culture represents the formats for number, dates, and the like.
         ///
         /// <para>This may not be the user's display language. For this, use
-        /// <see cref="Language"/> instead.</para>
+        /// <see cref="CurrentLanguageCulture"/> instead.</para>
         /// </summary>
         [PublicAPI]
-        public static CultureInfo Formats => CultureInfo.CurrentCulture;
+        public static CultureInfo CurrentFormatsCulture => CultureInfo.CurrentCulture;
 
         /// <summary>
         /// The display language used for translating texts in applications.
         ///
-        /// <para>When formatting numbers, data, and the like, use <see cref="Formats"/>
+        /// <para>When formatting numbers, data, and the like, use <see cref="CurrentFormatsCulture"/>
         /// instead.</para>
         /// </summary>
         [PublicAPI]
-        public static CultureInfo Language => CultureInfo.CurrentUICulture;
+        public static CultureInfo CurrentLanguageCulture => CultureInfo.CurrentUICulture;
     }
 }
