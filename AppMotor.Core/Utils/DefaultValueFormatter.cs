@@ -15,34 +15,35 @@
 #endregion
 
 using System;
-using System.Globalization;
 
-using AppMotor.Core.Utils;
+using AppMotor.Core.Globalization;
 
 using JetBrains.Annotations;
 
-namespace AppMotor.Core.Globalization
+namespace AppMotor.Core.Utils
 {
     /// <summary>
-    /// Default implementation of <see cref="IValueFormatter"/>. Supports <see cref="IConvertible"/>.
-    /// Does not provide any custom format strings in <see cref="FormatValue{T}"/>.
+    /// Default implementation of <see cref="IValueFormatter"/>. Supports <see cref="IConvertible"/>
+    /// and <see cref="IFormattable"/>. Does not provide any custom format strings in <see cref="FormatValue{T}"/>.
     /// </summary>
     public class DefaultValueFormatter : IValueFormatter
     {
+        private readonly IFormatProvider? m_formatProvider;
+
         /// <summary>
-        /// The culture to be used for formatting. If not set, <see cref="UICulture.CurrentFormatsCulture"/>
-        /// will be used.
+        /// The format provider to be used for formatting values.
         /// </summary>
         [PublicAPI]
-        public CultureInfo? CultureForFormatting { get; }
+        public IFormatProvider FormatProvider => this.m_formatProvider ?? UICulture.CurrentFormatsCulture;
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="cultureForFormatting">See <see cref="CultureForFormatting"/></param>
-        public DefaultValueFormatter(CultureInfo? cultureForFormatting)
+        /// <param name="formatProvider">The format provider to be used for formatting values. If <c>null</c>,
+        /// <see cref="UICulture.CurrentFormatsCulture"/> will be used.</param>
+        public DefaultValueFormatter(IFormatProvider? formatProvider)
         {
-            this.CultureForFormatting = cultureForFormatting;
+            this.m_formatProvider = formatProvider;
         }
 
         /// <inheritdoc />
@@ -53,8 +54,11 @@ namespace AppMotor.Core.Globalization
                 case null:
                     return null;
 
+                case IFormattable formattable:
+                    return formattable.ToString(format: null, this.FormatProvider);
+
                 case IConvertible convertible:
-                    return convertible.ToString(this.CultureForFormatting ?? UICulture.CurrentFormatsCulture);
+                    return convertible.ToString(this.FormatProvider);
 
                 default:
                     return value.ToString();

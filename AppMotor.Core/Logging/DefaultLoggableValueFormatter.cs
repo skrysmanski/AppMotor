@@ -19,7 +19,7 @@ using System.Globalization;
 using System.Security;
 
 using AppMotor.Core.DataModel;
-using AppMotor.Core.Globalization;
+using AppMotor.Core.Utils;
 
 namespace AppMotor.Core.Logging
 {
@@ -33,10 +33,11 @@ namespace AppMotor.Core.Logging
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="cultureForFormatting"></param>
-        public DefaultLoggableValueFormatter(CultureInfo? cultureForFormatting = null)
+        /// <param name="formatProvider">The format provide to use for formatting values; defaults
+        /// to <see cref="CultureInfo.InvariantCulture"/>.</param>
+        public DefaultLoggableValueFormatter(IFormatProvider? formatProvider = null)
             // NOTE: For logging purposes it's better to use "InvariantCulture" than "CurrentUICulture".
-            : base(cultureForFormatting ?? CultureInfo.InvariantCulture)
+            : base(formatProvider ?? CultureInfo.InvariantCulture)
         {
         }
 
