@@ -19,6 +19,8 @@ using System.ComponentModel;
 using System.IO;
 using System.Text;
 
+using AppMotor.Core.Extensions;
+
 using JetBrains.Annotations;
 
 namespace AppMotor.Core.System
@@ -259,7 +261,7 @@ namespace AppMotor.Core.System
         [StringFormatMethod("format")]
         public static void Write([Localizable(true)] string format, params object[] args)
         {
-            Console.WriteLine(format, args);
+            Write(format.With(args));
         }
 
         /// <summary>
@@ -318,7 +320,7 @@ namespace AppMotor.Core.System
         [StringFormatMethod("format")]
         public static void WriteLine([Localizable(true)] string format, params object[] args)
         {
-            Console.WriteLine(format, args);
+            WriteLine(format.With(args));
         }
 
         /// <summary>
