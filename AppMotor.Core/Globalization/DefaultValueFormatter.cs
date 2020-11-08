@@ -28,7 +28,7 @@ namespace AppMotor.Core.Globalization
     public class DefaultValueFormatter : IValueFormatter
     {
         /// <summary>
-        /// The culture to be used for formatting. If not set, <see cref="CultureInfo.CurrentUICulture"/>
+        /// The culture to be used for formatting. If not set, <see cref="UICulture.Formats"/>
         /// will be used.
         /// </summary>
         [PublicAPI]
@@ -52,10 +52,10 @@ namespace AppMotor.Core.Globalization
                     return null;
 
                 case IConvertible convertible:
-                    return convertible.ToString(this.CultureForFormatting ?? CultureInfo.CurrentUICulture);
+                    return convertible.ToString(this.CultureForFormatting ?? UICulture.Formats);
 
                 case ILocalizable localizable:
-                    return localizable.ToString(this.CultureForFormatting ?? CultureInfo.CurrentUICulture);
+                    return localizable.ToString(this.CultureForFormatting ?? UICulture.Formats);
 
                 default:
                     return value.ToString();
