@@ -48,11 +48,11 @@ namespace AppMotor.Core.Logging
             {
                 case DateTime dateTime:
                     // Output is similar to RFC 1123 ("r") but without day name and with timezone information.
-                    return dateTime.ToString("dd MMM yyy HH:mm:ss zzz", this.CultureForFormatting);
+                    return dateTime.ToString("dd MMM yyy HH:mm:ss zzz", this.FormatProvider);
 
                 case DateTimeOffset dateTime:
                     // Output is similar to RFC 1123 ("r") but without day name and with timezone information.
-                    return dateTime.ToString("dd MMM yyy HH:mm:ss zzz", this.CultureForFormatting);
+                    return dateTime.ToString("dd MMM yyy HH:mm:ss zzz", this.FormatProvider);
 
                 // NOTE: TimeSpan is not listed here as it's default format is not globalizable.
 

@@ -34,13 +34,13 @@ namespace AppMotor.Core.Utils
         /// The format provider to be used for formatting values.
         /// </summary>
         [PublicAPI]
-        public IFormatProvider FormatProvider => this.m_formatProvider ?? UICulture.CurrentFormatsCulture;
+        public IFormatProvider FormatProvider => this.m_formatProvider ?? UICulture.CurrentFormatProvider;
 
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="formatProvider">The format provider to be used for formatting values. If <c>null</c>,
-        /// <see cref="UICulture.CurrentFormatsCulture"/> will be used.</param>
+        /// <see cref="UICulture.CurrentFormatProvider"/> will be used.</param>
         public DefaultValueFormatter(IFormatProvider? formatProvider)
         {
             this.m_formatProvider = formatProvider;

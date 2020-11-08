@@ -32,18 +32,18 @@ namespace AppMotor.Core.Globalization
     public static class UICulture
     {
         /// <summary>
-        /// This culture represents the formats for number, dates, and the like.
+        /// The format provider for formatting numbers, dates, and the like.
         ///
         /// <para>This may not be the user's display language. For this, use
         /// <see cref="CurrentLanguageCulture"/> instead.</para>
         /// </summary>
         [PublicAPI]
-        public static IFormatProvider CurrentFormatsCulture => CultureInfo.CurrentCulture;
+        public static IFormatProvider CurrentFormatProvider => CultureInfo.CurrentCulture;
 
         /// <summary>
         /// The display language used for translating texts in applications.
         ///
-        /// <para>When formatting numbers, data, and the like, use <see cref="CurrentFormatsCulture"/>
+        /// <para>When formatting numbers, data, and the like, use <see cref="CurrentFormatProvider"/>
         /// instead.</para>
         /// </summary>
         [PublicAPI]
