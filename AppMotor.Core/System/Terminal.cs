@@ -230,7 +230,7 @@ namespace AppMotor.Core.System
             Console.CancelKeyPress += OnTerminateKeyCombinationPressed;
         }
 
-        private static void OnTerminateKeyCombinationPressed(object sender, ConsoleCancelEventArgs e)
+        private static void OnTerminateKeyCombinationPressed(object? sender, ConsoleCancelEventArgs e)
         {
             TerminateKeyCombinationPressed?.Invoke(null, e);
         }
