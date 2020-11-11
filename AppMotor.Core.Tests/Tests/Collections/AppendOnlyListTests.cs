@@ -86,7 +86,7 @@ namespace AppMotor.Core.Tests.Collections
             var list1 = new AppendOnlyList<string>();
             var originalUnderlyingList = GetUnderlyingList(list1);
 
-            list1.AppendRange(new [] { "value1a", "value1b" });
+            list1.AppendRange(new[] { "value1a", "value1b" });
             list1.Count.ShouldBe(2);
             // This "Append()" call should not have create a new underlying list instance.
             GetUnderlyingList(list1).ShouldBeSameAs(originalUnderlyingList);
@@ -97,7 +97,7 @@ namespace AppMotor.Core.Tests.Collections
             GetUnderlyingList(list2).ShouldBeSameAs(originalUnderlyingList);
 
             list2.Count.ShouldBe(2);
-            list2.AppendRange(new [] { "value2a", "value2b" });
+            list2.AppendRange(new[] { "value2a", "value2b" });
             list2.Count.ShouldBe(4);
             list1.Count.ShouldBe(2); // list1 should be unchanged
             // This "Append()" call should also not have create a new underlying list instance.
@@ -144,7 +144,7 @@ namespace AppMotor.Core.Tests.Collections
             var list1 = new AppendOnlyList<string>();
             var originalUnderlyingList = GetUnderlyingList(list1);
 
-            list1.AppendRange(new [] { "value1a", "value1b" });
+            list1.AppendRange(new[] { "value1a", "value1b" });
             list1.Count.ShouldBe(2);
             // This "Append()" call should not have create a new underlying list instance.
             GetUnderlyingList(list1).ShouldBeSameAs(originalUnderlyingList);

@@ -102,8 +102,8 @@ namespace AppMotor.Core.Tests.System
             var coloredString2 = ColoredString.New().Append(ConsoleColor.Cyan, "my text in cyan");
 
             // test
-            VerifyColoredStringResult(regularText       + coloredSubstring1,    regularText,       coloredSubstring1);
-            VerifyColoredStringResult(regularText       + coloredString1,       regularText,       coloredString1);
+            VerifyColoredStringResult(regularText       + coloredSubstring1,    regularText,        coloredSubstring1);
+            VerifyColoredStringResult(regularText       + coloredString1,       regularText,        coloredString1);
             VerifyColoredStringResult(coloredSubstring1 + regularText,          coloredSubstring1,  regularText);
             VerifyColoredStringResult(coloredString1    + regularText,          coloredString1,     regularText);
 
@@ -153,7 +153,7 @@ namespace AppMotor.Core.Tests.System
                 object operand2
             )
         {
-            ColoredSubstring CreateExpectedSubstring(object operand)
+            static ColoredSubstring CreateExpectedSubstring(object operand)
             {
                 switch (operand)
                 {

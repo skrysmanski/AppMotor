@@ -56,8 +56,8 @@ namespace AppMotor.Core.Logging
 
                 // NOTE: TimeSpan is not listed here as it's default format is not globalizable.
 
-                case SecureString _:
-                case ISensitiveValue _:
+                case SecureString:
+                case ISensitiveValue:
                     return "<hidden>";
 
                 default:
