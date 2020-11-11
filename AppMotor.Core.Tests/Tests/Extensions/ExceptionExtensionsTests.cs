@@ -123,7 +123,7 @@ namespace AppMotor.Core.Tests.Extensions
             this.m_testOutputHelper.WriteLine(rethrownException.ToString());
 
             // verify
-            rethrownException.StackTrace.ShouldContain(nameof(ExceptionCreator<MySpecialException>.CreateAndCatch));
+            rethrownException.StackTrace!.ShouldContain(nameof(ExceptionCreator<MySpecialException>.CreateAndCatch));
         }
 
         private static void SomeOtherMethod(Exception caughtException)

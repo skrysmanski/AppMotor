@@ -55,7 +55,7 @@ namespace AppMotor.Core.Tests.Logging
             // verify
             extendedString.ShouldContain(exceptionMessage);
             extendedString.ShouldContain("CreateAndCatch");
-            extendedString.ShouldContain(exception.GetType().FullName);
+            extendedString.ShouldContain(exception.GetType().FullName!);
         }
 
         [Fact]
@@ -76,8 +76,8 @@ namespace AppMotor.Core.Tests.Logging
             // verify
             extendedString.ShouldContain(innerExceptionMessage);
             extendedString.ShouldContain(outerExceptionMessage);
-            extendedString.ShouldContain(innerException.GetType().FullName);
-            extendedString.ShouldContain(outerException.GetType().FullName);
+            extendedString.ShouldContain(innerException.GetType().FullName!);
+            extendedString.ShouldContain(outerException.GetType().FullName!);
         }
 
         [Fact]
@@ -108,9 +108,9 @@ namespace AppMotor.Core.Tests.Logging
             // verify
             extendedString.ShouldContain(messageGuid1.ToString());
             extendedString.ShouldContain(messageGuid2.ToString());
-            extendedString.ShouldContain(typeof(AggregateException).FullName);
-            extendedString.ShouldContain(typeof(InvalidOperationException).FullName);
-            extendedString.ShouldContain(typeof(ArgumentException).FullName);
+            extendedString.ShouldContain(typeof(AggregateException).FullName!);
+            extendedString.ShouldContain(typeof(InvalidOperationException).FullName!);
+            extendedString.ShouldContain(typeof(ArgumentException).FullName!);
         }
 
         private static void ThrowAggregateException(Guid messageGuid1, Guid messageGuid2)
