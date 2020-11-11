@@ -253,7 +253,7 @@ namespace AppMotor.Core.Processes
                 {
                     var tcs = new TaskCompletionSource<object?>();
                     this.m_process.EnableRaisingEvents = true;
-                    this.m_process.Exited += (s, e) => tcs.TrySetResult(null);
+                    this.m_process.Exited += (_, _) => tcs.TrySetResult(null);
 
                     cts.Token.Register(tcs.SetCanceled);
 
