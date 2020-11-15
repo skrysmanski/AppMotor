@@ -42,7 +42,7 @@ namespace AppMotor.Core.System
         /// <remarks>
         /// For details and defaults, see <see cref="Console.InputEncoding"/>.
         /// </remarks>
-        [PublicAPI,]
+        [PublicAPI]
         public static Encoding InputEncoding
         {
             get => Console.InputEncoding;
