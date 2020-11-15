@@ -268,7 +268,7 @@ namespace AppMotor.Core.System
         [PublicAPI]
         public static void Write([Localizable(true)] object? value)
         {
-            Console.Write(value);
+            Out.Write(value);
         }
 
         /// <summary>
@@ -277,7 +277,7 @@ namespace AppMotor.Core.System
         [PublicAPI]
         public static void Write([Localizable(true)] string? value)
         {
-            Console.Write(value);
+            Out.Write(value);
         }
 
         /// <summary>
@@ -310,7 +310,7 @@ namespace AppMotor.Core.System
                 {
                     Console.ForegroundColor = coloredSubstring.Color ?? originalColor;
 
-                    Console.Write(coloredSubstring.Text);
+                    Out.Write(coloredSubstring.Text);
                 }
             }
             finally
@@ -326,7 +326,7 @@ namespace AppMotor.Core.System
         [PublicAPI]
         public static void WriteLine([Localizable(true)] object? value)
         {
-            Console.WriteLine(value);
+            Out.WriteLine(value);
         }
 
         /// <summary>
@@ -336,7 +336,7 @@ namespace AppMotor.Core.System
         [PublicAPI]
         public static void WriteLine([Localizable(true)] string? value)
         {
-            Console.WriteLine(value);
+            Out.WriteLine(value);
         }
 
         /// <summary>
@@ -367,7 +367,7 @@ namespace AppMotor.Core.System
         [PublicAPI]
         public static void WriteLine()
         {
-            Console.WriteLine();
+            Out.WriteLine();
         }
 
         /// <summary>
