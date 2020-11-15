@@ -25,9 +25,6 @@ namespace AppMotor.Core.Utils
     /// </summary>
     public static class TlsSettings
     {
-        // NOTE: This value is copied from "SecurityProtocolType.Tls13" which is not available in .NET Standard 2.1.
-        private const SecurityProtocolType TLS_13 = (SecurityProtocolType)0x00003000;
-
         /// <summary>
         /// Enables and disables SSL and TLS protocols for the currently running process - based on current best practices.
         /// </summary>
@@ -37,13 +34,13 @@ namespace AppMotor.Core.Utils
             // NOTE: The default value of "ServicePointManager.SecurityProtocol" depends on the .NET Framework
             //   being used. This is why this method makes sure the value is the same across all frameworks.
 
-            EnableProtocol(TLS_13); // TLS 1.3
+            EnableProtocol(SecurityProtocolType.Tls13); // TLS 1.3
             EnableProtocol(SecurityProtocolType.Tls12); // TLS 1.2
 
 #pragma warning disable CA5364 // Do Not Use Deprecated Security Protocols
             // NOTE: TLS 1.0 and 1.1 are considered obsolete/outdated nowadays and are disabled on more and more
             //   server. To avoid downgrade attacks, we'll disable them for clients as well.
-            DisableProtocol(SecurityProtocolType.Tls); // TLS 1.0
+            DisableProtocol(SecurityProtocolType.Tls);   // TLS 1.0
             DisableProtocol(SecurityProtocolType.Tls11); // TLS 1.1
 
 #pragma warning disable 618
