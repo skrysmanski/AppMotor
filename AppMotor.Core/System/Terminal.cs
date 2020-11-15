@@ -16,6 +16,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 
@@ -30,6 +31,12 @@ namespace AppMotor.Core.System
     /// </summary>
     public static class Terminal
     {
+        /// <summary>
+        /// The terminal as <see cref="ITerminalWindow"/> and <see cref="ITerminal"/>.
+        /// </summary>
+        [PublicAPI]
+        public static ITerminalWindow Instance { get; } = new TerminalAsInstance();
+
         /// <summary>
         /// The standard input stream.
         /// </summary>
@@ -76,10 +83,30 @@ namespace AppMotor.Core.System
         public static bool IsKeyAvailable => Console.KeyAvailable;
 
         /// <summary>
+        /// The standard output stream.
+        /// </summary>
+        [PublicAPI]
+        public static TextWriter Out => Console.Out;
+
+        /// <summary>
+        /// Whether <see cref="Out"/> is redirected (to a file or the input
+        /// of another process).
+        /// </summary>
+        [PublicAPI]
+        public static bool IsOutputRedirected => Console.IsOutputRedirected;
+
+        /// <summary>
         /// The standard error output stream.
         /// </summary>
         [PublicAPI]
         public static TextWriter Error => Console.Error;
+
+        /// <summary>
+        /// Whether <see cref="Error"/> is redirected (to a file or the input
+        /// of another process).
+        /// </summary>
+        [PublicAPI]
+        public static bool IsErrorRedirected => Console.IsErrorRedirected;
 
         /// <summary>
         /// The encoding used for the various <c>Write()</c> and <c>WriteLine()</c> methods
@@ -428,6 +455,96 @@ namespace AppMotor.Core.System
         public static void SetCursorPosition(int left, int top)
         {
             Console.SetCursorPosition(left: left, top: top);
+        }
+
+        [SuppressMessage("ReSharper", "MemberHidesStaticFromOuterClass")]
+        private sealed class TerminalAsInstance : ITerminalWindow
+        {
+            /// <inheritdoc />
+            public TextReader Input => Terminal.Input;
+
+            /// <inheritdoc />
+            public bool IsInputRedirected => Terminal.IsInputRedirected;
+
+            /// <inheritdoc />
+            public bool IsKeyAvailable => Terminal.IsKeyAvailable;
+
+            /// <inheritdoc />
+            public TextWriter Out => Terminal.Out;
+
+            /// <inheritdoc />
+            public bool IsOutputRedirected => Terminal.IsOutputRedirected;
+
+            /// <inheritdoc />
+            public TextWriter Error => Terminal.Error;
+
+            /// <inheritdoc />
+            public bool IsErrorRedirected => Terminal.IsErrorRedirected;
+
+            /// <inheritdoc />
+            public Encoding InputEncoding
+            {
+                get => Terminal.InputEncoding;
+                set => Terminal.InputEncoding = value;
+            }
+
+            /// <inheritdoc />
+            public Encoding OutputEncoding
+            {
+                get => Terminal.OutputEncoding;
+                set => Terminal.OutputEncoding = value;
+            }
+
+            /// <inheritdoc />
+            public ConsoleColor BackgroundColor
+            {
+                get => Terminal.BackgroundColor;
+                set => Terminal.BackgroundColor = value;
+            }
+
+            /// <inheritdoc />
+            public int TerminalWidth => Terminal.TerminalWidth;
+
+            /// <inheritdoc />
+            public int TerminalBufferHeight => Terminal.TerminalBufferHeight;
+
+            /// <inheritdoc />
+            public int TerminalWindowHeight => Terminal.TerminalWindowHeight;
+
+            /// <inheritdoc />
+            public int CursorLeft
+            {
+                get => Terminal.CursorLeft;
+                set => Terminal.CursorLeft = value;
+            }
+
+            /// <inheritdoc />
+            public int CursorTop
+            {
+                get => Terminal.CursorTop;
+                set => Terminal.CursorTop = value;
+            }
+
+            /// <inheritdoc />
+            public void Write(ColoredString? coloredString) => Terminal.Write(coloredString);
+
+            /// <inheritdoc />
+            public ConsoleKeyInfo ReadKey(bool displayPressedKey = true) => Terminal.ReadKey(displayPressedKey);
+
+            /// <inheritdoc />
+            public string? ReadLine() => Terminal.ReadLine();
+
+            /// <inheritdoc />
+            public void Clear() => Terminal.Clear();
+
+            /// <inheritdoc />
+            public void Beep() => Terminal.Beep();
+
+            /// <inheritdoc />
+            public void SetWindowTitle(string title) => Terminal.SetWindowTitle(title);
+
+            /// <inheritdoc />
+            public void SetCursorPosition(int left, int top) => Terminal.SetCursorPosition(left, top);
         }
     }
 }
