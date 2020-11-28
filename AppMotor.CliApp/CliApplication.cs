@@ -18,6 +18,7 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
+using AppMotor.CliApp.CommandLine;
 using AppMotor.CliApp.Properties;
 using AppMotor.CliApp.Terminals;
 using AppMotor.Core.Exceptions;
@@ -30,6 +31,9 @@ namespace AppMotor.CliApp
 {
     /// <summary>
     /// Base class for .NET console applications. Use <see cref="Run{TApp}"/> or <see cref="RunAsync{TApp}"/> as entry point.
+    ///
+    /// <para>You may consider using <see cref="CliApplicationWithCommands"/> or <see cref="CliApplicationWithoutCommands"/>
+    /// instead - for convenience reasons.</para>
     /// </summary>
     public abstract class CliApplication
     {
