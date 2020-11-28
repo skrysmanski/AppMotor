@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Project.Code.props', '$(MSBuildThisFileDirectory)'))" />
+  <Import Project="$(ProjectPropsDirectory)Project.NuGetPackage.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+
+    <!-- See also: https://docs.microsoft.com/en-us/nuget/create-packages/prerelease-packages -->
+    <Version>0.1.0-prerelease1</Version>
+  </PropertyGroup>
+
+  <!--
+    NuGet (and assembly) properties
+    See 'Project.NuGetPackage.props' for more details.
+  -->
+  <PropertyGroup>
+    <PackageId>AppMotor.CliApp</PackageId>
+    <Description>APIs for building command line apps with the AppMotor framework.</Description>
+    <Authors>Sebastian Krysmanski</Authors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AppMotor.Core\AppMotor.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\LocalizableResources.Designer.cs">
+      <DependentUpon>LocalizableResources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\LocalizableResources.resx">
+      <LastGenOutput>LocalizableResources.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

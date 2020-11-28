@@ -17,14 +17,15 @@
 using System;
 using System.Diagnostics;
 
+using AppMotor.CliApp.Properties;
+using AppMotor.CliApp.Terminals;
 using AppMotor.Core.Exceptions;
 using AppMotor.Core.Logging;
-using AppMotor.Core.Properties;
 using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
-namespace AppMotor.Core.System
+namespace AppMotor.CliApp
 {
     /// <summary>
     /// Base class for .NET console applications. Use <see cref="Start{TApp}"/> as entry point.

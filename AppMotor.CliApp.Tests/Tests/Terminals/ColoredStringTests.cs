@@ -17,15 +17,15 @@
 using System;
 using System.Reflection;
 
+using AppMotor.CliApp.Terminals;
 using AppMotor.Core.Exceptions;
-using AppMotor.Core.System;
 using AppMotor.Core.Utils;
 
 using Shouldly;
 
 using Xunit;
 
-namespace AppMotor.Core.Tests.System
+namespace AppMotor.CliApp.Tests.Terminals
 {
     public sealed class ColoredStringTests
     {

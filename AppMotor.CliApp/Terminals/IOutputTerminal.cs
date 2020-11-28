@@ -22,7 +22,7 @@ using AppMotor.Core.Extensions;
 
 using JetBrains.Annotations;
 
-namespace AppMotor.Core.System
+namespace AppMotor.CliApp.Terminals
 {
     /// <summary>
     /// Represents the standard output of a terminal.

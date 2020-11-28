@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AppMotor.Core.Properties {
+namespace AppMotor.CliApp.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace AppMotor.Core.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AppMotor.Core.Properties.LocalizableResources", typeof(LocalizableResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AppMotor.CliApp.Properties.LocalizableResources", typeof(LocalizableResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
