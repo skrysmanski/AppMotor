@@ -50,6 +50,16 @@ namespace AppMotor.CliApp
         protected virtual bool WaitForKeyPressOnExit => false;
 
         /// <summary>
+        /// The terminal to use within this application. Defaults to <see cref="Terminals.Terminal"/>.
+        /// </summary>
+        /// <remarks>
+        /// This property is mainly for unit testing where you need to obtain everything written to
+        /// the terminal.
+        /// </remarks>
+        [PublicAPI]
+        public ITerminal Terminal { get; set; } = Terminals.Terminal.Instance;
+
+        /// <summary>
         /// The main/execute method for this application.
         ///
         /// <para>Recommendation: For ease of use, use the array syntax (<c>=&gt;</c>) when implementing
@@ -88,6 +98,11 @@ namespace AppMotor.CliApp
         {
             var app = new TApp();
 
+            if (terminal != null)
+            {
+                app.Terminal = terminal;
+            }
+
             return await app.RunAsync(args);
         }
 
@@ -119,11 +134,11 @@ namespace AppMotor.CliApp
                 exitCode = ProcessUnhandledException(exception);
             }
 
-            if ((Debugger.IsAttached || this.WaitForKeyPressOnExit) && !Terminal.IsInputRedirected)
+            if ((Debugger.IsAttached || this.WaitForKeyPressOnExit) && !this.Terminal.IsInputRedirected)
             {
-                Terminal.WriteLine();
-                Terminal.WriteLine(LocalizableResources.PressAnyKeyToExit);
-                Terminal.ReadKey();
+                this.Terminal.WriteLine();
+                this.Terminal.WriteLine(LocalizableResources.PressAnyKeyToExit);
+                this.Terminal.ReadKey(displayPressedKey: false);
             }
 
             return exitCode;
@@ -166,7 +181,7 @@ namespace AppMotor.CliApp
         protected virtual void OnUnhandledException(Exception exception, ref int exitCode)
         {
             var supportMessage = GetSupportMessage(exception);
-            PrintUnhandledException(exception, supportMessage: supportMessage);
+            PrintUnhandledException(exception, supportMessage: supportMessage, terminal: this.Terminal);
         }
 
         /// <summary>
@@ -188,21 +203,24 @@ namespace AppMotor.CliApp
         /// <param name="exception">The exception to print</param>
         /// <param name="supportMessage">An optional message with information about what to do
         /// with the exception (e.g. link to bug tracker).</param>
+        /// <param name="terminal">The terminal to use; defaults to <see cref="Terminals.Terminal"/>.</param>
         [PublicAPI]
-        public static void PrintUnhandledException(Exception exception, string? supportMessage)
+        public static void PrintUnhandledException(Exception exception, string? supportMessage, ITerminal? terminal = null)
         {
-            bool printSupportMessage = PrintUnhandledException(exception);
+            terminal ??= Terminals.Terminal.Instance;
+
+            bool printSupportMessage = PrintUnhandledException(exception, terminal);
 
             if (supportMessage != null && printSupportMessage)
             {
-                Terminal.WriteLine();
-                Terminal.WriteLine((TextInMagenta)supportMessage);
-                Terminal.WriteLine();
+                terminal.WriteLine();
+                terminal.WriteLine((TextInMagenta)supportMessage);
+                terminal.WriteLine();
             }
         }
 
         [MustUseReturnValue]
-        private static bool PrintUnhandledException(Exception exception)
+        private static bool PrintUnhandledException(Exception exception, ITerminal terminal)
         {
             bool printSupportMessage;
 
@@ -211,7 +229,7 @@ namespace AppMotor.CliApp
                 printSupportMessage = false;
                 foreach (var innerException in aggregateException.InnerExceptions)
                 {
-                    if (PrintUnhandledException(innerException))
+                    if (PrintUnhandledException(innerException, terminal))
                     {
                         printSupportMessage = true;
                     }
@@ -219,12 +237,12 @@ namespace AppMotor.CliApp
             }
             else if (exception is ErrorMessageException)
             {
-                Terminal.WriteLine((TextInRed)exception.Message);
+                terminal.WriteLine((TextInRed)exception.Message);
                 printSupportMessage = false;
             }
             else
             {
-                Terminal.WriteLine((TextInRed)exception.ToStringExtended());
+                terminal.WriteLine((TextInRed)exception.ToStringExtended());
                 printSupportMessage = true;
             }
 
