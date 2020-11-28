@@ -69,10 +69,9 @@ namespace AppMotor.CliApp
             {
                 exitCode = app.Run(args);
             }
-            catch (Exception ex) when (!Debugger.IsAttached)
+            catch (Exception exception) when (!Debugger.IsAttached)
             {
-                app.OnUnhandledException(ex);
-                exitCode = app.ExitCodeOnException;
+                exitCode = app.ProcessUnhandledException(exception);
             }
 
             if ((Debugger.IsAttached || app.WaitForKeyPressOnExit) && !Terminal.IsInputRedirected)
@@ -86,9 +85,29 @@ namespace AppMotor.CliApp
         }
 
         /// <summary>
+        /// Does the default processing for unhandled exceptions. Implementers may use this method
+        /// in places where there is additional unhandled exception handling (e.g. for frameworks).
+        /// </summary>
+        /// <param name="exception">The unhandled exception</param>
+        /// <returns>The exit code to be used.</returns>
+        [PublicAPI]
+        protected int ProcessUnhandledException(Exception exception)
+        {
+            int exitCode = this.ExitCodeOnException;
+
+            OnUnhandledException(exception, ref exitCode);
+
+            return exitCode;
+        }
+
+        /// <summary>
         /// Called for any unhandled exception that is thrown by <see cref="Run"/>.
         /// </summary>
-        protected virtual void OnUnhandledException(Exception exception)
+        /// <param name="exception">The unhandled exception</param>
+        /// <param name="exitCode">The exit code to be used; may be modified by implementations
+        /// as they see fit. For most exceptions, this will be initialized to <see cref="ExitCodeOnException"/>.</param>
+        [PublicAPI]
+        protected virtual void OnUnhandledException(Exception exception, ref int exitCode)
         {
             PrintUnhandledException(exception, supportMessage: null);
         }
