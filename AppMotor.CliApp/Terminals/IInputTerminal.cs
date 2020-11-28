@@ -19,7 +19,7 @@ using System.IO;
 
 using JetBrains.Annotations;
 
-namespace AppMotor.Core.System
+namespace AppMotor.CliApp.Terminals
 {
     /// <summary>
     /// Represents the input of a terminal.

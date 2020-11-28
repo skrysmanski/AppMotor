@@ -14,29 +14,19 @@
 // limitations under the License.
 #endregion
 
-using System.IO;
+using System;
 
-using JetBrains.Annotations;
-
-namespace AppMotor.Core.System
+namespace AppMotor.CliApp.TestUtils
 {
-    /// <summary>
-    /// Represents the error output of a terminal.
-    /// </summary>
-    /// <seealso cref="ITerminal"/>
-    public interface IErrorOutputTerminal
+    internal class TestCliApplication : TestCliApplicationBase
     {
-        /// <summary>
-        /// The standard error output stream.
-        /// </summary>
-        [PublicAPI]
-        TextWriter Error { get; }
+        /// <inheritdoc />
+        protected override CliApplicationExecutor MainExecutor { get; }
 
-        /// <summary>
-        /// Whether <see cref="Error"/> is redirected (to a file or the input
-        /// of another process).
-        /// </summary>
-        [PublicAPI]
-        bool IsErrorRedirected { get; }
+        /// <inheritdoc />
+        public TestCliApplication(Action mainAction)
+        {
+            this.MainExecutor = new(mainAction);
+        }
     }
 }

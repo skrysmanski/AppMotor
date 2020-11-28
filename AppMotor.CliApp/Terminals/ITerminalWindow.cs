@@ -20,7 +20,7 @@ using System.Text;
 
 using JetBrains.Annotations;
 
-namespace AppMotor.Core.System
+namespace AppMotor.CliApp.Terminals
 {
     /// <summary>
     /// Represents a terminal that allows the user to interact with the terminal window itself.

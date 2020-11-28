@@ -25,7 +25,7 @@ using AppMotor.Core.DataModel;
 
 using JetBrains.Annotations;
 
-namespace AppMotor.Core.System
+namespace AppMotor.CliApp.Terminals
 {
     /// <summary>
     /// Represents a string that contains (potentially) colored substrings. Each colored substring is represented

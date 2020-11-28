@@ -24,11 +24,12 @@ using AppMotor.Core.Extensions;
 
 using JetBrains.Annotations;
 
-namespace AppMotor.Core.System
+namespace AppMotor.CliApp.Terminals
 {
     /// <summary>
     /// Replacement for <see cref="Console"/> that supports <see cref="ColoredString"/>.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public static class Terminal
     {
         /// <summary>
