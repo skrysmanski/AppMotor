@@ -38,12 +38,14 @@ namespace AppMotor.CliApp
         /// The exit code to use when an unhandled exception led to the termination
         /// of the process.
         /// </summary>
-        protected virtual int ExitCodeOnException => 9999;
+        [PublicAPI]
+        protected virtual int ExitCodeOnException => -1;
 
         /// <summary>
         /// Whether to display a "Press any key to exit..." message when the process
         /// terminates.
         /// </summary>
+        [PublicAPI]
         protected virtual bool WaitForKeyPressOnExit => false;
 
         /// <summary>
