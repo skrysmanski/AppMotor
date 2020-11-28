@@ -93,7 +93,18 @@ namespace AppMotor.CliApp
         [PublicAPI]
         protected int ProcessUnhandledException(Exception exception)
         {
-            int exitCode = this.ExitCodeOnException;
+            int exitCode;
+
+            if (exception is ErrorMessageException)
+            {
+                // ErrorMessageExceptions are used to display some message directly to the user.
+                // As such, they're not "actual" exceptions and thus should not use "ExitCodeOnException".
+                exitCode = 1;
+            }
+            else
+            {
+                exitCode = this.ExitCodeOnException;
+            }
 
             OnUnhandledException(exception, ref exitCode);
 
