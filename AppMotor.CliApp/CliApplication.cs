@@ -16,6 +16,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 using AppMotor.CliApp.Properties;
 using AppMotor.CliApp.Terminals;
@@ -28,7 +29,7 @@ using JetBrains.Annotations;
 namespace AppMotor.CliApp
 {
     /// <summary>
-    /// Base class for .NET console applications. Use <see cref="Run{TApp}"/> as entry point.
+    /// Base class for .NET console applications. Use <see cref="Run{TApp}"/> or <see cref="RunAsync{TApp}"/> as entry point.
     /// </summary>
     public abstract class CliApplication
     {
@@ -49,6 +50,14 @@ namespace AppMotor.CliApp
         protected virtual bool WaitForKeyPressOnExit => false;
 
         /// <summary>
+        /// The main/execute method for this application.
+        ///
+        /// <para>Recommendation: For ease of use, use the array syntax (<c>=&gt;</c>) when implementing
+        /// this property.</para>
+        /// </summary>
+        protected abstract CliApplicationExecutor MainExecutor { get; }
+
+        /// <summary>
         /// Constructor.
         /// </summary>
         protected CliApplication()
@@ -61,26 +70,56 @@ namespace AppMotor.CliApp
         }
 
         /// <summary>
-        /// Starts the specified application.
+        /// Executes the specified application.
         /// </summary>
         /// <returns>The exit code to use.</returns>
         [PublicAPI, MustUseReturnValue]
-        public static int Run<TApp>(string[] args) where TApp : CliApplication, new()
+        public static int Run<TApp>(string[] args, ITerminal? terminal = null) where TApp : CliApplication, new()
+        {
+            return Task.Run(() => RunAsync<TApp>(args, terminal)).Result;
+        }
+
+        /// <summary>
+        /// Executes the specified application.
+        /// </summary>
+        /// <returns>The exit code to use.</returns>
+        [PublicAPI, MustUseReturnValue]
+        public static async Task<int> RunAsync<TApp>(string[] args, ITerminal? terminal = null) where TApp : CliApplication, new()
         {
             var app = new TApp();
 
+            return await app.RunAsync(args);
+        }
+
+        /// <summary>
+        /// Executes the specified application.
+        /// </summary>
+        /// <returns>The exit code to use.</returns>
+        [PublicAPI, MustUseReturnValue]
+        public int Run(params string[] args)
+        {
+            return Task.Run(() => RunAsync(args)).Result;
+        }
+
+        /// <summary>
+        /// Executes the specified application.
+        /// </summary>
+        /// <returns>The exit code to use.</returns>
+        [PublicAPI, MustUseReturnValue]
+        public async Task<int> RunAsync(params string[] args)
+        {
             int exitCode;
 
             try
             {
-                exitCode = app.Run(args);
+                exitCode = await this.MainExecutor.Execute(args);
             }
             catch (Exception exception) when (!Debugger.IsAttached)
             {
-                exitCode = app.ProcessUnhandledException(exception);
+                exitCode = ProcessUnhandledException(exception);
             }
 
-            if ((Debugger.IsAttached || app.WaitForKeyPressOnExit) && !Terminal.IsInputRedirected)
+            if ((Debugger.IsAttached || this.WaitForKeyPressOnExit) && !Terminal.IsInputRedirected)
             {
                 Terminal.WriteLine();
                 Terminal.WriteLine(LocalizableResources.PressAnyKeyToExit);
@@ -118,7 +157,7 @@ namespace AppMotor.CliApp
         }
 
         /// <summary>
-        /// Called for any unhandled exception that is thrown by <see cref="Run"/>.
+        /// Called for any unhandled exception that is thrown by the <see cref="MainExecutor"/>.
         /// </summary>
         /// <param name="exception">The unhandled exception</param>
         /// <param name="exitCode">The exit code to be used; may be modified by implementations
@@ -191,13 +230,5 @@ namespace AppMotor.CliApp
 
             return printSupportMessage;
         }
-
-        /// <summary>
-        /// Executes the actual program.
-        /// </summary>
-        /// <param name="args">The args passed from the command line.</param>
-        /// <returns>The exit code to return to the operating system.</returns>
-        [PublicAPI, MustUseReturnValue]
-        protected abstract int Run(string[] args);
     }
 }
