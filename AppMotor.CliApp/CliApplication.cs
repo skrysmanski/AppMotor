@@ -30,7 +30,7 @@ namespace AppMotor.CliApp
     /// <summary>
     /// Base class for .NET console applications. Use <see cref="Run{TApp}"/> as entry point.
     /// </summary>
-    public abstract class ConsoleApplication
+    public abstract class CliApplication
     {
         private static bool s_tlsSettingsApplied;
 
@@ -53,7 +53,7 @@ namespace AppMotor.CliApp
         /// </summary>
         /// <returns>The exit code to use.</returns>
         [PublicAPI, MustUseReturnValue]
-        public static int Run<TApp>(string[] args) where TApp : ConsoleApplication, new()
+        public static int Run<TApp>(string[] args) where TApp : CliApplication, new()
         {
             if (!s_tlsSettingsApplied)
             {
