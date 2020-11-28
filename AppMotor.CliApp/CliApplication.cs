@@ -28,7 +28,7 @@ using JetBrains.Annotations;
 namespace AppMotor.CliApp
 {
     /// <summary>
-    /// Base class for .NET console applications. Use <see cref="Start{TApp}"/> as entry point.
+    /// Base class for .NET console applications. Use <see cref="Run{TApp}"/> as entry point.
     /// </summary>
     public abstract class ConsoleApplication
     {
@@ -53,7 +53,7 @@ namespace AppMotor.CliApp
         /// </summary>
         /// <returns>The exit code to use.</returns>
         [PublicAPI, MustUseReturnValue]
-        public static int Start<TApp>(string[] args) where TApp : ConsoleApplication, new()
+        public static int Run<TApp>(string[] args) where TApp : ConsoleApplication, new()
         {
             if (!s_tlsSettingsApplied)
             {
