@@ -49,18 +49,24 @@ namespace AppMotor.CliApp
         protected virtual bool WaitForKeyPressOnExit => false;
 
         /// <summary>
-        /// Starts the specified application.
+        /// Constructor.
         /// </summary>
-        /// <returns>The exit code to use.</returns>
-        [PublicAPI, MustUseReturnValue]
-        public static int Run<TApp>(string[] args) where TApp : CliApplication, new()
+        protected CliApplication()
         {
             if (!s_tlsSettingsApplied)
             {
                 TlsSettings.ApplyToCurrentProcess();
                 s_tlsSettingsApplied = true;
             }
+        }
 
+        /// <summary>
+        /// Starts the specified application.
+        /// </summary>
+        /// <returns>The exit code to use.</returns>
+        [PublicAPI, MustUseReturnValue]
+        public static int Run<TApp>(string[] args) where TApp : CliApplication, new()
+        {
             var app = new TApp();
 
             int exitCode;
