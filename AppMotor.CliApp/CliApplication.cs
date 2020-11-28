@@ -120,7 +120,21 @@ namespace AppMotor.CliApp
         [PublicAPI]
         protected virtual void OnUnhandledException(Exception exception, ref int exitCode)
         {
-            PrintUnhandledException(exception, supportMessage: null);
+            var supportMessage = GetSupportMessage(exception);
+            PrintUnhandledException(exception, supportMessage: supportMessage);
+        }
+
+        /// <summary>
+        /// Returns a support message to be printed alongside the exception report for an unhandled exception
+        /// (via <see cref="OnUnhandledException"/>). Should contain information about what to do with the
+        /// exception (e.g. a link to a bug tracker). If <c>null</c>, no support message will be printed (the
+        /// default).
+        /// </summary>
+        /// <param name="exception">The unhandled exception</param>
+        [PublicAPI]
+        protected virtual string? GetSupportMessage(Exception exception)
+        {
+            return null;
         }
 
         /// <summary>
