@@ -1,10 +1,13 @@
 <!--
+
   Shared settings for all projects.
   NOTE: Do not include directly. Use one of the other props files instead.
+
 -->
+<!-- You can find the latest version of this file here: https://github.com/skrysmanski/base-dotnet -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <PropertyGroup>
+  <PropertyGroup Label="Project Settings">
     <ProjectPropsDirectory>$(MSBuildThisFileDirectory)</ProjectPropsDirectory>
 
     <!--
@@ -23,6 +26,30 @@
     <WarningsAsErrors></WarningsAsErrors>
     <NoWarn></NoWarn>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Publishing">
+    <!--
+      On Windows (and apparently also on macOS) publishing an executable as "single file" does not
+      actually produce a single file. The .NET runtime's native .dlls are not put into the created file
+      but placed in the same folder (resulting in more than one file).
+
+      This setting changes this - resulting in an executable that self-extracts into a temporary folder.
+      It's not as nice as having an executable that needs no extraction but from a deployment standpoint
+      it's nicer to actually have only one file.
+
+      Notes:
+      * This setting is not required when publishing to Linux (here everything works as expected).
+      * For .NET 6, Microsoft is working on a solution that no longer needs extraction: https://github.com/dotnet/runtime/issues/43071
+      * For more details, see: https://www.hanselman.com/blog/how-to-make-a-winforms-app-with-net-5-entirely-from-the-command-line-and-publish-as-one-selfcontained-file
+    -->
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+
+    <!--
+      When trimming, disable unsafe UTF7 support. (Why would we need this?)
+      See: https://github.com/dotnet/runtime/blob/master/docs/workflow/trimming/feature-switches.md#available-feature-switches
+    -->
+    <EnableUnsafeUTF7Encoding>false</EnableUnsafeUTF7Encoding>
   </PropertyGroup>
 
   <ItemGroup>

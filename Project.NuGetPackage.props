@@ -1,10 +1,13 @@
 <!--
+
   Default settings for all projects that produce NuGet packages.
 
   To use it, add the following line after the import of 'Project.Code.props':
 
-  <Import Project="$(ProjectPropsDirectory)Project.NuGetPackage.props" />
+    <Import Project="$(ProjectPropsDirectory)Project.NuGetPackage.props" />
+
 -->
+<!-- You can find the latest version of this file here: https://github.com/skrysmanski/base-dotnet -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <!--

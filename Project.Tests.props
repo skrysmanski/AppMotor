@@ -1,11 +1,14 @@
 <!--
+
   Default settings for all test projects.
 
   To use it, create a .NET Core or .NET Standard project (modern project format)
   and then add this line at the top:
 
-  <Import Project="$([MSBuild]::GetPathOfFileAbove('Project.Tests.props', '$(MSBuildThisFileDirectory)'))" />
+    <Import Project="$([MSBuild]::GetPathOfFileAbove('Project.Tests.props', '$(MSBuildThisFileDirectory)'))" />
+
 -->
+<!-- You can find the latest version of this file here: https://github.com/skrysmanski/base-dotnet -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <Import Project="$(MSBuildThisFileDirectory)Project.Shared.props" />
@@ -19,9 +22,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
 
-    <PackageReference Include="Shouldly" Version="4.0.0" />
+    <PackageReference Include="Shouldly" Version="4.0.1" />
 
     <PackageReference Include="xunit.core" Version="2.4.1" />
     <!-- The analyzers provide (compile-time) checks for example for [InlineData]. -->
