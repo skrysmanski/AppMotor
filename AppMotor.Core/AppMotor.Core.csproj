@@ -12,15 +12,6 @@
     <Description>The core APIs for the AppMotor framework.</Description>
   </PropertyGroup>
 
-  <!--
-    NuGet (and assembly) properties
-    See 'Project.NuGetPackage.props' for more details.
-  -->
-  <PropertyGroup>
-    <PackageId>AppMotor.Core</PackageId>
-    <Authors>Sebastian Krysmanski</Authors>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
   </ItemGroup>

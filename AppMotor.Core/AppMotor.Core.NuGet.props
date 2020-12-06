@@ -1,0 +1,17 @@
+<!--
+  Contains NuGet information for this project.
+
+  NOTE: This file is automatically imported by MSBuild.
+-->
+<Project>
+
+  <Import Project="../CommonNuGet.props" />
+
+  <!--
+    See 'Project.NuGetPackage.props' for more details.
+  -->
+  <PropertyGroup>
+    <Authors>Sebastian Krysmanski</Authors>
+  </PropertyGroup>
+
+</Project>

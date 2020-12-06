@@ -1,0 +1,13 @@
+<Project>
+
+  <!--
+    See 'Project.NuGetPackage.props' for more details.
+  -->
+  <PropertyGroup>
+    <!-- See: https://spdx.org/licenses/ -->
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+
+    <RepositoryUrl>https://github.com/skrysmanski/AppMotor</RepositoryUrl>
+  </PropertyGroup>
+
+</Project>

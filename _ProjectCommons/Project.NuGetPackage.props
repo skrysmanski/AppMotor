@@ -6,25 +6,27 @@
 
     <Import Project="$(ProjectCommonsDirectory)Project.NuGetPackage.props" />
 
+  Afterwards, it's recommended to create a "<ProjectName>.NuGet.props" file for each
+  project and put all NuGet related information into this file.
+
 -->
 <!-- You can find the latest version of this file here: https://github.com/skrysmanski/base-dotnet -->
 <Project>
 
   <!--
-    NuGet (and assembly) properties
+    Default NuGet properties
 
-    Additional properties to specify on each project: <PackageId>, <Description>, <Authors>
+    Additional properties to specify on each project: <Description>, <Authors>, <PackageLicenseExpression>, <RepositoryUrl>
 
     See:
     * https://docs.microsoft.com/en-us/dotnet/core/tools/csproj#nuget-metadata-properties
     * https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets#pack-target
     * https://docs.microsoft.com/en-us/nuget/reference/nuspec
+
+    For valid license expressions, see: https://spdx.org/licenses/
   -->
   <PropertyGroup>
-    <!-- See: https://spdx.org/licenses/ -->
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-
-    <RepositoryUrl>https://github.com/skrysmanski/AppMotor</RepositoryUrl>
+    <!-- Assume git by default. -->
     <RepositoryType>git</RepositoryType>
 
     <!-- Why would this ever by "false"? -->
@@ -52,5 +54,22 @@
     -->
     <GenerateDocumentationFile Condition="'$(Configuration)' == 'Release'">true</GenerateDocumentationFile>
   </PropertyGroup>
+
+  <!--
+    Adds a list of commonly used types (if any) to the description of the NuGet package.
+    Commonly used types are defined via <ItemGroup> and <CommonlyUsedTypes Include="MY_TYPE_HERE" />
+  -->
+  <Target Name="_AddCommonlyUsedTypesToPackageDescription" BeforeTargets="GenerateNuspec">
+    <!--
+        IMPORTANT: We need to do this inside of a target (rather than a top level <PropertyGroup>)
+        because ItemGroups are not evaluated during the top level evaluation. Instead properties
+        that do an ItemGroup transformation are simply filled with the transform expression - rather
+        than the final result. As such, they're never empty.
+    -->
+    <PropertyGroup>
+        <CommonlyUsedTypesAsSeparateLines>@(CommonlyUsedTypes->'%(Identity)', '&#13;')</CommonlyUsedTypesAsSeparateLines>
+        <PackageDescription Condition=" '$(CommonlyUsedTypesAsSeparateLines)' != '' ">$(Description)&#13;&#13;Commonly Used Types:&#13;$(CommonlyUsedTypesAsSeparateLines)</PackageDescription>
+    </PropertyGroup>
+  </Target>
 
 </Project>

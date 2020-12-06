@@ -1,0 +1,27 @@
+<!--
+  Contains NuGet information for this project.
+
+  NOTE: This file is automatically imported by MSBuild.
+-->
+<Project>
+
+  <Import Project="../CommonNuGet.props" />
+
+  <!--
+    See 'Project.NuGetPackage.props' for more details.
+  -->
+  <PropertyGroup>
+    <Authors>Sebastian Krysmanski</Authors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <CommonlyUsedTypes Include="AppMotor.CliApp.CommandLine.CliApplicationWithCommands" />
+    <CommonlyUsedTypes Include="AppMotor.CliApp.CommandLine.CliApplicationWithoutCommands" />
+    <CommonlyUsedTypes Include="AppMotor.CliApp.CommandLine.CliCommand" />
+    <CommonlyUsedTypes Include="AppMotor.CliApp.CommandLine.CliParam" />
+
+    <CommonlyUsedTypes Include="AppMotor.CliApp.Terminals.Terminal" />
+    <CommonlyUsedTypes Include="AppMotor.CliApp.Terminals.ColoredString" />
+  </ItemGroup>
+
+</Project>

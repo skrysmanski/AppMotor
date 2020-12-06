@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3070412B-0C42-465C-A0B1-840996585E88}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		CommonNuGet.props = CommonNuGet.props
 		Directory.Build.props = Directory.Build.props
 		LICENSE.txt = LICENSE.txt
 		_ProjectCommons\Project.Code.props = _ProjectCommons\Project.Code.props
