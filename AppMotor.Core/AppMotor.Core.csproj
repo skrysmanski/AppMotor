@@ -8,6 +8,8 @@
 
     <!-- See also: https://docs.microsoft.com/en-us/nuget/create-packages/prerelease-packages -->
     <Version>0.9.1</Version>
+
+    <Description>The core APIs for the AppMotor framework.</Description>
   </PropertyGroup>
 
   <!--
@@ -16,7 +18,6 @@
   -->
   <PropertyGroup>
     <PackageId>AppMotor.Core</PackageId>
-    <Description>The core APIs for the AppMotor framework.</Description>
     <Authors>Sebastian Krysmanski</Authors>
   </PropertyGroup>
 
