@@ -27,6 +27,19 @@
     <InternalsVisibleTo Include="$(MSBuildProjectName).Tests" />
   </ItemGroup>
 
+  <!--
+    .NET static code analysis
+
+    See: https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/overview
+  -->
+  <PropertyGroup Label="Code Analysis">
+    <!--
+      Enable all CA rules by default. Otherwise only a small subset will be enabled by default.
+      See: https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#analysismode
+    -->
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
+  </PropertyGroup>
+
   <ItemGroup>
     <!--
       Provides Microsoft's/.NET's static code analyzers.
