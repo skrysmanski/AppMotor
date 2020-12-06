@@ -1,17 +1,15 @@
 <!--
 
-  Root props for all projects.
+  This .props file is automatically imported by MSBuild/Visual Studio.
 
-  Must be imported by all projects via:
-
-    <Import Project="$([MSBuild]::GetPathOfFileAbove('Project.Root.props', '$(MSBuildThisFileDirectory)'))" />
+  For more details, see: https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build?view=vs-2019#directorybuildprops-and-directorybuildtargets
 
 -->
 <!-- You can find the latest version of this file here: https://github.com/skrysmanski/base-dotnet -->
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project>
 
   <PropertyGroup>
-    <!-- The directory where this 'Project.Root.props' file is located. -->
+    <!-- The directory where this file is located. -->
     <ProjectsRootDirectory>$(MSBuildThisFileDirectory)</ProjectsRootDirectory>
 
     <!-- This directory contains all shared/common .props (and related) files. -->

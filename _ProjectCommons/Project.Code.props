@@ -3,9 +3,8 @@
   Default settings for all production code (i.e. non-test) projects.
 
   To use it, create a .NET Core or .NET Standard project (modern project format)
-  and then add these lines at the top:
+  and then add this line at the top:
 
-    <Import Project="$([MSBuild]::GetPathOfFileAbove('Project.Root.props', '$(MSBuildThisFileDirectory)'))" />
     <Import Project="$(ProjectCommonsDirectory)Project.Code.props" />
 
 -->

@@ -1,6 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="$([MSBuild]::GetPathOfFileAbove('Project.Root.props', '$(MSBuildThisFileDirectory)'))" />
   <Import Project="$(ProjectCommonsDirectory)Project.Code.props" />
   <Import Project="$(ProjectCommonsDirectory)Project.NuGetPackage.props" />
 
