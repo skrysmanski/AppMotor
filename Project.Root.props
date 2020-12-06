@@ -1,0 +1,18 @@
+<!--
+
+  Root props for all projects.
+
+  Must be imported by all projects via:
+
+    <Import Project="$([MSBuild]::GetPathOfFileAbove('Project.Root.props', '$(MSBuildThisFileDirectory)'))" />
+
+-->
+<!-- You can find the latest version of this file here: https://github.com/skrysmanski/base-dotnet -->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <!-- This directory contains all shared/common .props (and related) files. -->
+    <ProjectCommonsDirectory>$(MSBuildThisFileDirectory)/_ProjectCommons/</ProjectCommonsDirectory>
+  </PropertyGroup>
+
+</Project>

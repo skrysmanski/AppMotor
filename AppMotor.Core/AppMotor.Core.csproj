@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="$([MSBuild]::GetPathOfFileAbove('Project.Code.props', '$(MSBuildThisFileDirectory)'))" />
-  <Import Project="$(ProjectPropsDirectory)Project.NuGetPackage.props" />
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Project.Root.props', '$(MSBuildThisFileDirectory)'))" />
+  <Import Project="$(ProjectCommonsDirectory)Project.Code.props" />
+  <Import Project="$(ProjectCommonsDirectory)Project.NuGetPackage.props" />
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>

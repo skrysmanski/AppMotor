@@ -11,15 +11,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		LICENSE.txt = LICENSE.txt
-		Project.Code.props = Project.Code.props
-		Project.NuGetPackage.props = Project.NuGetPackage.props
-		Project.Shared.props = Project.Shared.props
-		Project.Tests.props = Project.Tests.props
+		_ProjectCommons\Project.Code.props = _ProjectCommons\Project.Code.props
+		_ProjectCommons\Project.NuGetPackage.props = _ProjectCommons\Project.NuGetPackage.props
+		Project.Root.props = Project.Root.props
+		_ProjectCommons\Project.Shared.props = _ProjectCommons\Project.Shared.props
+		_ProjectCommons\Project.Tests.props = _ProjectCommons\Project.Tests.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.CliApp", "AppMotor.CliApp\AppMotor.CliApp.csproj", "{CBB59AA0-B953-4989-8AC9-9645AB5A0447}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppMotor.CliApp.Tests", "AppMotor.CliApp.Tests\AppMotor.CliApp.Tests.csproj", "{7468E2E3-BDE8-4C7C-A48F-23A90D2819B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.CliApp.Tests", "AppMotor.CliApp.Tests\AppMotor.CliApp.Tests.csproj", "{7468E2E3-BDE8-4C7C-A48F-23A90D2819B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
