@@ -53,7 +53,9 @@ namespace AppMotor.Core.Extensions
         /// removed, the returned list will be empty (but never <c>null</c>).</returns>
         /// <exception cref="CollectionIsReadOnlyException">Thrown if the collection is read-only.</exception>
         [PublicAPI]
+#pragma warning disable CA1002 // Do not expose generic lists // BUG: https://github.com/dotnet/roslyn-analyzers/issues/4508
         public static List<T> RemoveWhere<T>(this ICollection<T> collection, Predicate<T> predicate)
+#pragma warning restore CA1002 // Do not expose generic lists
         {
             Validate.Argument.IsNotNull(collection, nameof(collection));
             Validate.Argument.IsNotNull(predicate, nameof(predicate));
