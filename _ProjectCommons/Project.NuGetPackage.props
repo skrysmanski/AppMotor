@@ -8,7 +8,7 @@
 
 -->
 <!-- You can find the latest version of this file here: https://github.com/skrysmanski/base-dotnet -->
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project>
 
   <!--
     NuGet (and assembly) properties
