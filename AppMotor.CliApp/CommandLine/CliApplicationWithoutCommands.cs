@@ -72,7 +72,7 @@ namespace AppMotor.CliApp.CommandLine
 
             rootCommand.Handler = new CliCommandHandler(this);
 
-            return await rootCommand.InvokeAsync(args, new CommandLineConsole(this.Terminal));
+            return await rootCommand.InvokeAsync(args, new CommandLineConsole(this.Terminal)).ConfigureAwait(continueOnCapturedContext: false);
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace AppMotor.CliApp.CommandLine
             {
                 this.m_app.SetAllParamValues(context.ParseResult);
 
-                return await this.m_app.Executor.Execute();
+                return await this.m_app.Executor.Execute().ConfigureAwait(continueOnCapturedContext: false);
             }
         }
     }

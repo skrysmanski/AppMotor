@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 
 using JetBrains.Annotations;
 
@@ -28,7 +29,7 @@ namespace AppMotor.Core.DataModel
     /// is set or not.
     /// </para>
     /// </summary>
-    public readonly struct Optional<T>
+    public readonly struct Optional<T> : IEquatable<Optional<T>>
     {
         /// <summary>
         /// You may use this to unset an optional value.
@@ -78,11 +79,51 @@ namespace AppMotor.Core.DataModel
         }
 
         /// <inheritdoc />
+        public bool Equals(Optional<T> other)
+        {
+            if (this.IsSet != other.IsSet)
+            {
+                return false;
+            }
+
+            if (!this.IsSet) // && !other.IsSet
+            {
+                return true;
+            }
+
+            return EqualityComparer<T>.Default.Equals(this.m_value, other.m_value);
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object? obj)
+        {
+            return obj is Optional<T> other && Equals(other);
+        }
+
+        public static bool operator ==(Optional<T> left, Optional<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Optional<T> left, Optional<T> right)
+        {
+            return !(left == right);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(this.m_value, this.IsSet);
+        }
+
+        /// <inheritdoc />
         public override string ToString()
         {
             if (this.IsSet)
             {
+#pragma warning disable CA1508 // Avoid dead conditional code // BUG: https://github.com/dotnet/roslyn-analyzers/issues/4509
                 return this.m_value?.ToString() ?? "";
+#pragma warning restore CA1508 // Avoid dead conditional code
             }
             else
             {

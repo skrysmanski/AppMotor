@@ -107,7 +107,7 @@ namespace AppMotor.CliApp
                 app.Terminal = terminal;
             }
 
-            return await app.RunAsync(args);
+            return await app.RunAsync(args).ConfigureAwait(continueOnCapturedContext: false);
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace AppMotor.CliApp
 
             try
             {
-                exitCode = await this.MainExecutor.Execute(args);
+                exitCode = await this.MainExecutor.Execute(args).ConfigureAwait(continueOnCapturedContext: false);
             }
             catch (Exception exception) when (!Debugger.IsAttached)
             {

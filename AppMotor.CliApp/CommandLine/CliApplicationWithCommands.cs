@@ -61,7 +61,8 @@ namespace AppMotor.CliApp.CommandLine
             return await rootCommand.InvokeAsync(
                 SortHelpFirst(args),
                 new CommandLineConsole(this.Terminal)
-            );
+            )
+            .ConfigureAwait(continueOnCapturedContext: false);
         }
 
         /// <summary>

@@ -284,12 +284,12 @@ namespace AppMotor.Core.Processes
                 }
                 catch (Win32Exception ex) when (ex.NativeErrorCode == 2) // Could not find file.
                 {
-                    throw new Exception($"Could not locate application file at: {this.m_process.StartInfo.FileName}");
+                    throw new InvalidOperationException($"Could not locate application file at: {this.m_process.StartInfo.FileName}");
                 }
 
                 if (!startSuccessful)
                 {
-                    throw new Exception("Process could not be started for unknown reasons.");
+                    throw new InvalidOperationException("Process could not be started for unknown reasons.");
                 }
 
                 stdOutReadTask = Task.Run(() => this.m_process.StandardOutput.ReadToEndAsync());
