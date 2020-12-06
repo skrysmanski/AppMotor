@@ -7,7 +7,7 @@
     <TargetFramework>net5.0</TargetFramework>
 
     <!-- See also: https://docs.microsoft.com/en-us/nuget/create-packages/prerelease-packages -->
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
 
     <!--
       Unfortunately, System.CommandLine is still pre-release; so we have to ignore this warning.
