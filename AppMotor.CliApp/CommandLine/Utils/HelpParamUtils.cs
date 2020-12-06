@@ -14,6 +14,8 @@
 // limitations under the License.
 #endregion
 
+using AppMotor.Core.Utils;
+
 using JetBrains.Annotations;
 
 namespace AppMotor.CliApp.CommandLine.Utils
@@ -39,6 +41,8 @@ namespace AppMotor.CliApp.CommandLine.Utils
         [MustUseReturnValue]
         public static bool IsHelpParamName(string arg)
         {
+            Validate.Argument.IsNotNull(arg, nameof(arg));
+
             switch (arg.ToLowerInvariant())
             {
                 case "-h":

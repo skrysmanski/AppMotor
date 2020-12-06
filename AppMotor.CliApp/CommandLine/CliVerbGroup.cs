@@ -42,6 +42,7 @@ namespace AppMotor.CliApp.CommandLine
         /// verb group.
         /// </summary>
         [PublicAPI]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1024:Use properties where appropriate", Justification = "Potentially expensive execution")]
         protected abstract IEnumerable<CliVerb> GetSubVerbs();
 
         internal sealed override Command ToUnderlyingImplementation()

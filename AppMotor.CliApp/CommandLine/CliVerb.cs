@@ -19,6 +19,7 @@ using System.Collections.Immutable;
 using System.CommandLine;
 
 using AppMotor.CliApp.CommandLine.Utils;
+using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
@@ -60,6 +61,7 @@ namespace AppMotor.CliApp.CommandLine
         protected CliVerb(string name, string[] aliases)
         {
             ValidateCommandName(name);
+            Validate.Argument.IsNotNull(aliases, nameof(aliases));
 
             foreach (var alias in aliases)
             {
@@ -74,6 +76,8 @@ namespace AppMotor.CliApp.CommandLine
 
         private static void ValidateCommandName(string name)
         {
+            Validate.Argument.IsNotNull(name, nameof(name));
+
             if (HelpParamUtils.IsHelpParamName(name) || name.Equals(HelpParamUtils.HelpCommandName, StringComparison.OrdinalIgnoreCase))
             {
                 throw new ArgumentException($"The name '{name}' is reserved and can't be used.", nameof(name));

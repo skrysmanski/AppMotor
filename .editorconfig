@@ -99,6 +99,11 @@ dotnet_diagnostic.CA1040.severity = none
 #   no plan to translate the application into other languages.
 dotnet_diagnostic.CA1303.severity = error
 
+# CA1308: Normalize strings to uppercase
+# Reason: In almost all cases this rule is irrelevant - and just causes noise. (I've yet to see an example of the problem
+#   this rule is supposed to prevent.)
+dotnet_diagnostic.CA1308.severity = none
+
 # CA1707: Identifiers should not contain underscores
 # Reason: Our style guide uses underscores for constants.
 dotnet_diagnostic.CA1707.severity = none

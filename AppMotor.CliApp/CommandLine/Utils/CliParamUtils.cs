@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Reflection;
 
 using AppMotor.Core.Extensions;
+using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
@@ -37,8 +38,12 @@ namespace AppMotor.CliApp.CommandLine.Utils
         /// </summary>
         /// <param name="container">The object that holds the parameters.</param>
         [MustUseReturnValue]
+#pragma warning disable CA1002 // Do not expose generic lists // BUG: https://github.com/dotnet/roslyn-analyzers/issues/4508
         public static List<CliParam> GetAllParamsFor(object container)
+#pragma warning restore CA1002 // Do not expose generic lists
         {
+            Validate.Argument.IsNotNull(container, nameof(container));
+
             var allParams = new List<CliParam>();
             var alreadyFoundCliParams = new HashSet<CliParam>(ReferenceEqualityComparer.Instance);
             var allParamNames = new HashSet<string>();
@@ -137,7 +142,7 @@ namespace AppMotor.CliApp.CommandLine.Utils
         /// </summary>
         private sealed class ParamComparer : IComparer<CliParam>
         {
-            public static readonly ParamComparer INSTANCE = new ParamComparer();
+            public static readonly ParamComparer INSTANCE = new();
 
             /// <inheritdoc />
             public int Compare(CliParam? x, CliParam? y)
