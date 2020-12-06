@@ -100,11 +100,17 @@ namespace AppMotor.Core.DataModel
             return obj is Optional<T> other && Equals(other);
         }
 
+        /// <summary>
+        /// Compares the two optionals for equality.
+        /// </summary>
         public static bool operator ==(Optional<T> left, Optional<T> right)
         {
             return left.Equals(right);
         }
 
+        /// <summary>
+        /// Compares the two optionals for in-equality.
+        /// </summary>
         public static bool operator !=(Optional<T> left, Optional<T> right)
         {
             return !(left == right);
