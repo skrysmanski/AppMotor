@@ -27,6 +27,11 @@
     <InternalsVisibleTo Include="$(MSBuildProjectName).Tests" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Shared assembly attributes that can't be set via .props file. -->
+    <Compile Include="$(MSBuildThisFileDirectory)COMMON\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+  </ItemGroup>
+
   <!--
     .NET static code analysis
 
