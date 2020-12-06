@@ -132,7 +132,7 @@ namespace AppMotor.CliApp
         {
             this.m_action = async _ =>
             {
-                await action();
+                await action().ConfigureAwait(continueOnCapturedContext: false);
                 return 0;
             };
         }
@@ -147,7 +147,7 @@ namespace AppMotor.CliApp
         {
             this.m_action = async args =>
             {
-                await action(args);
+                await action(args).ConfigureAwait(continueOnCapturedContext: false);
                 return 0;
             };
         }
@@ -185,7 +185,7 @@ namespace AppMotor.CliApp
         {
             this.m_action = async _ =>
             {
-                bool retVal = await action();
+                bool retVal = await action().ConfigureAwait(continueOnCapturedContext: false);
                 return retVal ? 0 : 1;
             };
         }
@@ -201,7 +201,7 @@ namespace AppMotor.CliApp
         {
             this.m_action = async args =>
             {
-                bool retVal = await action(args);
+                bool retVal = await action(args).ConfigureAwait(continueOnCapturedContext: false);
                 return retVal ? 0 : 1;
             };
         }
@@ -211,7 +211,7 @@ namespace AppMotor.CliApp
         /// </summary>
         public async Task<int> Execute(string[] args)
         {
-            return await this.m_action(args);
+            return await this.m_action(args).ConfigureAwait(continueOnCapturedContext: false);
         }
     }
 }

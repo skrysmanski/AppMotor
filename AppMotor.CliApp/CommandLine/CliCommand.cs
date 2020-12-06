@@ -61,7 +61,7 @@ namespace AppMotor.CliApp.CommandLine
         /// <returns>The exit code for the running program.</returns>
         private async Task<int> Execute()
         {
-            return await this.Executor.Execute();
+            return await this.Executor.Execute().ConfigureAwait(continueOnCapturedContext: false);
         }
 
         /// <summary>
@@ -140,7 +140,7 @@ namespace AppMotor.CliApp.CommandLine
             {
                 this.m_command.SetAllParamValues(context.ParseResult);
 
-                return await this.m_command.Execute();
+                return await this.m_command.Execute().ConfigureAwait(continueOnCapturedContext: false);
             }
         }
     }

@@ -86,7 +86,7 @@ namespace AppMotor.CliApp.CommandLine
         {
             this.m_action = async () =>
             {
-                await action();
+                await action().ConfigureAwait(continueOnCapturedContext: false);
                 return 0;
             };
         }
@@ -113,7 +113,7 @@ namespace AppMotor.CliApp.CommandLine
         {
             this.m_action = async () =>
             {
-                bool retVal = await action();
+                bool retVal = await action().ConfigureAwait(continueOnCapturedContext: false);
                 return retVal ? 0 : 1;
             };
         }
@@ -123,7 +123,7 @@ namespace AppMotor.CliApp.CommandLine
         /// </summary>
         public async Task<int> Execute()
         {
-            return await this.m_action();
+            return await this.m_action().ConfigureAwait(continueOnCapturedContext: false);
         }
     }
 }
