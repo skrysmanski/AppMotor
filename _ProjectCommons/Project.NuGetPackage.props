@@ -40,7 +40,7 @@
     <!--
       The output path for all produced NuGet packages.
     -->
-    <PackageOutputPath>$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'bin', 'Packages'))</PackageOutputPath>
+    <PackageOutputPath>$([System.IO.Path]::Combine($(ProjectsRootDirectory), 'bin', 'Packages'))</PackageOutputPath>
 
     <!--
       Generate NuGet package on build.

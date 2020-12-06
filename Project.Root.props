@@ -11,8 +11,11 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
+    <!-- The directory where this 'Project.Root.props' file is located. -->
+    <ProjectsRootDirectory>$(MSBuildThisFileDirectory)</ProjectsRootDirectory>
+
     <!-- This directory contains all shared/common .props (and related) files. -->
-    <ProjectCommonsDirectory>$(MSBuildThisFileDirectory)/_ProjectCommons/</ProjectCommonsDirectory>
+    <ProjectCommonsDirectory>$(ProjectsRootDirectory)/_ProjectCommons/</ProjectCommonsDirectory>
   </PropertyGroup>
 
 </Project>
