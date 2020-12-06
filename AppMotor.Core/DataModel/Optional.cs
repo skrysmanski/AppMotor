@@ -37,6 +37,8 @@ namespace AppMotor.Core.DataModel
         [PublicAPI]
         public static readonly Optional<T> UNSET = new Optional<T>();
 
+        internal const string NOT_SET_TO_STRING_RESULT = "<not set>";
+
         private readonly T m_value;
 
         /// <summary>
@@ -119,7 +121,14 @@ namespace AppMotor.Core.DataModel
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return HashCode.Combine(this.m_value, this.IsSet);
+            if (!this.IsSet)
+            {
+                return 0;
+            }
+
+#pragma warning disable CA1508 // Avoid dead conditional code // BUG: https://github.com/dotnet/roslyn-analyzers/issues/4509
+            return this.m_value?.GetHashCode() ?? 1;
+#pragma warning restore CA1508 // Avoid dead conditional code
         }
 
         /// <inheritdoc />
@@ -133,7 +142,7 @@ namespace AppMotor.Core.DataModel
             }
             else
             {
-                return "<not set>";
+                return NOT_SET_TO_STRING_RESULT;
             }
         }
     }
