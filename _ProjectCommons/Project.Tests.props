@@ -13,12 +13,25 @@
 
   <Import Project="$(MSBuildThisFileDirectory)Project.Shared.props" />
 
-  <PropertyGroup>
+  <PropertyGroup Label="Common Settings">
     <OutputType>Library</OutputType>
 
     <IsPackable>false</IsPackable>
 
     <EnableNETAnalyzers>false</EnableNETAnalyzers>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Shouldly Settings">
+    <!--
+      Shouldly requires debug symbols and non-optimized libraries to produce proper error messages.
+    -->
+    <DebugSymbols>true</DebugSymbols>
+    <Optimize>false</Optimize>
+
+    <!--
+      Workaround for "Visual Studio is always rebuilding test projects" bug: https://github.com/shouldly/shouldly/issues/723
+    -->
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
