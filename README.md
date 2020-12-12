@@ -8,3 +8,7 @@ This repository contains the code for the AppMotor packages. AppMotor provide va
 | ----------------- | --------------------------------------------------------------------------------------------------------------- | -----------
 | `AppMotor.Core`   | [![NuGet](https://img.shields.io/nuget/v/AppMotor.Core.svg)](https://www.nuget.org/packages/AppMotor.Core/)     | Core APIs
 | `AppMotor.CliApp` | [![NuGet](https://img.shields.io/nuget/v/AppMotor.CliApp.svg)](https://www.nuget.org/packages/AppMotor.CliApp/) | APIs for command line applications; see [README.md](AppMotor.CliApp/README.md) for details
+
+## Note on Breaking Changes
+
+This framework is very much in development. So expect breaking changes between versions. Semantic versioning does not yet apply.
