@@ -13,6 +13,16 @@
 
   <Import Project="$(MSBuildThisFileDirectory)Project.Shared.props" />
 
+  <PropertyGroup>
+    <!--
+      Assume git by default.
+
+      NOTE: This property controls various things and thus you should make sure it's correct.
+      NOTE 2: The name of this property is pre-defined. See: https://docs.microsoft.com/en-us/dotnet/core/tools/csproj#nuget-metadata-properties
+    -->
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
   <!--
     Make copyright based on assembly name (a best pratice for open source projects).
 
@@ -24,6 +34,20 @@
     <PropertyGroup>
       <Copyright>© $([System.DateTime]::Now.ToString(yyyy)) Contributors to $(AssemblyName)</Copyright>
     </PropertyGroup>
+  </Target>
+
+  <!--
+    Put the current commit's id (hash) in the "Product version" ($(InformationalVersion)). This happens automatically
+    via the $(SourceRevisionId) property.
+
+    This version is visible in the "Details" tab of the file properties of the generated assembly.
+
+    See: https://docs.microsoft.com/en-us/dotnet/core/tools/csproj#assemblyinfo-properties
+  -->
+  <Target Name="_GenerateSourceRevisionId" BeforeTargets="GetAssemblyVersion" Condition=" '$(SourceRevisionId)' == '' AND '$(RepositoryType)' == 'git' ">
+    <Exec Command="git rev-parse --short=12 HEAD" ConsoleToMSBuild="true" StandardOutputImportance="low">
+      <Output TaskParameter="ConsoleOutput" PropertyName="SourceRevisionId" />
+    </Exec>
   </Target>
 
   <ItemGroup>

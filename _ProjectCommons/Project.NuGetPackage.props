@@ -26,9 +26,6 @@
     For valid license expressions, see: https://spdx.org/licenses/
   -->
   <PropertyGroup>
-    <!-- Assume git by default. -->
-    <RepositoryType>git</RepositoryType>
-
     <!-- Why would this ever by "false"? -->
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
