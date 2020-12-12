@@ -50,6 +50,16 @@
     </Exec>
   </Target>
 
+  <!--
+    Sets "File Description" property (in the Details tab in the file properties of the generated assembly) to $(Description),
+    if there is one. Otherwise, by default, this value is set to the name of the assembly.
+  -->
+  <Target Name="_GenerateFileDescriptionInfo" BeforeTargets="GetAssemblyAttributes" Condition=" '$(Description)' != '' ">
+    <PropertyGroup>
+      <AssemblyTitle>$(Description)</AssemblyTitle>
+    </PropertyGroup>
+  </Target>
+
   <ItemGroup>
     <!-- Make internals automatically available to the associated tests project. -->
     <InternalsVisibleTo Include="$(MSBuildProjectName).Tests" />
