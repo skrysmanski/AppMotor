@@ -14,13 +14,17 @@
   <Import Project="$(MSBuildThisFileDirectory)Project.Shared.props" />
 
   <!--
-    Assembly properties
+    Make copyright based on assembly name (a best pratice for open source projects).
 
-    Additional properties to specify on each project: <Version>
+    For some more details on copyrights in open source projects, see:
+    * https://www.linuxfoundation.org/blog/2020/01/copyright-notices-in-open-source-software-projects/
+    * https://docs.github.com/en/free-pro-team@latest/github/site-policy/github-terms-of-service#6-contributions-under-repository-license
   -->
-  <PropertyGroup>
-    <Copyright>Copyright © Sebastian Krysmanski $([System.DateTime]::Now.ToString(yyyy))</Copyright>
-  </PropertyGroup>
+  <Target Name="_GenerateCopyright" BeforeTargets="GetAssemblyAttributes" Condition=" '$(Copyright)' == '' ">
+    <PropertyGroup>
+      <Copyright>© $([System.DateTime]::Now.ToString(yyyy)) Contributors to $(AssemblyName)</Copyright>
+    </PropertyGroup>
+  </Target>
 
   <ItemGroup>
     <!-- Make internals automatically available to the associated tests project. -->
