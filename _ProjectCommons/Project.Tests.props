@@ -23,15 +23,12 @@
 
   <PropertyGroup Label="Shouldly Settings">
     <!--
-      Shouldly requires debug symbols and non-optimized libraries to produce proper error messages.
+      "Shouldly" requires debug symbols and non-optimized libraries to produce proper error messages. We also change
+      the debug symbols type to "embedded" as "Shouldly" prefers this (and it creates less files which is kind of nice).
     -->
     <DebugSymbols>true</DebugSymbols>
-    <Optimize>false</Optimize>
-
-    <!--
-      Workaround for "Visual Studio is always rebuilding test projects" bug: https://github.com/shouldly/shouldly/issues/723
-    -->
     <DebugType>embedded</DebugType>
+    <Optimize>false</Optimize>
   </PropertyGroup>
 
   <ItemGroup>

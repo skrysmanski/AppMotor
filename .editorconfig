@@ -153,6 +153,18 @@ indent_size = 2
 
 
 #
+# Visual Studio Solution files
+#
+[*.sln]
+charset = utf-8-bom
+
+# .sln files require tabs or the solution won't load
+indent_style = tab
+indent_size = 4
+
+end_of_line = crlf
+
+#
 # ReSharper settings files
 #
 [*.DotSettings]

@@ -60,14 +60,25 @@
     </PropertyGroup>
   </Target>
 
-  <ItemGroup>
-    <!-- Make internals automatically available to the associated tests project. -->
-    <InternalsVisibleTo Include="$(MSBuildProjectName).Tests" />
-  </ItemGroup>
+  <!--
+    Make shared assembly attributes configurable.
+  -->
+  <Target Name="_AddConditionalsForCommonAssemblyInfo" BeforeTargets="CoreCompile">
+    <PropertyGroup>
+      <DefineConstants Condition=" '$(ClsCompliant)' != 'false' ">$(DefineConstants);CLS_COMPLIANT</DefineConstants>
+    </PropertyGroup>
+  </Target>
 
   <ItemGroup>
     <!-- Shared assembly attributes that can't be set via .props file. -->
     <Compile Include="$(MSBuildThisFileDirectory)CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+  </ItemGroup>
+
+  <!--
+    Make internals automatically available to the associated tests project.
+  -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="$(MSBuildProjectName).Tests" />
   </ItemGroup>
 
   <!--
