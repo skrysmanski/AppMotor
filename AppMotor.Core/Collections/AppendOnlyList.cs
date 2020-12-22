@@ -46,7 +46,7 @@ namespace AppMotor.Core.Collections
     /// </summary>
     public sealed class AppendOnlyList<T> : IReadOnlyList<T>, IShallowCloneable<AppendOnlyList<T>>
     {
-        private List<T> m_underlyingList;
+        private List<T> _underlyingList;
 
         /// <inheritdoc />
         public int Count { get; private set; }
@@ -61,7 +61,7 @@ namespace AppMotor.Core.Collections
                     throw new ArgumentOutOfRangeException(nameof(index));
                 }
 
-                return this.m_underlyingList[index];
+                return this._underlyingList[index];
             }
         }
 
@@ -71,7 +71,7 @@ namespace AppMotor.Core.Collections
         [PublicAPI]
         public AppendOnlyList()
         {
-            this.m_underlyingList = new List<T>();
+            this._underlyingList = new List<T>();
         }
 
         /// <summary>
@@ -84,13 +84,13 @@ namespace AppMotor.Core.Collections
 
             if (source is AppendOnlyList<T> appendOnlyList)
             {
-                this.m_underlyingList = appendOnlyList.m_underlyingList;
+                this._underlyingList = appendOnlyList._underlyingList;
                 this.Count = appendOnlyList.Count;
             }
             else
             {
-                this.m_underlyingList = source.ToList();
-                this.Count = this.m_underlyingList.Count;
+                this._underlyingList = source.ToList();
+                this.Count = this._underlyingList.Count;
             }
         }
 
@@ -103,7 +103,7 @@ namespace AppMotor.Core.Collections
         {
             Validate.Argument.IsNotNull(source, nameof(source));
 
-            this.m_underlyingList = source.m_underlyingList;
+            this._underlyingList = source._underlyingList;
             this.Count = source.Count;
         }
 
@@ -115,8 +115,8 @@ namespace AppMotor.Core.Collections
         {
             EnsureUnderlyingListCanBeAppended();
 
-            this.m_underlyingList.Add(item);
-            this.Count = this.m_underlyingList.Count;
+            this._underlyingList.Add(item);
+            this.Count = this._underlyingList.Count;
         }
 
         /// <summary>
@@ -131,19 +131,19 @@ namespace AppMotor.Core.Collections
 
             if (items is AppendOnlyList<T> otherAppendOnlyList)
             {
-                this.m_underlyingList.AddRange(otherAppendOnlyList.CreateListRange());
+                this._underlyingList.AddRange(otherAppendOnlyList.CreateListRange());
             }
             else
             {
-                this.m_underlyingList.AddRange(items);
+                this._underlyingList.AddRange(items);
             }
 
-            this.Count = this.m_underlyingList.Count;
+            this.Count = this._underlyingList.Count;
         }
 
         private void EnsureUnderlyingListCanBeAppended()
         {
-            if (this.m_underlyingList.Count != this.Count)
+            if (this._underlyingList.Count != this.Count)
             {
                 // Another user of the list has already appended to it. Thus,
                 // we need to create a copy of the list.
@@ -151,12 +151,12 @@ namespace AppMotor.Core.Collections
                 var originalUnderlyingList = CreateListRange();
 
                 // NOTE: We reserve 5 more items for future append calls.
-                this.m_underlyingList = new List<T>(this.Count + 5);
+                this._underlyingList = new List<T>(this.Count + 5);
 
                 // NOTE: The ListRange class implements "ICollection" which makes
                 //   the copy process more efficient than any collection type that
                 //   doesn't implement "ICollection" (incl. "IReadOnlyCollection").
-                this.m_underlyingList.AddRange(originalUnderlyingList);
+                this._underlyingList.AddRange(originalUnderlyingList);
             }
         }
 
@@ -167,7 +167,7 @@ namespace AppMotor.Core.Collections
         [Pure]
         private ListRange CreateListRange()
         {
-            return new ListRange(this.m_underlyingList, this.Count);
+            return new ListRange(this._underlyingList, this.Count);
         }
 
         /// <inheritdoc />
@@ -181,7 +181,7 @@ namespace AppMotor.Core.Collections
         {
             for (var i = 0; i < this.Count; i++)
             {
-                yield return this.m_underlyingList[i];
+                yield return this._underlyingList[i];
             }
         }
 

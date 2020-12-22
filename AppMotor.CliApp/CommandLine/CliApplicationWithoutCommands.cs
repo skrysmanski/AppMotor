@@ -39,7 +39,7 @@ namespace AppMotor.CliApp.CommandLine
     /// </remarks>
     public abstract class CliApplicationWithoutCommands : CliApplication
     {
-        private ImmutableList<CliParam>? m_allParams;
+        private ImmutableList<CliParam>? _allParams;
 
         /// <summary>
         /// The description of this application. Used for generating the help text.
@@ -58,14 +58,14 @@ namespace AppMotor.CliApp.CommandLine
 
         private async Task<int> Execute(string[] args)
         {
-            this.m_allParams = GetAllParams().ToImmutableList();
+            this._allParams = GetAllParams().ToImmutableList();
 
             var rootCommand = RootCommandFactory.CreateRootCommand(
                 appDescription: this.AppDescription,
                 exceptionHandlerFunc: ProcessUnhandledException
             );
 
-            foreach (var cliParam in this.m_allParams)
+            foreach (var cliParam in this._allParams)
             {
                 rootCommand.Add(cliParam.UnderlyingImplementation);
             }
@@ -89,9 +89,9 @@ namespace AppMotor.CliApp.CommandLine
         private void SetAllParamValues(ParseResult parseResult)
         {
             // Should never happen.
-            Validate.Value.IsNotNull(this.m_allParams, nameof(this.m_allParams));
+            Validate.Value.IsNotNull(this._allParams, nameof(this._allParams));
 
-            foreach (var cliParam in this.m_allParams)
+            foreach (var cliParam in this._allParams)
             {
                 cliParam.SetValueFromParseResult(parseResult);
             }
@@ -99,19 +99,19 @@ namespace AppMotor.CliApp.CommandLine
 
         private sealed class CliCommandHandler : ICommandHandler
         {
-            private readonly CliApplicationWithoutCommands m_app;
+            private readonly CliApplicationWithoutCommands _app;
 
             public CliCommandHandler(CliApplicationWithoutCommands app)
             {
-                this.m_app = app;
+                this._app = app;
             }
 
             /// <inheritdoc />
             public async Task<int> InvokeAsync(InvocationContext context)
             {
-                this.m_app.SetAllParamValues(context.ParseResult);
+                this._app.SetAllParamValues(context.ParseResult);
 
-                return await this.m_app.Executor.Execute().ConfigureAwait(continueOnCapturedContext: false);
+                return await this._app.Executor.Execute().ConfigureAwait(continueOnCapturedContext: false);
             }
         }
     }

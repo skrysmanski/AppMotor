@@ -29,13 +29,13 @@ namespace AppMotor.Core.Utils
     /// <seealso cref="AsyncDisposable"/>
     public abstract class Disposable : IDisposable
     {
-        private int m_disposeState = DisposedStatesAsIntegers.NOT_DISPOSED;
+        private int _disposeState = DisposedStatesAsIntegers.NOT_DISPOSED;
 
         /// <summary>
         /// The "disposed" state of this instance.
         /// </summary>
         [PublicAPI]
-        public DisposedStates DisposedState => (DisposedStates)this.m_disposeState;
+        public DisposedStates DisposedState => (DisposedStates)this._disposeState;
 
         /// <inheritdoc />
         public void Dispose()
@@ -85,7 +85,7 @@ namespace AppMotor.Core.Utils
         [MustUseReturnValue]
         internal bool BeginDispose()
         {
-            var origValue = Interlocked.CompareExchange(ref this.m_disposeState, DisposedStatesAsIntegers.DISPOSING, comparand: DisposedStatesAsIntegers.NOT_DISPOSED);
+            var origValue = Interlocked.CompareExchange(ref this._disposeState, DisposedStatesAsIntegers.DISPOSING, comparand: DisposedStatesAsIntegers.NOT_DISPOSED);
             if (origValue != DisposedStatesAsIntegers.NOT_DISPOSED)
             {
                 // Already disposed or disposing.
@@ -99,11 +99,11 @@ namespace AppMotor.Core.Utils
         {
             if (exception)
             {
-                Interlocked.Exchange(ref this.m_disposeState, DisposedStatesAsIntegers.NOT_DISPOSED);
+                Interlocked.Exchange(ref this._disposeState, DisposedStatesAsIntegers.NOT_DISPOSED);
             }
             else
             {
-                Interlocked.Exchange(ref this.m_disposeState, DisposedStatesAsIntegers.DISPOSED);
+                Interlocked.Exchange(ref this._disposeState, DisposedStatesAsIntegers.DISPOSED);
             }
         }
 
@@ -138,7 +138,7 @@ namespace AppMotor.Core.Utils
         [PublicAPI]
         public void VerifyNotDisposed()
         {
-            var value = Interlocked.CompareExchange(ref this.m_disposeState, DisposedStatesAsIntegers.NOT_DISPOSED, DisposedStatesAsIntegers.NOT_DISPOSED);
+            var value = Interlocked.CompareExchange(ref this._disposeState, DisposedStatesAsIntegers.NOT_DISPOSED, DisposedStatesAsIntegers.NOT_DISPOSED);
             if (value != DisposedStatesAsIntegers.NOT_DISPOSED)
             {
                 throw new ObjectDisposedException(GetType().Name);

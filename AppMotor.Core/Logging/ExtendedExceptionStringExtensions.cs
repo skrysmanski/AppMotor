@@ -57,17 +57,17 @@ namespace AppMotor.Core.Logging
 
             private const int HEADER_WITH = 70;
 
-            private static readonly HeaderBox EXCEPTION_SECTION_HEADER = new HeaderBox(HEADER_WITH, doubleBorder: false);
+            private static readonly HeaderBox EXCEPTION_SECTION_HEADER = new(HEADER_WITH, doubleBorder: false);
 
-            private static readonly HeaderBox INNER_EXCEPTION_HEADER = new HeaderBox(HEADER_WITH, doubleBorder: true);
+            private static readonly HeaderBox INNER_EXCEPTION_HEADER = new(HEADER_WITH, doubleBorder: true);
 
-            private readonly StringBuilder m_builder = new StringBuilder();
+            private readonly StringBuilder _builder = new();
 
-            private readonly IValueFormatter m_valueFormatter;
+            private readonly IValueFormatter _valueFormatter;
 
             public ExtendedStringBuilder(IValueFormatter? valueFormatter)
             {
-                this.m_valueFormatter = valueFormatter ?? LoggableValues.DEFAULT_VALUE_FORMATTER;
+                this._valueFormatter = valueFormatter ?? LoggableValues.DEFAULT_VALUE_FORMATTER;
             }
 
             public void AppendExtendedExceptionString(StringIndentation indentation, Exception exception)
@@ -115,7 +115,7 @@ namespace AppMotor.Core.Logging
 
             private void AppendAdditionalDataAndProperties(StringIndentation indentation, Exception exception)
             {
-                var loggableExceptionProperties = exception.GetLoggablePropertyValuesAsStrings(this.m_valueFormatter, PROPERTY_FILTER).ToList();
+                var loggableExceptionProperties = exception.GetLoggablePropertyValuesAsStrings(this._valueFormatter, PROPERTY_FILTER).ToList();
                 if (loggableExceptionProperties.Count > 0)
                 {
                     AppendSectionHeader(indentation, EXCEPTION_SECTION_HEADER, "Exception Properties");
@@ -138,7 +138,7 @@ namespace AppMotor.Core.Logging
 
                         try
                         {
-                            keyAsString = this.m_valueFormatter.FormatValue(key);
+                            keyAsString = this._valueFormatter.FormatValue(key);
                         }
                         catch (Exception)
                         {
@@ -149,7 +149,7 @@ namespace AppMotor.Core.Logging
 
                         try
                         {
-                            valueAsString = this.m_valueFormatter.FormatValue(value);
+                            valueAsString = this._valueFormatter.FormatValue(value);
                         }
                         catch (Exception ex)
                         {
@@ -202,18 +202,18 @@ namespace AppMotor.Core.Logging
 
             private void AppendLine(StringIndentation indentation, string text)
             {
-                this.m_builder.AppendLine($"{indentation}{text}");
+                this._builder.AppendLine($"{indentation}{text}");
             }
 
             private void AppendLine()
             {
-                this.m_builder.AppendLine();
+                this._builder.AppendLine();
             }
 
             /// <inheritdoc />
             public override string ToString()
             {
-                return this.m_builder.ToString();
+                return this._builder.ToString();
             }
         }
 
@@ -221,54 +221,54 @@ namespace AppMotor.Core.Logging
         {
             private const char INDENT_CHAR = '\t';
 
-            private readonly string? m_indentation;
+            private readonly string? _indentation;
 
             private StringIndentation(string indentation)
             {
-                this.m_indentation = indentation;
+                this._indentation = indentation;
             }
 
             [Pure]
             public StringIndentation Increase()
             {
-                return new StringIndentation(this.m_indentation + INDENT_CHAR);
+                return new StringIndentation(this._indentation + INDENT_CHAR);
             }
 
             /// <inheritdoc />
             public override string ToString()
             {
-                return this.m_indentation ?? "";
+                return this._indentation ?? "";
             }
         }
 
         private sealed class HeaderBox
         {
-            private readonly bool m_doubleBorder;
+            private readonly bool _doubleBorder;
 
-            private readonly string m_horizontalBorder;
+            private readonly string _horizontalBorder;
 
-            private readonly string m_textContent;
+            private readonly string _textContent;
 
             public HeaderBox(int width, bool doubleBorder)
             {
-                this.m_doubleBorder = doubleBorder;
-                this.m_horizontalBorder = new string(doubleBorder ? '═' : '─', width - 2);
-                this.m_textContent = "{0} {{0,-{1}}} {0}".WithIC(doubleBorder ? '║' : '│', width - 4);
+                this._doubleBorder = doubleBorder;
+                this._horizontalBorder = new string(doubleBorder ? '═' : '─', width - 2);
+                this._textContent = "{0} {{0,-{1}}} {0}".WithIC(doubleBorder ? '║' : '│', width - 4);
             }
 
             public IEnumerable<string> CreateBox(string title)
             {
-                if (this.m_doubleBorder)
+                if (this._doubleBorder)
                 {
-                    yield return $"╔{this.m_horizontalBorder}╗";
-                    yield return this.m_textContent.WithIC(title);
-                    yield return $"╚{this.m_horizontalBorder}╝";
+                    yield return $"╔{this._horizontalBorder}╗";
+                    yield return this._textContent.WithIC(title);
+                    yield return $"╚{this._horizontalBorder}╝";
                 }
                 else
                 {
-                    yield return $"┌{this.m_horizontalBorder}┐";
-                    yield return this.m_textContent.WithIC(title);
-                    yield return $"└{this.m_horizontalBorder}┘";
+                    yield return $"┌{this._horizontalBorder}┐";
+                    yield return this._textContent.WithIC(title);
+                    yield return $"└{this._horizontalBorder}┘";
                 }
             }
         }

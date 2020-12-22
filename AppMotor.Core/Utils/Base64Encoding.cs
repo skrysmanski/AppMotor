@@ -34,7 +34,7 @@ namespace AppMotor.Core.Utils
         /// (see <see cref="Rfc4648Encoding.DEFAULT_PADDING_CHAR"/>).
         /// </summary>
         [PublicAPI]
-        public static Base64Encoding DefaultWithPadding { get; } = new Base64Encoding();
+        public static Base64Encoding DefaultWithPadding { get; } = new();
 
         /// <inheritdoc />
         public override char? PaddingChar => DEFAULT_PADDING_CHAR;

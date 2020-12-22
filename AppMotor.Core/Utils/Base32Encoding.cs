@@ -47,14 +47,14 @@ namespace AppMotor.Core.Utils
         /// </summary>
         /// <seealso cref="DefaultWithoutPadding"/>
         [PublicAPI]
-        public static Base32Encoding DefaultWithPadding { get; } = new Base32Encoding(DEFAULT_SYMBOLS, paddingChar: DEFAULT_PADDING_CHAR);
+        public static Base32Encoding DefaultWithPadding { get; } = new(DEFAULT_SYMBOLS, paddingChar: DEFAULT_PADDING_CHAR);
 
         /// <summary>
         /// The Base32 converter with the default symbols (see <see cref="DEFAULT_SYMBOLS"/>) and but without padding.
         /// </summary>
         /// <seealso cref="DefaultWithPadding"/>
         [PublicAPI]
-        public static Base32Encoding DefaultWithoutPadding { get; } = new Base32Encoding(DEFAULT_SYMBOLS, paddingChar: null);
+        public static Base32Encoding DefaultWithoutPadding { get; } = new(DEFAULT_SYMBOLS, paddingChar: null);
 
         private const int BITS_PER_SYMBOL = 5;
 
@@ -64,9 +64,9 @@ namespace AppMotor.Core.Utils
 
         private const int BYTES_PER_GROUP = 5; // = BITS_PER_SYMBOL * SYMBOLS_PER_GROUP / 8 (bits per byte)
 
-        private readonly char[] m_symbols;
+        private readonly char[] _symbols;
 
-        private readonly Dictionary<char, byte> m_inverseSymbols;
+        private readonly Dictionary<char, byte> _inverseSymbols;
 
         /// <summary>
         /// The padding character. If <c>null</c>, no padding will be used.
@@ -110,18 +110,18 @@ namespace AppMotor.Core.Utils
 
             if (createCopyOfSymbols)
             {
-                this.m_symbols = (char[])symbols.Clone();
+                this._symbols = (char[])symbols.Clone();
             }
             else
             {
-                this.m_symbols = symbols;
+                this._symbols = symbols;
             }
 
-            this.m_inverseSymbols = CreateInverseSymbolsDictionary(this.m_symbols);
+            this._inverseSymbols = CreateInverseSymbolsDictionary(this._symbols);
 
             if (paddingChar != null)
             {
-                if (this.m_inverseSymbols.ContainsKey(paddingChar.Value))
+                if (this._inverseSymbols.ContainsKey(paddingChar.Value))
                 {
                     throw new ArgumentException($"The padding character ('{paddingChar}') must not be in the list of symbols.", nameof(paddingChar));
                 }
@@ -142,7 +142,7 @@ namespace AppMotor.Core.Utils
 
             var resultBuilder = new StringBuilder(CalcEncodedStringLength(data.Length));
 
-            using var encoder = new MemoryBasedSymbolGroupEncoder(data, this.m_symbols, this.PaddingChar);
+            using var encoder = new MemoryBasedSymbolGroupEncoder(data, this._symbols, this.PaddingChar);
 
             while (true)
             {
@@ -168,7 +168,7 @@ namespace AppMotor.Core.Utils
             Validate.Argument.IsNotNull(outputWriter, nameof(outputWriter));
             Validate.Argument.IsNotNull(data, nameof(data));
 
-            using var encoder = new StreamBasedSymbolGroupEncoder(data, this.m_symbols, this.PaddingChar);
+            using var encoder = new StreamBasedSymbolGroupEncoder(data, this._symbols, this.PaddingChar);
 
             while (true)
             {
@@ -192,7 +192,7 @@ namespace AppMotor.Core.Utils
             Validate.Argument.IsNotNull(outputWriter, nameof(outputWriter));
             Validate.Argument.IsNotNull(data, nameof(data));
 
-            using var encoder = new StreamBasedSymbolGroupEncoder(data, this.m_symbols, this.PaddingChar);
+            using var encoder = new StreamBasedSymbolGroupEncoder(data, this._symbols, this.PaddingChar);
 
             while (true)
             {
@@ -243,7 +243,7 @@ namespace AppMotor.Core.Utils
             byte[] sharedWriteBuffer = ArrayPool<byte>.Shared.Rent(bufferSize);
             try
             {
-                using var decoder = new StringBasedSymbolGroupDecoder(encodedString, this.m_inverseSymbols, this.PaddingChar);
+                using var decoder = new StringBasedSymbolGroupDecoder(encodedString, this._inverseSymbols, this.PaddingChar);
 
                 int offset = 0;
 
@@ -279,7 +279,7 @@ namespace AppMotor.Core.Utils
             Validate.Argument.IsNotNull(encodedString, nameof(encodedString));
             Validate.Argument.IsNotNull(destination, nameof(destination));
 
-            using var decoder = new StringReaderBasedSymbolGroupDecoder(encodedString, this.m_inverseSymbols, this.PaddingChar);
+            using var decoder = new StringReaderBasedSymbolGroupDecoder(encodedString, this._inverseSymbols, this.PaddingChar);
 
             while (true)
             {
@@ -302,7 +302,7 @@ namespace AppMotor.Core.Utils
             Validate.Argument.IsNotNull(encodedString, nameof(encodedString));
             Validate.Argument.IsNotNull(destination, nameof(destination));
 
-            using var decoder = new StringReaderBasedSymbolGroupDecoder(encodedString, this.m_inverseSymbols, this.PaddingChar);
+            using var decoder = new StringReaderBasedSymbolGroupDecoder(encodedString, this._inverseSymbols, this.PaddingChar);
 
             while (true)
             {
@@ -337,24 +337,24 @@ namespace AppMotor.Core.Utils
         {
             private const ulong SYMBOL_BIT_MASK = (1 << BITS_PER_SYMBOL) - 1;
 
-            private readonly char[] m_symbols;
+            private readonly char[] _symbols;
 
-            private readonly char? m_paddingChar;
+            private readonly char? _paddingChar;
 
-            private readonly char[] m_encodeBuffer;
+            private readonly char[] _encodeBuffer;
 
             protected SymbolGroupEncoder(char[] symbols, char? paddingChar)
             {
-                this.m_symbols = symbols;
-                this.m_paddingChar = paddingChar;
+                this._symbols = symbols;
+                this._paddingChar = paddingChar;
 
-                this.m_encodeBuffer = ArrayPool<char>.Shared.Rent(SYMBOLS_PER_GROUP);
+                this._encodeBuffer = ArrayPool<char>.Shared.Rent(SYMBOLS_PER_GROUP);
             }
 
             /// <inheritdoc />
             protected override void DisposeManagedResources()
             {
-                ArrayPool<char>.Shared.Return(this.m_encodeBuffer);
+                ArrayPool<char>.Shared.Return(this._encodeBuffer);
 
                 base.DisposeManagedResources();
             }
@@ -425,52 +425,52 @@ namespace AppMotor.Core.Utils
 
                 for (int i = 0; i < symbolCount; i++)
                 {
-                    this.m_encodeBuffer[i] = this.m_symbols[values[i]];
+                    this._encodeBuffer[i] = this._symbols[values[i]];
                 }
 
-                if (symbolCount < SYMBOLS_PER_GROUP && this.m_paddingChar != null)
+                if (symbolCount < SYMBOLS_PER_GROUP && this._paddingChar != null)
                 {
                     for (int i = symbolCount; i < SYMBOLS_PER_GROUP; i++)
                     {
-                        this.m_encodeBuffer[i] = this.m_paddingChar.Value;
+                        this._encodeBuffer[i] = this._paddingChar.Value;
                     }
 
-                    return this.m_encodeBuffer.Slice(0, SYMBOLS_PER_GROUP);
+                    return this._encodeBuffer.Slice(0, SYMBOLS_PER_GROUP);
                 }
 
-                return this.m_encodeBuffer.Slice(0, symbolCount);
+                return this._encodeBuffer.Slice(0, symbolCount);
             }
         }
 
         private sealed class MemoryBasedSymbolGroupEncoder : SymbolGroupEncoder
         {
-            private readonly Memory<byte> m_data;
+            private readonly Memory<byte> _data;
 
-            private int m_offset;
+            private int _offset;
 
-            private int m_count;
+            private int _count;
 
             public MemoryBasedSymbolGroupEncoder(Memory<byte> data, char[] symbols, char? paddingChar)
                 : base(symbols, paddingChar)
             {
-                this.m_data = data;
-                this.m_count = data.Length;
+                this._data = data;
+                this._count = data.Length;
             }
 
             [MustUseReturnValue]
             public ArraySegment<char> EncodeNextGroup()
             {
-                if (this.m_count == 0)
+                if (this._count == 0)
                 {
                     return ArraySegment<char>.Empty;
                 }
 
-                int bytesToRead = this.m_count < BYTES_PER_GROUP ? this.m_count : BYTES_PER_GROUP;
+                int bytesToRead = this._count < BYTES_PER_GROUP ? this._count : BYTES_PER_GROUP;
 
-                var symbols = EncodeGroup(this.m_data.Slice(this.m_offset, bytesToRead).Span);
+                var symbols = EncodeGroup(this._data.Slice(this._offset, bytesToRead).Span);
 
-                this.m_offset += bytesToRead;
-                this.m_count -= bytesToRead;
+                this._offset += bytesToRead;
+                this._count -= bytesToRead;
 
                 return symbols;
             }
@@ -478,12 +478,12 @@ namespace AppMotor.Core.Utils
 
         private sealed class StreamBasedSymbolGroupEncoder : SymbolGroupEncoder
         {
-            private readonly IReadOnlyStream m_dataStream;
+            private readonly IReadOnlyStream _dataStream;
 
             public StreamBasedSymbolGroupEncoder(IReadOnlyStream dataStream, char[] symbols, char? paddingChar)
                 : base(symbols, paddingChar)
             {
-                this.m_dataStream = dataStream;
+                this._dataStream = dataStream;
             }
 
             [MustUseReturnValue]
@@ -491,7 +491,7 @@ namespace AppMotor.Core.Utils
             {
                 Span<byte> readBuffer = stackalloc byte[BYTES_PER_GROUP];
 
-                int readBytes = this.m_dataStream.ReadUntilFull(readBuffer);
+                int readBytes = this._dataStream.ReadUntilFull(readBuffer);
                 if (readBytes == 0)
                 {
                     return ArraySegment<char>.Empty;
@@ -506,7 +506,7 @@ namespace AppMotor.Core.Utils
                 var readBuffer = ArrayPool<byte>.Shared.Rent(BYTES_PER_GROUP);
                 try
                 {
-                    int readBytes = await this.m_dataStream.ReadUntilFullAsync(readBuffer.AsMemory(0, BYTES_PER_GROUP)).ConfigureAwait(false);
+                    int readBytes = await this._dataStream.ReadUntilFullAsync(readBuffer.AsMemory(0, BYTES_PER_GROUP)).ConfigureAwait(false);
                     if (readBytes == 0)
                     {
                         return ArraySegment<char>.Empty;
@@ -525,24 +525,24 @@ namespace AppMotor.Core.Utils
         {
             private const int BYTE_BIT_MASK = 0xFF;
 
-            private readonly Dictionary<char, byte> m_reverseSymbols;
+            private readonly Dictionary<char, byte> _reverseSymbols;
 
-            private readonly char? m_paddingChar;
+            private readonly char? _paddingChar;
 
-            private readonly byte[] m_decoderBuffer;
+            private readonly byte[] _decoderBuffer;
 
             protected SymbolGroupDecoder(Dictionary<char, byte> reverseSymbols, char? paddingChar)
             {
-                this.m_reverseSymbols = reverseSymbols;
-                this.m_paddingChar = paddingChar;
+                this._reverseSymbols = reverseSymbols;
+                this._paddingChar = paddingChar;
 
-                this.m_decoderBuffer = ArrayPool<byte>.Shared.Rent(BYTES_PER_GROUP);
+                this._decoderBuffer = ArrayPool<byte>.Shared.Rent(BYTES_PER_GROUP);
             }
 
             /// <inheritdoc />
             protected override void DisposeManagedResources()
             {
-                ArrayPool<byte>.Shared.Return(this.m_decoderBuffer);
+                ArrayPool<byte>.Shared.Return(this._decoderBuffer);
 
                 base.DisposeManagedResources();
             }
@@ -557,12 +557,12 @@ namespace AppMotor.Core.Utils
                 {
                     var symbol = symbolGroup[symbolCount];
 
-                    if (symbol == this.m_paddingChar)
+                    if (symbol == this._paddingChar)
                     {
                         break;
                     }
 
-                    if (!this.m_reverseSymbols.TryGetValue(symbol, out var value))
+                    if (!this._reverseSymbols.TryGetValue(symbol, out var value))
                     {
                         throw new FormatException($"The symbol '{symbol}' is not a valid Base32 symbol.");
                     }
@@ -597,45 +597,45 @@ namespace AppMotor.Core.Utils
                 for (int i = 0; i < byteCountToWrite; i++)
                 {
                     byte byteToWrite = (byte)((allBits >> ((BYTES_PER_GROUP - i - 1) * BITS_PER_BYTE)) & BYTE_BIT_MASK);
-                    this.m_decoderBuffer[i] = byteToWrite;
+                    this._decoderBuffer[i] = byteToWrite;
                 }
 
-                return this.m_decoderBuffer.Slice(0, byteCountToWrite);
+                return this._decoderBuffer.Slice(0, byteCountToWrite);
             }
         }
 
         private sealed class StringBasedSymbolGroupDecoder : SymbolGroupDecoder
         {
-            private readonly string m_encodedString;
+            private readonly string _encodedString;
 
-            private int m_offset;
+            private int _offset;
 
-            private int m_count;
+            private int _count;
 
             /// <inheritdoc />
             public StringBasedSymbolGroupDecoder(string encodedString, Dictionary<char, byte> reverseSymbols, char? paddingChar)
                 : base(reverseSymbols, paddingChar)
             {
-                this.m_encodedString = encodedString;
-                this.m_count = encodedString.Length;
+                this._encodedString = encodedString;
+                this._count = encodedString.Length;
             }
 
             [MustUseReturnValue]
             public ArraySegment<byte> DecodeNextGroup()
             {
-                if (this.m_count == 0)
+                if (this._count == 0)
                 {
                     return ArraySegment<byte>.Empty;
                 }
 
-                int charsToRead = this.m_count < SYMBOLS_PER_GROUP ? this.m_count : SYMBOLS_PER_GROUP;
+                int charsToRead = this._count < SYMBOLS_PER_GROUP ? this._count : SYMBOLS_PER_GROUP;
 
-                var nextEncodedGroup = this.m_encodedString.AsSpan(this.m_offset, charsToRead);
+                var nextEncodedGroup = this._encodedString.AsSpan(this._offset, charsToRead);
 
                 var decodedGroup = DecodeGroup(nextEncodedGroup);
 
-                this.m_offset += charsToRead;
-                this.m_count -= charsToRead;
+                this._offset += charsToRead;
+                this._count -= charsToRead;
 
                 return decodedGroup;
             }
@@ -643,13 +643,13 @@ namespace AppMotor.Core.Utils
 
         private sealed class StringReaderBasedSymbolGroupDecoder : SymbolGroupDecoder
         {
-            private readonly TextReader m_stringReader;
+            private readonly TextReader _stringReader;
 
             /// <inheritdoc />
             public StringReaderBasedSymbolGroupDecoder(TextReader stringReader, Dictionary<char, byte> reverseSymbols, char? paddingChar)
                 : base(reverseSymbols, paddingChar)
             {
-                this.m_stringReader = stringReader;
+                this._stringReader = stringReader;
             }
 
             [MustUseReturnValue]
@@ -657,7 +657,7 @@ namespace AppMotor.Core.Utils
             {
                 Span<char> readBuffer = stackalloc char[SYMBOLS_PER_GROUP];
 
-                int readChars = this.m_stringReader.Read(readBuffer);
+                int readChars = this._stringReader.Read(readBuffer);
                 if (readChars == 0)
                 {
                     return ArraySegment<byte>.Empty;
@@ -672,7 +672,7 @@ namespace AppMotor.Core.Utils
                 var readBuffer = ArrayPool<char>.Shared.Rent(SYMBOLS_PER_GROUP);
                 try
                 {
-                    int readChars = await this.m_stringReader.ReadAsync(readBuffer.AsMemory(0, SYMBOLS_PER_GROUP)).ConfigureAwait(false);
+                    int readChars = await this._stringReader.ReadAsync(readBuffer.AsMemory(0, SYMBOLS_PER_GROUP)).ConfigureAwait(false);
                     if (readChars == 0)
                     {
                         return ArraySegment<byte>.Empty;

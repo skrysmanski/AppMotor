@@ -39,7 +39,7 @@ namespace AppMotor.Core.DataModel
 
         internal const string NOT_SET_TO_STRING_RESULT = "<not set>";
 
-        private readonly T m_value;
+        private readonly T _value;
 
         /// <summary>
         /// The value. Can only be obtained if <see cref="IsSet"/> is <c>true</c>;
@@ -55,7 +55,7 @@ namespace AppMotor.Core.DataModel
                     throw new InvalidOperationException("This value is not set.");
                 }
 
-                return this.m_value;
+                return this._value;
             }
         }
 
@@ -68,7 +68,7 @@ namespace AppMotor.Core.DataModel
         /// <inheritdoc />
         public Optional(T value) : this()
         {
-            this.m_value = value;
+            this._value = value;
             this.IsSet = true;
         }
 
@@ -93,7 +93,7 @@ namespace AppMotor.Core.DataModel
                 return true;
             }
 
-            return EqualityComparer<T>.Default.Equals(this.m_value, other.m_value);
+            return EqualityComparer<T>.Default.Equals(this._value, other._value);
         }
 
         /// <inheritdoc />
@@ -127,7 +127,7 @@ namespace AppMotor.Core.DataModel
             }
 
 #pragma warning disable CA1508 // Avoid dead conditional code // BUG: https://github.com/dotnet/roslyn-analyzers/issues/4509
-            return this.m_value?.GetHashCode() ?? 1;
+            return this._value?.GetHashCode() ?? 1;
 #pragma warning restore CA1508 // Avoid dead conditional code
         }
 
@@ -137,7 +137,7 @@ namespace AppMotor.Core.DataModel
             if (this.IsSet)
             {
 #pragma warning disable CA1508 // Avoid dead conditional code // BUG: https://github.com/dotnet/roslyn-analyzers/issues/4509
-                return this.m_value?.ToString() ?? "";
+                return this._value?.ToString() ?? "";
 #pragma warning restore CA1508 // Avoid dead conditional code
             }
             else

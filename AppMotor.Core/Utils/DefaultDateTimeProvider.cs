@@ -27,7 +27,7 @@ namespace AppMotor.Core.Utils
         /// <summary>
         /// The instance of this class.
         /// </summary>
-        public static DefaultDateTimeProvider Instance { get; } = new DefaultDateTimeProvider();
+        public static DefaultDateTimeProvider Instance { get; } = new();
 
         /// <inheritdoc />
         public DateTime LocalNow => DateTime.Now;

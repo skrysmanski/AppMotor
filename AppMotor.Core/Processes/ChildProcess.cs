@@ -198,17 +198,17 @@ namespace AppMotor.Core.Processes
 
         private sealed class PreparedProcess
         {
-            private readonly Process m_process;
+            private readonly Process _process;
 
-            private readonly ChildProcessStartInfo m_startInfo;
+            private readonly ChildProcessStartInfo _startInfo;
 
             public PreparedProcess(Process process, ChildProcessStartInfo startInfo)
             {
                 Validate.Argument.IsNotNull(process, nameof(process));
                 Validate.Argument.IsNotNull(startInfo, nameof(startInfo));
 
-                this.m_process = process;
-                this.m_startInfo = startInfo;
+                this._process = process;
+                this._startInfo = startInfo;
             }
 
             public ChildProcessResult Execute()
@@ -217,16 +217,16 @@ namespace AppMotor.Core.Processes
 
                 int timeoutAsMilliseconds;
 
-                if (this.m_startInfo.ProcessTimeout == null || this.m_startInfo.ProcessTimeout == Timeout.InfiniteTimeSpan)
+                if (this._startInfo.ProcessTimeout == null || this._startInfo.ProcessTimeout == Timeout.InfiniteTimeSpan)
                 {
                     timeoutAsMilliseconds = Timeout.Infinite;
                 }
                 else
                 {
-                    timeoutAsMilliseconds = (int)this.m_startInfo.ProcessTimeout.Value.TotalMilliseconds;
+                    timeoutAsMilliseconds = (int)this._startInfo.ProcessTimeout.Value.TotalMilliseconds;
                 }
 
-                if (!this.m_process.WaitForExit(timeoutAsMilliseconds))
+                if (!this._process.WaitForExit(timeoutAsMilliseconds))
                 {
                     throw new TimeoutException("The process has not finished within the specified timeout.");
                 }
@@ -240,20 +240,20 @@ namespace AppMotor.Core.Processes
             {
                 CancellationTokenSource cts;
 
-                if (this.m_startInfo.ProcessTimeout == null || this.m_startInfo.ProcessTimeout == Timeout.InfiniteTimeSpan)
+                if (this._startInfo.ProcessTimeout == null || this._startInfo.ProcessTimeout == Timeout.InfiniteTimeSpan)
                 {
                     cts = new CancellationTokenSource();
                 }
                 else
                 {
-                    cts = new CancellationTokenSource(this.m_startInfo.ProcessTimeout.Value);
+                    cts = new CancellationTokenSource(this._startInfo.ProcessTimeout.Value);
                 }
 
                 using (cts)
                 {
                     var tcs = new TaskCompletionSource<object?>();
-                    this.m_process.EnableRaisingEvents = true;
-                    this.m_process.Exited += (_, _) => tcs.TrySetResult(null);
+                    this._process.EnableRaisingEvents = true;
+                    this._process.Exited += (_, _) => tcs.TrySetResult(null);
 
                     cts.Token.Register(tcs.SetCanceled);
 
@@ -280,11 +280,11 @@ namespace AppMotor.Core.Processes
 
                 try
                 {
-                    startSuccessful = this.m_process.Start();
+                    startSuccessful = this._process.Start();
                 }
                 catch (Win32Exception ex) when (ex.NativeErrorCode == 2) // Could not find file.
                 {
-                    throw new InvalidOperationException($"Could not locate application file at: {this.m_process.StartInfo.FileName}");
+                    throw new InvalidOperationException($"Could not locate application file at: {this._process.StartInfo.FileName}");
                 }
 
                 if (!startSuccessful)
@@ -292,8 +292,8 @@ namespace AppMotor.Core.Processes
                     throw new InvalidOperationException("Process could not be started for unknown reasons.");
                 }
 
-                stdOutReadTask = Task.Run(() => this.m_process.StandardOutput.ReadToEndAsync());
-                stdErrReadTask = Task.Run(() => this.m_process.StandardError.ReadToEndAsync());
+                stdOutReadTask = Task.Run(() => this._process.StandardOutput.ReadToEndAsync());
+                stdErrReadTask = Task.Run(() => this._process.StandardError.ReadToEndAsync());
             }
 
             private ChildProcessResult PostProcessAfterExit(
@@ -308,17 +308,17 @@ namespace AppMotor.Core.Processes
                     errorOutput = null;
                 }
 
-                if (this.m_startInfo.TreatErrorOutputAsFailure && errorOutput != null)
+                if (this._startInfo.TreatErrorOutputAsFailure && errorOutput != null)
                 {
-                    throw new ChildProcessErrorException($"The process has failed with (exit code: {this.m_process.ExitCode}):\n{errorOutput}");
+                    throw new ChildProcessErrorException($"The process has failed with (exit code: {this._process.ExitCode}):\n{errorOutput}");
                 }
 
-                if (this.m_startInfo.SuccessExitCode != null && this.m_process.ExitCode != this.m_startInfo.SuccessExitCode)
+                if (this._startInfo.SuccessExitCode != null && this._process.ExitCode != this._startInfo.SuccessExitCode)
                 {
-                    throw new ChildProcessErrorException($"The process has failed with exit code {this.m_process.ExitCode}.");
+                    throw new ChildProcessErrorException($"The process has failed with exit code {this._process.ExitCode}.");
                 }
 
-                return new ChildProcessResult(this.m_process.ExitCode, stdOutReadTask.Result, errorOutput);
+                return new ChildProcessResult(this._process.ExitCode, stdOutReadTask.Result, errorOutput);
             }
         }
     }

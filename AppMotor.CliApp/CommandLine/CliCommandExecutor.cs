@@ -28,7 +28,7 @@ namespace AppMotor.CliApp.CommandLine
     /// </summary>
     public class CliCommandExecutor
     {
-        private readonly Func<Task<int>> m_action;
+        private readonly Func<Task<int>> _action;
 
         /// <summary>
         /// Creates an executor for an synchronous method that returns nothing (<c>void</c>).
@@ -38,7 +38,7 @@ namespace AppMotor.CliApp.CommandLine
         [PublicAPI]
         public CliCommandExecutor(Action action)
         {
-            this.m_action = () =>
+            this._action = () =>
             {
                 action();
                 return Task.FromResult(0);
@@ -53,7 +53,7 @@ namespace AppMotor.CliApp.CommandLine
         [PublicAPI]
         public CliCommandExecutor(Func<int> action)
         {
-            this.m_action = () =>
+            this._action = () =>
             {
                 int retVal = action();
                 return Task.FromResult(retVal);
@@ -69,7 +69,7 @@ namespace AppMotor.CliApp.CommandLine
         [PublicAPI]
         public CliCommandExecutor(Func<bool> action)
         {
-            this.m_action = () =>
+            this._action = () =>
             {
                 bool retVal = action();
                 return Task.FromResult(retVal ? 0 : 1);
@@ -84,7 +84,7 @@ namespace AppMotor.CliApp.CommandLine
         [PublicAPI]
         public CliCommandExecutor(Func<Task> action)
         {
-            this.m_action = async () =>
+            this._action = async () =>
             {
                 await action().ConfigureAwait(continueOnCapturedContext: false);
                 return 0;
@@ -99,7 +99,7 @@ namespace AppMotor.CliApp.CommandLine
         [PublicAPI]
         public CliCommandExecutor(Func<Task<int>> action)
         {
-            this.m_action = action;
+            this._action = action;
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace AppMotor.CliApp.CommandLine
         [PublicAPI]
         public CliCommandExecutor(Func<Task<bool>> action)
         {
-            this.m_action = async () =>
+            this._action = async () =>
             {
                 bool retVal = await action().ConfigureAwait(continueOnCapturedContext: false);
                 return retVal ? 0 : 1;
@@ -123,7 +123,7 @@ namespace AppMotor.CliApp.CommandLine
         /// </summary>
         public async Task<int> Execute()
         {
-            return await this.m_action().ConfigureAwait(continueOnCapturedContext: false);
+            return await this._action().ConfigureAwait(continueOnCapturedContext: false);
         }
     }
 }

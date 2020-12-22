@@ -32,29 +32,29 @@ namespace AppMotor.Core.IO
     [PublicAPI]
     public class ReadOnlyStream : AsyncDisposable, IReadOnlyStream
     {
-        private readonly Stream m_underlyingStream;
+        private readonly Stream _underlyingStream;
 
         /// <inheritdoc />
-        public bool CanSeek => this.m_underlyingStream.CanSeek;
+        public bool CanSeek => this._underlyingStream.CanSeek;
 
         /// <inheritdoc />
         public long Position
         {
-            get => this.m_underlyingStream.Position;
-            set => this.m_underlyingStream.Position = value;
+            get => this._underlyingStream.Position;
+            set => this._underlyingStream.Position = value;
         }
 
         /// <inheritdoc />
-        public long Length => this.m_underlyingStream.Length;
+        public long Length => this._underlyingStream.Length;
 
         /// <inheritdoc />
-        public bool CanTimeout => this.m_underlyingStream.CanTimeout;
+        public bool CanTimeout => this._underlyingStream.CanTimeout;
 
         /// <inheritdoc />
         public TimeSpan ReadTimeout
         {
-            get => TimeSpan.FromMilliseconds(this.m_underlyingStream.ReadTimeout);
-            set => this.m_underlyingStream.ReadTimeout = (int)value.TotalMilliseconds;
+            get => TimeSpan.FromMilliseconds(this._underlyingStream.ReadTimeout);
+            set => this._underlyingStream.ReadTimeout = (int)value.TotalMilliseconds;
         }
 
         /// <summary>
@@ -70,13 +70,13 @@ namespace AppMotor.Core.IO
                 throw new ArgumentException("The specified stream is not readable.", nameof(underlyingStream));
             }
 
-            this.m_underlyingStream = underlyingStream;
+            this._underlyingStream = underlyingStream;
         }
 
         /// <inheritdoc />
         protected override void DisposeManagedResources()
         {
-            this.m_underlyingStream.Dispose();
+            this._underlyingStream.Dispose();
 
             base.DisposeManagedResources();
         }
@@ -84,7 +84,7 @@ namespace AppMotor.Core.IO
         /// <inheritdoc />
         protected override async ValueTask DisposeAsyncCore()
         {
-            await this.m_underlyingStream.DisposeAsync().ConfigureAwait(false);
+            await this._underlyingStream.DisposeAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -92,11 +92,11 @@ namespace AppMotor.Core.IO
         {
             if (bufferSize == null)
             {
-                this.m_underlyingStream.CopyTo(destination);
+                this._underlyingStream.CopyTo(destination);
             }
             else
             {
-                this.m_underlyingStream.CopyTo(destination, bufferSize.Value);
+                this._underlyingStream.CopyTo(destination, bufferSize.Value);
             }
         }
 
@@ -105,11 +105,11 @@ namespace AppMotor.Core.IO
         {
             if (bufferSize == null)
             {
-                await this.m_underlyingStream.CopyToAsync(destination, cancellationToken).ConfigureAwait(false);
+                await this._underlyingStream.CopyToAsync(destination, cancellationToken).ConfigureAwait(false);
             }
             else
             {
-                await this.m_underlyingStream.CopyToAsync(destination, bufferSize.Value, cancellationToken).ConfigureAwait(false);
+                await this._underlyingStream.CopyToAsync(destination, bufferSize.Value, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -142,19 +142,19 @@ namespace AppMotor.Core.IO
             //   "Read(byte[],int,int)". Although there is no way to detect this, the Span-based API
             //   is the newer one - so we're going to support it (instead of the older API).
 
-            return this.m_underlyingStream.Read(buffer);
+            return this._underlyingStream.Read(buffer);
         }
 
         /// <inheritdoc />
         public ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
         {
-            return this.m_underlyingStream.ReadAsync(buffer, cancellationToken);
+            return this._underlyingStream.ReadAsync(buffer, cancellationToken);
         }
 
         /// <inheritdoc />
         public long Seek(long offset, SeekOrigin origin)
         {
-            return this.m_underlyingStream.Seek(offset, origin);
+            return this._underlyingStream.Seek(offset, origin);
         }
     }
 }

@@ -222,7 +222,7 @@ namespace AppMotor.Core.Tests.Collections
         private static List<T> GetUnderlyingList<T>(AppendOnlyList<T> appendOnlyList)
         {
             var underlyingListField = appendOnlyList.GetType().GetField(
-                "m_underlyingList",
+                "_underlyingList",
                 BindingFlags.Instance | BindingFlags.NonPublic
             );
             underlyingListField.ShouldNotBeNull();

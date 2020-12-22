@@ -40,28 +40,28 @@ namespace AppMotor.Core.Threading
     public readonly struct TaskList : IReadOnlyList<Task>
 #pragma warning restore CA1815 // Override equals and operator equals on value types
     {
-        private readonly AppendOnlyList<Task>? m_underlyingList;
+        private readonly AppendOnlyList<Task>? _underlyingList;
 
         /// <inheritdoc />
-        public int Count => this.m_underlyingList?.Count ?? 0;
+        public int Count => this._underlyingList?.Count ?? 0;
 
         /// <inheritdoc />
         public Task this[int index]
         {
             get
             {
-                if (this.m_underlyingList == null)
+                if (this._underlyingList == null)
                 {
                     throw new ArgumentOutOfRangeException(nameof(index));
                 }
 
-                return this.m_underlyingList[index];
+                return this._underlyingList[index];
             }
         }
 
         private TaskList(AppendOnlyList<Task> list)
         {
-            this.m_underlyingList = list;
+            this._underlyingList = list;
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace AppMotor.Core.Threading
         /// </summary>
         public static TaskList operator +(TaskList taskList, Task task)
         {
-            var newList = taskList.m_underlyingList?.CloneShallow() ?? new AppendOnlyList<Task>();
+            var newList = taskList._underlyingList?.CloneShallow() ?? new AppendOnlyList<Task>();
             newList.Append(task);
 
             return new TaskList(newList);
@@ -81,12 +81,12 @@ namespace AppMotor.Core.Threading
         [PublicAPI]
         public Task WhenAll()
         {
-            if (this.m_underlyingList is null || this.m_underlyingList.Count == 0)
+            if (this._underlyingList is null || this._underlyingList.Count == 0)
             {
                 return Task.CompletedTask;
             }
 
-            return Task.WhenAll(this.m_underlyingList);
+            return Task.WhenAll(this._underlyingList);
         }
 
         /// <summary>
@@ -95,20 +95,20 @@ namespace AppMotor.Core.Threading
         [PublicAPI]
         public Task<Task> WhenAny()
         {
-            if (this.m_underlyingList is null || this.m_underlyingList.Count == 0)
+            if (this._underlyingList is null || this._underlyingList.Count == 0)
             {
                 throw new InvalidOperationException("The task list is empty.");
             }
 
-            return Task.WhenAny(this.m_underlyingList);
+            return Task.WhenAny(this._underlyingList);
         }
 
         /// <inheritdoc />
         public IEnumerator<Task> GetEnumerator()
         {
-            if (this.m_underlyingList != null)
+            if (this._underlyingList != null)
             {
-                return this.m_underlyingList.GetEnumerator();
+                return this._underlyingList.GetEnumerator();
             }
             else
             {

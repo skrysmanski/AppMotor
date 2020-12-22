@@ -44,7 +44,7 @@ namespace AppMotor.CliApp.CommandLine
         /// </summary>
         protected abstract CliCommandExecutor Executor { get; }
 
-        private ImmutableList<CliParam>? m_allParams;
+        private ImmutableList<CliParam>? _allParams;
 
         /// <summary>
         /// Constructor.
@@ -87,7 +87,7 @@ namespace AppMotor.CliApp.CommandLine
 
         internal sealed override Command ToUnderlyingImplementation()
         {
-            this.m_allParams = GetAllParams().ToImmutableList();
+            this._allParams = GetAllParams().ToImmutableList();
 
             var command = new Command(this.Name, this.HelpText);
 
@@ -96,7 +96,7 @@ namespace AppMotor.CliApp.CommandLine
                 command.AddAlias(alias);
             }
 
-            foreach (var cliParam in this.m_allParams)
+            foreach (var cliParam in this._allParams)
             {
                 command.Add(cliParam.UnderlyingImplementation);
             }
@@ -118,9 +118,9 @@ namespace AppMotor.CliApp.CommandLine
         private void SetAllParamValues(ParseResult parseResult)
         {
             // Should never happen.
-            Validate.Value.IsNotNull(this.m_allParams, nameof(this.m_allParams));
+            Validate.Value.IsNotNull(this._allParams, nameof(this._allParams));
 
-            foreach (var cliParam in this.m_allParams)
+            foreach (var cliParam in this._allParams)
             {
                 cliParam.SetValueFromParseResult(parseResult);
             }
@@ -128,19 +128,19 @@ namespace AppMotor.CliApp.CommandLine
 
         private sealed class CliCommandHandler : ICommandHandler
         {
-            private readonly CliCommand m_command;
+            private readonly CliCommand _command;
 
             public CliCommandHandler(CliCommand command)
             {
-                this.m_command = command;
+                this._command = command;
             }
 
             /// <inheritdoc />
             public async Task<int> InvokeAsync(InvocationContext context)
             {
-                this.m_command.SetAllParamValues(context.ParseResult);
+                this._command.SetAllParamValues(context.ParseResult);
 
-                return await this.m_command.Execute().ConfigureAwait(continueOnCapturedContext: false);
+                return await this._command.Execute().ConfigureAwait(continueOnCapturedContext: false);
             }
         }
     }

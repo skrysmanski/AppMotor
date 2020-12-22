@@ -41,7 +41,7 @@ namespace AppMotor.Core.Processes
         /// <summary>
         /// The arguments to pass to <see cref="ProcessFileName"/>.
         /// </summary>
-        public ProcessArguments Arguments { get; } = new ProcessArguments();
+        public ProcessArguments Arguments { get; } = new();
 
         /// <summary>
         /// The working directory. Can be <c>null</c> in which case the runtime picks

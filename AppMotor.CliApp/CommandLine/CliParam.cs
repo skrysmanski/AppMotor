@@ -183,10 +183,10 @@ namespace AppMotor.CliApp.CommandLine
         [PublicAPI]
         public Optional<T> DefaultValue { get; init; }
 
-        private readonly Lazy<Symbol> m_underlyingImplementation;
+        private readonly Lazy<Symbol> _underlyingImplementation;
 
         /// <inheritdoc />
-        internal override Symbol UnderlyingImplementation => this.m_underlyingImplementation.Value;
+        internal override Symbol UnderlyingImplementation => this._underlyingImplementation.Value;
 
         /// <summary>
         /// The value of this parameter. Important: Only available from within <see cref="CliCommand.Execute"/> of
@@ -197,16 +197,16 @@ namespace AppMotor.CliApp.CommandLine
         {
             get
             {
-                if (!this.m_value.IsSet)
+                if (!this._value.IsSet)
                 {
                     throw new InvalidOperationException("This value can't be accessed at this state.");
                 }
 
-                return this.m_value.Value;
+                return this._value.Value;
             }
         }
 
-        private Optional<T> m_value;
+        private Optional<T> _value;
 
         /// <summary>
         /// Creates a named parameter (in contrast to a positional one). See <see cref="CliParam.IsNamedParameter"/> for more details.
@@ -218,7 +218,7 @@ namespace AppMotor.CliApp.CommandLine
         public CliParam(string primaryName, params string[] aliases)
             : base(primaryName, aliases)
         {
-            this.m_underlyingImplementation = new Lazy<Symbol>(CreateUnderlyingNamedParameter);
+            this._underlyingImplementation = new Lazy<Symbol>(CreateUnderlyingNamedParameter);
 
             if (typeof(T) == typeof(bool))
             {
@@ -235,7 +235,7 @@ namespace AppMotor.CliApp.CommandLine
         public CliParam(string name, int positionIndex)
             : base(name, positionIndex)
         {
-            this.m_underlyingImplementation = new Lazy<Symbol>(CreateUnderlyingPositionalParameter);
+            this._underlyingImplementation = new Lazy<Symbol>(CreateUnderlyingPositionalParameter);
         }
 
         private Symbol CreateUnderlyingNamedParameter()
@@ -282,7 +282,7 @@ namespace AppMotor.CliApp.CommandLine
                         throw new UnexpectedBehaviorException($"No parse result for option '{option.Name}'.");
                     }
 
-                    this.m_value = result.GetValueOrDefault<T>()!;
+                    this._value = result.GetValueOrDefault<T>()!;
 
                     break;
                 }
@@ -299,7 +299,7 @@ namespace AppMotor.CliApp.CommandLine
                         throw new UnexpectedBehaviorException($"No parse result for argument '{argument.Name}'.");
                     }
 
-                    this.m_value = result.GetValueOrDefault<T>()!;
+                    this._value = result.GetValueOrDefault<T>()!;
 
                     break;
                 }

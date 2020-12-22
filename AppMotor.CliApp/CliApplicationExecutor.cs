@@ -28,7 +28,7 @@ namespace AppMotor.CliApp
     /// </summary>
     public class CliApplicationExecutor
     {
-        private readonly Func<string[], Task<int>> m_action;
+        private readonly Func<string[], Task<int>> _action;
 
         /// <summary>
         /// Creates an executor for a method that: is synchronous, returns no exit code (<c>void</c>), and ignores the command line params.
@@ -38,7 +38,7 @@ namespace AppMotor.CliApp
         [PublicAPI]
         public CliApplicationExecutor(Action action)
         {
-            this.m_action = _ =>
+            this._action = _ =>
             {
                 action();
                 return Task.FromResult(0);
@@ -53,7 +53,7 @@ namespace AppMotor.CliApp
         [PublicAPI]
         public CliApplicationExecutor(Action<string[]> action)
         {
-            this.m_action = args =>
+            this._action = args =>
             {
                 action(args);
                 return Task.FromResult(0);
@@ -68,7 +68,7 @@ namespace AppMotor.CliApp
         [PublicAPI]
         public CliApplicationExecutor(Func<int> action)
         {
-            this.m_action = _ =>
+            this._action = _ =>
             {
                 int retVal = action();
                 return Task.FromResult(retVal);
@@ -83,7 +83,7 @@ namespace AppMotor.CliApp
         [PublicAPI]
         public CliApplicationExecutor(Func<string[], int> action)
         {
-            this.m_action = args =>
+            this._action = args =>
             {
                 int retVal = action(args);
                 return Task.FromResult(retVal);
@@ -99,7 +99,7 @@ namespace AppMotor.CliApp
         [PublicAPI]
         public CliApplicationExecutor(Func<bool> action)
         {
-            this.m_action = _ =>
+            this._action = _ =>
             {
                 bool retVal = action();
                 return Task.FromResult(retVal ? 0 : 1);
@@ -115,7 +115,7 @@ namespace AppMotor.CliApp
         [PublicAPI]
         public CliApplicationExecutor(Func<string[], bool> action)
         {
-            this.m_action = args =>
+            this._action = args =>
             {
                 bool retVal = action(args);
                 return Task.FromResult(retVal ? 0 : 1);
@@ -130,7 +130,7 @@ namespace AppMotor.CliApp
         [PublicAPI]
         public CliApplicationExecutor(Func<Task> action)
         {
-            this.m_action = async _ =>
+            this._action = async _ =>
             {
                 await action().ConfigureAwait(continueOnCapturedContext: false);
                 return 0;
@@ -145,7 +145,7 @@ namespace AppMotor.CliApp
         [PublicAPI]
         public CliApplicationExecutor(Func<string[], Task> action)
         {
-            this.m_action = async args =>
+            this._action = async args =>
             {
                 await action(args).ConfigureAwait(continueOnCapturedContext: false);
                 return 0;
@@ -160,7 +160,7 @@ namespace AppMotor.CliApp
         [PublicAPI]
         public CliApplicationExecutor(Func<Task<int>> action)
         {
-            this.m_action = _ => action();
+            this._action = _ => action();
         }
 
         /// <summary>
@@ -171,7 +171,7 @@ namespace AppMotor.CliApp
         [PublicAPI]
         public CliApplicationExecutor(Func<string[], Task<int>> action)
         {
-            this.m_action = action;
+            this._action = action;
         }
 
         /// <summary>
@@ -183,7 +183,7 @@ namespace AppMotor.CliApp
         [PublicAPI]
         public CliApplicationExecutor(Func<Task<bool>> action)
         {
-            this.m_action = async _ =>
+            this._action = async _ =>
             {
                 bool retVal = await action().ConfigureAwait(continueOnCapturedContext: false);
                 return retVal ? 0 : 1;
@@ -199,7 +199,7 @@ namespace AppMotor.CliApp
         [PublicAPI]
         public CliApplicationExecutor(Func<string[], Task<bool>> action)
         {
-            this.m_action = async args =>
+            this._action = async args =>
             {
                 bool retVal = await action(args).ConfigureAwait(continueOnCapturedContext: false);
                 return retVal ? 0 : 1;
@@ -211,7 +211,7 @@ namespace AppMotor.CliApp
         /// </summary>
         public async Task<int> Execute(string[] args)
         {
-            return await this.m_action(args).ConfigureAwait(continueOnCapturedContext: false);
+            return await this._action(args).ConfigureAwait(continueOnCapturedContext: false);
         }
     }
 }

@@ -30,14 +30,14 @@ namespace AppMotor.Core.IO
     /// </remarks>
     public class CombinedStream : Stream
     {
-        private readonly bool m_closeStreams;
+        private readonly bool _closeStreams;
 
-        private IEnumerator<Stream>? m_iterator;
+        private IEnumerator<Stream>? _iterator;
 
         /// <summary>
         /// The current stream. Do not use directly. Use <see cref="CurrentStream"/> instead.
         /// </summary>
-        private Stream? m_currentStream;
+        private Stream? _currentStream;
 
         /// <summary>
         /// The current stream; or <c>null</c>, if the end of the last stream has been reached.
@@ -46,32 +46,32 @@ namespace AppMotor.Core.IO
         {
             get
             {
-                if (this.m_currentStream != null)
+                if (this._currentStream != null)
                 {
                     // End of stream not yet reached.
-                    return this.m_currentStream;
+                    return this._currentStream;
                 }
 
-                if (this.m_iterator == null)
+                if (this._iterator == null)
                 {
                     throw new ObjectDisposedException(GetType().Name);
                 }
 
                 // NOTE: Even if the end of the iterator has been reached, we can safely
                 //   call this - as it will return "false" every time.
-                if (this.m_iterator.MoveNext())
+                if (this._iterator.MoveNext())
                 {
-                    this.m_currentStream = this.m_iterator.Current;
+                    this._currentStream = this._iterator.Current;
                 }
 
-                return this.m_currentStream;
+                return this._currentStream;
             }
         }
 
         /// <summary>
         /// Basically the number of bytes read from the stream.
         /// </summary>
-        private long m_position;
+        private long _position;
 
         /// <inheritdoc />
         public override bool CanRead => true;
@@ -88,7 +88,7 @@ namespace AppMotor.Core.IO
         /// <inheritdoc />
         public override long Position
         {
-            get => this.m_position;
+            get => this._position;
             set => throw new NotSupportedException();
         }
 
@@ -103,8 +103,8 @@ namespace AppMotor.Core.IO
         {
             Validate.Argument.IsNotNull(source, nameof(source));
 
-            this.m_iterator = source.GetEnumerator();
-            this.m_closeStreams = closeStreams;
+            this._iterator = source.GetEnumerator();
+            this._closeStreams = closeStreams;
         }
 
         /// <summary>
@@ -130,8 +130,8 @@ namespace AppMotor.Core.IO
                     OnEndOfStream();
                 }
 
-                this.m_iterator?.Dispose();
-                this.m_iterator = null;
+                this._iterator?.Dispose();
+                this._iterator = null;
             }
 
             base.Dispose(disposing);
@@ -139,12 +139,12 @@ namespace AppMotor.Core.IO
 
         private void OnEndOfStream()
         {
-            if (this.m_closeStreams)
+            if (this._closeStreams)
             {
-                this.m_currentStream?.Dispose();
+                this._currentStream?.Dispose();
             }
 
-            this.m_currentStream = null;
+            this._currentStream = null;
         }
 
         /// <inheritdoc />
@@ -184,7 +184,7 @@ namespace AppMotor.Core.IO
                 }
             }
 
-            this.m_position += readBytesTotal;
+            this._position += readBytesTotal;
 
             return readBytesTotal;
         }

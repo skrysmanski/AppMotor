@@ -51,9 +51,9 @@ namespace AppMotor.CliApp.CommandLine
         [PublicAPI]
         public virtual string? HelpText => null;
 
-        private readonly Lazy<Command> m_underlyingImplementation;
+        private readonly Lazy<Command> _underlyingImplementation;
 
-        internal Command UnderlyingImplementation => this.m_underlyingImplementation.Value;
+        internal Command UnderlyingImplementation => this._underlyingImplementation.Value;
 
         /// <summary>
         /// Constructor.
@@ -71,7 +71,7 @@ namespace AppMotor.CliApp.CommandLine
             this.Name = name;
             this.Aliases = aliases.ToImmutableList();
 
-            this.m_underlyingImplementation = new Lazy<Command>(ToUnderlyingImplementation);
+            this._underlyingImplementation = new Lazy<Command>(ToUnderlyingImplementation);
         }
 
         private static void ValidateCommandName(string name)

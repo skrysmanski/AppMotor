@@ -46,16 +46,16 @@ namespace AppMotor.Core.Exceptions
     public readonly struct ExceptionDataAccessor : IReadOnlyCollection<KeyValuePair<object, object?>>
 #pragma warning restore CA1815 // Override equals and operator equals on value types
     {
-        private readonly IDictionary? m_data;
+        private readonly IDictionary? _data;
 
         /// <inheritdoc />
-        public int Count => this.m_data?.Count ?? 0;
+        public int Count => this._data?.Count ?? 0;
 
         /// <summary>
         /// Whether the exception data dictionary is read only.
         /// </summary>
         [PublicAPI]
-        public bool IsReadOnly => this.m_data?.IsReadOnly ?? true;
+        public bool IsReadOnly => this._data?.IsReadOnly ?? true;
 
         /// <summary>
         /// Indexer for retrieving or adding items.
@@ -70,7 +70,7 @@ namespace AppMotor.Core.Exceptions
             {
                 try
                 {
-                    return this.m_data?[key];
+                    return this._data?[key];
                 }
                 catch (KeyNotFoundException)
                 {
@@ -85,7 +85,7 @@ namespace AppMotor.Core.Exceptions
             {
                 if (!this.IsReadOnly)
                 {
-                    this.m_data![key] = value;
+                    this._data![key] = value;
                 }
             }
         }
@@ -100,7 +100,7 @@ namespace AppMotor.Core.Exceptions
         internal ExceptionDataAccessor(Exception? exception)
         {
             // For nullability of "Data", see: https://github.com/dotnet/dotnet-api-docs/issues/4045
-            this.m_data = exception?.Data;
+            this._data = exception?.Data;
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace AppMotor.Core.Exceptions
         {
             if (!this.IsReadOnly)
             {
-                this.m_data!.Clear();
+                this._data!.Clear();
             }
         }
 
@@ -121,7 +121,7 @@ namespace AppMotor.Core.Exceptions
         [PublicAPI, Pure]
         public bool ContainsKey(object key)
         {
-            return this.m_data?.Contains(key) ?? false;
+            return this._data?.Contains(key) ?? false;
         }
 
         /// <summary>
@@ -133,16 +133,16 @@ namespace AppMotor.Core.Exceptions
         {
             if (!this.IsReadOnly)
             {
-                this.m_data!.Remove(key);
+                this._data!.Remove(key);
             }
         }
 
         /// <inheritdoc />
         public IEnumerator<KeyValuePair<object, object?>> GetEnumerator()
         {
-            if (this.m_data != null)
+            if (this._data != null)
             {
-                foreach (var entry in this.m_data)
+                foreach (var entry in this._data)
                 {
                     if (entry is DictionaryEntry dictionaryEntry)
                     {

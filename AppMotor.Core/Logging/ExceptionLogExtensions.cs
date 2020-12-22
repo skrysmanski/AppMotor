@@ -33,8 +33,7 @@ namespace AppMotor.Core.Logging
     /// </summary>
     public static class ExceptionLogExtensions
     {
-        private static readonly Dictionary<Type, LoggablePropertiesList> s_loggablePropertiesCache
-            = new Dictionary<Type, LoggablePropertiesList>();
+        private static readonly Dictionary<Type, LoggablePropertiesList> s_loggablePropertiesCache = new();
 
         /// <summary>
         /// Returns all (simple) loggable properties for the specified exception. The properties will be returned
@@ -176,13 +175,13 @@ namespace AppMotor.Core.Logging
 
         private sealed class LoggablePropertiesList
         {
-            private readonly PropertyInfo[] m_allPropertiesOrderedByName;
+            private readonly PropertyInfo[] _allPropertiesOrderedByName;
 
-            private readonly HashSet<Type> m_allPropertyTypes = new HashSet<Type>();
+            private readonly HashSet<Type> _allPropertyTypes = new();
 
-            public ImmutableArray<PropertyInfo> Value => this.m_valueLazy.Value;
+            public ImmutableArray<PropertyInfo> Value => this._valueLazy.Value;
 
-            private Lazy<ImmutableArray<PropertyInfo>> m_valueLazy;
+            private Lazy<ImmutableArray<PropertyInfo>> _valueLazy;
 
             public LoggablePropertiesList(Type exceptionType)
             {
@@ -190,15 +189,15 @@ namespace AppMotor.Core.Logging
                 //   exception type. This especially excludes properties that hide properties
                 //   from the base class with the same name. But that's ok. We don't need
                 //   to return two properties with the same name.
-                this.m_allPropertiesOrderedByName = exceptionType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                this._allPropertiesOrderedByName = exceptionType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                                                                  .OrderBy(prop => prop.Name)
                                                                  .ToArray();
 
-                this.m_valueLazy = CreateValueLazy();
+                this._valueLazy = CreateValueLazy();
 
-                foreach (var propertyInfo in this.m_allPropertiesOrderedByName)
+                foreach (var propertyInfo in this._allPropertiesOrderedByName)
                 {
-                    this.m_allPropertyTypes.Add(propertyInfo.PropertyType);
+                    this._allPropertyTypes.Add(propertyInfo.PropertyType);
                 }
 
                 LoggableValues.LoggabilityChanged += OnLoggabilityChanged;
@@ -207,9 +206,9 @@ namespace AppMotor.Core.Logging
             private void OnLoggabilityChanged(object? sender, LoggabilityChangedEventArgs e)
             {
                 // If any of our types changed loggability, re-create the list of loggable properties.
-                if (this.m_allPropertyTypes.Contains(e.Type))
+                if (this._allPropertyTypes.Contains(e.Type))
                 {
-                    this.m_valueLazy = CreateValueLazy();
+                    this._valueLazy = CreateValueLazy();
                 }
             }
 
@@ -225,7 +224,7 @@ namespace AppMotor.Core.Logging
             {
                 var loggablePropertiesBuilder = ImmutableArray.CreateBuilder<PropertyInfo>();
 
-                foreach (var propertyInfo in this.m_allPropertiesOrderedByName)
+                foreach (var propertyInfo in this._allPropertiesOrderedByName)
                 {
                     if (!propertyInfo.CanRead)
                     {

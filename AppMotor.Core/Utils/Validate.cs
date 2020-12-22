@@ -46,7 +46,7 @@ namespace AppMotor.Core.Utils
         public static class Argument
 #pragma warning restore CA1034 // Nested types should not be visible
         {
-            private static readonly ArgumentValidator VALIDATOR = new ArgumentValidator();
+            private static readonly ArgumentValidator VALIDATOR = new();
 
             /// <summary>
             /// Validates that the given (reference type) argument is not null.
@@ -228,7 +228,7 @@ namespace AppMotor.Core.Utils
         public static class Value
 #pragma warning restore CA1034 // Nested types should not be visible
         {
-            private static readonly ValueValidator VALIDATOR = new ValueValidator();
+            private static readonly ValueValidator VALIDATOR = new();
 
             /// <summary>
             /// Validates that the given reference type value is not null.

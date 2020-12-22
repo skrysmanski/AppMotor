@@ -26,14 +26,14 @@ namespace AppMotor.Core.Utils
     [PublicAPI]
     public abstract class FormatProviderBase : IFormatProvider
     {
-        private readonly Formatter m_formatter;
+        private readonly Formatter _formatter;
 
         /// <summary>
         /// Constructor.
         /// </summary>
         protected FormatProviderBase()
         {
-            this.m_formatter = new Formatter(this);
+            this._formatter = new Formatter(this);
         }
 
         /// <inheritdoc />
@@ -41,7 +41,7 @@ namespace AppMotor.Core.Utils
         {
             if (formatType == typeof(ICustomFormatter))
             {
-                return this.m_formatter;
+                return this._formatter;
             }
             else
             {
@@ -56,17 +56,17 @@ namespace AppMotor.Core.Utils
 
         private sealed class Formatter : ICustomFormatter
         {
-            private readonly FormatProviderBase m_outerFormatProvider;
+            private readonly FormatProviderBase _outerFormatProvider;
 
             public Formatter(FormatProviderBase outerFormatProvider)
             {
-                this.m_outerFormatProvider = outerFormatProvider;
+                this._outerFormatProvider = outerFormatProvider;
             }
 
             /// <inheritdoc />
             public string Format(string? format, object? value, IFormatProvider? formatProvider)
             {
-                return this.m_outerFormatProvider.Format(format, value);
+                return this._outerFormatProvider.Format(format, value);
             }
         }
     }

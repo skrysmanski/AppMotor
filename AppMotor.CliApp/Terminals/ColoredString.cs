@@ -34,23 +34,23 @@ namespace AppMotor.CliApp.Terminals
     /// </summary>
     public sealed class ColoredString : IReadOnlyList<ColoredSubstring>, IShallowCloneable<ColoredString>
     {
-        private readonly AppendOnlyList<ColoredSubstring> m_substrings;
+        private readonly AppendOnlyList<ColoredSubstring> _substrings;
 
         /// <inheritdoc />
-        public int Count => this.m_substrings.Count;
+        public int Count => this._substrings.Count;
 
         /// <inheritdoc />
-        public ColoredSubstring this[int index] => this.m_substrings[index];
+        public ColoredSubstring this[int index] => this._substrings[index];
 
         private ColoredString(ColoredString? other)
         {
             if (other != null)
             {
-                this.m_substrings = other.m_substrings.CloneShallow();
+                this._substrings = other._substrings.CloneShallow();
             }
             else
             {
-                this.m_substrings = new AppendOnlyList<ColoredSubstring>();
+                this._substrings = new AppendOnlyList<ColoredSubstring>();
             }
         }
 
@@ -84,7 +84,7 @@ namespace AppMotor.CliApp.Terminals
                 //
                 // No change in color. We can use the more efficient "AppendRange()" method.
                 //
-                this.m_substrings.AppendRange(value.m_substrings);
+                this._substrings.AppendRange(value._substrings);
             }
             else
             {
@@ -93,15 +93,15 @@ namespace AppMotor.CliApp.Terminals
                 //
                 IReadOnlyList<ColoredSubstring> substringsToAdd;
 
-                if (ReferenceEquals(this.m_substrings, value.m_substrings))
+                if (ReferenceEquals(this._substrings, value._substrings))
                 {
                     // Create copy because we can't iterate and modify the
                     // same collection at the same time.
-                    substringsToAdd = value.m_substrings.ToList();
+                    substringsToAdd = value._substrings.ToList();
                 }
                 else
                 {
-                    substringsToAdd = value.m_substrings;
+                    substringsToAdd = value._substrings;
                 }
 
                 foreach (var coloredSubstring in substringsToAdd)
@@ -109,11 +109,11 @@ namespace AppMotor.CliApp.Terminals
                     if (coloredSubstring.Color == null)
                     {
                         // Set color.
-                        this.m_substrings.Append(new ColoredSubstring(color, coloredSubstring.Text));
+                        this._substrings.Append(new ColoredSubstring(color, coloredSubstring.Text));
                     }
                     else
                     {
-                        this.m_substrings.Append(coloredSubstring);
+                        this._substrings.Append(coloredSubstring);
                     }
                 }
             }
@@ -165,7 +165,7 @@ namespace AppMotor.CliApp.Terminals
                 return this;
             }
 
-            this.m_substrings.Append(substring);
+            this._substrings.Append(substring);
 
             return this;
         }
@@ -192,7 +192,7 @@ namespace AppMotor.CliApp.Terminals
                 return this;
             }
 
-            this.m_substrings.Append(new ColoredSubstring(color, value));
+            this._substrings.Append(new ColoredSubstring(color, value));
 
             return this;
         }
@@ -227,7 +227,7 @@ namespace AppMotor.CliApp.Terminals
                 return this;
             }
 
-            this.m_substrings.Append(new ColoredSubstring(color, valueAsString));
+            this._substrings.Append(new ColoredSubstring(color, valueAsString));
 
             return this;
         }
@@ -285,7 +285,7 @@ namespace AppMotor.CliApp.Terminals
         /// <inheritdoc />
         public IEnumerator<ColoredSubstring> GetEnumerator()
         {
-            return this.m_substrings.GetEnumerator();
+            return this._substrings.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -306,7 +306,7 @@ namespace AppMotor.CliApp.Terminals
         /// </summary>
         public override string ToString()
         {
-            return string.Join("", this.m_substrings.Select(sub => sub.Text));
+            return string.Join("", this._substrings.Select(sub => sub.Text));
         }
     }
 
