@@ -53,11 +53,15 @@
   </PropertyGroup>
 
   <!--
-    Adds a list of commonly used types (if any) to the description of the NuGet package.
-    Commonly used types are defined via <ItemGroup> and <CommonlyUsedTypes Include="MY_TYPE_HERE" />
+    Adds/Fills the NuGet package properties that must be calculated dynamically.
+
+    See also: https://docs.microsoft.com/en-us/dotnet/core/tools/csproj#nuget-metadata-properties
   -->
-  <Target Name="_AddCommonlyUsedTypesToPackageDescription" BeforeTargets="GenerateNuspec">
+  <Target Name="_AddDynamicNuGetPackageProperties" BeforeTargets="GenerateNuspec">
     <!--
+      Adds a list of commonly used types (if any) to the description of the NuGet package.
+      Commonly used types are defined via <ItemGroup> and <CommonlyUsedTypes Include="MY_TYPE_HERE" />
+
       IMPORTANT: We need to do this inside of a target (rather than a top level <PropertyGroup>)
       because ItemGroups are not evaluated during the top level evaluation. Instead properties
       that do an ItemGroup transformation are simply filled with the transform expression - rather
@@ -67,6 +71,25 @@
       <CommonlyUsedTypesAsSeparateLines>@(CommonlyUsedTypes->'%(Identity)', '&#13;')</CommonlyUsedTypesAsSeparateLines>
       <PackageDescription Condition=" '$(CommonlyUsedTypesAsSeparateLines)' != '' ">$(Description)&#13;&#13;Commonly Used Types:&#13;$(CommonlyUsedTypesAsSeparateLines)</PackageDescription>
     </PropertyGroup>
+
+    <!--
+      Add "Project URL", if none has specified. This is helpful becuase only the "Project URL" (and not the "Repository URL")
+      shows up in Visual Studio's "Manage NuGet Packages" view.
+    -->
+    <PropertyGroup>
+      <PackageProjectUrl Condition=" '$(PackageProjectUrl)' == '' ">$(RepositoryUrl)</PackageProjectUrl>
+    </PropertyGroup>
+
+    <!--
+      Add VCS (git, ...) related properties.
+    -->
+    <PropertyGroup>
+      <RepositoryCommit>$(SourceRevisionId)</RepositoryCommit>
+    </PropertyGroup>
+
+    <Exec Command="git branch --show-current" ConsoleToMSBuild="true" StandardOutputImportance="low" Condition=" '$(RepositoryType)' == 'git' ">
+      <Output TaskParameter="ConsoleOutput" PropertyName="RepositoryBranch" />
+    </Exec>
   </Target>
 
 </Project>
