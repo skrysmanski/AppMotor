@@ -15,59 +15,80 @@
 #endregion
 
 using System.Net;
+using System.Net.Http;
+using System.Security.Authentication;
 
 using JetBrains.Annotations;
 
 namespace AppMotor.Core.Utils
 {
     /// <summary>
-    /// Manages SSL/TLS settings and protocols.
+    /// Provides information and management methods regarding SSL/TLS settings and protocol versions.
+    ///
+    /// <para>Most important members are <see cref="EnabledTlsProtocols"/> and <see cref="ApplyToCurrentProcess"/>.</para>
     /// </summary>
     public static class TlsSettings
     {
         /// <summary>
-        /// Enables and disables SSL and TLS protocols for the currently running process - based on current best practices.
+        /// The default (secure) TLS protocol versions that should be used. The default value of this list
+        /// only contains protocol versions that are considered secure (as of 2020).
+        ///
+        /// <para>You may use this list for <see cref="HttpClientHandler.SslProtocols"/>.</para>
+        /// </summary>
+        /// <remarks>
+        /// This list can be changed via <see cref="EnableProtocol"/> and <see cref="DisableProtocol"/>. However,
+        /// you should only do this if it's absolutely necessary.
+        ///
+        /// <para>Also note that Microsoft recommends using <see cref="SslProtocols.None"/> - in which case
+        /// the operating system selects the protocol versions (although all documentation only talks about
+        /// the .NET Framework - and not about .NET Core). However, as of 2020, even Windows 10 still
+        /// selects TLS 1.0 and TLS 1.1 (which are now considered no longer secure). So we do NOT do this
+        /// but specify the protocol versions ourselves.</para>
+        /// </remarks>
+        [PublicAPI]
+        public static SslProtocols EnabledTlsProtocols { get; private set; }
+#pragma warning disable CA5398 // Avoid hardcoded SslProtocols values
+            = SslProtocols.Tls12 | SslProtocols.Tls13;
+#pragma warning restore CA5398 // Avoid hardcoded SslProtocols values
+
+        /// <summary>
+        /// Applies <see cref="EnabledTlsProtocols"/> to the current process (where possible). Currently, this
+        /// configures <see cref="ServicePointManager.SecurityProtocol"/>.
+        ///
+        /// <para>Note: If you use the AppCore.CliApp package, this method is automatically called for you.</para>
         /// </summary>
         [PublicAPI]
         public static void ApplyToCurrentProcess()
         {
-            // NOTE: The default value of "ServicePointManager.SecurityProtocol" depends on the .NET Framework
-            //   being used. This is why this method makes sure the value is the same across all frameworks.
-
-#pragma warning disable CA5386 // Avoid hardcoding SecurityProtocolType value -> we don't want the OS to select outdated TLS versions
-            EnableProtocol(SecurityProtocolType.Tls13); // TLS 1.3
-            EnableProtocol(SecurityProtocolType.Tls12); // TLS 1.2
-#pragma warning restore CA5386 // Avoid hardcoding SecurityProtocolType value
-
-#pragma warning disable CA5364 // Do Not Use Deprecated Security Protocols
-            // NOTE: TLS 1.0 and 1.1 are considered obsolete/outdated nowadays and are disabled on more and more
-            //   server. To avoid downgrade attacks, we'll disable them for clients as well.
-            DisableProtocol(SecurityProtocolType.Tls);   // TLS 1.0
-            DisableProtocol(SecurityProtocolType.Tls11); // TLS 1.1
-
-#pragma warning disable 618
-            // SSL 3 is generally considered insecure and should never be used anymore.
-            DisableProtocol(SecurityProtocolType.Ssl3);
-#pragma warning restore 618
-#pragma warning restore CA5364 // Do Not Use Deprecated Security Protocols
+            // NOTE: The enum "SecurityProtocolType" uses exactly the same values as "SslProtocols".
+            //   See: https://github.com/dotnet/runtime/blob/master/src/libraries/System.Net.ServicePoint/src/System/Net/SecurityProtocolType.cs
+            ServicePointManager.SecurityProtocol = (SecurityProtocolType)EnabledTlsProtocols;
         }
 
         /// <summary>
-        /// Globally enables the specified protocol.
+        /// Adds the specified protocol to <see cref="EnabledTlsProtocols"/> and calls <see cref="ApplyToCurrentProcess"/>
+        /// afterwards.
+        ///
+        /// <para>Note: You should only do this if it's absolutely necessary.</para>
         /// </summary>
         [PublicAPI]
-        public static void EnableProtocol(SecurityProtocolType protocol)
+        public static void EnableProtocol(SslProtocols protocol)
         {
-            ServicePointManager.SecurityProtocol |= protocol;
+            EnabledTlsProtocols |= protocol;
+
+            ApplyToCurrentProcess();
         }
 
         /// <summary>
-        /// Globally enables the specified protocol.
+        /// Removes the specified protocol from <see cref="EnabledTlsProtocols"/> and calls <see cref="ApplyToCurrentProcess"/>
+        /// afterwards.
         /// </summary>
         [PublicAPI]
-        public static void DisableProtocol(SecurityProtocolType protocol)
+        public static void DisableProtocol(SslProtocols protocol)
         {
-            ServicePointManager.SecurityProtocol &= ~protocol;
+            EnabledTlsProtocols &= ~protocol;
+
+            ApplyToCurrentProcess();
         }
     }
 }
