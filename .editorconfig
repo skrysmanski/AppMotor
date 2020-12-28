@@ -6,6 +6,8 @@
 #
 # For Visual Studio additions, see: https://aka.ms/editorconfigdocs
 #
+# You can find the latest version of this file here: https://github.com/skrysmanski/base-dotnet
+#
 #################################################################################
 
 root = true
@@ -50,11 +52,7 @@ end_of_line = crlf
 [*.cs]
 charset = utf-8-bom
 
-# Unfortunately, Visual Studio doesn't enforce the end-of-line style on save. This
-# can easily lead to mixed line endings. Also both Visual Studio and ReSharper
-# have (had) issues of creating mixed line endings when not using crlf. So we'll use
-# crlf here (since most development will happen in Visual Studio on Windows).
-# See also: https://youtrack.jetbrains.com/issue/RSRP-478837
+# For explanation why "crlf", see: https://github.com/skrysmanski/base-dotnet/blob/main/docs/cs-line-endings.md
 end_of_line = crlf
 
 dotnet_style_qualification_for_field = true:suggestion
@@ -142,6 +140,13 @@ indent_size = 2
 # files - and always creates .csproj files with crlf. Thus, we enforce the end-of-line
 # characters in .gitattributes instead.
 end_of_line = unset
+
+
+#
+# Razor files
+#
+[*.cshtml]
+charset = utf-8-bom
 
 
 #
