@@ -170,8 +170,10 @@ namespace AppMotor.CliApp.CommandLine
     /// <see cref="CliParam.IsPositionalParameter"/>, and <see cref="CliParam.PositionIndex"/> for more details on
     /// the difference between these two parameter types.
     /// </summary>
-    /// <typeparam name="T">The type of this parameter.</typeparam>
-    public class CliParam<T> : CliParam where T : notnull
+    /// <typeparam name="T">The type of this parameter. Required parameters should be non-nullable. Optional
+    /// parameters can either be nullable (when <see cref="DefaultValue"/> is <c>null</c>) or non-nullable
+    /// (when <see cref="DefaultValue"/> is not <c>null</c>).</typeparam>
+    public class CliParam<T> : CliParam
     {
         /// <summary>
         /// The default value of this parameter. If set, the parameter is considered "optional"; if

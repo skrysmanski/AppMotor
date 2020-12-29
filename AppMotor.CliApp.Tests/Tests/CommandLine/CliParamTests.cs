@@ -113,6 +113,82 @@ namespace AppMotor.CliApp.Tests.CommandLine
             app.ShouldHaveNoOutput();
         }
 
+        /// <summary>
+        /// Tests that named parameters can have <c>null</c> as default value.
+        /// </summary>
+        [Fact]
+        public void TestNamedParameter_WithNullDefaultValue_ValueType()
+        {
+            // Setup
+            var param = new CliParam<int?>("--value")
+            {
+                DefaultValue = null,
+            };
+            param.IsPositionalParameter.ShouldBe(false);
+
+            // Test
+            param.DefaultValue.IsSet.ShouldBe(true);
+            param.DefaultValue.Value.ShouldBeNull();
+
+            var underlyingImplementation = (Option<int?>)param.UnderlyingImplementation;
+            underlyingImplementation.Argument.HasDefaultValue.ShouldBe(true);
+            underlyingImplementation.IsRequired.ShouldBe(false);
+
+            // Test without specifying parameter
+            var app = new TestApplicationWithoutCommands(
+                () => param.Value.ShouldBeNull(),
+                param
+            );
+            app.Run().ShouldBe(0);
+            app.ShouldHaveNoOutput();
+
+            // Test with specifying parameter
+            app = new TestApplicationWithoutCommands(
+                () => param.Value.ShouldBe(44),
+                param
+            );
+            app.Run("--value", "44").ShouldBe(0);
+            app.ShouldHaveNoOutput();
+        }
+
+        /// <summary>
+        /// Tests that named parameters can have <c>null</c> as default value.
+        /// </summary>
+        [Fact]
+        public void TestNamedParameter_WithNullDefaultValue_RefType()
+        {
+            // Setup
+            var param = new CliParam<string?>("--value")
+            {
+                DefaultValue = null,
+            };
+            param.IsPositionalParameter.ShouldBe(false);
+
+            // Test
+            param.DefaultValue.IsSet.ShouldBe(true);
+            param.DefaultValue.Value.ShouldBeNull();
+
+            var underlyingImplementation = (Option<string?>)param.UnderlyingImplementation;
+            underlyingImplementation.Argument.HasDefaultValue.ShouldBe(true);
+            underlyingImplementation.IsRequired.ShouldBe(false);
+
+            // Test without specifying parameter
+            var app = new TestApplicationWithoutCommands(
+                () => param.Value.ShouldBeNull(),
+                param
+            );
+            app.Run().ShouldBe(0);
+            app.ShouldHaveNoOutput();
+
+            // Test with specifying parameter
+            app = new TestApplicationWithoutCommands(
+                () => param.Value.ShouldBe("abc"),
+                param
+            );
+            app.Run("--value", "abc").ShouldBe(0);
+            app.ShouldHaveNoOutput();
+        }
+
         [Fact]
         public void TestNamedParameter_WithoutDefaultValue()
         {
