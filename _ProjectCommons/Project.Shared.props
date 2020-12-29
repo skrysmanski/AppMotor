@@ -51,6 +51,15 @@
     <EnableUnsafeUTF7Encoding>false</EnableUnsafeUTF7Encoding>
   </PropertyGroup>
 
+  <!--
+    JetBrains/ReSharper annoation must be explicitely enabled to be compiled into the resulting binary.
+
+    See: https://www.jetbrains.com/help/resharper/Code_Analysis__Annotations_in_Source_Code.html
+  -->
+  <PropertyGroup Label="JetBrains.Annotations">
+    <DefineConstants>$(DefineConstants);JETBRAINS_ANNOTATIONS</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2020.3.0" />
   </ItemGroup>
