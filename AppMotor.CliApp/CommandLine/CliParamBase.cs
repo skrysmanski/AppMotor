@@ -30,8 +30,7 @@ using JetBrains.Annotations;
 namespace AppMotor.CliApp.CommandLine
 {
     /// <summary>
-    /// Non-generic base class for <see cref="CliParam{T}"/>. Contains all members that don't depend on the parameter's
-    /// data type.
+    /// Non-generic base class for <see cref="CliParam{T}"/>.
     ///
     /// <para>Note: You should not use this class directly. Instead, use <see cref="CliParam{T}"/>.</para>
     /// </summary>
