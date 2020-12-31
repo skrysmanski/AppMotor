@@ -76,7 +76,7 @@ namespace AppMotor.CliApp.CommandLine
 
         private static void ValidateCommandName(string name)
         {
-            Validate.Argument.IsNotNull(name, nameof(name));
+            Validate.Argument.IsNotNullOrWhiteSpace(name, nameof(name));
 
             if (HelpParamUtils.IsHelpParamName(name) || name.Equals(HelpParamUtils.HelpCommandName, StringComparison.OrdinalIgnoreCase))
             {

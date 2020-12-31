@@ -112,6 +112,16 @@ namespace AppMotor.CliApp.Tests.CommandLine
         }
 
         [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("  ")]
+        public void TestInvalidName(string? name)
+        {
+            Should.Throw<ArgumentException>(() => new VariableNameCommand(name!));
+            Should.Throw<ArgumentException>(() => new VariableNameCommand("primaryname", name!));
+        }
+
+        [Theory]
         [InlineData("--help")]
         [InlineData("--Help")]
         [InlineData("-h")]

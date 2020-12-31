@@ -401,17 +401,23 @@ namespace AppMotor.CliApp.Tests.CommandLine
             ex5.Message.ShouldContain("-v");
         }
 
-        [Fact]
-        public void TestNullName_NamedParameter()
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("  ")]
+        public void TestInvalidName_NamedParameter(string? name)
         {
-            Should.Throw<ArgumentNullException>(() => new CliParam<int>(null!));
-            Should.Throw<ArgumentNullException>(() => new CliParam<int>("--value", null!));
+            Should.Throw<ArgumentException>(() => new CliParam<int>(name!));
+            Should.Throw<ArgumentException>(() => new CliParam<int>("--value", name!));
         }
 
-        [Fact]
-        public void TestNullName_PositionalParameter()
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("  ")]
+        public void TestInvalidName_PositionalParameter(string? name)
         {
-            Should.Throw<ArgumentNullException>(() => new CliParam<int>(null!, positionIndex: 5));
+            Should.Throw<ArgumentException>(() => new CliParam<int>(name!, positionIndex: 5));
         }
 
         [Theory]

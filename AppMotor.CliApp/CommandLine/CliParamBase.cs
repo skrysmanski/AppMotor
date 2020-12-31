@@ -112,9 +112,9 @@ namespace AppMotor.CliApp.CommandLine
 
             foreach (var name in allNames)
             {
-                if (name is null)
+                if (string.IsNullOrWhiteSpace(name))
                 {
-                    throw new ArgumentNullException("None of the names must not be null.", innerException: null);
+                    throw new ArgumentException("Parameter names can't be null or whitespace.");
                 }
 
                 if (namesSet.Contains(name))
@@ -143,7 +143,7 @@ namespace AppMotor.CliApp.CommandLine
         /// are ordered by this value</param>
         protected CliParamBase(string name, int positionIndex)
         {
-            Validate.Argument.IsNotNull(name, nameof(name));
+            Validate.Argument.IsNotNullOrWhiteSpace(name, nameof(name));
 
             if (HelpParamUtils.IsHelpParamName(name))
             {
