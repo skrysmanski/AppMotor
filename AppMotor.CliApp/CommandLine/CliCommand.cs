@@ -44,7 +44,7 @@ namespace AppMotor.CliApp.CommandLine
         /// </summary>
         protected abstract CliCommandExecutor Executor { get; }
 
-        private ImmutableList<CliParam>? _allParams;
+        private ImmutableList<CliParamBase>? _allParams;
 
         /// <summary>
         /// Constructor.
@@ -66,11 +66,11 @@ namespace AppMotor.CliApp.CommandLine
 
         /// <summary>
         /// Returns all parameters defined for this command. The default implementation uses reflection to find all properties
-        /// and fields of type <see cref="CliParam"/>. Inheritors may override this method either to filter its result or provide
+        /// and fields of type <see cref="CliParamBase"/>. Inheritors may override this method either to filter its result or provide
         /// their own list.
         /// </summary>
         [PublicAPI]
-        protected virtual IEnumerable<CliParam> GetAllParams()
+        protected virtual IEnumerable<CliParamBase> GetAllParams()
         {
             return CliParamUtils.GetAllParamsFor(this);
         }

@@ -25,12 +25,12 @@ namespace AppMotor.CliApp.TestUtils
     {
         private readonly Action m_mainAction;
 
-        private readonly List<CliParam> m_params = new();
+        private readonly List<CliParamBase> m_params = new();
 
         /// <inheritdoc />
         protected override CliCommandExecutor Executor => new(Execute);
 
-        public TestApplicationWithoutCommands(Action mainAction, params CliParam[] cliParams)
+        public TestApplicationWithoutCommands(Action mainAction, params CliParamBase[] cliParams)
         {
             this.m_mainAction = mainAction;
 
@@ -38,7 +38,7 @@ namespace AppMotor.CliApp.TestUtils
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<CliParam> GetAllParams()
+        protected override IEnumerable<CliParamBase> GetAllParams()
         {
             return this.m_params;
         }

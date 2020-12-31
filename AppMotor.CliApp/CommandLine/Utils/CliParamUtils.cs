@@ -31,21 +31,21 @@ namespace AppMotor.CliApp.CommandLine.Utils
     public static class CliParamUtils
     {
         /// <summary>
-        /// Uses reflection to obtain all <see cref="CliParam"/> instances from the container. Note that only
+        /// Uses reflection to obtain all <see cref="CliParamBase"/> instances from the container. Note that only
         /// instance (i.e. non-static) properties and fields are checked. Base classes are also checked.
-        /// Positional parameters (<see cref="CliParam.IsPositionalParameter"/>) are returned first and in order
-        /// of <see cref="CliParam.PositionIndex"/>.
+        /// Positional parameters (<see cref="CliParamBase.IsPositionalParameter"/>) are returned first and in order
+        /// of <see cref="CliParamBase.PositionIndex"/>.
         /// </summary>
         /// <param name="container">The object that holds the parameters.</param>
         [MustUseReturnValue]
 #pragma warning disable CA1002 // Do not expose generic lists // BUG: https://github.com/dotnet/roslyn-analyzers/issues/4508
-        public static List<CliParam> GetAllParamsFor(object container)
+        public static List<CliParamBase> GetAllParamsFor(object container)
 #pragma warning restore CA1002 // Do not expose generic lists
         {
             Validate.Argument.IsNotNull(container, nameof(container));
 
-            var allParams = new List<CliParam>();
-            var alreadyFoundCliParams = new HashSet<CliParam>(ReferenceEqualityComparer.Instance);
+            var allParams = new List<CliParamBase>();
+            var alreadyFoundCliParams = new HashSet<CliParamBase>(ReferenceEqualityComparer.Instance);
             var allParamNames = new HashSet<string>();
 
             Type? containerType = container.GetType();
@@ -68,11 +68,11 @@ namespace AppMotor.CliApp.CommandLine.Utils
         }
 
         [MustUseReturnValue]
-        private static IEnumerable<CliParam> GetAllParamsFor(object container, Type type, HashSet<CliParam> alreadyFoundCliParams, HashSet<string> allParamNames)
+        private static IEnumerable<CliParamBase> GetAllParamsFor(object container, Type type, HashSet<CliParamBase> alreadyFoundCliParams, HashSet<string> allParamNames)
         {
             foreach (var propertyInfo in type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
-                if (!propertyInfo.PropertyType.Is<CliParam>())
+                if (!propertyInfo.PropertyType.Is<CliParamBase>())
                 {
                     continue;
                 }
@@ -82,7 +82,7 @@ namespace AppMotor.CliApp.CommandLine.Utils
                     continue;
                 }
 
-                var cliParam = (CliParam?)propertyInfo.GetValue(container);
+                var cliParam = (CliParamBase?)propertyInfo.GetValue(container);
                 if (cliParam == null)
                 {
                     continue;
@@ -96,12 +96,12 @@ namespace AppMotor.CliApp.CommandLine.Utils
 
             foreach (var fieldInfo in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
-                if (!fieldInfo.FieldType.Is<CliParam>())
+                if (!fieldInfo.FieldType.Is<CliParamBase>())
                 {
                     continue;
                 }
 
-                var cliParam = (CliParam?)fieldInfo.GetValue(container);
+                var cliParam = (CliParamBase?)fieldInfo.GetValue(container);
                 if (cliParam == null)
                 {
                     continue;
@@ -114,7 +114,7 @@ namespace AppMotor.CliApp.CommandLine.Utils
             }
         }
 
-        private static bool AddIfNeeded(CliParam cliParam, HashSet<CliParam> alreadyFoundCliParams, HashSet<string> allParamNames)
+        private static bool AddIfNeeded(CliParamBase cliParam, HashSet<CliParamBase> alreadyFoundCliParams, HashSet<string> allParamNames)
         {
             if (alreadyFoundCliParams.Contains(cliParam))
             {
@@ -140,12 +140,12 @@ namespace AppMotor.CliApp.CommandLine.Utils
         /// Sorts positional parameters by their index; sorts positional parameters before
         /// named parameters.
         /// </summary>
-        private sealed class ParamComparer : IComparer<CliParam>
+        private sealed class ParamComparer : IComparer<CliParamBase>
         {
             public static readonly ParamComparer INSTANCE = new();
 
             /// <inheritdoc />
-            public int Compare(CliParam? x, CliParam? y)
+            public int Compare(CliParamBase? x, CliParamBase? y)
             {
                 if (x?.PositionIndex == null && y?.PositionIndex == null)
                 {

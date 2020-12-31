@@ -36,7 +36,7 @@ namespace AppMotor.CliApp.CommandLine
     ///
     /// <para>Note: You should not use this class directly. Instead, use <see cref="CliParam{T}"/>.</para>
     /// </summary>
-    public abstract class CliParam
+    public abstract class CliParamBase
     {
         internal static readonly object FALSE_AS_OBJECT = false;
 
@@ -107,7 +107,7 @@ namespace AppMotor.CliApp.CommandLine
         /// should start with either "--", "-" or "/".</param>
         /// <param name="aliases">Other names that represent the same parameter. Usually the <paramref name="primaryName"/>
         /// would be the long form (like <c>--length</c>) and the alias(es) would be the short form (like <c>-l</c>).</param>
-        protected CliParam(string primaryName, params string[] aliases)
+        protected CliParamBase(string primaryName, params string[] aliases)
         {
             var allNames = ParamsUtils.Combine(primaryName, aliases).ToImmutableList();
             var namesSet = new HashSet<string>();
@@ -143,7 +143,7 @@ namespace AppMotor.CliApp.CommandLine
         /// <param name="name">The name of this parameter; only used for generating the help text.</param>
         /// <param name="positionIndex">The position of this parameter among all other positional parameters; positional parameters
         /// are ordered by this value</param>
-        protected CliParam(string name, int positionIndex)
+        protected CliParamBase(string name, int positionIndex)
         {
             Validate.Argument.IsNotNull(name, nameof(name));
 
@@ -166,14 +166,14 @@ namespace AppMotor.CliApp.CommandLine
     }
 
     /// <summary>
-    /// Represents a command line parameter - either named or positional. See <see cref="CliParam.IsNamedParameter"/>,
-    /// <see cref="CliParam.IsPositionalParameter"/>, and <see cref="CliParam.PositionIndex"/> for more details on
+    /// Represents a command line parameter - either named or positional. See <see cref="CliParamBase.IsNamedParameter"/>,
+    /// <see cref="CliParamBase.IsPositionalParameter"/>, and <see cref="CliParamBase.PositionIndex"/> for more details on
     /// the difference between these two parameter types.
     /// </summary>
     /// <typeparam name="T">The type of this parameter. Required parameters should be non-nullable. Optional
     /// parameters can either be nullable (when <see cref="DefaultValue"/> is <c>null</c>) or non-nullable
     /// (when <see cref="DefaultValue"/> is not <c>null</c>).</typeparam>
-    public class CliParam<T> : CliParam
+    public class CliParam<T> : CliParamBase
     {
         /// <summary>
         /// The default value of this parameter. If set, the parameter is considered "optional"; if
@@ -211,7 +211,7 @@ namespace AppMotor.CliApp.CommandLine
         private Optional<T> _value;
 
         /// <summary>
-        /// Creates a named parameter (in contrast to a positional one). See <see cref="CliParam.IsNamedParameter"/> for more details.
+        /// Creates a named parameter (in contrast to a positional one). See <see cref="CliParamBase.IsNamedParameter"/> for more details.
         /// </summary>
         /// <param name="primaryName">The primary name for this parameter; for better documentation purposes this
         /// should start with either "--", "-" or "/".</param>
@@ -229,7 +229,7 @@ namespace AppMotor.CliApp.CommandLine
         }
 
         /// <summary>
-        /// Creates a positional parameter (in contrast to a named parameter). See <see cref="CliParam.IsPositionalParameter"/> for more details.
+        /// Creates a positional parameter (in contrast to a named parameter). See <see cref="CliParamBase.IsPositionalParameter"/> for more details.
         /// </summary>
         /// <param name="name">The name of this parameter; only used for generating the help text.</param>
         /// <param name="positionIndex">The position of this parameter among all other positional parameters; positional parameters
