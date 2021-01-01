@@ -65,7 +65,7 @@ namespace AppMotor.CliApp.CommandLine
         // NOTE: The type of this property is not ImmutableArray on purpose - because you can't initialize
         //   ImmutableArray with an array initializer (i.e. "new[] { ... }") - which is what we want for ease of use.
         [PublicAPI]
-        public IReadOnlyCollection<CliVerb>? SubVerbs
+        public IReadOnlyList<CliVerb>? SubVerbs
         {
             get => this._subVerbs;
             init => this._subVerbs = value?.ToImmutableArray();
