@@ -14,26 +14,15 @@
 // limitations under the License.
 #endregion
 
-using System.Collections.Generic;
-
 using AppMotor.CliApp.CommandLine;
 
 namespace AppMotor.CliApp.TestUtils
 {
-    internal class TestVerbGroup : CliVerbGroup
+    internal class TestVerbGroup : CliVerb
     {
-        private readonly CliVerb[] _subVerbs;
-
-        /// <inheritdoc />
         public TestVerbGroup(string name, params CliVerb[] subVerbs) : base(name)
         {
-            this._subVerbs = subVerbs;
-        }
-
-        /// <inheritdoc />
-        protected override IEnumerable<CliVerb> GetSubVerbs()
-        {
-            return this._subVerbs;
+            this.SubVerbs = subVerbs;
         }
     }
 }

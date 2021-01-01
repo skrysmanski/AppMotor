@@ -15,7 +15,7 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
+using System.Collections.Immutable;
 
 using AppMotor.CliApp.CommandLine;
 using AppMotor.CliApp.TestUtils;
@@ -150,7 +150,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             protected override string AppDescription => "The app's description";
 
             /// <inheritdoc />
-            public TestApplication() : base(new MoveCommand(), new MySubGroup())
+            public TestApplication() : base(new MoveVerb(), new MySubGroup())
             {
             }
 
@@ -175,50 +175,43 @@ namespace AppMotor.CliApp.Tests.CommandLine
                     HelpText = "The name to move",
                 };
 
-                public MoveCommand() : base("#move#", "#mv#", "#mov#")
-                {
-                }
-
-                /// <inheritdoc />
-                protected override IEnumerable<CliVerb>? GetSubVerbs()
-                {
-                    yield return new SubCommand("#sub1#");
-                }
-
                 private static void Execute()
                 {
                     throw new InvalidOperationException("We should not get here.");
                 }
             }
 
-            private sealed class MySubGroup : CliVerbGroup
+            private sealed class MoveVerb : CliVerb
             {
-                /// <inheritdoc />
-                public override string HelpText => "A simple verb group";
-
-                /// <inheritdoc />
-                public MySubGroup() : base("#subgroup#", "#subgrp#", "#sg#")
+                public MoveVerb() : base("#move#", "#mv#", "#mov#")
                 {
-                }
-
-                /// <inheritdoc />
-                protected override IEnumerable<CliVerb> GetSubVerbs()
-                {
-                    yield return new SubCommand("#sub2#");
+                    this.Command = new MoveCommand();
+                    var subVerb = new SubVerb("#sub1#");
+                    this.SubVerbs = new[] { subVerb };
                 }
             }
 
-            private sealed class SubCommand : CliCommand
+            private sealed class MySubGroup : CliVerb
+            {
+                public MySubGroup() : base("#subgroup#", "#subgrp#", "#sg#")
+                {
+                    this.HelpText = "A simple verb group";
+                    this.SubVerbs = new[] { new SubVerb("#sub2#") };
+                }
+            }
+
+            private sealed class SubVerb : CliVerb
+            {
+                public SubVerb(string name) : base(name, new NonExecutableCommand())
+                {
+                    this.HelpText = $"A sub command named {name}";
+                }
+            }
+
+            private sealed class NonExecutableCommand : CliCommand
             {
                 /// <inheritdoc />
-                public override string HelpText => $"A sub command named {this.Name}";
-
-                /// <inheritdoc />
                 protected override CliCommandExecutor Executor => new(Execute);
-
-                public SubCommand(string name) : base(name)
-                {
-                }
 
                 private static void Execute()
                 {

@@ -105,8 +105,7 @@ namespace AppMotor.CliApp.CommandLine
         }
 
         /// <summary>
-        /// Returns all verbs (<see cref="CliCommand"/> and <see cref="CliVerbGroup"/>) that are supported by
-        /// this application.
+        /// Returns all verbs that are supported by this application.
         /// </summary>
         protected abstract IEnumerable<CliVerb> GetVerbs();
     }

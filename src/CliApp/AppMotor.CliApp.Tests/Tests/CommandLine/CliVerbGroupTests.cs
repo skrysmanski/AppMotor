@@ -15,7 +15,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 
 using AppMotor.CliApp.CommandLine;
 using AppMotor.CliApp.TestUtils;
@@ -31,9 +30,19 @@ namespace AppMotor.CliApp.Tests.CommandLine
         [Fact]
         public void TestCommandGroup()
         {
-            var testCommand1 = new TestCommand("sub1");
-            var testCommand2 = new TestCommand("sub2");
-            var testGroup = new TestVerbGroup("parent", testCommand1, testCommand2);
+            var testCommand1 = new TestCommand();
+            var testCommand2 = new TestCommand();
+            var testGroup = new TestVerbGroup(
+                "parent",
+                new CliVerb("sub1")
+                {
+                    Command = testCommand1,
+                },
+                new CliVerb("sub2")
+                {
+                    Command = testCommand2,
+                }
+            );
 
             var testApp = new TestApplicationWithCommands(testGroup);
 
@@ -88,10 +97,6 @@ namespace AppMotor.CliApp.Tests.CommandLine
 
             private readonly CliParam<int> _value = new("--value");
 
-            public TestCommand(string name) : base(name)
-            {
-            }
-
             private void Execute()
             {
                 this.Executed.ShouldBe(false);
@@ -100,16 +105,10 @@ namespace AppMotor.CliApp.Tests.CommandLine
             }
         }
 
-        private sealed class VariableNameVerbGroup : CliVerbGroup
+        private sealed class VariableNameVerbGroup : CliVerb
         {
             public VariableNameVerbGroup(string name, params string[] aliases) : base(name, aliases)
             {
-            }
-
-            /// <inheritdoc />
-            protected override IEnumerable<CliVerb> GetSubVerbs()
-            {
-                throw new NotSupportedException();
             }
         }
     }

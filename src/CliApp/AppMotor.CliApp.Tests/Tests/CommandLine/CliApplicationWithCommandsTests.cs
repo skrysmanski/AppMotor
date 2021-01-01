@@ -67,7 +67,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
 
             /// <inheritdoc />
             public ExceptionTestApplication(bool throwErrorMessageException)
-                : base(new ErrorCommand(throwErrorMessageException))
+                : base(new CliVerb("error", new ErrorCommand(throwErrorMessageException)))
             {
             }
 
@@ -76,7 +76,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 private readonly bool _throwErrorMessageException;
 
                 /// <inheritdoc />
-                public ErrorCommand(bool throwErrorMessageException) : base("error")
+                public ErrorCommand(bool throwErrorMessageException)
                 {
                     this._throwErrorMessageException = throwErrorMessageException;
                 }

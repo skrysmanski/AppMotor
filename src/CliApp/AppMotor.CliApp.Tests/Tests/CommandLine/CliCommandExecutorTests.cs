@@ -213,9 +213,9 @@ namespace AppMotor.CliApp.Tests.CommandLine
             }
 
             /// <inheritdoc />
-            protected override IEnumerable<CliCommand> GetVerbs()
+            protected override IEnumerable<CliVerb> GetVerbs()
             {
-                yield return new TestCommand(this._commandExecutor);
+                yield return new CliVerb(COMMAND_NAME, new TestCommand(this._commandExecutor));
             }
         }
 
@@ -225,7 +225,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             protected override CliCommandExecutor Executor { get; }
 
             /// <inheritdoc />
-            public TestCommand(CliCommandExecutor commandExecutor) : base(COMMAND_NAME)
+            public TestCommand(CliCommandExecutor commandExecutor)
             {
                 this.Executor = commandExecutor;
             }
