@@ -15,9 +15,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Solution Items", "_Solutio
 		_ProjectCommons\Project.Tests.props = _ProjectCommons\Project.Tests.props
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{3C07A4A0-723A-450A-9749-F959B66D244B}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.Core", "src\Core\AppMotor.Core\AppMotor.Core.csproj", "{0E87039E-D882-44F8-BBA2-7DF51F26E1EF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.Core.Tests", "src\Core\AppMotor.Core.Tests\AppMotor.Core.Tests.csproj", "{2DBAB552-26F3-4EE8-9C9D-DF67FA933D82}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CliApp", "CliApp", "{F7DED723-5BC3-4A92-94F8-53DA496B0AA4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.CliApp", "src\CliApp\AppMotor.CliApp\AppMotor.CliApp.csproj", "{CBB59AA0-B953-4989-8AC9-9645AB5A0447}"
 EndProject
@@ -48,6 +52,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0E87039E-D882-44F8-BBA2-7DF51F26E1EF} = {3C07A4A0-723A-450A-9749-F959B66D244B}
+		{2DBAB552-26F3-4EE8-9C9D-DF67FA933D82} = {3C07A4A0-723A-450A-9749-F959B66D244B}
+		{CBB59AA0-B953-4989-8AC9-9645AB5A0447} = {F7DED723-5BC3-4A92-94F8-53DA496B0AA4}
+		{7468E2E3-BDE8-4C7C-A48F-23A90D2819B0} = {F7DED723-5BC3-4A92-94F8-53DA496B0AA4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F0718EB9-558A-47CC-96BF-5A380976A51B}
