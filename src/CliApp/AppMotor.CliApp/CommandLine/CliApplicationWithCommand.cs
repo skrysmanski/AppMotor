@@ -41,7 +41,7 @@ namespace AppMotor.CliApp.CommandLine
         /// The description of this application. Used for generating the help text.
         /// </summary>
         [PublicAPI]
-        protected string? AppDescription { get; init; }
+        public string? AppDescription { get; init; }
 
         /// <inheritdoc />
         protected sealed override CliApplicationExecutor MainExecutor => new(Execute);

@@ -43,7 +43,7 @@ namespace AppMotor.CliApp.CommandLine
         /// The description of this application. Used for generating the help text.
         /// </summary>
         [PublicAPI]
-        protected string? AppDescription { get; init; }
+        public string? AppDescription { get; init; }
 
         /// <summary>
         /// The verbs of this application.
