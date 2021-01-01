@@ -46,6 +46,9 @@ namespace AppMotor.CliApp.CommandLine
         /// <inheritdoc />
         protected sealed override CliApplicationExecutor MainExecutor => new(Execute);
 
+        /// <summary>
+        /// The main <see cref="CliCommand"/> for this application.
+        /// </summary>
         public CliCommand Command
         {
             get => this._command ?? throw new InvalidOperationException($"The property '{nameof(this.Command)}' has never been set.");
@@ -54,10 +57,17 @@ namespace AppMotor.CliApp.CommandLine
 
         private readonly CliCommand? _command;
 
+        /// <summary>
+        /// Constructor without setting <see cref="Command"/>. You need to set this property manually.
+        /// </summary>
         public CliApplicationWithCommand()
         {
         }
 
+        /// <summary>
+        /// Constructor that sets <see cref="Command"/>.
+        /// </summary>
+        /// <param name="command">The value for <see cref="Command"/></param>
         public CliApplicationWithCommand(CliCommand command)
         {
             Validate.Argument.IsNotNull(command, nameof(command));

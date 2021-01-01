@@ -41,6 +41,9 @@ namespace AppMotor.CliApp.CommandLine
         /// </summary>
         protected abstract CliCommandExecutor Executor { get; }
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         protected CliApplicationWithParams()
         {
             this.Command = new MainCommand(this);
