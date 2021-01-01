@@ -29,8 +29,9 @@ namespace AppMotor.CliApp.CommandLine
 {
     /// <summary>
     /// Represents a command line application with automatic command line argument parsing that bundles various
-    /// functions (via <see cref="CliCommand"/>s) - like the <c>git</c> or <c>dotnet</c> commands. If you need an
-    /// application that only does one thing, use <see cref="CliApplicationWithoutVerbs"/> instead.
+    /// functions (via <see cref="CliVerb"/>s) - like the <c>git</c> or <c>dotnet</c> commands. If you need an
+    /// application that only does one thing, use <see cref="CliApplicationWithParams"/> or <see cref="CliApplicationWithCommand"/>
+    /// instead.
     /// </summary>
     /// <remarks>
     /// Sub classes cannot have parameters (<see cref="CliParam{T}"/>) of their own. Parameter can only exist

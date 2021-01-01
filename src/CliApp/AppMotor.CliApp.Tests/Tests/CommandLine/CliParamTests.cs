@@ -97,7 +97,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             underlyingImplementation.IsRequired.ShouldBe(false);
 
             // Test without specifying parameter
-            var app = new TestApplicationWithoutVerbs(
+            var app = new TestApplicationWithParams(
                 () => param.Value.ShouldBe(42),
                 param
             );
@@ -105,7 +105,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             app.ShouldHaveNoOutput();
 
             // Test with specifying parameter
-            app = new TestApplicationWithoutVerbs(
+            app = new TestApplicationWithParams(
                 () => param.Value.ShouldBe(44),
                 param
             );
@@ -135,7 +135,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             underlyingImplementation.IsRequired.ShouldBe(false);
 
             // Test without specifying parameter
-            var app = new TestApplicationWithoutVerbs(
+            var app = new TestApplicationWithParams(
                 () => param.Value.ShouldBeNull(),
                 param
             );
@@ -143,7 +143,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             app.ShouldHaveNoOutput();
 
             // Test with specifying parameter
-            app = new TestApplicationWithoutVerbs(
+            app = new TestApplicationWithParams(
                 () => param.Value.ShouldBe(44),
                 param
             );
@@ -173,7 +173,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             underlyingImplementation.IsRequired.ShouldBe(false);
 
             // Test without specifying parameter
-            var app = new TestApplicationWithoutVerbs(
+            var app = new TestApplicationWithParams(
                 () => param.Value.ShouldBeNull(),
                 param
             );
@@ -181,7 +181,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             app.ShouldHaveNoOutput();
 
             // Test with specifying parameter
-            app = new TestApplicationWithoutVerbs(
+            app = new TestApplicationWithParams(
                 () => param.Value.ShouldBe("abc"),
                 param
             );
@@ -204,7 +204,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             underlyingImplementation.IsRequired.ShouldBe(true);
 
             // Test without specifying parameter
-            var app = new TestApplicationWithoutVerbs(
+            var app = new TestApplicationWithParams(
                 () => throw new Exception("We should not get here."),
                 param
             );
@@ -212,7 +212,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             app.TerminalOutput.ShouldContain("Option '--value' is required.");
 
             // Test with specifying parameter
-            app = new TestApplicationWithoutVerbs(
+            app = new TestApplicationWithParams(
                 () => param.Value.ShouldBe(44),
                 param
             );
@@ -238,7 +238,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             underlyingImplementation.IsRequired.ShouldBe(false);
 
             // Test without specifying parameter
-            var app = new TestApplicationWithoutVerbs(
+            var app = new TestApplicationWithParams(
                 () => param.Value.ShouldBe(false),
                 param
             );
@@ -246,7 +246,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             app.ShouldHaveNoOutput();
 
             // Test with specifying parameter without value
-            app = new TestApplicationWithoutVerbs(
+            app = new TestApplicationWithParams(
                 () => param.Value.ShouldBe(true),
                 param
             );
@@ -254,7 +254,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             app.ShouldHaveNoOutput();
 
             // Test with specifying parameter with value=true
-            app = new TestApplicationWithoutVerbs(
+            app = new TestApplicationWithParams(
                 () => param.Value.ShouldBe(true),
                 param
             );
@@ -262,7 +262,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             app.ShouldHaveNoOutput();
 
             // Test with specifying parameter with value=false
-            app = new TestApplicationWithoutVerbs(
+            app = new TestApplicationWithParams(
                 () => param.Value.ShouldBe(false),
                 param
             );
@@ -288,7 +288,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             underlyingImplementation.HasDefaultValue.ShouldBe(true);
 
             // Test without specifying parameter
-            var app = new TestApplicationWithoutVerbs(
+            var app = new TestApplicationWithParams(
                 () => param.Value.ShouldBe("abc"),
                 param
             );
@@ -296,7 +296,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             app.ShouldHaveNoOutput();
 
             // Test with specifying parameter
-            app = new TestApplicationWithoutVerbs(
+            app = new TestApplicationWithParams(
                 () => param.Value.ShouldBe("def"),
                 param
             );
@@ -318,7 +318,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             underlyingImplementation.HasDefaultValue.ShouldBe(false);
 
             // Test without specifying parameter
-            var app = new TestApplicationWithoutVerbs(
+            var app = new TestApplicationWithParams(
                 () => throw new Exception("We should not get here"),
                 param
             );
@@ -326,7 +326,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             app.TerminalOutput.ShouldContain("Required argument missing for command");
 
             // Test with specifying parameter
-            app = new TestApplicationWithoutVerbs(
+            app = new TestApplicationWithParams(
                 () => param.Value.ShouldBe("def"),
                 param
             );

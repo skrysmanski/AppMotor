@@ -32,8 +32,8 @@ namespace AppMotor.CliApp
     /// <summary>
     /// Base class for .NET console applications. Use <see cref="Run{TApp}"/> or <see cref="RunAsync{TApp}"/> as entry point.
     ///
-    /// <para>You may consider using <see cref="CliApplicationWithVerbs"/> or <see cref="CliApplicationWithoutVerbs"/>
-    /// instead - for convenience reasons.</para>
+    /// <para>You may consider using <see cref="CliApplicationWithVerbs"/>, <see cref="CliApplicationWithParams"/>, or
+    /// <see cref="CliApplicationWithCommand"/> instead - for convenience reasons.</para>
     /// </summary>
     public abstract class CliApplication
     {

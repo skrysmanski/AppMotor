@@ -24,14 +24,16 @@ namespace AppMotor.CliApp.CommandLine
 {
     /// <summary>
     /// Represents a command line application with automatic command line argument parsing that only does
-    /// one function - like the <c>mv</c>, <c>rm</c>, or <c>dir</c> commands. If you need an application
-    /// that bundles various functions, use <see cref="CliApplicationWithVerbs"/> instead.
+    /// one function - like the <c>mv</c>, <c>rm</c>, or <c>dir</c> commands.
+    ///
+    /// <para>Parameters (<see cref="CliParam{T}"/>) defined in a sub class are detected automatically (via
+    /// reflection).</para>
+    ///
+    /// <para>If you need an application that bundles various functions, use <see cref="CliApplicationWithVerbs"/>
+    /// instead. If you want to specify a single <see cref="CliCommand"/> as main command (instead of defining the
+    /// parameters in a sub class of this class), use <see cref="CliApplicationWithCommand"/> instead.</para>
     /// </summary>
-    /// <remarks>
-    /// Parameters (<see cref="CliParam{T}"/>) defined in a sub class are detected automatically (via reflection).
-    /// Otherwise you can override <see cref="GetAllParams"/>.
-    /// </remarks>
-    public abstract class CliApplicationWithoutVerbs : CliApplicationWithCommand
+    public abstract class CliApplicationWithParams : CliApplicationWithCommand
     {
         /// <summary>
         /// Executes this application. Implementations can access all command line parameters though the <see cref="CliParam{T}.Value"/>
@@ -39,7 +41,7 @@ namespace AppMotor.CliApp.CommandLine
         /// </summary>
         protected abstract CliCommandExecutor Executor { get; }
 
-        protected CliApplicationWithoutVerbs()
+        protected CliApplicationWithParams()
         {
             this.Command = new MainCommand(this);
         }
@@ -57,13 +59,13 @@ namespace AppMotor.CliApp.CommandLine
 
         private sealed class MainCommand : CliCommand
         {
-            private readonly CliApplicationWithoutVerbs _cliApp;
+            private readonly CliApplicationWithParams _cliApp;
 
             /// <inheritdoc />
             protected override CliCommandExecutor Executor => this._cliApp.Executor;
 
             /// <inheritdoc />
-            public MainCommand(CliApplicationWithoutVerbs cliApp)
+            public MainCommand(CliApplicationWithParams cliApp)
             {
                 this._cliApp = cliApp;
             }

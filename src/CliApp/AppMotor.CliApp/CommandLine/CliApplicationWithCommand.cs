@@ -25,6 +25,16 @@ using JetBrains.Annotations;
 
 namespace AppMotor.CliApp.CommandLine
 {
+    /// <summary>
+    /// Represents a command line application with automatic command line argument parsing that only does
+    /// one function - like the <c>mv</c>, <c>rm</c>, or <c>dir</c> commands.
+    ///
+    /// <para>The main command is specified either via constructor or via the <see cref="Command"/> property.</para>
+    ///
+    /// <para>If you need an application that bundles various functions, use <see cref="CliApplicationWithVerbs"/> instead.
+    /// If you want to specify the <see cref="CliParam{T}"/>s directly in a sub class of this class, use
+    /// <see cref="CliApplicationWithParams"/> instead.</para>
+    /// </summary>
     public class CliApplicationWithCommand : CliApplication
     {
         /// <summary>

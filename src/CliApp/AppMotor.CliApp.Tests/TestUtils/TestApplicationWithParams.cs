@@ -21,7 +21,7 @@ using AppMotor.CliApp.CommandLine;
 
 namespace AppMotor.CliApp.TestUtils
 {
-    internal class TestApplicationWithoutVerbs : TestApplicationWithoutVerbsBase
+    internal class TestApplicationWithParams : TestApplicationWithParamsBase
     {
         private readonly Action _mainAction;
 
@@ -30,7 +30,7 @@ namespace AppMotor.CliApp.TestUtils
         /// <inheritdoc />
         protected override CliCommandExecutor Executor => new(Execute);
 
-        public TestApplicationWithoutVerbs(Action mainAction, params CliParamBase[] cliParams)
+        public TestApplicationWithParams(Action mainAction, params CliParamBase[] cliParams)
         {
             this._mainAction = mainAction;
 
