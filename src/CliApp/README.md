@@ -1,4 +1,4 @@
-# APIs for Command Line Apps
+﻿# APIs for Command Line Apps
 
 This library contains various APIs for building command line apps.
 
@@ -15,7 +15,7 @@ The base classes `CliApplicationWithCommands` and `CliApplicationWithoutCommands
 
 A command line interface definition contains of parameters, commands, and verb groups.
 
-*Side note:* For additional details, see [DESIGN-NOTES.md](CommandLine/DESIGN-NOTES.md).
+*Side note:* For additional details, see [DESIGN-NOTES.md](AppMotor.CliApp/CommandLine/DESIGN-NOTES.md).
 
 ### Parameters
 
