@@ -73,9 +73,7 @@ namespace AppMotor.CliApp.CommandLine
 
         private readonly ImmutableArray<CliVerb>? _subVerbs;
 
-        internal Command UnderlyingImplementation => this._underlyingImplementation.Value;
-
-        private readonly Lazy<Command> _underlyingImplementation;
+        private Command? _underlyingImplementation;
 
         /// <summary>
         /// Constructor.
@@ -101,8 +99,6 @@ namespace AppMotor.CliApp.CommandLine
             this.Name = name;
             this.Aliases = aliases.ToImmutableList();
             this.Command = command;
-
-            this._underlyingImplementation = new Lazy<Command>(ToUnderlyingImplementation);
         }
 
         private static void ValidateCommandName(string name)
@@ -116,39 +112,43 @@ namespace AppMotor.CliApp.CommandLine
         }
 
         /// <summary>
-        /// Creates the underlying implementation. Callers should not call this method but use
-        /// <see cref="UnderlyingImplementation"/> instead.
+        /// Creates the underlying implementation.
         /// </summary>
-        private Command ToUnderlyingImplementation()
+        internal Command ToUnderlyingImplementation()
         {
-            var command = new Command(this.Name, this.HelpText ?? this.Command?.HelpText);
-
-            foreach (var alias in this.Aliases)
+            if (this._underlyingImplementation is null)
             {
-                command.AddAlias(alias);
-            }
+                var command = new Command(this.Name, this.HelpText ?? this.Command?.HelpText);
 
-            if (this.SubVerbs != null)
-            {
-                foreach (var subVerb in this.SubVerbs)
+                foreach (var alias in this.Aliases)
                 {
-                    command.AddCommand(subVerb.UnderlyingImplementation);
-                }
-            }
-
-            if (this.Command is not null)
-            {
-                var commandHandler = new CliCommand.CliCommandHandler(this.Command);
-
-                foreach (var cliParam in commandHandler.AllParams)
-                {
-                    command.Add(cliParam.UnderlyingImplementation);
+                    command.AddAlias(alias);
                 }
 
-                command.Handler = commandHandler;
+                if (this.SubVerbs != null)
+                {
+                    foreach (var subVerb in this.SubVerbs)
+                    {
+                        command.AddCommand(subVerb.ToUnderlyingImplementation());
+                    }
+                }
+
+                if (this.Command is not null)
+                {
+                    var commandHandler = new CliCommand.CliCommandHandler(this.Command);
+
+                    foreach (var cliParam in commandHandler.AllParams)
+                    {
+                        command.Add(cliParam.UnderlyingImplementation);
+                    }
+
+                    command.Handler = commandHandler;
+                }
+
+                this._underlyingImplementation = command;
             }
 
-            return command;
+            return this._underlyingImplementation;
         }
     }
 }

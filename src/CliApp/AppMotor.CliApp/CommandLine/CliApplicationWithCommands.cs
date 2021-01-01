@@ -55,7 +55,7 @@ namespace AppMotor.CliApp.CommandLine
 
             foreach (var cliVerb in GetVerbs())
             {
-                rootCommand.AddCommand(cliVerb.UnderlyingImplementation);
+                rootCommand.AddCommand(cliVerb.ToUnderlyingImplementation());
             }
 
             return await rootCommand.InvokeAsync(
