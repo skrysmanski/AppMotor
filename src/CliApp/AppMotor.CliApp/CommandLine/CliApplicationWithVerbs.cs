@@ -29,13 +29,13 @@ namespace AppMotor.CliApp.CommandLine
     /// <summary>
     /// Represents a command line application with automatic command line argument parsing that bundles various
     /// functions (via <see cref="CliCommand"/>s) - like the <c>git</c> or <c>dotnet</c> commands. If you need an
-    /// application that only does one thing, use <see cref="CliApplicationWithoutCommands"/> instead.
+    /// application that only does one thing, use <see cref="CliApplicationWithoutVerbs"/> instead.
     /// </summary>
     /// <remarks>
     /// Sub classes cannot have parameters (<see cref="CliParam{T}"/>) of their own. Parameter can only exist
     /// on the commands.
     /// </remarks>
-    public abstract class CliApplicationWithCommands : CliApplication
+    public abstract class CliApplicationWithVerbs : CliApplication
     {
         /// <summary>
         /// The description of this application. Used for generating the help text.

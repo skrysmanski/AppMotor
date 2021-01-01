@@ -60,7 +60,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             app.TerminalOutput.Trim().ShouldBe("This is an error message.");
         }
 
-        private sealed class ExceptionTestApplication : TestApplicationWithCommands
+        private sealed class ExceptionTestApplication : TestApplicationWithVerbs
         {
             /// <inheritdoc />
             protected override int ExitCodeOnException => 42;

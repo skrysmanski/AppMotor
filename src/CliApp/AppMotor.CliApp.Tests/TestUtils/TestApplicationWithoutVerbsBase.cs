@@ -22,7 +22,7 @@ using JetBrains.Annotations;
 
 namespace AppMotor.CliApp.TestUtils
 {
-    internal abstract class TestApplicationWithoutCommandsBase : CliApplicationWithoutCommands, ITestApplication
+    internal abstract class TestApplicationWithoutVerbsBase : CliApplicationWithoutVerbs, ITestApplication
     {
         private readonly TestTerminal _testTerminal = new();
 
@@ -33,7 +33,7 @@ namespace AppMotor.CliApp.TestUtils
         public Exception? CaughtException { get; private set; }
 
         /// <inheritdoc />
-        protected TestApplicationWithoutCommandsBase()
+        protected TestApplicationWithoutVerbsBase()
         {
             this.Terminal = this._testTerminal;
         }

@@ -59,7 +59,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             app.TerminalOutput.Trim().ShouldBe("This is an error message.");
         }
 
-        private sealed class ExceptionTestApplication : TestApplicationWithoutCommandsBase
+        private sealed class ExceptionTestApplication : TestApplicationWithoutVerbsBase
         {
             /// <inheritdoc />
             protected override CliCommandExecutor Executor => new(Execute);

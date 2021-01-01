@@ -144,7 +144,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             app.TerminalOutput.ShouldContain("A sub command named #sub2#");
         }
 
-        private sealed class TestApplication : TestApplicationWithCommands
+        private sealed class TestApplication : TestApplicationWithVerbs
         {
             /// <inheritdoc />
             protected override string AppDescription => "The app's description";

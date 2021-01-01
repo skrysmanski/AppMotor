@@ -202,7 +202,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             testApplication.ShouldHaveNoOutput();
         }
 
-        private sealed class TestApplication : TestApplicationWithCommandsBase
+        private sealed class TestApplication : TestApplicationWithVerbsBase
         {
             private readonly CliCommandExecutor _commandExecutor;
 

@@ -31,13 +31,13 @@ namespace AppMotor.CliApp.CommandLine
     /// <summary>
     /// Represents a command line application with automatic command line argument parsing that only does
     /// one function - like the <c>mv</c>, <c>rm</c>, or <c>dir</c> commands. If you need an application
-    /// that bundles various functions, use <see cref="CliApplicationWithCommands"/> instead.
+    /// that bundles various functions, use <see cref="CliApplicationWithVerbs"/> instead.
     /// </summary>
     /// <remarks>
     /// Parameters (<see cref="CliParam{T}"/>) defined in a sub class are detected automatically (via reflection).
     /// Otherwise you can override <see cref="GetAllParams"/>.
     /// </remarks>
-    public abstract class CliApplicationWithoutCommands : CliApplication
+    public abstract class CliApplicationWithoutVerbs : CliApplication
     {
         private ImmutableList<CliParamBase>? _allParams;
 
@@ -99,9 +99,9 @@ namespace AppMotor.CliApp.CommandLine
 
         private sealed class CliCommandHandler : ICommandHandler
         {
-            private readonly CliApplicationWithoutCommands _app;
+            private readonly CliApplicationWithoutVerbs _app;
 
-            public CliCommandHandler(CliApplicationWithoutCommands app)
+            public CliCommandHandler(CliApplicationWithoutVerbs app)
             {
                 this._app = app;
             }

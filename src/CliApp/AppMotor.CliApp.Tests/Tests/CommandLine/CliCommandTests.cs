@@ -31,7 +31,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
         public void TestProperties()
         {
             var testVerb = new TestVerb();
-            var testApp = new TestApplicationWithCommands(testVerb);
+            var testApp = new TestApplicationWithVerbs(testVerb);
 
             testApp.Run("test", "--value", "42").ShouldBe(0, testApp.TerminalOutput);
             testApp.ShouldHaveNoOutput();
@@ -55,7 +55,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             var subVerb1 = new TestVerb("sub1");
             var subVerb2 = new TestVerb("sub2");
             var parentVerb = new VerbWithSubVerbs("parent", subVerb1, subVerb2);
-            var testApp = new TestApplicationWithCommands(parentVerb);
+            var testApp = new TestApplicationWithVerbs(parentVerb);
 
             testApp.Run("parent", "--value", "42").ShouldBe(0, testApp.TerminalOutput);
             testApp.ShouldHaveNoOutput();
@@ -86,7 +86,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             var subVerb2 = new TestVerb("sub2");
             var subGroup = new TestVerbGroup("subgroup", subVerb1, subVerb2);
             var parentVerb = new VerbWithSubVerbs("parent", subGroup);
-            var testApp = new TestApplicationWithCommands(parentVerb);
+            var testApp = new TestApplicationWithVerbs(parentVerb);
 
             testApp.Run("parent", "--value", "42").ShouldBe(0, testApp.TerminalOutput);
             testApp.ShouldHaveNoOutput();

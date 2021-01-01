@@ -44,7 +44,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 }
             );
 
-            var testApp = new TestApplicationWithCommands(testGroup);
+            var testApp = new TestApplicationWithVerbs(testGroup);
 
             testApp.Run("parent", "sub1", "--value", "42").ShouldBe(0, testApp.TerminalOutput);
             testApp.ShouldHaveNoOutput();
