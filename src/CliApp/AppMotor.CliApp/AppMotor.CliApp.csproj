@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AppMotor.Core\AppMotor.Core.csproj" />
+    <ProjectReference Include="..\..\Core\AppMotor.Core\AppMotor.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
