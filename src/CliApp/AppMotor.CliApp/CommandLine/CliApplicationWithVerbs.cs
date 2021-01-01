@@ -79,11 +79,7 @@ namespace AppMotor.CliApp.CommandLine
                 rootCommand.AddCommand(cliVerb.ToUnderlyingImplementation());
             }
 
-            return await rootCommand.InvokeAsync(
-                SortHelpFirst(args),
-                new CommandLineConsole(this.Terminal)
-            )
-            .ConfigureAwait(continueOnCapturedContext: false);
+            return await rootCommand.InvokeAsync(SortHelpFirst(args), new CommandLineConsole(this.Terminal)).ConfigureAwait(continueOnCapturedContext: false);
         }
 
         /// <summary>
