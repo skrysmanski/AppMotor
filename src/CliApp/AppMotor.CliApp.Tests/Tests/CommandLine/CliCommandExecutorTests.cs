@@ -14,7 +14,6 @@
 // limitations under the License.
 #endregion
 
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using AppMotor.CliApp.CommandLine;
@@ -204,18 +203,9 @@ namespace AppMotor.CliApp.Tests.CommandLine
 
         private sealed class TestApplication : TestApplicationWithVerbsBase
         {
-            private readonly CliCommandExecutor _commandExecutor;
-
-            /// <inheritdoc />
             public TestApplication(CliCommandExecutor commandExecutor)
             {
-                this._commandExecutor = commandExecutor;
-            }
-
-            /// <inheritdoc />
-            protected override IEnumerable<CliVerb> GetVerbs()
-            {
-                yield return new CliVerb(COMMAND_NAME, new TestCommand(this._commandExecutor));
+                this.Verbs = new[] { new CliVerb(COMMAND_NAME, new TestCommand(commandExecutor)) };
             }
         }
 

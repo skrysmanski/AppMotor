@@ -15,7 +15,6 @@
 #endregion
 
 using System;
-using System.Collections.Immutable;
 
 using AppMotor.CliApp.CommandLine;
 using AppMotor.CliApp.TestUtils;
@@ -147,11 +146,9 @@ namespace AppMotor.CliApp.Tests.CommandLine
         private sealed class TestApplication : TestApplicationWithVerbs
         {
             /// <inheritdoc />
-            protected override string AppDescription => "The app's description";
-
-            /// <inheritdoc />
             public TestApplication() : base(new MoveVerb(), new MySubGroup())
             {
+                this.AppDescription = "The app's description";
             }
 
             private sealed class MoveCommand : CliCommand

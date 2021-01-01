@@ -22,18 +22,10 @@ namespace AppMotor.CliApp.TestUtils
 {
     internal class TestApplicationWithVerbs : TestApplicationWithVerbsBase
     {
-        private readonly CliVerb[] _verbs;
-
         /// <inheritdoc />
         public TestApplicationWithVerbs(params CliVerb[] verbs)
         {
-            this._verbs = verbs;
-        }
-
-        /// <inheritdoc />
-        protected override IEnumerable<CliVerb> GetVerbs()
-        {
-            return this._verbs;
+            this.Verbs = verbs;
         }
     }
 }

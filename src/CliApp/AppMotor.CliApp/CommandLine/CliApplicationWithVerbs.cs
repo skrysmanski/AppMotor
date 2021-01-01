@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.CommandLine;
 using System.Linq;
 using System.Threading.Tasks;
@@ -35,13 +36,27 @@ namespace AppMotor.CliApp.CommandLine
     /// Sub classes cannot have parameters (<see cref="CliParam{T}"/>) of their own. Parameter can only exist
     /// on the commands.
     /// </remarks>
-    public abstract class CliApplicationWithVerbs : CliApplication
+    public class CliApplicationWithVerbs : CliApplication
     {
         /// <summary>
         /// The description of this application. Used for generating the help text.
         /// </summary>
         [PublicAPI]
-        protected virtual string? AppDescription => null;
+        protected string? AppDescription { get; init; }
+
+        /// <summary>
+        /// The verbs of this application.
+        /// </summary>
+        // NOTE: The type of this property is not ImmutableArray on purpose - because you can't initialize
+        //   ImmutableArray with an array initializer (i.e. "new[] { ... }") - which is what we want for ease of use.
+        [PublicAPI]
+        public IReadOnlyList<CliVerb> Verbs
+        {
+            get => this._verbs ?? throw new InvalidOperationException($"The property '{nameof(this.Verbs)}' has never been set.");
+            init => this._verbs = value.ToImmutableArray();
+        }
+
+        private readonly ImmutableArray<CliVerb>? _verbs;
 
         /// <inheritdoc />
         protected sealed override CliApplicationExecutor MainExecutor => new(Execute);
@@ -53,7 +68,12 @@ namespace AppMotor.CliApp.CommandLine
                 exceptionHandlerFunc: ProcessUnhandledException
             );
 
-            foreach (var cliVerb in GetVerbs())
+            if (this.Verbs.Count == 0)
+            {
+                throw new InvalidOperationException($"No verbs have be defined in property '{nameof(this.Verbs)}'.");
+            }
+
+            foreach (var cliVerb in this.Verbs)
             {
                 rootCommand.AddCommand(cliVerb.ToUnderlyingImplementation());
             }
@@ -103,10 +123,5 @@ namespace AppMotor.CliApp.CommandLine
                 return newArgs.ToArray();
             }
         }
-
-        /// <summary>
-        /// Returns all verbs that are supported by this application.
-        /// </summary>
-        protected abstract IEnumerable<CliVerb> GetVerbs();
     }
 }
