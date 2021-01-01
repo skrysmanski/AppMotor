@@ -23,29 +23,29 @@ namespace AppMotor.CliApp.TestUtils
 {
     internal class TestApplicationWithoutCommands : TestApplicationWithoutCommandsBase
     {
-        private readonly Action m_mainAction;
+        private readonly Action _mainAction;
 
-        private readonly List<CliParamBase> m_params = new();
+        private readonly List<CliParamBase> _params = new();
 
         /// <inheritdoc />
         protected override CliCommandExecutor Executor => new(Execute);
 
         public TestApplicationWithoutCommands(Action mainAction, params CliParamBase[] cliParams)
         {
-            this.m_mainAction = mainAction;
+            this._mainAction = mainAction;
 
-            this.m_params.AddRange(cliParams);
+            this._params.AddRange(cliParams);
         }
 
         /// <inheritdoc />
         protected override IEnumerable<CliParamBase> GetAllParams()
         {
-            return this.m_params;
+            return this._params;
         }
 
         private void Execute()
         {
-            this.m_mainAction();
+            this._mainAction();
         }
     }
 }

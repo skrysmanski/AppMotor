@@ -73,12 +73,12 @@ namespace AppMotor.CliApp.Tests.CommandLine
 
             private sealed class ErrorCommand : CliCommand
             {
-                private readonly bool m_throwErrorMessageException;
+                private readonly bool _throwErrorMessageException;
 
                 /// <inheritdoc />
                 public ErrorCommand(bool throwErrorMessageException) : base("error")
                 {
-                    this.m_throwErrorMessageException = throwErrorMessageException;
+                    this._throwErrorMessageException = throwErrorMessageException;
                 }
 
                 /// <inheritdoc />
@@ -86,7 +86,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
 
                 private void Execute()
                 {
-                    if (this.m_throwErrorMessageException)
+                    if (this._throwErrorMessageException)
                     {
                         throw new ErrorMessageException("This is an error message.");
                     }

@@ -120,15 +120,15 @@ namespace AppMotor.CliApp.Tests
             /// <inheritdoc />
             public bool IsKeyAvailable => true;
 
-            private readonly StringBuilder m_outWriter = new();
+            private readonly StringBuilder _outWriter = new();
 
-            public string CurrentOutput => this.m_outWriter.ToString();
+            public string CurrentOutput => this._outWriter.ToString();
 
             public bool ReadKeyCalled { get; private set; }
 
             public WaitForKeyTerminal()
             {
-                var threadSafeWriter = TextWriter.Synchronized(new StringWriter(this.m_outWriter));
+                var threadSafeWriter = TextWriter.Synchronized(new StringWriter(this._outWriter));
                 this.Out = threadSafeWriter;
             }
 

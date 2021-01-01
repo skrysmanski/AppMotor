@@ -42,9 +42,9 @@ namespace AppMotor.CliApp.TestUtils
         /// <inheritdoc />
         public TextWriter Out { get; }
 
-        private readonly StringBuilder m_outWriter = new();
+        private readonly StringBuilder _outWriter = new();
 
-        public string CurrentOutput => this.m_outWriter.ToString();
+        public string CurrentOutput => this._outWriter.ToString();
 
         /// <inheritdoc />
         public bool IsOutputRedirected => false;
@@ -58,14 +58,14 @@ namespace AppMotor.CliApp.TestUtils
 
         public TestTerminal()
         {
-            var threadSafeWriter = TextWriter.Synchronized(new StringWriter(this.m_outWriter));
+            var threadSafeWriter = TextWriter.Synchronized(new StringWriter(this._outWriter));
             this.Out = threadSafeWriter;
             this.Error = threadSafeWriter;
         }
 
         public void ResetOutput()
         {
-            this.m_outWriter.Clear();
+            this._outWriter.Clear();
         }
 
         /// <inheritdoc />

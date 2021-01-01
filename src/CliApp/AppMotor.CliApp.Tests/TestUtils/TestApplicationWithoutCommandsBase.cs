@@ -24,10 +24,10 @@ namespace AppMotor.CliApp.TestUtils
 {
     internal abstract class TestApplicationWithoutCommandsBase : CliApplicationWithoutCommands, ITestApplication
     {
-        private readonly TestTerminal m_testTerminal = new();
+        private readonly TestTerminal _testTerminal = new();
 
         /// <inheritdoc />
-        public string TerminalOutput => this.m_testTerminal.CurrentOutput;
+        public string TerminalOutput => this._testTerminal.CurrentOutput;
 
         /// <inheritdoc />
         public Exception? CaughtException { get; private set; }
@@ -35,13 +35,13 @@ namespace AppMotor.CliApp.TestUtils
         /// <inheritdoc />
         protected TestApplicationWithoutCommandsBase()
         {
-            this.Terminal = this.m_testTerminal;
+            this.Terminal = this._testTerminal;
         }
 
         [MustUseReturnValue]
         public new int Run(params string[] args)
         {
-            this.m_testTerminal.ResetOutput();
+            this._testTerminal.ResetOutput();
             this.CaughtException = null;
             return base.Run(args);
         }

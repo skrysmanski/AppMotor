@@ -156,7 +156,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
 
             public bool Executed { get; set; }
 
-            private readonly CliParam<int> m_value = new("--value");
+            private readonly CliParam<int> _value = new("--value");
 
             public TestCommand() : base("test", "test1", "test2")
             {
@@ -170,7 +170,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             {
                 this.Executed.ShouldBe(false);
                 this.Executed = true;
-                this.m_value.Value.ShouldBe(42);
+                this._value.Value.ShouldBe(42);
             }
         }
 
@@ -192,16 +192,16 @@ namespace AppMotor.CliApp.Tests.CommandLine
 
         private sealed class CommandWithSubVerbs : CliCommand
         {
-            private readonly CliVerb[] m_subVerbs;
+            private readonly CliVerb[] _subVerbs;
 
             public bool Executed { get; set; }
 
-            private readonly CliParam<int> m_value = new("--value");
+            private readonly CliParam<int> _value = new("--value");
 
             /// <inheritdoc />
             public CommandWithSubVerbs(string name, params CliVerb[] subVerbs) : base(name)
             {
-                this.m_subVerbs = subVerbs;
+                this._subVerbs = subVerbs;
             }
 
             /// <inheritdoc />
@@ -210,14 +210,14 @@ namespace AppMotor.CliApp.Tests.CommandLine
             /// <inheritdoc />
             protected override IEnumerable<CliVerb> GetSubVerbs()
             {
-                return this.m_subVerbs;
+                return this._subVerbs;
             }
 
             private void Execute()
             {
                 this.Executed.ShouldBe(false);
                 this.Executed = true;
-                this.m_value.Value.ShouldBe(42);
+                this._value.Value.ShouldBe(42);
             }
         }
     }

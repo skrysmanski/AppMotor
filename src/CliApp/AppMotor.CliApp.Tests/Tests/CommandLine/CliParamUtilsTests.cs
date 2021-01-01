@@ -175,14 +175,14 @@ namespace AppMotor.CliApp.Tests.CommandLine
 
 
 
-            private readonly CliParam<string> m_propertyParamWithBackingField = new("instance_property_param_with_backing_field");
+            private readonly CliParam<string> _propertyParamWithBackingField = new("instance_property_param_with_backing_field");
 
             /// <summary>
             /// This parameter must only occur once.
             /// </summary>
             [UsedImplicitly]
             // ReSharper disable once ConvertToAutoProperty
-            public CliParam<string> PropertyParamWithBackingField => this.m_propertyParamWithBackingField;
+            public CliParam<string> PropertyParamWithBackingField => this._propertyParamWithBackingField;
 
             /// <summary>
             /// Has the same value as <see cref="PropertyParamWithBackingField"/>.
@@ -250,14 +250,14 @@ namespace AppMotor.CliApp.Tests.CommandLine
 
 
 
-            private readonly CliParam<string> m_propertyParamWithBackingBaseField = new("instance_property_param_with_backing_field_base");
+            private readonly CliParam<string> _propertyParamWithBackingBaseField = new("instance_property_param_with_backing_field_base");
 
             /// <summary>
             /// This parameter must only occur once.
             /// </summary>
             [UsedImplicitly]
             // ReSharper disable once ConvertToAutoProperty
-            public CliParam<string> PropertyParamWithBackingBaseField => this.m_propertyParamWithBackingBaseField;
+            public CliParam<string> PropertyParamWithBackingBaseField => this._propertyParamWithBackingBaseField;
 
             /// <summary>
             /// Has the same value as <see cref="PropertyParamWithBackingBaseField"/>.

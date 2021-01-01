@@ -22,18 +22,18 @@ namespace AppMotor.CliApp.TestUtils
 {
     internal class TestVerbGroup : CliVerbGroup
     {
-        private readonly CliVerb[] m_subVerbs;
+        private readonly CliVerb[] _subVerbs;
 
         /// <inheritdoc />
         public TestVerbGroup(string name, params CliVerb[] subVerbs) : base(name)
         {
-            this.m_subVerbs = subVerbs;
+            this._subVerbs = subVerbs;
         }
 
         /// <inheritdoc />
         protected override IEnumerable<CliVerb> GetSubVerbs()
         {
-            return this.m_subVerbs;
+            return this._subVerbs;
         }
     }
 }

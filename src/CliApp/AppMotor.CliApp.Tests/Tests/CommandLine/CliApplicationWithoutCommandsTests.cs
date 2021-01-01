@@ -67,17 +67,17 @@ namespace AppMotor.CliApp.Tests.CommandLine
             /// <inheritdoc />
             protected override int ExitCodeOnException => 42;
 
-            private readonly bool m_throwErrorMessageException;
+            private readonly bool _throwErrorMessageException;
 
             /// <inheritdoc />
             public ExceptionTestApplication(bool throwErrorMessageException)
             {
-                this.m_throwErrorMessageException = throwErrorMessageException;
+                this._throwErrorMessageException = throwErrorMessageException;
             }
 
             private void Execute()
             {
-                if (this.m_throwErrorMessageException)
+                if (this._throwErrorMessageException)
                 {
                     throw new ErrorMessageException("This is an error message.");
                 }

@@ -204,18 +204,18 @@ namespace AppMotor.CliApp.Tests.CommandLine
 
         private sealed class TestApplication : TestApplicationWithCommandsBase
         {
-            private readonly CliCommandExecutor m_commandExecutor;
+            private readonly CliCommandExecutor _commandExecutor;
 
             /// <inheritdoc />
             public TestApplication(CliCommandExecutor commandExecutor)
             {
-                this.m_commandExecutor = commandExecutor;
+                this._commandExecutor = commandExecutor;
             }
 
             /// <inheritdoc />
             protected override IEnumerable<CliCommand> GetVerbs()
             {
-                yield return new TestCommand(this.m_commandExecutor);
+                yield return new TestCommand(this._commandExecutor);
             }
         }
 

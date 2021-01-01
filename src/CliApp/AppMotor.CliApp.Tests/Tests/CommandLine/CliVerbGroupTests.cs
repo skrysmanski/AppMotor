@@ -86,7 +86,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             /// <inheritdoc />
             protected override CliCommandExecutor Executor => new(Execute);
 
-            private readonly CliParam<int> m_value = new("--value");
+            private readonly CliParam<int> _value = new("--value");
 
             public TestCommand(string name) : base(name)
             {
@@ -96,7 +96,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             {
                 this.Executed.ShouldBe(false);
                 this.Executed = true;
-                this.m_value.Value.ShouldBe(42);
+                this._value.Value.ShouldBe(42);
             }
         }
 
