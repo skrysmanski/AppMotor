@@ -15,14 +15,8 @@
 #endregion
 
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.CommandLine;
-using System.CommandLine.Invocation;
-using System.CommandLine.Parsing;
-using System.Threading.Tasks;
 
 using AppMotor.CliApp.CommandLine.Utils;
-using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
@@ -37,42 +31,17 @@ namespace AppMotor.CliApp.CommandLine
     /// Parameters (<see cref="CliParam{T}"/>) defined in a sub class are detected automatically (via reflection).
     /// Otherwise you can override <see cref="GetAllParams"/>.
     /// </remarks>
-    public abstract class CliApplicationWithoutVerbs : CliApplication
+    public abstract class CliApplicationWithoutVerbs : CliApplicationWithCommand
     {
-        private ImmutableList<CliParamBase>? _allParams;
-
-        /// <summary>
-        /// The description of this application. Used for generating the help text.
-        /// </summary>
-        [PublicAPI]
-        protected virtual string? AppDescription => null;
-
-        /// <inheritdoc />
-        protected sealed override CliApplicationExecutor MainExecutor => new(Execute);
-
         /// <summary>
         /// Executes this application. Implementations can access all command line parameters though the <see cref="CliParam{T}.Value"/>
         /// properties of the <see cref="CliParam{T}"/> instances declared in this class (or its base classes).
         /// </summary>
         protected abstract CliCommandExecutor Executor { get; }
 
-        private async Task<int> Execute(string[] args)
+        protected CliApplicationWithoutVerbs()
         {
-            this._allParams = GetAllParams().ToImmutableList();
-
-            var rootCommand = RootCommandFactory.CreateRootCommand(
-                appDescription: this.AppDescription,
-                exceptionHandlerFunc: ProcessUnhandledException
-            );
-
-            foreach (var cliParam in this._allParams)
-            {
-                rootCommand.Add(cliParam.UnderlyingImplementation);
-            }
-
-            rootCommand.Handler = new CliCommandHandler(this);
-
-            return await rootCommand.InvokeAsync(args, new CommandLineConsole(this.Terminal)).ConfigureAwait(continueOnCapturedContext: false);
+            this.Command = new MainCommand(this);
         }
 
         /// <summary>
@@ -86,32 +55,23 @@ namespace AppMotor.CliApp.CommandLine
             return CliParamUtils.GetAllParamsFor(this);
         }
 
-        private void SetAllParamValues(ParseResult parseResult)
+        private sealed class MainCommand : CliCommand
         {
-            // Should never happen.
-            Validate.Value.IsNotNull(this._allParams, nameof(this._allParams));
+            private readonly CliApplicationWithoutVerbs _cliApp;
 
-            foreach (var cliParam in this._allParams)
+            /// <inheritdoc />
+            protected override CliCommandExecutor Executor => this._cliApp.Executor;
+
+            /// <inheritdoc />
+            public MainCommand(CliApplicationWithoutVerbs cliApp)
             {
-                cliParam.SetValueFromParseResult(parseResult);
-            }
-        }
-
-        private sealed class CliCommandHandler : ICommandHandler
-        {
-            private readonly CliApplicationWithoutVerbs _app;
-
-            public CliCommandHandler(CliApplicationWithoutVerbs app)
-            {
-                this._app = app;
+                this._cliApp = cliApp;
             }
 
             /// <inheritdoc />
-            public async Task<int> InvokeAsync(InvocationContext context)
+            protected override IEnumerable<CliParamBase> GetAllParams()
             {
-                this._app.SetAllParamValues(context.ParseResult);
-
-                return await this._app.Executor.Execute().ConfigureAwait(continueOnCapturedContext: false);
+                return this._cliApp.GetAllParams();
             }
         }
     }
