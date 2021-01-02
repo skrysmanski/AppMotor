@@ -30,6 +30,9 @@ namespace AppMotor.CliApp.CommandLine
     /// Represents a command line parameter - either named or positional. See <see cref="CliParamBase.IsNamedParameter"/>,
     /// <see cref="CliParamBase.IsPositionalParameter"/>, and <see cref="CliParamBase.PositionIndex"/> for more details on
     /// the difference between these two parameter types.
+    ///
+    /// <para>Parameter must (usually) be defined in a container type - either in a subclass of <see cref="CliCommand"/>
+    /// or <see cref="CliApplicationWithParams"/>.</para>
     /// </summary>
     /// <typeparam name="T">The type of this parameter. Required parameters should be non-nullable. Optional
     /// parameters can either be nullable (when <see cref="DefaultValue"/> is <c>null</c>) or non-nullable

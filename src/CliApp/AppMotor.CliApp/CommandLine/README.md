@@ -96,7 +96,7 @@ Parameters come in two variants: named and positional.
 
 Named parameters are something like `--no-verify` or `-m` in `git commit`. Named parameters can either have a value (like with `-m`) or be standalone flags (like `--no-verify`).
 
-Positional parameters are defined by the order in which they are specified. For example, in `git mv` the first parameter is the source and the second is the destination; both are positional parameters.
+Positional parameters are defined by the order in which they are specified on the command line. For example, in `git mv` the first parameter is always the source and the second is always the destination; both are positional parameters.
 
 Parameters are represented by the `CliParam<T>` class. The following C# types are supported:
 
@@ -105,12 +105,12 @@ Parameters are represented by the `CliParam<T>` class. The following C# types ar
 * `string`
 * anything that has a constructor that takes a single `string` argument
 
-Parameters must be defined in a "container" - either within a `CliCommand` or `CliApplicationWithoutCommands`. Parameters are (usually) defined either as instance (i.e. non-`static`) property or field. These properties or fields can have any visibility (including `private`).
+Parameters must be defined in a "container" - either within a `CliCommand` or `CliApplicationWithParams`. Parameters are (usually) defined as instance (i.e. non-`static`) property or field. These properties or fields can have any visibility (including `private`).
 
 You can define a named parameter like this:
 
 ```c#
-private readonly CliParam<int> m_valueParam = new("--value");
+private CliParam<int> ValueParam { get; } = new("--value");
 ```
 
 This creates a named parameter with the name `--value` that takes an `int` as value.
@@ -118,7 +118,7 @@ This creates a named parameter with the name `--value` that takes an `int` as va
 To create a positional parameter, define it like this:
 
 ```c#
-private readonly CliParam<string> m_fromParam = new("from", positionIndex: 0);
+private CliParam<string> FromParam { get; } = new("from", positionIndex: 0);
 ```
 
 Note that the name `from` is just used for generating the help page for this parameter - it's not specified on the command line by the end user.
@@ -126,7 +126,7 @@ Note that the name `from` is just used for generating the help page for this par
 You can also define alias names for named parameters, default values (which makes the parameter optional) and help texts:
 
 ```c#
-private readonly CliParam<int> m_valueParam = new("--value", "--val")
+private CliParam<int> ValueParam { get; } = new("--value", "--val")
 {
     DefaultValue = 42,
     HelpText = "The value to work on.",
@@ -138,7 +138,7 @@ To access the value of a parameter, simply use the `Value` property:
 ```c#
 private void Execute()
 {
-    int theValue = this.m_valueParam.Value;
+    int theValue = this.ValueParam.Value;
 }
 ```
 
