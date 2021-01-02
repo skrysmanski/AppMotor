@@ -6,6 +6,90 @@ A command line interface definition contains of parameters, commands, and verb g
 
 *Side note:* For additional details, see [DESIGN-NOTES.md](DESIGN-NOTES.md).
 
+## Quick Start
+
+In its simplest form, an application can look like this:
+
+```c#
+internal sealed class Program : CliApplicationWithParams
+{
+    // Defines main method
+    protected override CliCommandExecutor Executor => new(Execute);
+
+    // A positional parameter
+    private CliParam<string> ServerNameParam { get; } = new("server-name", positionIndex: 0)
+    {
+        HelpText = "The hostname or ip address of the metal-init server.",
+    };
+
+    // An optional named parameter
+    private CliParam<FileInfo?> CertFileParam { get; } = new("--server-cert")
+    {
+        DefaultValue = null,
+        HelpText = "The server certificate (.cer file) to use.",
+    };
+
+    private static int Main(string[] args)
+    {
+        // Creates an instance of "Program" and runs it.
+        return Run<Program>(args);
+    }
+
+    // The main method
+    private void Execute()
+    {
+        // Access to a parameter
+        var baseUri = new Uri($"http://{this.ServerNameParam.Value}");
+
+        // Main code here
+    }
+}
+```
+
+This program takes a required server name parameter and an optional parameter `--server-cert`.
+
+If you need commands/verbs (like the `git` command), an application can look like this:
+
+```c#
+internal static class Program
+{
+    private static int Main(string[] args)
+    {
+        var app = new CliApplicationWithVerbs()
+        {
+            Verbs = new[]
+            {
+                new CliVerb("add", new AddCommand()),
+                new CliVerb("remove", new RemoveCommand()),
+            },
+        };
+
+        return app.Run(args);
+    }
+}
+```
+
+The `AddCommand` can look like this:
+
+```c#
+internal sealed class AddCommand : CliCommand
+{
+    public override string? HelpText => "Adds an item";
+
+    protected override CliCommandExecutor Executor => new(Execute);
+
+    private CliParam<FileInfo> ItemParam { get; } = new("item", positionIndex: 0)
+    {
+        HelpText = "The item to add.",
+    };
+
+    private void Execute()
+    {
+        // Command code here
+    }
+}
+```
+
 ## Parameters
 
 Parameters come in two variants: named and positional.
