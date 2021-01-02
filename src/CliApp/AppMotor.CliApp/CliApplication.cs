@@ -84,7 +84,8 @@ namespace AppMotor.CliApp
         }
 
         /// <summary>
-        /// Executes the specified application.
+        /// Executes the application specified by <typeparamref name="TApp"/>. A new instance of
+        /// <typeparamref name="TApp"/> will be created by this method.
         /// </summary>
         /// <returns>The exit code to use.</returns>
         [PublicAPI, MustUseReturnValue]
@@ -94,7 +95,8 @@ namespace AppMotor.CliApp
         }
 
         /// <summary>
-        /// Executes the specified application.
+        /// Executes the application specified by <typeparamref name="TApp"/>. A new instance of
+        /// <typeparamref name="TApp"/> will be created by this method.
         /// </summary>
         /// <returns>The exit code to use.</returns>
         [PublicAPI, MustUseReturnValue]
@@ -111,7 +113,7 @@ namespace AppMotor.CliApp
         }
 
         /// <summary>
-        /// Executes the specified application.
+        /// Runs this application.
         /// </summary>
         /// <returns>The exit code to use.</returns>
         [PublicAPI, MustUseReturnValue]
@@ -121,7 +123,7 @@ namespace AppMotor.CliApp
         }
 
         /// <summary>
-        /// Executes the specified application.
+        /// Runs this application.
         /// </summary>
         /// <returns>The exit code to use.</returns>
         [PublicAPI, MustUseReturnValue]
