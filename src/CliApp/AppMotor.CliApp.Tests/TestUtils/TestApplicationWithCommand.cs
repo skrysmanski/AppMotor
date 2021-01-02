@@ -1,5 +1,5 @@
 ﻿#region License
-// Copyright 2020 AppMotor Framework (https://github.com/skrysmanski/AppMotor)
+// Copyright 2021 AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ using JetBrains.Annotations;
 
 namespace AppMotor.CliApp.TestUtils
 {
-    internal abstract class TestApplicationWithParamsBase : CliApplicationWithParams, ITestApplication
+    internal class TestApplicationWithCommand : CliApplicationWithCommand, ITestApplication
     {
         private readonly TestTerminal _testTerminal = new();
 
@@ -32,9 +32,12 @@ namespace AppMotor.CliApp.TestUtils
         /// <inheritdoc />
         public Exception? CaughtException { get; private set; }
 
-        protected TestApplicationWithParamsBase()
+        public TestApplicationWithCommand()
         {
-            this.Terminal = this._testTerminal;
+        }
+
+        public TestApplicationWithCommand([NotNull] CliCommand command) : base(command)
+        {
         }
 
         [MustUseReturnValue]

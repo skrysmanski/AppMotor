@@ -76,6 +76,11 @@ namespace AppMotor.CliApp.CommandLine
 
             foreach (var cliVerb in this.Verbs)
             {
+                if (cliVerb is null)
+                {
+                    throw new InvalidOperationException("Verbs must not be null.");
+                }
+
                 rootCommand.AddCommand(cliVerb.ToUnderlyingImplementation());
             }
 

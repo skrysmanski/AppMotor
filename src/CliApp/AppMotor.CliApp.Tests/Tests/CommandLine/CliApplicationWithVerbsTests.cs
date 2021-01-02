@@ -60,6 +60,48 @@ namespace AppMotor.CliApp.Tests.CommandLine
             app.TerminalOutput.Trim().ShouldBe("This is an error message.");
         }
 
+        [Fact]
+        public void TestVerbs_Null()
+        {
+            var app = new TestApplicationWithVerbsBase();
+
+            app.Run("abc").ShouldBe(-1);
+
+            app.CaughtException.ShouldNotBeNull();
+            app.CaughtException.ShouldBeOfType<InvalidOperationException>();
+            app.CaughtException.Message.ShouldBe($"The property '{nameof(app.Verbs)}' has never been set.");
+        }
+
+        [Fact]
+        public void TestVerbs_Empty()
+        {
+            var app = new TestApplicationWithVerbsBase()
+            {
+                Verbs = Array.Empty<CliVerb>(),
+            };
+
+            app.Run("abc").ShouldBe(-1);
+
+            app.CaughtException.ShouldNotBeNull();
+            app.CaughtException.ShouldBeOfType<InvalidOperationException>();
+            app.CaughtException.Message.ShouldBe($"No verbs have be defined in property '{nameof(app.Verbs)}'.");
+        }
+
+        [Fact]
+        public void TestVerbs_NullVerb()
+        {
+            var app = new TestApplicationWithVerbsBase()
+            {
+                Verbs = new CliVerb[] { null!, },
+            };
+
+            app.Run("abc").ShouldBe(-1);
+
+            app.CaughtException.ShouldNotBeNull();
+            app.CaughtException.ShouldBeOfType<InvalidOperationException>();
+            app.CaughtException.Message.ShouldBe("Verbs must not be null.");
+        }
+
         private sealed class ExceptionTestApplication : TestApplicationWithVerbs
         {
             /// <inheritdoc />
