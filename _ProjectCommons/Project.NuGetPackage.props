@@ -92,4 +92,15 @@
     </Exec>
   </Target>
 
+  <!--
+    Deletes old NuGet packages from the output folder. The folder becomes crowded relatively fast making it hard
+    to find the correct version. Also, you usually don't need to keep the old .nupkg files.
+  -->
+  <Target Name="_DeleteOldPackages" AfterTargets="_AddDynamicNuGetPackageProperties">
+    <ItemGroup>
+      <FilesToDelete Include="$(PackageOutputPath)/$(PackageId).*.nupkg"/>
+    </ItemGroup>
+    <Delete Files="@(FilesToDelete)" />
+  </Target>
+
 </Project>
