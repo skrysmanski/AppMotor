@@ -15,8 +15,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <CommonlyUsedTypes Include="AppMotor.CliApp.CommandLine.CliApplicationWithCommands" />
-    <CommonlyUsedTypes Include="AppMotor.CliApp.CommandLine.CliApplicationWithoutCommands" />
+    <CommonlyUsedTypes Include="AppMotor.CliApp.CommandLine.CliApplicationWithVerbs" />
+    <CommonlyUsedTypes Include="AppMotor.CliApp.CommandLine.CliApplicationWithCommand" />
+    <CommonlyUsedTypes Include="AppMotor.CliApp.CommandLine.CliApplicationWithParams" />
+    <CommonlyUsedTypes Include="AppMotor.CliApp.CommandLine.CliVerb" />
     <CommonlyUsedTypes Include="AppMotor.CliApp.CommandLine.CliCommand" />
     <CommonlyUsedTypes Include="AppMotor.CliApp.CommandLine.CliParam" />
 

@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.CommandLine;
 
@@ -26,10 +27,10 @@ using JetBrains.Annotations;
 namespace AppMotor.CliApp.CommandLine
 {
     /// <summary>
-    /// Represents a verb in a command line (like <c>add</c> in <c>git add .</c>). Verbs can be executable (via <see cref="CliCommand"/>)
-    /// or simply used for grouping (via <see cref="CliVerbGroup"/>).
+    /// Represents a verb in a command line (like <c>add</c> in <c>git add .</c>). Verbs can be executable (if <see cref="Command"/>
+    /// is set) or simply used for grouping.
     /// </summary>
-    public abstract class CliVerb
+    public class CliVerb
     {
         /// <summary>
         /// The name of this verb - as it has to be entered by the user on the command line.
@@ -49,16 +50,43 @@ namespace AppMotor.CliApp.CommandLine
         /// The help text for this verb.
         /// </summary>
         [PublicAPI]
-        public virtual string? HelpText => null;
+        public string? HelpText { get; init; }
 
-        private readonly Lazy<Command> _underlyingImplementation;
+        /// <summary>
+        /// The command for this verb.
+        /// </summary>
+        [PublicAPI]
+        public CliCommand? Command { get; init; }
 
-        internal Command UnderlyingImplementation => this._underlyingImplementation.Value;
+        /// <summary>
+        /// The sub verbs of this verb. May be <c>null</c> (or an empty collection) if no sub
+        /// verbs exist.
+        /// </summary>
+        // NOTE: The type of this property is not ImmutableArray on purpose - because you can't initialize
+        //   ImmutableArray with an array initializer (i.e. "new[] { ... }") - which is what we want for ease of use.
+        [PublicAPI]
+        public IReadOnlyList<CliVerb>? SubVerbs
+        {
+            get => this._subVerbs;
+            init => this._subVerbs = value?.ToImmutableArray();
+        }
+
+        private readonly ImmutableArray<CliVerb>? _subVerbs;
+
+        private Command? _underlyingImplementation;
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        protected CliVerb(string name, string[] aliases)
+        public CliVerb(string name, params string[] aliases)
+            : this(name, command: null, aliases)
+        {
+        }
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        public CliVerb(string name, CliCommand? command, params string[] aliases)
         {
             ValidateCommandName(name);
             Validate.Argument.IsNotNull(aliases, nameof(aliases));
@@ -70,8 +98,7 @@ namespace AppMotor.CliApp.CommandLine
 
             this.Name = name;
             this.Aliases = aliases.ToImmutableList();
-
-            this._underlyingImplementation = new Lazy<Command>(ToUnderlyingImplementation);
+            this.Command = command;
         }
 
         private static void ValidateCommandName(string name)
@@ -85,10 +112,43 @@ namespace AppMotor.CliApp.CommandLine
         }
 
         /// <summary>
-        /// Creates the underlying implementation. Callers should not call this method but use
-        /// <see cref="UnderlyingImplementation"/> instead.
+        /// Creates the underlying implementation.
         /// </summary>
-        // ReSharper disable once MemberCanBeProtected.Global
-        internal abstract Command ToUnderlyingImplementation();
+        internal Command ToUnderlyingImplementation()
+        {
+            if (this._underlyingImplementation is null)
+            {
+                var command = new Command(this.Name, this.HelpText ?? this.Command?.HelpText);
+
+                foreach (var alias in this.Aliases)
+                {
+                    command.AddAlias(alias);
+                }
+
+                if (this.SubVerbs != null)
+                {
+                    foreach (var subVerb in this.SubVerbs)
+                    {
+                        command.AddCommand(subVerb.ToUnderlyingImplementation());
+                    }
+                }
+
+                if (this.Command is not null)
+                {
+                    var commandHandler = new CliCommand.CliCommandHandler(this.Command);
+
+                    foreach (var cliParam in commandHandler.AllParams)
+                    {
+                        command.Add(cliParam.UnderlyingImplementation);
+                    }
+
+                    command.Handler = commandHandler;
+                }
+
+                this._underlyingImplementation = command;
+            }
+
+            return this._underlyingImplementation;
+        }
     }
 }

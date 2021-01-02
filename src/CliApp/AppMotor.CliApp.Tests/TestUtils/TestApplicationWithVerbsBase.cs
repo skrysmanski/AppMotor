@@ -15,37 +15,42 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 
 using AppMotor.CliApp.CommandLine;
 
+using JetBrains.Annotations;
+
 namespace AppMotor.CliApp.TestUtils
 {
-    internal class TestApplicationWithoutCommands : TestApplicationWithoutCommandsBase
+    internal class TestApplicationWithVerbsBase : CliApplicationWithVerbs, ITestApplication
     {
-        private readonly Action _mainAction;
-
-        private readonly List<CliParamBase> _params = new();
+        private readonly TestTerminal _testTerminal = new();
 
         /// <inheritdoc />
-        protected override CliCommandExecutor Executor => new(Execute);
+        public string TerminalOutput => this._testTerminal.CurrentOutput;
 
-        public TestApplicationWithoutCommands(Action mainAction, params CliParamBase[] cliParams)
+        /// <inheritdoc />
+        public Exception? CaughtException { get; private set; }
+
+        public TestApplicationWithVerbsBase()
         {
-            this._mainAction = mainAction;
+            this.Terminal = this._testTerminal;
+        }
 
-            this._params.AddRange(cliParams);
+        [MustUseReturnValue]
+        public new int Run(params string[] args)
+        {
+            this._testTerminal.ResetOutput();
+            this.CaughtException = null;
+            return base.Run(args);
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<CliParamBase> GetAllParams()
+        protected override void OnUnhandledException(Exception exception, ref int exitCode)
         {
-            return this._params;
-        }
+            this.CaughtException = exception;
 
-        private void Execute()
-        {
-            this._mainAction();
+            base.OnUnhandledException(exception, ref exitCode);
         }
     }
 }

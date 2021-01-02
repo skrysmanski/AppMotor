@@ -14,15 +14,38 @@
 // limitations under the License.
 #endregion
 
+using System;
+using System.Collections.Generic;
+
 using AppMotor.CliApp.CommandLine;
 
 namespace AppMotor.CliApp.TestUtils
 {
-    internal class TestVerbGroup : CliVerb
+    internal class TestApplicationWithParams : TestApplicationWithParamsBase
     {
-        public TestVerbGroup(string name, params CliVerb[] subVerbs) : base(name)
+        private readonly Action _mainAction;
+
+        private readonly List<CliParamBase> _params = new();
+
+        /// <inheritdoc />
+        protected override CliCommandExecutor Executor => new(Execute);
+
+        public TestApplicationWithParams(Action mainAction, params CliParamBase[] cliParams)
         {
-            this.SubVerbs = subVerbs;
+            this._mainAction = mainAction;
+
+            this._params.AddRange(cliParams);
+        }
+
+        /// <inheritdoc />
+        protected override IEnumerable<CliParamBase> GetAllParams()
+        {
+            return this._params;
+        }
+
+        private void Execute()
+        {
+            this._mainAction();
         }
     }
 }

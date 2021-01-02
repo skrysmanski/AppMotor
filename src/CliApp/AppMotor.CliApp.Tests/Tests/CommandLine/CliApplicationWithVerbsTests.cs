@@ -26,7 +26,7 @@ using Xunit;
 
 namespace AppMotor.CliApp.Tests.CommandLine
 {
-    public sealed class CliApplicationWithCommandsTests
+    public sealed class CliApplicationWithVerbsTests
     {
         [Fact]
         public void TestExceptionHandling_Regular()
@@ -60,14 +60,56 @@ namespace AppMotor.CliApp.Tests.CommandLine
             app.TerminalOutput.Trim().ShouldBe("This is an error message.");
         }
 
-        private sealed class ExceptionTestApplication : TestApplicationWithCommands
+        [Fact]
+        public void TestVerbs_Null()
+        {
+            var app = new TestApplicationWithVerbsBase();
+
+            app.Run("abc").ShouldBe(-1);
+
+            app.CaughtException.ShouldNotBeNull();
+            app.CaughtException.ShouldBeOfType<InvalidOperationException>();
+            app.CaughtException.Message.ShouldBe($"The property '{nameof(app.Verbs)}' has never been set.");
+        }
+
+        [Fact]
+        public void TestVerbs_Empty()
+        {
+            var app = new TestApplicationWithVerbsBase()
+            {
+                Verbs = Array.Empty<CliVerb>(),
+            };
+
+            app.Run("abc").ShouldBe(-1);
+
+            app.CaughtException.ShouldNotBeNull();
+            app.CaughtException.ShouldBeOfType<InvalidOperationException>();
+            app.CaughtException.Message.ShouldBe($"No verbs have be defined in property '{nameof(app.Verbs)}'.");
+        }
+
+        [Fact]
+        public void TestVerbs_NullVerb()
+        {
+            var app = new TestApplicationWithVerbsBase()
+            {
+                Verbs = new CliVerb[] { null!, },
+            };
+
+            app.Run("abc").ShouldBe(-1);
+
+            app.CaughtException.ShouldNotBeNull();
+            app.CaughtException.ShouldBeOfType<InvalidOperationException>();
+            app.CaughtException.Message.ShouldBe("Verbs must not be null.");
+        }
+
+        private sealed class ExceptionTestApplication : TestApplicationWithVerbs
         {
             /// <inheritdoc />
             protected override int ExitCodeOnException => 42;
 
             /// <inheritdoc />
             public ExceptionTestApplication(bool throwErrorMessageException)
-                : base(new ErrorCommand(throwErrorMessageException))
+                : base(new CliVerb("error", new ErrorCommand(throwErrorMessageException)))
             {
             }
 
@@ -76,7 +118,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 private readonly bool _throwErrorMessageException;
 
                 /// <inheritdoc />
-                public ErrorCommand(bool throwErrorMessageException) : base("error")
+                public ErrorCommand(bool throwErrorMessageException)
                 {
                     this._throwErrorMessageException = throwErrorMessageException;
                 }

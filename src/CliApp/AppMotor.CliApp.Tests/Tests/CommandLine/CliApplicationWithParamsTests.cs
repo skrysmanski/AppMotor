@@ -26,7 +26,7 @@ using Xunit;
 
 namespace AppMotor.CliApp.Tests.CommandLine
 {
-    public sealed class CliApplicationWithoutCommandsTests
+    public sealed class CliApplicationWithParamsTests
     {
         [Fact]
         public void TestExceptionHandling_Regular()
@@ -59,7 +59,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             app.TerminalOutput.Trim().ShouldBe("This is an error message.");
         }
 
-        private sealed class ExceptionTestApplication : TestApplicationWithoutCommandsBase
+        private sealed class ExceptionTestApplication : TestApplicationWithParamsBase
         {
             /// <inheritdoc />
             protected override CliCommandExecutor Executor => new(Execute);

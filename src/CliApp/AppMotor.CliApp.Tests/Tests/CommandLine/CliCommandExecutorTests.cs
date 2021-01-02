@@ -14,7 +14,6 @@
 // limitations under the License.
 #endregion
 
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using AppMotor.CliApp.CommandLine;
@@ -202,20 +201,11 @@ namespace AppMotor.CliApp.Tests.CommandLine
             testApplication.ShouldHaveNoOutput();
         }
 
-        private sealed class TestApplication : TestApplicationWithCommandsBase
+        private sealed class TestApplication : TestApplicationWithVerbsBase
         {
-            private readonly CliCommandExecutor _commandExecutor;
-
-            /// <inheritdoc />
             public TestApplication(CliCommandExecutor commandExecutor)
             {
-                this._commandExecutor = commandExecutor;
-            }
-
-            /// <inheritdoc />
-            protected override IEnumerable<CliCommand> GetVerbs()
-            {
-                yield return new TestCommand(this._commandExecutor);
+                this.Verbs = new[] { new CliVerb(COMMAND_NAME, new TestCommand(commandExecutor)) };
             }
         }
 
@@ -225,7 +215,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             protected override CliCommandExecutor Executor { get; }
 
             /// <inheritdoc />
-            public TestCommand(CliCommandExecutor commandExecutor) : base(COMMAND_NAME)
+            public TestCommand(CliCommandExecutor commandExecutor)
             {
                 this.Executor = commandExecutor;
             }

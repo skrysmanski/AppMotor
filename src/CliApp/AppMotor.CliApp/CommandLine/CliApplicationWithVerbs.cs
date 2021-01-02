@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.CommandLine;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,20 +29,35 @@ namespace AppMotor.CliApp.CommandLine
 {
     /// <summary>
     /// Represents a command line application with automatic command line argument parsing that bundles various
-    /// functions (via <see cref="CliCommand"/>s) - like the <c>git</c> or <c>dotnet</c> commands. If you need an
-    /// application that only does one thing, use <see cref="CliApplicationWithoutCommands"/> instead.
+    /// functions (via <see cref="CliVerb"/>s) - like the <c>git</c> or <c>dotnet</c> commands. If you need an
+    /// application that only does one thing, use <see cref="CliApplicationWithParams"/> or <see cref="CliApplicationWithCommand"/>
+    /// instead.
     /// </summary>
     /// <remarks>
     /// Sub classes cannot have parameters (<see cref="CliParam{T}"/>) of their own. Parameter can only exist
     /// on the commands.
     /// </remarks>
-    public abstract class CliApplicationWithCommands : CliApplication
+    public class CliApplicationWithVerbs : CliApplication
     {
         /// <summary>
         /// The description of this application. Used for generating the help text.
         /// </summary>
         [PublicAPI]
-        protected virtual string? AppDescription => null;
+        public string? AppDescription { get; init; }
+
+        /// <summary>
+        /// The verbs of this application.
+        /// </summary>
+        // NOTE: The type of this property is not ImmutableArray on purpose - because you can't initialize
+        //   ImmutableArray with an array initializer (i.e. "new[] { ... }") - which is what we want for ease of use.
+        [PublicAPI]
+        public IReadOnlyList<CliVerb> Verbs
+        {
+            get => this._verbs ?? throw new InvalidOperationException($"The property '{nameof(this.Verbs)}' has never been set.");
+            init => this._verbs = value.ToImmutableArray();
+        }
+
+        private readonly ImmutableArray<CliVerb>? _verbs;
 
         /// <inheritdoc />
         protected sealed override CliApplicationExecutor MainExecutor => new(Execute);
@@ -53,16 +69,22 @@ namespace AppMotor.CliApp.CommandLine
                 exceptionHandlerFunc: ProcessUnhandledException
             );
 
-            foreach (var cliVerb in GetVerbs())
+            if (this.Verbs.Count == 0)
             {
-                rootCommand.AddCommand(cliVerb.UnderlyingImplementation);
+                throw new InvalidOperationException($"No verbs have be defined in property '{nameof(this.Verbs)}'.");
             }
 
-            return await rootCommand.InvokeAsync(
-                SortHelpFirst(args),
-                new CommandLineConsole(this.Terminal)
-            )
-            .ConfigureAwait(continueOnCapturedContext: false);
+            foreach (var cliVerb in this.Verbs)
+            {
+                if (cliVerb is null)
+                {
+                    throw new InvalidOperationException("Verbs must not be null.");
+                }
+
+                rootCommand.AddCommand(cliVerb.ToUnderlyingImplementation());
+            }
+
+            return await rootCommand.InvokeAsync(SortHelpFirst(args), new CommandLineConsole(this.Terminal)).ConfigureAwait(continueOnCapturedContext: false);
         }
 
         /// <summary>
@@ -103,11 +125,5 @@ namespace AppMotor.CliApp.CommandLine
                 return newArgs.ToArray();
             }
         }
-
-        /// <summary>
-        /// Returns all verbs (<see cref="CliCommand"/> and <see cref="CliVerbGroup"/>) that are supported by
-        /// this application.
-        /// </summary>
-        protected abstract IEnumerable<CliVerb> GetVerbs();
     }
 }

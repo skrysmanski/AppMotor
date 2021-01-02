@@ -16,13 +16,10 @@
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.CommandLine;
 using System.CommandLine.Invocation;
-using System.CommandLine.Parsing;
 using System.Threading.Tasks;
 
 using AppMotor.CliApp.CommandLine.Utils;
-using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
@@ -33,8 +30,14 @@ namespace AppMotor.CliApp.CommandLine
     ///
     /// <para>Commands can be nested like "myapp command1 subcommmand --some-option".</para>
     /// </summary>
-    public abstract class CliCommand : CliVerb
+    public abstract class CliCommand
     {
+        /// <summary>
+        /// The help text for this command.
+        /// </summary>
+        [PublicAPI]
+        public virtual string? HelpText => null;
+
         /// <summary>
         /// The main/execute method for this command. Implementations can access all command line parameters though
         /// the <see cref="CliParam{T}.Value"/> properties of this <see cref="CliParam{T}"/> instance.
@@ -43,17 +46,6 @@ namespace AppMotor.CliApp.CommandLine
         /// this property.</para>
         /// </summary>
         protected abstract CliCommandExecutor Executor { get; }
-
-        private ImmutableList<CliParamBase>? _allParams;
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="name">The primary name of this command.</param>
-        /// <param name="aliases">Optional alias names that also represent this command.</param>
-        protected CliCommand(string name, params string[] aliases) : base(name, aliases)
-        {
-        }
 
         /// <summary>
         /// Runs this command.
@@ -75,70 +67,25 @@ namespace AppMotor.CliApp.CommandLine
             return CliParamUtils.GetAllParamsFor(this);
         }
 
-        /// <summary>
-        /// Returns all sub verbs (i.e. <see cref="CliCommand"/> or <see cref="CliVerbGroup"/>). Returns <c>null</c> (or an empty
-        /// collection) if no sub verbs exist (this is the default implementation).
-        /// </summary>
-        [PublicAPI]
-        protected virtual IEnumerable<CliVerb>? GetSubVerbs()
-        {
-            return null;
-        }
-
-        internal sealed override Command ToUnderlyingImplementation()
-        {
-            this._allParams = GetAllParams().ToImmutableList();
-
-            var command = new Command(this.Name, this.HelpText);
-
-            foreach (var alias in this.Aliases)
-            {
-                command.AddAlias(alias);
-            }
-
-            foreach (var cliParam in this._allParams)
-            {
-                command.Add(cliParam.UnderlyingImplementation);
-            }
-
-            var subCommands = GetSubVerbs();
-            if (subCommands != null)
-            {
-                foreach (var subCommand in subCommands)
-                {
-                    command.AddCommand(subCommand.UnderlyingImplementation);
-                }
-            }
-
-            command.Handler = new CliCommandHandler(this);
-
-            return command;
-        }
-
-        private void SetAllParamValues(ParseResult parseResult)
-        {
-            // Should never happen.
-            Validate.Value.IsNotNull(this._allParams, nameof(this._allParams));
-
-            foreach (var cliParam in this._allParams)
-            {
-                cliParam.SetValueFromParseResult(parseResult);
-            }
-        }
-
-        private sealed class CliCommandHandler : ICommandHandler
+        internal sealed class CliCommandHandler : ICommandHandler
         {
             private readonly CliCommand _command;
+
+            public ImmutableList<CliParamBase> AllParams { get; }
 
             public CliCommandHandler(CliCommand command)
             {
                 this._command = command;
+                this.AllParams = command.GetAllParams().ToImmutableList();
             }
 
             /// <inheritdoc />
             public async Task<int> InvokeAsync(InvocationContext context)
             {
-                this._command.SetAllParamValues(context.ParseResult);
+                foreach (var cliParam in this.AllParams)
+                {
+                    cliParam.SetValueFromParseResult(context.ParseResult);
+                }
 
                 return await this._command.Execute().ConfigureAwait(continueOnCapturedContext: false);
             }
