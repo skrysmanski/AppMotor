@@ -26,14 +26,14 @@ using Xunit;
 
 namespace AppMotor.CliApp.Tests.CommandLine
 {
-    public sealed class CliApplicationWithoutCommandsTests
+    public sealed class CliApplicationWithVerbsTests
     {
         [Fact]
         public void TestExceptionHandling_Regular()
         {
             var app = new ExceptionTestApplication(throwErrorMessageException: false);
 
-            app.Run().ShouldBe(42);
+            app.Run("error").ShouldBe(42, app.TerminalOutput);
 
             app.CaughtException.ShouldNotBeNull();
             app.CaughtException.ShouldBeOfType<InvalidOperationException>();
@@ -49,7 +49,8 @@ namespace AppMotor.CliApp.Tests.CommandLine
         {
             var app = new ExceptionTestApplication(throwErrorMessageException: true);
 
-            app.Run().ShouldBe(1);
+            // "1" is used automatically for ErrorMessageException
+            app.Run("error").ShouldBe(1, app.TerminalOutput);
 
             app.CaughtException.ShouldNotBeNull();
             app.CaughtException.ShouldBeOfType<ErrorMessageException>();
@@ -59,31 +60,40 @@ namespace AppMotor.CliApp.Tests.CommandLine
             app.TerminalOutput.Trim().ShouldBe("This is an error message.");
         }
 
-        private sealed class ExceptionTestApplication : TestApplicationWithParamsBase
+        private sealed class ExceptionTestApplication : TestApplicationWithVerbs
         {
-            /// <inheritdoc />
-            protected override CliCommandExecutor Executor => new(Execute);
-
             /// <inheritdoc />
             protected override int ExitCodeOnException => 42;
 
-            private readonly bool _throwErrorMessageException;
-
             /// <inheritdoc />
             public ExceptionTestApplication(bool throwErrorMessageException)
+                : base(new CliVerb("error", new ErrorCommand(throwErrorMessageException)))
             {
-                this._throwErrorMessageException = throwErrorMessageException;
             }
 
-            private void Execute()
+            private sealed class ErrorCommand : CliCommand
             {
-                if (this._throwErrorMessageException)
+                private readonly bool _throwErrorMessageException;
+
+                /// <inheritdoc />
+                public ErrorCommand(bool throwErrorMessageException)
                 {
-                    throw new ErrorMessageException("This is an error message.");
+                    this._throwErrorMessageException = throwErrorMessageException;
                 }
-                else
+
+                /// <inheritdoc />
+                protected override CliCommandExecutor Executor => new(Execute);
+
+                private void Execute()
                 {
-                    throw new InvalidOperationException("This is a test");
+                    if (this._throwErrorMessageException)
+                    {
+                        throw new ErrorMessageException("This is an error message.");
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException("This is a test");
+                    }
                 }
             }
         }
