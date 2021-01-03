@@ -158,6 +158,13 @@ indent_size = 2
 
 
 #
+# .json files
+#
+[*.json]
+indent_size = 2
+
+
+#
 # Visual Studio Solution files
 #
 [*.sln]
