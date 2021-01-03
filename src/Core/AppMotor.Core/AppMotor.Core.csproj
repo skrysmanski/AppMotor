@@ -7,7 +7,7 @@
     <TargetFramework>net5.0</TargetFramework>
 
     <!-- See also: https://docs.microsoft.com/en-us/nuget/create-packages/prerelease-packages -->
-    <Version>0.10.2</Version>
+    <Version>0.10.3-preview1</Version>
 
     <Description>The core APIs for the AppMotor framework.</Description>
   </PropertyGroup>
