@@ -14,6 +14,22 @@
   <Import Project="$(MSBuildThisFileDirectory)Project.Shared.props" />
   <Import Project="$(MSBuildThisFileDirectory)Project.Code.Packages.props" />
 
+  <PropertyGroup Label="Build Settings">
+    <!--
+      Since this project template is primarily used for open source, there's no point in "hiding"
+      the debug symbols (as it's often the case in closed source software). So, by default, debug
+      symbols are embedded in the assembly itself.
+
+      The only real downside of this is that the assembly gets noticeably bigger (usually about 30%).
+      However, in most cases, we're still talking about kB here - not MB. So we use this as default
+      and library owners can change it back to "portable", if necessary.
+
+      See also: https://github.com/dotnet/sdk/issues/2679
+    -->
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
   <PropertyGroup>
     <!--
       Assume git by default.
