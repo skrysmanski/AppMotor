@@ -12,7 +12,7 @@
 <Project>
 
   <Import Project="$(MSBuildThisFileDirectory)Project.Shared.props" />
-  <Import Project="$(MSBuildThisFileDirectory)Project.Code.Packages.props" />
+  <Import Project="$(MSBuildThisFileDirectory)Project.Code_Packages.props" />
 
   <PropertyGroup Label="Build Settings">
     <!--

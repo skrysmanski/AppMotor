@@ -8,7 +8,7 @@
 <!-- You can find the latest version of this file here: https://github.com/skrysmanski/base-dotnet -->
 <Project>
 
-  <Import Project="$(MSBuildThisFileDirectory)Project.Shared.Packages.props" />
+  <Import Project="$(MSBuildThisFileDirectory)Project.Shared_Packages.props" />
 
   <PropertyGroup Label="Project Settings">
     <!--

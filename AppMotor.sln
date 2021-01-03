@@ -15,14 +15,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Solution Items", "_Solutio
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_ProjectCommons", "_ProjectCommons", "{47B4E663-17D1-496B-9EEC-4575191A2DCA}"
 	ProjectSection(SolutionItems) = preProject
-		_ProjectCommons\Project.Code.Packages.props = _ProjectCommons\Project.Code.Packages.props
 		_ProjectCommons\Project.Code.props = _ProjectCommons\Project.Code.props
+		_ProjectCommons\Project.Code_Packages.props = _ProjectCommons\Project.Code_Packages.props
 		_ProjectCommons\Project.NuGetPackage.props = _ProjectCommons\Project.NuGetPackage.props
 		_ProjectCommons\Project.NuGetPackage_Post.props = _ProjectCommons\Project.NuGetPackage_Post.props
-		_ProjectCommons\Project.Shared.Packages.props = _ProjectCommons\Project.Shared.Packages.props
 		_ProjectCommons\Project.Shared.props = _ProjectCommons\Project.Shared.props
-		_ProjectCommons\Project.Tests.Packages.props = _ProjectCommons\Project.Tests.Packages.props
+		_ProjectCommons\Project.Shared_Packages.props = _ProjectCommons\Project.Shared_Packages.props
 		_ProjectCommons\Project.Tests.props = _ProjectCommons\Project.Tests.props
+		_ProjectCommons\Project.Tests_Packages.props = _ProjectCommons\Project.Tests_Packages.props
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{3C07A4A0-723A-450A-9749-F959B66D244B}"
