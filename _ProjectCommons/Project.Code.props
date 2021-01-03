@@ -25,8 +25,13 @@
       and library owners can change it back to "portable", if necessary.
 
       See also: https://github.com/dotnet/sdk/issues/2679
+
+      NOTE: With <DeterministicSourcePaths> enabled for NuGet packages (in Release mode), the debug
+        symbols will not(!) contain the directory names from build machine anymore (like "D:\Programming\...").
+        See "Project.NuGetPackage.props" for more details.
     -->
     <DebugSymbols>true</DebugSymbols>
+    <!-- NOTE: "embedded" means "embedded portable". It's the same format as "portable", just integrated into the assembly. -->
     <DebugType>embedded</DebugType>
   </PropertyGroup>
 

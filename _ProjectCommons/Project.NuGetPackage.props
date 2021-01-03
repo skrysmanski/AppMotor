@@ -53,6 +53,70 @@
   </PropertyGroup>
 
   <!--
+    Properties and targets related to "Source Link" (providing source files when debugging 3rd party libraries). Supported
+    both by the Visual Studio Debugger (step into) and ReSharper/dotPeek (view source code).
+
+    NOTE: For the "Step Into" to work in the Visual Studio Debugger, you need to disable "Enable Just My Code"
+      Visual Studio's "Debugging" settings.
+
+    For more information, see: https://github.com/dotnet/sourcelink
+  -->
+  <PropertyGroup Label="Source Link">
+    <!--
+      Set "SourceLinkProvider" to "GitHub" by default. It's resolved into a NuGet package in "Project.NuGetPackage_Post.props".
+
+      For available providers, either search NuGet for "Microsoft.SourceLink":
+
+        https://www.nuget.org/packages?q=Microsoft.SourceLink
+
+      Or have a look here:
+
+        https://github.com/dotnet/sourcelink#using-source-link-in-net-projects
+
+      You may set this property to an empty value, if you don't want Source Link support for your NuGet package.
+    -->
+    <SourceLinkProvider>GitHub</SourceLinkProvider>
+
+    <!-- Embed source files that are not tracked by the source control manager in the PDB -->
+    <EmbedUntrackedSources Condition="'$(Configuration)' == 'Release'">true</EmbedUntrackedSources>
+
+    <!--
+      Change the paths within the debug symbols from absolute paths (based on the machine the assembly
+      was built on; like "D:\Programming\AppMotor\src\Core\AppMotor.Core\Utils\Base64Encoding.cs") to
+      something generic like "/_/src/Core/AppMotor.Core/Utils/Base64Encoding.cs".
+
+      For more details, see: https://github.com/dotnet/sourcelink/blob/master/docs/README.md#deterministicsourcepaths
+
+      NOTE: We only enable this for release builds so that in Debug builds the compiler can still find
+        the source files on the local disk.
+    -->
+    <DeterministicSourcePaths Condition="'$(Configuration)' == 'Release'">true</DeterministicSourcePaths>
+  </PropertyGroup>
+
+  <!--
+    Checks that the selected Source Link Provider matches the repository.
+
+    NOTE: Ideally we'd like to select the Source Link Provider automatically based on the origin/upstream URL
+      of the repository itself. Unfortunately, there doesn't seem to be a way to do this. So the next best thing
+      is to have a good default and to check whether it actually matches the underlying repository. This is
+      what this target does.
+  -->
+  <Target Name="_CheckSourceLinkProvider" BeforeTargets="GenerateNuspec" Condition=" '$(SourceLinkProvider)' != '' " DependsOnTargets="_Check_$(SourceLinkProvider.Replace('.', ''))_SourceLinkProvider">
+    <!-- Does nothing on its own. Check is handled by "DependsOnTargets". -->
+  </Target>
+
+  <!-- Source Link Provider match check for GitHub -->
+  <Target Name="_Check_GitHub_SourceLinkProvider">
+    <Error Condition=" '$(RepositoryType)' != 'git' " Text="The property 'RepositoryType' is not set to 'git' but '$(RepositoryType)'." />
+
+    <Exec Command="git config --get remote.origin.url" ConsoleToMSBuild="true" StandardOutputImportance="low">
+      <Output TaskParameter="ConsoleOutput" PropertyName="OriginUrl" />
+    </Exec>
+
+    <Error Condition="!$(OriginUrl.StartsWith('https://github.com/'))" Text="The origin URL '$(OriginUrl)' does not seem to be hosted on github.com." />
+  </Target>
+
+  <!--
     Adds/Fills the NuGet package properties that must be calculated dynamically.
 
     See also: https://docs.microsoft.com/en-us/dotnet/core/tools/csproj#nuget-metadata-properties
