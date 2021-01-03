@@ -19,6 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_ProjectCommons", "_Project
 		_ProjectCommons\Project.Code_Packages.props = _ProjectCommons\Project.Code_Packages.props
 		_ProjectCommons\Project.NuGetPackage.props = _ProjectCommons\Project.NuGetPackage.props
 		_ProjectCommons\Project.NuGetPackage_Post.props = _ProjectCommons\Project.NuGetPackage_Post.props
+		_ProjectCommons\Project.Sample.props = _ProjectCommons\Project.Sample.props
 		_ProjectCommons\Project.Shared.props = _ProjectCommons\Project.Shared.props
 		_ProjectCommons\Project.Shared_Packages.props = _ProjectCommons\Project.Shared_Packages.props
 		_ProjectCommons\Project.Tests.props = _ProjectCommons\Project.Tests.props
@@ -44,7 +45,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.CliApp.Hosting", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{7C19A0E1-CEB1-41FA-AA6F-D419A472DDA7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppMotor.CliApp.Samples.AppWithVerbs", "src\CliApp\AppMotor.CliApp.Samples.AppWithVerbs\AppMotor.CliApp.Samples.AppWithVerbs.csproj", "{6D5E949D-844F-43F9-8749-46F473F8E4B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.CliApp.Samples.AppWithVerbs", "src\CliApp\AppMotor.CliApp.Samples.AppWithVerbs\AppMotor.CliApp.Samples.AppWithVerbs.csproj", "{6D5E949D-844F-43F9-8749-46F473F8E4B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
