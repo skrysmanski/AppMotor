@@ -31,6 +31,7 @@
         See "Project.NuGetPackage.props" for more details.
     -->
     <DebugSymbols>true</DebugSymbols>
+    <!-- NOTE: "embedded" means "embedded portable". It's the same format as "portable", just integrated into the assembly. -->
     <DebugType>embedded</DebugType>
   </PropertyGroup>
 
