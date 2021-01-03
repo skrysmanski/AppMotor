@@ -7,12 +7,9 @@
     <TargetFramework>net5.0</TargetFramework>
 
     <!-- See also: https://docs.microsoft.com/en-us/nuget/create-packages/prerelease-packages -->
-    <Version>0.10.3-preview6</Version>
+    <Version>0.10.3-preview7</Version>
 
     <Description>The core APIs for the AppMotor framework.</Description>
-
-    <!-- Embed source files that are not tracked by the source control manager in the PDB -->
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
   </PropertyGroup>
 
   <ItemGroup>

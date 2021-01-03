@@ -8,8 +8,7 @@
 <!-- You can find the latest version of this file here: https://github.com/skrysmanski/base-dotnet -->
 <Project>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.$(SourceLinkProvider)" Version="*" PrivateAssets="all" Condition=" '$(SourceLinkProvider)' != '' " />
-  </ItemGroup>
+  <!-- Automatically import "_Post.props" files from the "_ProjectCommons" directory. -->
+  <Import Project="$(ProjectCommonsDirectory)*_Post.props" />
 
 </Project>
