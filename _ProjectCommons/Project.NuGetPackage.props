@@ -31,6 +31,8 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <SourceLinkProvider>GitHub</SourceLinkProvider>
+
     <!--
       Mark this project as "packable" so that NuGet packages can be produced.
     -->

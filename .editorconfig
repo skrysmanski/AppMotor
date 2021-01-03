@@ -152,7 +152,7 @@ charset = utf-8-bom
 #
 # .props files
 #
-[*.props]
+[*.{props,targets}]
 # This mirrors the indent size for .csproj files.
 indent_size = 2
 
