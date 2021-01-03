@@ -93,7 +93,7 @@
     <Version>0.0.0.0</Version>
   </PropertyGroup>
 
-  <Target Name="_CheckVersion" AfterTargets="GetAssemblyAttributes">
+  <Target Name="_CheckVersion" AfterTargets="GetAssemblyAttributes" Condition="'$(Configuration)' == 'Release'">
     <Error Text="No &lt;Version&gt; has been specified." Condition=" '$(Version)' == '0.0.0.0' " />
   </Target>
 
