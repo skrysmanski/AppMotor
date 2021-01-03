@@ -1,0 +1,15 @@
+<!--
+
+  Default settings for all sample code projects.
+
+  To use it, create a .NET Core project (modern project format) and then add this line at the top:
+
+    <Import Project="$(ProjectCommonsDirectory)Project.Sample.props" />
+
+-->
+<!-- You can find the latest version of this file here: https://github.com/skrysmanski/base-dotnet -->
+<Project>
+
+  <Import Project="$(MSBuildThisFileDirectory)Project.Shared.props" />
+
+</Project>
