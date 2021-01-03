@@ -61,6 +61,21 @@
   </Target>
 
   <!--
+    Checks that a <Version> has been specified for this project/assembly. If none is
+    set, the version defaults to "1.0.0.0". This version number, if not chosen deliberatly -
+    could potentially be problematic if, say, a created NuGet package was accidentially
+    uploaded. Because of these problems, we require each code project to explicetly specify
+    a version number.
+  -->
+  <PropertyGroup>
+    <Version>0.0.0.0</Version>
+  </PropertyGroup>
+
+  <Target Name="_CheckVersion" AfterTargets="GetAssemblyAttributes">
+    <Error Text="No &lt;Version&gt; has been specified." Condition=" '$(Version)' == '0.0.0.0' " />
+  </Target>
+
+  <!--
     Make shared assembly attributes configurable.
   -->
   <Target Name="_AddConditionalsForCommonAssemblyInfo" BeforeTargets="CoreCompile">
