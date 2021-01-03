@@ -1,0 +1,24 @@
+<!--
+
+  Contains the NuGet package references for "Project.Code.props".
+
+  This file is NOT meant to be imported directly.
+
+-->
+<!-- You can find the latest version of this file here: https://github.com/skrysmanski/base-dotnet -->
+<Project>
+
+  <ItemGroup>
+    <!--
+      Provides Microsoft's/.NET's static code analyzers.
+
+      NOTE: While - since .NET 5 - the code analyzers ship with the .NET SDK, the shipped
+        version will only update when the SDK itself updates (which - on Windows - usually means
+        an update of Visual Studio). With this NuGet package reference we have full control
+        over the version that's being used (and can upgrade faster than the SDK, if necessary).
+        See: https://github.com/dotnet/roslyn-analyzers/issues/4506
+    -->
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.1" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>

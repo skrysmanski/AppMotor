@@ -8,6 +8,8 @@
 <!-- You can find the latest version of this file here: https://github.com/skrysmanski/base-dotnet -->
 <Project>
 
+  <Import Project="$(MSBuildThisFileDirectory)Project.Shared.Packages.props" />
+
   <PropertyGroup Label="Project Settings">
     <!--
       Enable nullable reference types.
@@ -59,9 +61,5 @@
   <PropertyGroup Label="JetBrains.Annotations">
     <DefineConstants>$(DefineConstants);JETBRAINS_ANNOTATIONS</DefineConstants>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2020.3.0" />
-  </ItemGroup>
 
 </Project>

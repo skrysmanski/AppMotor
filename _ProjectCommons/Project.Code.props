@@ -12,6 +12,7 @@
 <Project>
 
   <Import Project="$(MSBuildThisFileDirectory)Project.Shared.props" />
+  <Import Project="$(MSBuildThisFileDirectory)Project.Code.Packages.props" />
 
   <PropertyGroup>
     <!--
@@ -108,18 +109,5 @@
     -->
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
   </PropertyGroup>
-
-  <ItemGroup>
-    <!--
-      Provides Microsoft's/.NET's static code analyzers.
-
-      NOTE: While - since .NET 5 - the code analyzers ship with the .NET SDK, the shipped
-        version will only update when the SDK itself updates (which - on Windows - usually means
-        an update of Visual Studio). With this NuGet package reference we have full control
-        over the version that's being used (and can upgrade faster than the SDK, if necessary).
-        See: https://github.com/dotnet/roslyn-analyzers/issues/4506
-    -->
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.1" PrivateAssets="all" />
-  </ItemGroup>
 
 </Project>

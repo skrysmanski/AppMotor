@@ -12,6 +12,7 @@
 <Project>
 
   <Import Project="$(MSBuildThisFileDirectory)Project.Shared.props" />
+  <Import Project="$(MSBuildThisFileDirectory)Project.Tests.Packages.props" />
 
   <PropertyGroup Label="Common Settings">
     <OutputType>Library</OutputType>
@@ -30,16 +31,5 @@
     <DebugType>embedded</DebugType>
     <Optimize>false</Optimize>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
-
-    <PackageReference Include="Shouldly" Version="4.0.3" />
-
-    <PackageReference Include="xunit.core" Version="2.4.1" />
-    <!-- The analyzers provide (compile-time) checks for example for [InlineData]. -->
-    <PackageReference Include="xunit.analyzers" Version="0.10.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3" PrivateAssets="all" />
-  </ItemGroup>
 
 </Project>
