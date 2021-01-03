@@ -78,7 +78,19 @@
     <SourceLinkProvider>GitHub</SourceLinkProvider>
 
     <!-- Embed source files that are not tracked by the source control manager in the PDB -->
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <EmbedUntrackedSources Condition="'$(Configuration)' == 'Release'">true</EmbedUntrackedSources>
+
+    <!--
+      Change the paths within the debug symbols from absolute paths (based on the machine the assembly
+      was built on; like "D:\Programming\AppMotor\src\Core\AppMotor.Core\Utils\Base64Encoding.cs") to
+      something generic like "/_/src/Core/AppMotor.Core/Utils/Base64Encoding.cs".
+
+      For more details, see: https://github.com/dotnet/sourcelink/blob/master/docs/README.md#deterministicsourcepaths
+
+      NOTE: We only enable this for release builds so that in Debug builds the compiler can still find
+        the source files on the local disk.
+    -->
+    <DeterministicSourcePaths Condition="'$(Configuration)' == 'Release'">true</DeterministicSourcePaths>
   </PropertyGroup>
 
   <!--
