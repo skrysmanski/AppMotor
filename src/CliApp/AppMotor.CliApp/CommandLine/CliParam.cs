@@ -181,7 +181,9 @@ namespace AppMotor.CliApp.CommandLine
             }
             else if (!typeof(T).IsValueType)
             {
-                if (this.IsPositionalParameter) // TODO: This is a bug in System.CommandLine report it
+                // TODO: At the moment there's no way to hide the "[default: ]" text from optional positional parameters that use reference types as data type.
+                // See: https://github.com/dotnet/command-line-api/issues/1156
+                if (this.IsPositionalParameter)
                 {
                     return true;
                 }
