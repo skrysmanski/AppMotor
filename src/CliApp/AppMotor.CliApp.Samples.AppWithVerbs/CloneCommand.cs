@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
 using AppMotor.CliApp.CommandLine;
 using AppMotor.CliApp.Terminals;
@@ -25,8 +24,9 @@ namespace AppMotor.CliApp.Samples.AppWithVerbs
             DefaultValue = null,
         };
 
-        private CliParam<string> BranchParam { get; } = new("--branch", "-b")
+        private CliParam<string?> BranchParam { get; } = new("--branch", "-b")
         {
+            DefaultValue = null,
             HelpText = "Instead of pointing the newly created HEAD to the branch pointed to by the cloned repository’s HEAD, point to <name> branch instead.",
         };
 
