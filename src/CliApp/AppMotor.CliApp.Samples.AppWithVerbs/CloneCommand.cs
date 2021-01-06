@@ -5,7 +5,7 @@ using AppMotor.CliApp.Terminals;
 
 namespace AppMotor.CliApp.Samples.AppWithVerbs
 {
-    internal sealed class CloneCommand : CliCommand
+    internal sealed class CloneCommand : GitCommandBase
     {
         /// <inheritdoc />
         public override string HelpText => "Clone a repository into a new directory";
@@ -32,7 +32,11 @@ namespace AppMotor.CliApp.Samples.AppWithVerbs
 
         private void Execute()
         {
-            string? branchName = this.BranchParam.Value;
+            if (this.VerboseParam.Value)
+            {
+                Terminal.WriteLine((TextInDarkGray)"This command would run verbose.");
+                Terminal.WriteLine();
+            }
 
             Terminal.WriteLine("This command would clone the repository:");
             Terminal.WriteLine();
@@ -44,7 +48,7 @@ namespace AppMotor.CliApp.Samples.AppWithVerbs
             Terminal.WriteLine();
             Terminal.WriteLine("With the selected branch:");
             Terminal.WriteLine();
-            Terminal.WriteLine((TextInWhite)$"  {branchName ?? "<the default branch>"}");
+            Terminal.WriteLine((TextInWhite)$"  {this.BranchParam.Value ?? "<the default branch>"}");
         }
     }
 }

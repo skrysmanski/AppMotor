@@ -2,7 +2,7 @@
 
 namespace AppMotor.CliApp.Samples.AppWithVerbs
 {
-    internal class InitCommand : CliCommand
+    internal class InitCommand : GitCommandBase
     {
         /// <inheritdoc />
         public override string HelpText => "Create an empty Git repository or reinitialize an existing one";

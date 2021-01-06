@@ -2,7 +2,7 @@
 
 namespace AppMotor.CliApp.Samples.AppWithVerbs
 {
-    internal class AddCommand : CliCommand
+    internal class AddCommand : GitCommandBase
     {
         /// <inheritdoc />
         public override string HelpText => "Add file contents to the index";

@@ -2,7 +2,7 @@
 
 namespace AppMotor.CliApp.Samples.AppWithVerbs
 {
-    internal class MoveCommand : CliCommand
+    internal class MoveCommand : GitCommandBase
     {
         /// <inheritdoc />
         public override string HelpText => "Move or rename a file, a directory, or a symlink";
