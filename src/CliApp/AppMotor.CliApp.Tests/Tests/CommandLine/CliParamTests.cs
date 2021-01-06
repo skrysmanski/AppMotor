@@ -501,15 +501,12 @@ namespace AppMotor.CliApp.Tests.CommandLine
             var underlyingImplementation = (Argument<int?>)param.UnderlyingImplementation;
             underlyingImplementation.HasDefaultValue.ShouldBe(false);
 
-            if (explicitSet)
-            {
-                var app = new TestApplicationWithParams(
-                    () => param.Value.ShouldBe(null),
-                    param
-                );
-                app.Run().ShouldBe(0, app.TerminalOutput);
-                app.ShouldHaveNoOutput();
-            }
+            var app = new TestApplicationWithParams(
+                () => param.Value.ShouldBe(null),
+                param
+            );
+            app.Run().ShouldBe(0, app.TerminalOutput);
+            app.ShouldHaveNoOutput();
         }
 
         [Theory]
@@ -566,6 +563,10 @@ namespace AppMotor.CliApp.Tests.CommandLine
             var underlyingImplementation = (Argument<string?>)param.UnderlyingImplementation;
             underlyingImplementation.HasDefaultValue.ShouldBe(explicitSet);
 
+            // Unfortunately, we can't differentiate between "CliParam<string?>" and "CliParam<string>". So,
+            // the "DefaultValue" property is the only way for reference type parameters to differentiate
+            // between optional and required parameter (unlike with value types where nullable value types
+            // are optional by default).
             if (explicitSet)
             {
                 var app = new TestApplicationWithParams(
@@ -574,6 +575,15 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 );
                 app.Run().ShouldBe(0, app.TerminalOutput);
                 app.ShouldHaveNoOutput();
+            }
+            else
+            {
+                var app = new TestApplicationWithParams(
+                    () => throw new InvalidOperationException("We should not get here."),
+                    param
+                );
+                app.Run().ShouldBe(1, app.TerminalOutput);
+                app.TerminalOutput.ShouldContain("Required argument missing");
             }
         }
 
