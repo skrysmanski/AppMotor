@@ -650,6 +650,15 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 app.Run().ShouldBe(0, app.TerminalOutput);
                 app.ShouldHaveNoOutput();
             }
+            else
+            {
+                var app = new TestApplicationWithParams(
+                    () => throw new InvalidOperationException("We should not get here."),
+                    param
+                );
+                app.Run().ShouldBe(1, app.TerminalOutput);
+                app.TerminalOutput.ShouldContain("Required argument missing");
+            }
         }
 
         [Fact]

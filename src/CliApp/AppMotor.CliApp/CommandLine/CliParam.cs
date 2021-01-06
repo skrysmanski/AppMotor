@@ -147,9 +147,17 @@ namespace AppMotor.CliApp.CommandLine
         {
             var argument = new Argument<T>(this.PrimaryName, this.HelpText);
 
-            if (this.DefaultValue.IsSet && ShouldSetUnderlyingDefaultValueForOptionalParameter())
+            if (this.DefaultValue.IsSet)
             {
-                argument.SetDefaultValue(this.DefaultValue.Value);
+                if (ShouldSetUnderlyingDefaultValueForOptionalParameter())
+                {
+                    argument.SetDefaultValue(this.DefaultValue.Value);
+                }
+            }
+            else if (typeof(T) == typeof(bool))
+            {
+                // NOTE: This is a bug fix for: https://github.com/dotnet/command-line-api/issues/1158
+                argument.Arity = ArgumentArity.ExactlyOne;
             }
 
             return argument;
