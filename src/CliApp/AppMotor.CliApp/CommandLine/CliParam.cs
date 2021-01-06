@@ -16,6 +16,7 @@
 
 using System;
 using System.CommandLine;
+using System.CommandLine.Help;
 using System.CommandLine.Parsing;
 using System.Linq;
 
@@ -129,7 +130,10 @@ namespace AppMotor.CliApp.CommandLine
 
             if (this.DefaultValue.IsSet)
             {
-                option.Argument.SetDefaultValue(this.DefaultValue.Value);
+                if (ShouldSetUnderlyingDefaultValueForOptionalParameter())
+                {
+                    option.Argument.SetDefaultValue(this.DefaultValue.Value);
+                }
             }
             else
             {
@@ -143,12 +147,53 @@ namespace AppMotor.CliApp.CommandLine
         {
             var argument = new Argument<T>(this.PrimaryName, this.HelpText);
 
-            if (this.DefaultValue.IsSet)
+            if (this.DefaultValue.IsSet && ShouldSetUnderlyingDefaultValueForOptionalParameter())
             {
                 argument.SetDefaultValue(this.DefaultValue.Value);
             }
 
             return argument;
+        }
+
+        /// <summary>
+        /// This method determines whether the default value is set in the underlying implementation
+        /// (i.e. <see cref="Argument.SetDefaultValue"/>). For certain cases (especially when the
+        /// default value is <c>null</c>), we don't set the default value as it will show up
+        /// as <c>[default: ]</c> in the parameters help text - and that's not useful.
+        ///
+        /// <para>For more details, see <see cref="HelpBuilder.ShouldShowDefaultValueHint"/>.</para>
+        /// </summary>
+        [MustUseReturnValue]
+        private bool ShouldSetUnderlyingDefaultValueForOptionalParameter()
+        {
+            if (!this.DefaultValue.IsSet)
+            {
+                throw new InvalidOperationException("This parameter is not optional.");
+            }
+
+            if (this.IsNamedParameter && typeof(T) == typeof(bool))
+            {
+                return this.DefaultValue.Value as bool? == true;
+            }
+            else if (typeof(T).IsNullableValueType())
+            {
+                return this.DefaultValue.Value is not null;
+            }
+            else if (!typeof(T).IsValueType)
+            {
+                if (this.IsPositionalParameter) // TODO: This is a bug in System.CommandLine report it
+                {
+                    return true;
+                }
+                else
+                {
+                    return this.DefaultValue.Value is not null;
+                }
+            }
+            else
+            {
+                return true;
+            }
         }
 
         internal sealed override void SetValueFromParseResult(ParseResult parseResult)
@@ -159,15 +204,19 @@ namespace AppMotor.CliApp.CommandLine
                 {
                     OptionResult? result = parseResult.FindResultFor(option);
 
-                    // NOTE: If the option is not present on the command line, an implicit result will be generated
-                    //   (if the option is optional). Thus, in our case, the result should never be null. (It would
-                    //   only be "null" if we passed an option that's unknown to the parser at parse time.)
+                    // NOTE: If the option is not present on the command line, the underlying implementation will generate
+                    //   an implicit result (if the option is optional). But only if we have set the default value at the
+                    //   underlying implementation. There are cases where we don't do this
+                    //   (see "ShouldSetUnderlyingDefaultValueForOptionalParameter()") in which case we have to use our
+                    //   default value.
                     if (result is null)
                     {
-                        throw new UnexpectedBehaviorException($"No parse result for option '{option.Name}'.");
+                        this._value = this.DefaultValue.Value;
                     }
-
-                    this._value = result.GetValueOrDefault<T>()!;
+                    else
+                    {
+                        this._value = result.GetValueOrDefault<T>()!;
+                    }
 
                     break;
                 }
@@ -176,15 +225,19 @@ namespace AppMotor.CliApp.CommandLine
                 {
                     ArgumentResult? result = parseResult.FindResultFor(argument);
 
-                    // NOTE: If the argument is not present on the command line, an implicit result will be generated.
-                    //   (if the argument is optional) Thus, in our case, the result should never be null. (It would
-                    //   only be "null" if we passed an option that's unknown to the parser at parse time.)
+                    // NOTE: If the option is not present on the command line, the underlying implementation will generate
+                    //   an implicit result (if the option is optional). But only if we have set the default value at the
+                    //   underlying implementation. There are cases where we don't do this
+                    //   (see "ShouldSetUnderlyingDefaultValueForOptionalParameter()") in which case we have to use our
+                    //   default value.
                     if (result is null)
                     {
-                        throw new UnexpectedBehaviorException($"No parse result for argument '{argument.Name}'.");
+                        this._value = this.DefaultValue.Value;
                     }
-
-                    this._value = result.GetValueOrDefault<T>()!;
+                    else
+                    {
+                        this._value = result.GetValueOrDefault<T>()!;
+                    }
 
                     break;
                 }

@@ -131,7 +131,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             param.DefaultValue.Value.ShouldBeNull();
 
             var underlyingImplementation = (Option<int?>)param.UnderlyingImplementation;
-            underlyingImplementation.Argument.HasDefaultValue.ShouldBe(true);
+            underlyingImplementation.Argument.HasDefaultValue.ShouldBe(false);
             underlyingImplementation.IsRequired.ShouldBe(false);
 
             // Test without specifying parameter
@@ -169,7 +169,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             param.DefaultValue.Value.ShouldBeNull();
 
             var underlyingImplementation = (Option<string?>)param.UnderlyingImplementation;
-            underlyingImplementation.Argument.HasDefaultValue.ShouldBe(true);
+            underlyingImplementation.Argument.HasDefaultValue.ShouldBe(false);
             underlyingImplementation.IsRequired.ShouldBe(false);
 
             // Test without specifying parameter
@@ -234,7 +234,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             param.DefaultValue.IsSet.ShouldBe(true);
 
             var underlyingImplementation = (Option<bool>)param.UnderlyingImplementation;
-            underlyingImplementation.Argument.HasDefaultValue.ShouldBe(true);
+            underlyingImplementation.Argument.HasDefaultValue.ShouldBe(false);
             underlyingImplementation.IsRequired.ShouldBe(false);
 
             // Test without specifying parameter
@@ -242,7 +242,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 () => param.Value.ShouldBe(false),
                 param
             );
-            app.Run().ShouldBe(0);
+            app.Run().ShouldBe(0, app.TerminalOutput);
             app.ShouldHaveNoOutput();
 
             // Test with specifying parameter without value
@@ -447,6 +447,201 @@ namespace AppMotor.CliApp.Tests.CommandLine
             param.DefaultValue.IsSet.ShouldBe(false);
         }
 
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void TestNamedParameter_UnderlyingDefaultValue_SpecialCases_NullableValueType(bool explicitSet)
+        {
+            // Setup
+            CliParam<int?> param;
+            if (explicitSet)
+            {
+                param = new CliParam<int?>("--value")
+                {
+                    DefaultValue = null,
+                };
+            }
+            else
+            {
+                param = new CliParam<int?>("--value");
+            }
+            param.IsPositionalParameter.ShouldBe(false);
+
+            // Test
+            param.DefaultValue.IsSet.ShouldBe(true);
+
+            var underlyingImplementation = (Option<int?>)param.UnderlyingImplementation;
+            underlyingImplementation.IsRequired.ShouldBe(false);
+            underlyingImplementation.Argument.HasDefaultValue.ShouldBe(false);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void TestPositionalParameter_UnderlyingDefaultValue_SpecialCases_NullableValueType(bool explicitSet)
+        {
+            // Setup
+            CliParam<int?> param;
+            if (explicitSet)
+            {
+                param = new CliParam<int?>("value", positionIndex: 42)
+                {
+                    DefaultValue = null,
+                };
+            }
+            else
+            {
+                param = new CliParam<int?>("value", positionIndex: 42);
+            }
+            param.IsPositionalParameter.ShouldBe(true);
+
+            // Test
+            param.DefaultValue.IsSet.ShouldBe(true);
+
+            var underlyingImplementation = (Argument<int?>)param.UnderlyingImplementation;
+            underlyingImplementation.HasDefaultValue.ShouldBe(false);
+
+            if (explicitSet)
+            {
+                var app = new TestApplicationWithParams(
+                    () => param.Value.ShouldBe(null),
+                    param
+                );
+                app.Run().ShouldBe(0, app.TerminalOutput);
+                app.ShouldHaveNoOutput();
+            }
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void TestNamedParameter_UnderlyingDefaultValue_SpecialCases_NullableRefType(bool explicitSet)
+        {
+            // Setup
+            CliParam<string?> param;
+            if (explicitSet)
+            {
+                param = new CliParam<string?>("--value")
+                {
+                    DefaultValue = null,
+                };
+            }
+            else
+            {
+                param = new CliParam<string?>("--value");
+            }
+            param.IsPositionalParameter.ShouldBe(false);
+
+            // Test
+            param.DefaultValue.IsSet.ShouldBe(explicitSet);
+
+            var underlyingImplementation = (Option<string?>)param.UnderlyingImplementation;
+            underlyingImplementation.IsRequired.ShouldBe(!explicitSet);
+            underlyingImplementation.Argument.HasDefaultValue.ShouldBe(false);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void TestPositionalParameter_UnderlyingDefaultValue_SpecialCases_NullableRefType(bool explicitSet)
+        {
+            // Setup
+            CliParam<string?> param;
+            if (explicitSet)
+            {
+                param = new CliParam<string?>("value", positionIndex: 42)
+                {
+                    DefaultValue = null,
+                };
+            }
+            else
+            {
+                param = new CliParam<string?>("value", positionIndex: 42);
+            }
+            param.IsPositionalParameter.ShouldBe(true);
+
+            // Test
+            param.DefaultValue.IsSet.ShouldBe(explicitSet);
+
+            var underlyingImplementation = (Argument<string?>)param.UnderlyingImplementation;
+            underlyingImplementation.HasDefaultValue.ShouldBe(explicitSet);
+
+            if (explicitSet)
+            {
+                var app = new TestApplicationWithParams(
+                    () => param.Value.ShouldBe(null),
+                    param
+                );
+                app.Run().ShouldBe(0, app.TerminalOutput);
+                app.ShouldHaveNoOutput();
+            }
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void TestNamedParameter_UnderlyingDefaultValue_SpecialCases_Bool(bool explicitSet)
+        {
+            // Setup
+            CliParam<bool> param;
+            if (explicitSet)
+            {
+                param = new CliParam<bool>("--value")
+                {
+                    DefaultValue = false,
+                };
+            }
+            else
+            {
+                param = new CliParam<bool>("--value");
+            }
+            param.IsPositionalParameter.ShouldBe(false);
+
+            // Test
+            param.DefaultValue.IsSet.ShouldBe(true);
+
+            var underlyingImplementation = (Option<bool>)param.UnderlyingImplementation;
+            underlyingImplementation.IsRequired.ShouldBe(false);
+            underlyingImplementation.Argument.HasDefaultValue.ShouldBe(false);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void TestPositionalParameter_UnderlyingDefaultValue_SpecialCases_Bool(bool explicitSet)
+        {
+            // Setup
+            CliParam<bool> param;
+            if (explicitSet)
+            {
+                param = new CliParam<bool>("value", positionIndex: 42)
+                {
+                    DefaultValue = false,
+                };
+            }
+            else
+            {
+                param = new CliParam<bool>("value", positionIndex: 42);
+            }
+            param.IsPositionalParameter.ShouldBe(true);
+
+            // Test
+            param.DefaultValue.IsSet.ShouldBe(explicitSet);
+
+            var underlyingImplementation = (Argument<bool>)param.UnderlyingImplementation;
+            underlyingImplementation.HasDefaultValue.ShouldBe(explicitSet);
+
+            if (explicitSet)
+            {
+                var app = new TestApplicationWithParams(
+                    () => param.Value.ShouldBe(false),
+                    param
+                );
+                app.Run().ShouldBe(0, app.TerminalOutput);
+                app.ShouldHaveNoOutput();
+            }
+        }
+
         [Fact]
         public void TestDuplicateNameForNamedParam()
         {
@@ -523,8 +718,8 @@ namespace AppMotor.CliApp.Tests.CommandLine
             var invalidTypeParam = new InvalidParamTypeParam();
 
             // Test
-            Should.Throw<UnexpectedBehaviorException>(() => optionParam.SetValueFromParseResult(parseResult));
-            Should.Throw<UnexpectedBehaviorException>(() => argumentParam.SetValueFromParseResult(parseResult));
+            Should.Throw<InvalidOperationException>(() => optionParam.SetValueFromParseResult(parseResult));
+            Should.Throw<InvalidOperationException>(() => argumentParam.SetValueFromParseResult(parseResult));
             Should.Throw<UnexpectedSwitchValueException>(() => invalidTypeParam.SetValueFromParseResult(parseResult));
         }
 
