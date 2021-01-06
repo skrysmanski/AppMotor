@@ -5,7 +5,7 @@ namespace AppMotor.CliApp.Samples.AppWithVerbs
     internal class AddCommand : CliCommand
     {
         /// <inheritdoc />
-        public override string HelpText => "Create an empty Git repository or reinitialize an existing one";
+        public override string HelpText => "Add file contents to the index";
 
         /// <inheritdoc />
         protected override CliCommandExecutor Executor => new(Execute);

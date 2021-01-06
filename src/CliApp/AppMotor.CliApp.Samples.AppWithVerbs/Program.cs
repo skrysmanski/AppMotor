@@ -1,6 +1,4 @@
-﻿using System;
-
-using AppMotor.CliApp.CommandLine;
+﻿using AppMotor.CliApp.CommandLine;
 
 namespace AppMotor.CliApp.Samples.AppWithVerbs
 {
@@ -13,7 +11,7 @@ namespace AppMotor.CliApp.Samples.AppWithVerbs
         {
             var app = new CliApplicationWithVerbs()
             {
-                AppDescription = "Command line interface for the Geet version control system",
+                AppDescription = ".NET wrapper around Git (for demonstration purposes). The commands are non-functional.",
                 Verbs = new[]
                 {
                     new CliVerb("clone", new CloneCommand()),

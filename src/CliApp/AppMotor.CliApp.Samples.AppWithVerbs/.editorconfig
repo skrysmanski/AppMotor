@@ -1,0 +1,14 @@
+[*.cs]
+#
+# Code analysis rules
+#
+# For configuration options, see: https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/configuration-options
+#
+# For each rule, see: https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/caXXXX
+#
+# The FxCop project: https://github.com/dotnet/roslyn-analyzers
+#
+
+# CA1303: Do not pass literals as localized parameters
+# Reason: This is just a sample app.
+dotnet_diagnostic.CA1303.severity = none

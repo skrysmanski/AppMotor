@@ -5,7 +5,7 @@ namespace AppMotor.CliApp.Samples.AppWithVerbs
     internal class MoveCommand : CliCommand
     {
         /// <inheritdoc />
-        public override string HelpText => "Create an empty Git repository or reinitialize an existing one";
+        public override string HelpText => "Move or rename a file, a directory, or a symlink";
 
         /// <inheritdoc />
         protected override CliCommandExecutor Executor => new(Execute);

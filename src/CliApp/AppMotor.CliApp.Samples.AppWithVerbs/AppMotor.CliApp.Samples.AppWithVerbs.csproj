@@ -7,7 +7,7 @@
 
     <OutputType>Exe</OutputType>
 
-    <AssemblyName>geet</AssemblyName>
+    <AssemblyName>ngit</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
