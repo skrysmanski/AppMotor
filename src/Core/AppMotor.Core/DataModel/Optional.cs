@@ -126,9 +126,7 @@ namespace AppMotor.Core.DataModel
                 return 0;
             }
 
-#pragma warning disable CA1508 // Avoid dead conditional code // BUG: https://github.com/dotnet/roslyn-analyzers/issues/4509
             return this._value?.GetHashCode() ?? 1;
-#pragma warning restore CA1508 // Avoid dead conditional code
         }
 
         /// <inheritdoc />
@@ -136,9 +134,7 @@ namespace AppMotor.Core.DataModel
         {
             if (this.IsSet)
             {
-#pragma warning disable CA1508 // Avoid dead conditional code // BUG: https://github.com/dotnet/roslyn-analyzers/issues/4509
                 return this._value?.ToString() ?? "";
-#pragma warning restore CA1508 // Avoid dead conditional code
             }
             else
             {

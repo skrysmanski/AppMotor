@@ -18,7 +18,7 @@
         over the version that's being used (and can upgrade faster than the SDK, if necessary).
         See: https://github.com/dotnet/roslyn-analyzers/issues/4506
     -->
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.1" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>
