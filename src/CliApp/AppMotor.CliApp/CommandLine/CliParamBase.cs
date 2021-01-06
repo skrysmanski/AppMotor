@@ -36,8 +36,6 @@ namespace AppMotor.CliApp.CommandLine
     /// </summary>
     public abstract class CliParamBase
     {
-        internal static readonly object FALSE_AS_OBJECT = false;
-
         /// <summary>
         /// The primary name for this parameter.
         /// </summary>

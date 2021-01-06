@@ -88,7 +88,7 @@ namespace AppMotor.CliApp.CommandLine
 
             if (typeof(T) == typeof(bool))
             {
-                this.DefaultValue = (T)FALSE_AS_OBJECT;
+                this.DefaultValue = default(T)!;
             }
         }
 
