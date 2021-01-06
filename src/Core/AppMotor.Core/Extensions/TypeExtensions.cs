@@ -136,6 +136,9 @@ namespace AppMotor.Core.Extensions
         /// </summary>
         /// <seealso cref="IsNullableValueType"/>
         [PublicAPI, Pure]
+        [Obsolete("Nullable and non-nullable reference types (available since C# 8) can't be differentiated this way. " +
+                  "As such this method may return 'true' even for non-nullable reference type. " +
+                  "Because of this, it's no longer advisable to use this method.")]
         public static bool IsNullableType(this Type type)
         {
             Validate.Argument.IsNotNull(type, nameof(type));
