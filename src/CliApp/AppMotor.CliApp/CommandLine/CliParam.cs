@@ -21,6 +21,7 @@ using System.Linq;
 
 using AppMotor.Core.DataModel;
 using AppMotor.Core.Exceptions;
+using AppMotor.Core.Extensions;
 
 using JetBrains.Annotations;
 
@@ -40,11 +41,24 @@ namespace AppMotor.CliApp.CommandLine
     public class CliParam<T> : CliParamBase
     {
         /// <summary>
-        /// The default value of this parameter. If set, the parameter is considered "optional"; if
-        /// not set, the parameter is considered "required".
+        /// <para>The default value of this parameter. If set, the parameter is considered "optional"; if
+        /// not set, the parameter is considered "required".</para>
         ///
-        /// <para>Note: If <typeparamref name="T"/> is <c>bool</c>, the default value is set to "false"
-        /// by default. No other type has a default default value.</para>
+        /// <para>Parameters are usually "required" by default. Exceptions are:</para>
+        ///
+        /// <list type="bullet">
+        /// <item>
+        /// <description>If <typeparamref name="T"/> is a nullable value type (e.g. <c>int?</c>), the default value will
+        /// be set to <c>null</c>.</description>
+        /// </item>
+        /// <item>
+        /// <description>If <typeparamref name="T"/> is <c>bool</c> and the parameter is a named parameter (see
+        /// <see cref="CliParamBase.IsNamedParameter"/>), the default value will be set to <c>false</c>.</description>
+        /// </item>
+        /// </list>
+        ///
+        /// <para>Note: To make a nullable reference type parameter (e.g. <c>string?</c>) optional, set this property
+        /// to <c>null</c>.</para>
         /// </summary>
         [PublicAPI]
         public Optional<T> DefaultValue { get; init; }
@@ -86,7 +100,7 @@ namespace AppMotor.CliApp.CommandLine
         {
             this._underlyingImplementation = new Lazy<Symbol>(CreateUnderlyingNamedParameter);
 
-            if (typeof(T) == typeof(bool))
+            if (typeof(T) == typeof(bool) || typeof(T).IsNullableValueType())
             {
                 this.DefaultValue = default(T)!;
             }
@@ -102,6 +116,11 @@ namespace AppMotor.CliApp.CommandLine
             : base(name, positionIndex)
         {
             this._underlyingImplementation = new Lazy<Symbol>(CreateUnderlyingPositionalParameter);
+
+            if (typeof(T).IsNullableValueType())
+            {
+                this.DefaultValue = default(T)!;
+            }
         }
 
         private Symbol CreateUnderlyingNamedParameter()

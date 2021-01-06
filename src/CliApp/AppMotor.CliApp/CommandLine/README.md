@@ -144,6 +144,41 @@ private void Execute()
 
 Note that the value is only available from within an "executor" method (see below).
 
+### Optional Parameters
+
+By default, parameters are considered "required". Parameters become "optional" if the `DefaultValue` property is set.
+
+For example, this parameter is required:
+
+```c#
+private CliParam<int> ValueParam { get; } = new("--value");
+```
+
+While this parameter is optional:
+
+```c#
+private CliParam<int> ValueParam { get; } = new("--value")
+{
+    DefaultValue = 42,
+};
+```
+
+To make a reference type parameter optional, set its default value to `null`:
+
+```c#
+private CliParam<FileInfo?> ValueParam { get; } = new("--value")
+{
+    DefaultValue = null,
+};
+```
+
+Note that the type of the parameter needs to be nullable (e.g. `FileInfo?` - not `FileInfo`) for this to work.
+
+There are a few parameter types that are **optional by default**:
+
+* Named parameters of type `CliParam<bool>`: the default value is set to `false`; these parameters usually represent "flags" (e.g. `--verbose`)
+* Parameters with a nullable value type (e.g. `CliParam<int?>`): the default value is set to `null`
+
 ## Verbs and Commands
 
 Verbs let you have multiple functions within your application. For example, in `git add myfile.cs` the word `add` is a verb.

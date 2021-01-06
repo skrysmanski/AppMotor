@@ -386,6 +386,67 @@ namespace AppMotor.CliApp.Tests.CommandLine
             Should.Throw<InvalidOperationException>(() => refTypeParam.Value);
         }
 
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void TestNullableParameter_ValueType_WithoutDefaultValue(bool named)
+        {
+            // Setup
+            var param = named ? new CliParam<int?>("--value")
+                              : new CliParam<int?>("value", positionIndex: 0);
+            param.IsNamedParameter.ShouldBe(named);
+
+            // Test
+            param.DefaultValue.IsSet.ShouldBe(true);
+            param.DefaultValue.Value.ShouldBe(null);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void TestNonNullableParameter_ValueType_WithoutDefaultValue(bool named)
+        {
+            // Setup
+            var param = named ? new CliParam<int>("--value")
+                      : new CliParam<int>("value", positionIndex: 0);
+            param.IsNamedParameter.ShouldBe(named);
+
+            // Test
+            param.DefaultValue.IsSet.ShouldBe(false);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void TestNullableParameter_RefType_WithoutDefaultValue(bool named)
+        {
+            // Setup
+            var param = named ? new CliParam<string?>("--value")
+                              : new CliParam<string?>("value", positionIndex: 0);
+            param.IsNamedParameter.ShouldBe(named);
+
+            // Test
+            // NOTE: Ideally we would the default value to be set for nullable reference types
+            //   (like for nullable value types). Unfortunately, .NET's type system doesn't
+            //   record the nullability of reference types. So there's no way for the CliParam
+            //   class to differentiate between "string" and "string?".
+            param.DefaultValue.IsSet.ShouldBe(false);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void TestNonNullableParameter_RefType_WithoutDefaultValue(bool named)
+        {
+            // Setup
+            var param = named ? new CliParam<string>("--value")
+                              : new CliParam<string>("value", positionIndex: 0);
+            param.IsNamedParameter.ShouldBe(named);
+
+            // Test
+            param.DefaultValue.IsSet.ShouldBe(false);
+        }
+
         [Fact]
         public void TestDuplicateNameForNamedParam()
         {
