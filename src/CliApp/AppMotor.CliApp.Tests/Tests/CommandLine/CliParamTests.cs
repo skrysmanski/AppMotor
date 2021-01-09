@@ -561,7 +561,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             param.DefaultValue.IsSet.ShouldBe(explicitSet);
 
             var underlyingImplementation = (Argument<string?>)param.UnderlyingImplementation;
-            underlyingImplementation.HasDefaultValue.ShouldBe(explicitSet);
+            underlyingImplementation.HasDefaultValue.ShouldBe(false);
 
             // Unfortunately, we can't differentiate between "CliParam<string?>" and "CliParam<string>". So,
             // the "DefaultValue" property is the only way for reference type parameters to differentiate

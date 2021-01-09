@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.CommandLine;
 using System.CommandLine.Help;
 using System.CommandLine.Parsing;
@@ -153,11 +154,22 @@ namespace AppMotor.CliApp.CommandLine
                 {
                     argument.SetDefaultValue(this.DefaultValue.Value);
                 }
+                else if (!typeof(T).IsValueType && this.DefaultValue.Value is null)
+                {
+                    // Workaround for https://github.com/dotnet/command-line-api/issues/1156
+                    argument.Arity = typeof(T).Is<IEnumerable>() ? ArgumentArity.ZeroOrMore : ArgumentArity.ZeroOrOne;
+                }
             }
-            else if (typeof(T) == typeof(bool))
+            else
             {
-                // NOTE: This is a bug fix for: https://github.com/dotnet/command-line-api/issues/1158
-                argument.Arity = ArgumentArity.ExactlyOne;
+                //
+                // No default value
+                //
+                if (typeof(T) == typeof(bool))
+                {
+                    // NOTE: This is a bug fix for: https://github.com/dotnet/command-line-api/issues/1158
+                    argument.Arity = ArgumentArity.ExactlyOne;
+                }
             }
 
             return argument;
@@ -183,22 +195,9 @@ namespace AppMotor.CliApp.CommandLine
             {
                 return this.DefaultValue.Value as bool? == true;
             }
-            else if (typeof(T).IsNullableValueType())
+            else if (typeof(T).IsNullableValueType() || !typeof(T).IsValueType)
             {
                 return this.DefaultValue.Value is not null;
-            }
-            else if (!typeof(T).IsValueType)
-            {
-                // TODO: At the moment there's no way to hide the "[default: ]" text from optional positional parameters that use reference types as data type.
-                // See: https://github.com/dotnet/command-line-api/issues/1156
-                if (this.IsPositionalParameter)
-                {
-                    return true;
-                }
-                else
-                {
-                    return this.DefaultValue.Value is not null;
-                }
             }
             else
             {
