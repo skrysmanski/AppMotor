@@ -12,4 +12,9 @@
 
   <Import Project="$(MSBuildThisFileDirectory)Project.Shared.props" />
 
+  <!-- License samples automatically under a very permissive license (MIT). -->
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)LICENSE-FOR-SAMPLES.txt" Link="LICENSE.txt" />
+  </ItemGroup>
+
 </Project>
