@@ -15,9 +15,7 @@ namespace AppMotor.CliApp.Samples.AppWithVerbs
                 Verbs = new[]
                 {
                     new CliVerb("clone", new CloneCommand()),
-                    new CliVerb("init", new InitCommand()),
                     new CliVerb("add", new AddCommand()),
-                    new CliVerb("mv", new MoveCommand()),
                 },
             };
 

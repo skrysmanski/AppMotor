@@ -53,15 +53,15 @@ namespace AppMotor.CliApp.Samples.AppWithVerbs
 
             Terminal.WriteLine("This command would clone the repository:");
             Terminal.WriteLine();
-            Terminal.WriteLine((TextInWhite)$"  {this.RepositoryParam.Value}");
+            Terminal.WriteLine((TextInCyan)$"  {this.RepositoryParam.Value}");
             Terminal.WriteLine();
             Terminal.WriteLine("To: ");
             Terminal.WriteLine();
-            Terminal.WriteLine((TextInWhite)$"  {this.DirectoryParam.Value}");
+            Terminal.WriteLine((TextInCyan)$"  {this.DirectoryParam.Value}");
             Terminal.WriteLine();
             Terminal.WriteLine("With the selected branch:");
             Terminal.WriteLine();
-            Terminal.WriteLine((TextInWhite)$"  {this.BranchParam.Value ?? "<the default branch>"}");
+            Terminal.WriteLine((TextInCyan)$"  {this.BranchParam.Value ?? "<the default branch>"}");
 
             foreach (var configPair in this.ConfigParam.Value)
             {
