@@ -78,6 +78,222 @@ namespace AppMotor.CliApp.Tests.CommandLine
             underlyingImplementation.Description.ShouldBe("abc");
         }
 
+        [Theory]
+        [InlineData(null)]
+        [InlineData(CollectionDefaultValues.Null)]
+        [InlineData(CollectionDefaultValues.EmptyArray)]
+        public void TestNamedParameter_Collection(CollectionDefaultValues? collectionDefaultValue)
+        {
+            // Setup
+            CliParam<string[]?> param;
+            switch (collectionDefaultValue)
+            {
+                case null:
+                    param = new CliParam<string[]?>("--value")
+                    {
+                        HelpText = "A collection of values.",
+                    };
+                    break;
+
+                case CollectionDefaultValues.Null:
+                    param = new CliParam<string[]?>("--value")
+                    {
+                        HelpText = "A collection of values.",
+                        DefaultValue = null,
+                    };
+                    break;
+
+                case CollectionDefaultValues.EmptyArray:
+                    param = new CliParam<string[]?>("--value")
+                    {
+                        HelpText = "A collection of values.",
+                        DefaultValue = Array.Empty<string>(),
+                    };
+                    break;
+
+                default:
+                    throw new UnexpectedSwitchValueException(nameof(collectionDefaultValue), collectionDefaultValue);
+            }
+
+            // Assumptions
+            param.IsNamedParameter.ShouldBe(true);
+            param.DefaultValue.IsSet.ShouldBe(collectionDefaultValue is not null);
+
+            // Tests
+
+            TestApplicationWithParams app;
+
+            // Test - without params
+            if (collectionDefaultValue is null)
+            {
+                app = new TestApplicationWithParams(
+                    () => throw new InvalidOperationException("We should not get here."),
+                    param
+                );
+                app.Run().ShouldBe(1, app.TerminalOutput);
+            }
+            else
+            {
+                app = new TestApplicationWithParams(
+                    () =>
+                    {
+                        switch (collectionDefaultValue)
+                        {
+                            case CollectionDefaultValues.Null:
+                                param.Value.ShouldBe(null);
+                                break;
+
+                            case CollectionDefaultValues.EmptyArray:
+                                param.Value.ShouldNotBeNull();
+                                param.Value.Length.ShouldBe(0);
+                                break;
+
+                            default:
+                                throw new UnexpectedSwitchValueException(nameof(collectionDefaultValue), collectionDefaultValue);
+                        }
+                    },
+                    param
+                );
+                app.Run().ShouldBe(0, app.TerminalOutput);
+                app.ShouldHaveNoOutput();
+
+                app = new TestApplicationWithParams(
+                    () => throw new InvalidOperationException("We should not get here."),
+                    param
+                );
+                app.Run("--help").ShouldBe(0, app.TerminalOutput);
+                app.TerminalOutput.ShouldContain("--value", Case.Sensitive, app.TerminalOutput);
+                app.TerminalOutput.ShouldNotContain("[default:", Case.Sensitive, app.TerminalOutput);
+            }
+
+            // Test - with one param
+            app = new TestApplicationWithParams(
+                () => param.Value.ShouldBe(new[] { "abc" }),
+                param
+            );
+            app.Run("--value", "abc").ShouldBe(0, app.TerminalOutput);
+            app.ShouldHaveNoOutput();
+
+            // Test - with two params
+            app = new TestApplicationWithParams(
+                () => param.Value.ShouldBe(new[] { "abc", "def" }),
+                param
+            );
+            app.Run("--value", "abc", "--value", "def").ShouldBe(0, app.TerminalOutput);
+            app.ShouldHaveNoOutput();
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData(CollectionDefaultValues.Null)]
+        [InlineData(CollectionDefaultValues.EmptyArray)]
+        public void TestPositionalParameter_Collection(CollectionDefaultValues? collectionDefaultValue)
+        {
+            // Setup
+            CliParam<string[]?> param;
+            switch (collectionDefaultValue)
+            {
+                case null:
+                    param = new CliParam<string[]?>("value", positionIndex: 42)
+                    {
+                        HelpText = "A collection of values.",
+                    };
+                    break;
+
+                case CollectionDefaultValues.Null:
+                    param = new CliParam<string[]?>("value", positionIndex: 42)
+                    {
+                        HelpText = "A collection of values.",
+                        DefaultValue = null,
+                    };
+                    break;
+
+                case CollectionDefaultValues.EmptyArray:
+                    param = new CliParam<string[]?>("value", positionIndex: 42)
+                    {
+                        HelpText = "A collection of values.",
+                        DefaultValue = Array.Empty<string>(),
+                    };
+                    break;
+
+                default:
+                    throw new UnexpectedSwitchValueException(nameof(collectionDefaultValue), collectionDefaultValue);
+            }
+
+            // Assumptions
+            param.IsPositionalParameter.ShouldBe(true);
+            param.DefaultValue.IsSet.ShouldBe(collectionDefaultValue is not null);
+
+            // Tests
+
+            TestApplicationWithParams app;
+
+            // Test - without params
+            if (collectionDefaultValue is null)
+            {
+                app = new TestApplicationWithParams(
+                    () => throw new InvalidOperationException("We should not get here."),
+                    param
+                );
+                app.Run().ShouldBe(1, app.TerminalOutput);
+            }
+            else
+            {
+                app = new TestApplicationWithParams(
+                    () =>
+                    {
+                        switch (collectionDefaultValue)
+                        {
+                            case CollectionDefaultValues.Null:
+                                param.Value.ShouldBe(null);
+                                break;
+
+                            case CollectionDefaultValues.EmptyArray:
+                                param.Value.ShouldNotBeNull();
+                                param.Value.Length.ShouldBe(0);
+                                break;
+
+                            default:
+                                throw new UnexpectedSwitchValueException(nameof(collectionDefaultValue), collectionDefaultValue);
+                        }
+                    },
+                    param
+                );
+                app.Run().ShouldBe(0, app.TerminalOutput);
+                app.ShouldHaveNoOutput();
+
+                app = new TestApplicationWithParams(
+                    () => throw new InvalidOperationException("We should not get here."),
+                    param
+                );
+                app.Run("--help").ShouldBe(0, app.TerminalOutput);
+                app.TerminalOutput.ShouldContain("value", Case.Sensitive, app.TerminalOutput);
+                app.TerminalOutput.ShouldNotContain("[default:", Case.Sensitive, app.TerminalOutput);
+            }
+
+            // Test - with one param
+            app = new TestApplicationWithParams(
+                () => param.Value.ShouldBe(new[] { "abc" }),
+                param
+            );
+            app.Run("abc").ShouldBe(0, app.TerminalOutput);
+            app.ShouldHaveNoOutput();
+
+            // Test - with two params
+            app = new TestApplicationWithParams(
+                () => param.Value.ShouldBe(new[] { "abc", "def" }),
+                param
+            );
+            app.Run("abc", "def").ShouldBe(0, app.TerminalOutput);
+            app.ShouldHaveNoOutput();
+        }
+
+        public enum CollectionDefaultValues
+        {
+            Null,
+            EmptyArray,
+        }
+
         [Fact]
         public void TestNamedParameter_WithDefaultValue()
         {
@@ -300,7 +516,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 () => param.Value.ShouldBe("def"),
                 param
             );
-            app.Run("def").ShouldBe(0);
+            app.Run("def").ShouldBe(0, app.TerminalOutput);
             app.ShouldHaveNoOutput();
         }
 

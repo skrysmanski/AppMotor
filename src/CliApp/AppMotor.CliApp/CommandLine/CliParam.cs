@@ -150,14 +150,14 @@ namespace AppMotor.CliApp.CommandLine
 
             if (this.DefaultValue.IsSet)
             {
+                // Since we don't always set the default value on the argument (to hide it from the help output),
+                // we have to set the arity of the argument definition instead to define that it's optional.
+                // See also: https://github.com/dotnet/command-line-api/issues/1156
+                argument.Arity = IsCollectionParam() ? ArgumentArity.ZeroOrMore : ArgumentArity.ZeroOrOne;
+
                 if (ShouldSetUnderlyingDefaultValueForOptionalParameter())
                 {
                     argument.SetDefaultValue(this.DefaultValue.Value);
-                }
-                else if (!typeof(T).IsValueType && this.DefaultValue.Value is null)
-                {
-                    // Workaround for https://github.com/dotnet/command-line-api/issues/1156
-                    argument.Arity = typeof(T).Is<IEnumerable>() ? ArgumentArity.ZeroOrMore : ArgumentArity.ZeroOrOne;
                 }
             }
             else
@@ -165,11 +165,10 @@ namespace AppMotor.CliApp.CommandLine
                 //
                 // No default value
                 //
-                if (typeof(T) == typeof(bool))
-                {
-                    // NOTE: This is a bug fix for: https://github.com/dotnet/command-line-api/issues/1158
-                    argument.Arity = ArgumentArity.ExactlyOne;
-                }
+
+                // Set arity explicitly to mark the argument definition as "required".
+                // NOTE: This is also a bug fix for: https://github.com/dotnet/command-line-api/issues/1158
+                argument.Arity = IsCollectionParam() ? ArgumentArity.OneOrMore : ArgumentArity.ExactlyOne;
             }
 
             return argument;
@@ -195,14 +194,40 @@ namespace AppMotor.CliApp.CommandLine
             {
                 return this.DefaultValue.Value as bool? == true;
             }
-            else if (typeof(T).IsNullableValueType() || !typeof(T).IsValueType)
+            else if (typeof(T).IsNullableValueType())
             {
                 return this.DefaultValue.Value is not null;
+            }
+            else if (!typeof(T).IsValueType)
+            {
+                if (this.DefaultValue.Value is null)
+                {
+                    return false;
+                }
+                else if (IsCollectionParam())
+                {
+                    // Check if the collection is empty.
+                    // NOTE: We don't use "ICollection" here as this would excluded "IReadOnlyCollection".
+                    foreach (var _ in (IEnumerable)this.DefaultValue.Value)
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                return true;
             }
             else
             {
                 return true;
             }
+        }
+
+        [MustUseReturnValue]
+        private static bool IsCollectionParam()
+        {
+            return typeof(T).Is<IEnumerable>() && typeof(T) != typeof(string);
         }
 
         internal sealed override void SetValueFromParseResult(ParseResult parseResult)
