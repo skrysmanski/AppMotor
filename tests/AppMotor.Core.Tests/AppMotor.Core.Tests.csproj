@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AppMotor.Core\AppMotor.Core.csproj" />
+    <ProjectReference Include="..\..\src\AppMotor.Core\AppMotor.Core.csproj" />
   </ItemGroup>
 
 </Project>
