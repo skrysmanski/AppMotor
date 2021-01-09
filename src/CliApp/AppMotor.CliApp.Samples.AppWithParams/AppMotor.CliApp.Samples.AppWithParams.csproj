@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="$(ProjectCommonsDirectory)Project.Sample.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+
+    <OutputType>Exe</OutputType>
+
+    <AssemblyName>ncopy</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AppMotor.CliApp\AppMotor.CliApp.csproj" />
+  </ItemGroup>
+
+</Project>
