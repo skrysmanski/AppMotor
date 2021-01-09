@@ -1,0 +1,27 @@
+<!--
+
+  Default settings for all sample code projects.
+
+  To use it, create a .NET Core project (modern project format) and then add this line at the top:
+
+    <Import Project="$(ProjectCommonsDirectory)Project.Sample.props" />
+
+-->
+<!-- You can find the latest version of this file here: https://github.com/skrysmanski/base-dotnet -->
+<Project>
+
+  <Import Project="$(MSBuildThisFileDirectory)Project.Shared.props" />
+
+  <PropertyGroup Label="Build Settings">
+    <!-- Automatically enable debug symbols for all configurations. -->
+    <DebugSymbols>true</DebugSymbols>
+    <!-- NOTE: "embedded" means "embedded portable". It's the same format as "portable", just integrated into the assembly. -->
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <!-- License samples automatically under a very permissive license (MIT). -->
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)LICENSE-FOR-SAMPLES.txt" Link="LICENSE.txt" />
+  </ItemGroup>
+
+</Project>
