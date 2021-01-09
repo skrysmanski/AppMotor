@@ -26,24 +26,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_ProjectCommons", "_Project
 		_ProjectCommons\Project.Tests_Packages.props = _ProjectCommons\Project.Tests_Packages.props
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{3C07A4A0-723A-450A-9749-F959B66D244B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.Core", "src\Core\AppMotor.Core\AppMotor.Core.csproj", "{0E87039E-D882-44F8-BBA2-7DF51F26E1EF}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.Core.Tests", "src\Core\AppMotor.Core.Tests\AppMotor.Core.Tests.csproj", "{2DBAB552-26F3-4EE8-9C9D-DF67FA933D82}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CliApp", "CliApp", "{F7DED723-5BC3-4A92-94F8-53DA496B0AA4}"
-	ProjectSection(SolutionItems) = preProject
-		src\CliApp\README.md = src\CliApp\README.md
-	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.CliApp", "src\CliApp\AppMotor.CliApp\AppMotor.CliApp.csproj", "{CBB59AA0-B953-4989-8AC9-9645AB5A0447}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.CliApp.Tests", "src\CliApp\AppMotor.CliApp.Tests\AppMotor.CliApp.Tests.csproj", "{7468E2E3-BDE8-4C7C-A48F-23A90D2819B0}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.CliApp.Hosting", "src\CliApp\AppMotor.CliApp.Hosting\AppMotor.CliApp.Hosting.csproj", "{4882E3B8-DAFB-464F-94B1-5152AF314733}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{8223F30D-001B-49FC-B7A3-58B1FE1BECB3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{AD3BB751-2579-4C3C-8E43-682878364D22}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.Core", "src\AppMotor.Core\AppMotor.Core.csproj", "{0E87039E-D882-44F8-BBA2-7DF51F26E1EF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.Core.Tests", "tests\AppMotor.Core.Tests\AppMotor.Core.Tests.csproj", "{2DBAB552-26F3-4EE8-9C9D-DF67FA933D82}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.CliApp", "src\AppMotor.CliApp\AppMotor.CliApp.csproj", "{CBB59AA0-B953-4989-8AC9-9645AB5A0447}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.CliApp.Tests", "tests\AppMotor.CliApp.Tests\AppMotor.CliApp.Tests.csproj", "{7468E2E3-BDE8-4C7C-A48F-23A90D2819B0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.CliApp.Hosting", "src\AppMotor.CliApp.Hosting\AppMotor.CliApp.Hosting.csproj", "{4882E3B8-DAFB-464F-94B1-5152AF314733}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.CliApp.Samples.AppWithVerbs", "samples\AppMotor.CliApp.Samples.AppWithVerbs\AppMotor.CliApp.Samples.AppWithVerbs.csproj", "{825A1C4A-9491-4FDE-B765-E34C77D1AAD8}"
 EndProject
@@ -89,11 +84,8 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{47B4E663-17D1-496B-9EEC-4575191A2DCA} = {3070412B-0C42-465C-A0B1-840996585E88}
-		{0E87039E-D882-44F8-BBA2-7DF51F26E1EF} = {3C07A4A0-723A-450A-9749-F959B66D244B}
-		{2DBAB552-26F3-4EE8-9C9D-DF67FA933D82} = {3C07A4A0-723A-450A-9749-F959B66D244B}
-		{CBB59AA0-B953-4989-8AC9-9645AB5A0447} = {F7DED723-5BC3-4A92-94F8-53DA496B0AA4}
-		{7468E2E3-BDE8-4C7C-A48F-23A90D2819B0} = {F7DED723-5BC3-4A92-94F8-53DA496B0AA4}
-		{4882E3B8-DAFB-464F-94B1-5152AF314733} = {F7DED723-5BC3-4A92-94F8-53DA496B0AA4}
+		{2DBAB552-26F3-4EE8-9C9D-DF67FA933D82} = {8223F30D-001B-49FC-B7A3-58B1FE1BECB3}
+		{7468E2E3-BDE8-4C7C-A48F-23A90D2819B0} = {8223F30D-001B-49FC-B7A3-58B1FE1BECB3}
 		{825A1C4A-9491-4FDE-B765-E34C77D1AAD8} = {AD3BB751-2579-4C3C-8E43-682878364D22}
 		{DACD6DEB-4967-4CD9-B859-BB96FEA991A9} = {AD3BB751-2579-4C3C-8E43-682878364D22}
 	EndGlobalSection
