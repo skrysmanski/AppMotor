@@ -33,17 +33,17 @@ namespace AppMotor.CliApp.Tests.CommandLine
             var testVerb = new TestVerb();
             var testApp = new TestApplicationWithVerbs(testVerb);
 
-            testApp.Run("test", "--value", "42").ShouldBe(0, testApp.TerminalOutput);
+            testApp.Run("test", "--value", "42");
             testApp.ShouldHaveNoOutput();
             testVerb.TestCommand.Executed.ShouldBe(true);
             testVerb.TestCommand.Executed = false;
 
-            testApp.Run("test1", "--value", "42").ShouldBe(0, testApp.TerminalOutput);
+            testApp.Run("test1", "--value", "42");
             testApp.ShouldHaveNoOutput();
             testVerb.TestCommand.Executed.ShouldBe(true);
             testVerb.TestCommand.Executed = false;
 
-            testApp.Run("test2", "--value", "42").ShouldBe(0, testApp.TerminalOutput);
+            testApp.Run("test2", "--value", "42");
             testApp.ShouldHaveNoOutput();
             testVerb.TestCommand.Executed.ShouldBe(true);
             testVerb.TestCommand.Executed = false;
@@ -57,21 +57,21 @@ namespace AppMotor.CliApp.Tests.CommandLine
             var parentVerb = new VerbWithSubVerbs("parent", subVerb1, subVerb2);
             var testApp = new TestApplicationWithVerbs(parentVerb);
 
-            testApp.Run("parent", "--value", "42").ShouldBe(0, testApp.TerminalOutput);
+            testApp.Run("parent", "--value", "42");
             testApp.ShouldHaveNoOutput();
             parentVerb.TestCommand.Executed.ShouldBe(true);
             subVerb1.TestCommand.Executed.ShouldBe(false);
             subVerb2.TestCommand.Executed.ShouldBe(false);
             parentVerb.TestCommand.Executed = false;
 
-            testApp.Run("parent", "sub1", "--value", "42").ShouldBe(0, testApp.TerminalOutput);
+            testApp.Run("parent", "sub1", "--value", "42");
             testApp.ShouldHaveNoOutput();
             parentVerb.TestCommand.Executed.ShouldBe(false);
             subVerb1.TestCommand.Executed.ShouldBe(true);
             subVerb2.TestCommand.Executed.ShouldBe(false);
             subVerb1.TestCommand.Executed = false;
 
-            testApp.Run("parent", "sub2", "--value", "42").ShouldBe(0, testApp.TerminalOutput);
+            testApp.Run("parent", "sub2", "--value", "42");
             testApp.ShouldHaveNoOutput();
             parentVerb.TestCommand.Executed.ShouldBe(false);
             subVerb1.TestCommand.Executed.ShouldBe(false);
@@ -88,21 +88,21 @@ namespace AppMotor.CliApp.Tests.CommandLine
             var parentVerb = new VerbWithSubVerbs("parent", subGroup);
             var testApp = new TestApplicationWithVerbs(parentVerb);
 
-            testApp.Run("parent", "--value", "42").ShouldBe(0, testApp.TerminalOutput);
+            testApp.Run("parent", "--value", "42");
             testApp.ShouldHaveNoOutput();
             parentVerb.TestCommand.Executed.ShouldBe(true);
             subVerb1.TestCommand.Executed.ShouldBe(false);
             subVerb2.TestCommand.Executed.ShouldBe(false);
             parentVerb.TestCommand.Executed = false;
 
-            testApp.Run("parent", "subgroup", "sub1", "--value", "42").ShouldBe(0, testApp.TerminalOutput);
+            testApp.Run("parent", "subgroup", "sub1", "--value", "42");
             testApp.ShouldHaveNoOutput();
             parentVerb.TestCommand.Executed.ShouldBe(false);
             subVerb1.TestCommand.Executed.ShouldBe(true);
             subVerb2.TestCommand.Executed.ShouldBe(false);
             subVerb1.TestCommand.Executed = false;
 
-            testApp.Run("parent", "subgroup", "sub2", "--value", "42").ShouldBe(0, testApp.TerminalOutput);
+            testApp.Run("parent", "subgroup", "sub2", "--value", "42");
             testApp.ShouldHaveNoOutput();
             parentVerb.TestCommand.Executed.ShouldBe(false);
             subVerb1.TestCommand.Executed.ShouldBe(false);

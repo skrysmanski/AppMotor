@@ -24,31 +24,42 @@ namespace AppMotor.CliApp.TestUtils
 {
     internal class TestApplicationWithVerbsBase : CliApplicationWithVerbs, ITestApplication
     {
-        private readonly TestTerminal _testTerminal = new();
+        private readonly TestApplicationHelper _appHelper;
 
         /// <inheritdoc />
-        public string TerminalOutput => this._testTerminal.CurrentOutput;
-
-        /// <inheritdoc />
-        public Exception? CaughtException { get; private set; }
+        public string TerminalOutput => this._appHelper.TerminalOutput;
 
         public TestApplicationWithVerbsBase()
         {
-            this.Terminal = this._testTerminal;
+            this._appHelper = new TestApplicationHelper(this);
+        }
+
+        public new void Run(params string[] args)
+        {
+            this._appHelper.Run(args, expectedExitCode: 0);
+        }
+
+        public void RunWithExpectedExitCode(int expectedExitCode, params string[] args)
+        {
+            this._appHelper.Run(args, expectedExitCode: expectedExitCode);
         }
 
         [MustUseReturnValue]
-        public new int Run(params string[] args)
+        public Exception RunWithExpectedException(params string[] args)
         {
-            this._testTerminal.ResetOutput();
-            this.CaughtException = null;
-            return base.Run(args);
+            return this._appHelper.RunWithExpectedException(args, expectedExitCode: this.ExitCodeOnException);
+        }
+
+        [MustUseReturnValue]
+        public Exception RunWithExpectedException(int expectedExitCode, params string[] args)
+        {
+            return this._appHelper.RunWithExpectedException(args, expectedExitCode: expectedExitCode);
         }
 
         /// <inheritdoc />
         protected override void OnUnhandledException(Exception exception, ref int exitCode)
         {
-            this.CaughtException = exception;
+            this._appHelper.OnUnhandledException(exception);
 
             base.OnUnhandledException(exception, ref exitCode);
         }

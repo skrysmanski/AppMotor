@@ -14,8 +14,6 @@
 // limitations under the License.
 #endregion
 
-using System;
-
 using JetBrains.Annotations;
 
 namespace AppMotor.CliApp.TestUtils
@@ -24,10 +22,5 @@ namespace AppMotor.CliApp.TestUtils
     internal interface ITestApplication
     {
         string TerminalOutput { get; }
-
-        /// <summary>
-        /// The exception caught by the unhandled exception handler of the test application.
-        /// </summary>
-        Exception? CaughtException { get; }
     }
 }

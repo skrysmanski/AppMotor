@@ -33,11 +33,11 @@ namespace AppMotor.CliApp.Tests.CommandLine
         {
             var app = new ExceptionTestApplication(throwErrorMessageException: false);
 
-            app.Run("error").ShouldBe(42, app.TerminalOutput);
+            var caughtException = app.RunWithExpectedException("error");
 
-            app.CaughtException.ShouldNotBeNull();
-            app.CaughtException.ShouldBeOfType<InvalidOperationException>();
-            app.CaughtException.Message.ShouldBe("This is a test");
+            caughtException.ShouldNotBeNull();
+            caughtException.ShouldBeOfType<InvalidOperationException>();
+            caughtException.Message.ShouldBe("This is a test");
 
             app.TerminalOutput.ShouldContain("This is a test");
             // Indicate the full exception report has been printed
@@ -50,11 +50,11 @@ namespace AppMotor.CliApp.Tests.CommandLine
             var app = new ExceptionTestApplication(throwErrorMessageException: true);
 
             // "1" is used automatically for ErrorMessageException
-            app.Run("error").ShouldBe(1, app.TerminalOutput);
+            var caughtException = app.RunWithExpectedException(expectedExitCode: 1, "error");
 
-            app.CaughtException.ShouldNotBeNull();
-            app.CaughtException.ShouldBeOfType<ErrorMessageException>();
-            app.CaughtException.Message.ShouldBe("This is an error message.");
+            caughtException.ShouldNotBeNull();
+            caughtException.ShouldBeOfType<ErrorMessageException>();
+            caughtException.Message.ShouldBe("This is an error message.");
 
             // This must be the only output.
             app.TerminalOutput.Trim().ShouldBe("This is an error message.");
@@ -65,11 +65,11 @@ namespace AppMotor.CliApp.Tests.CommandLine
         {
             var app = new TestApplicationWithVerbsBase();
 
-            app.Run("abc").ShouldBe(-1);
+            var caughtException = app.RunWithExpectedException("abc");
 
-            app.CaughtException.ShouldNotBeNull();
-            app.CaughtException.ShouldBeOfType<InvalidOperationException>();
-            app.CaughtException.Message.ShouldBe($"The property '{nameof(app.Verbs)}' has never been set.");
+            caughtException.ShouldNotBeNull();
+            caughtException.ShouldBeOfType<InvalidOperationException>();
+            caughtException.Message.ShouldBe($"The property '{nameof(app.Verbs)}' has never been set.");
         }
 
         [Fact]
@@ -80,11 +80,11 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 Verbs = Array.Empty<CliVerb>(),
             };
 
-            app.Run("abc").ShouldBe(-1);
+            var caughtException = app.RunWithExpectedException("abc");
 
-            app.CaughtException.ShouldNotBeNull();
-            app.CaughtException.ShouldBeOfType<InvalidOperationException>();
-            app.CaughtException.Message.ShouldBe($"No verbs have be defined in property '{nameof(app.Verbs)}'.");
+            caughtException.ShouldNotBeNull();
+            caughtException.ShouldBeOfType<InvalidOperationException>();
+            caughtException.Message.ShouldBe($"No verbs have be defined in property '{nameof(app.Verbs)}'.");
         }
 
         [Fact]
@@ -95,11 +95,11 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 Verbs = new CliVerb[] { null!, },
             };
 
-            app.Run("abc").ShouldBe(-1);
+            var caughtException = app.RunWithExpectedException("abc");
 
-            app.CaughtException.ShouldNotBeNull();
-            app.CaughtException.ShouldBeOfType<InvalidOperationException>();
-            app.CaughtException.Message.ShouldBe("Verbs must not be null.");
+            caughtException.ShouldNotBeNull();
+            caughtException.ShouldBeOfType<InvalidOperationException>();
+            caughtException.Message.ShouldBe("Verbs must not be null.");
         }
 
         private sealed class ExceptionTestApplication : TestApplicationWithVerbs

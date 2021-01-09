@@ -59,7 +59,7 @@ namespace AppMotor.CliApp.Tests
             var testApp = new TestApplicationForExceptionHandling();
 
             // Test
-            testApp.Run().ShouldBe(-1, testApp.TerminalOutput);
+            testApp.RunWithExpectedException().ShouldBeOfType<AggregateException>();
 
             // Verify
             testApp.TerminalOutput.ShouldContain("This is a test");

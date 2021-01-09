@@ -36,7 +36,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             var app = new TestApplication();
 
             // Test
-            app.Run("--help").ShouldBe(0, app.TerminalOutput);
+            app.Run("--help");
 
             // Verify
             app.TerminalOutput.ShouldContain("The app's description");
@@ -72,7 +72,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             var app = new TestApplication();
 
             // Test
-            app.Run(firstArg, secondArg).ShouldBe(0, app.TerminalOutput);
+            app.Run(firstArg, secondArg);
 
             // Verify
             app.TerminalOutput.ShouldContain("#move#");
@@ -106,7 +106,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             var app = new TestApplication();
 
             // Test
-            app.Run(firstArg, secondArg, thirdArg).ShouldBe(0, app.TerminalOutput);
+            app.Run(firstArg, secondArg, thirdArg);
 
             // Verify
             app.TerminalOutput.ShouldContain("#sub1#");
@@ -133,7 +133,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             var app = new TestApplication();
 
             // Test
-            app.Run(firstArg, secondArg).ShouldBe(0, app.TerminalOutput);
+            app.Run(firstArg, secondArg);
 
             // Verify
             app.TerminalOutput.ShouldContain("#subgroup#");

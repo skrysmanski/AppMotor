@@ -130,7 +130,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                     () => throw new InvalidOperationException("We should not get here."),
                     param
                 );
-                app.Run().ShouldBe(1, app.TerminalOutput);
+                app.RunWithExpectedExitCode(1);
             }
             else
             {
@@ -154,14 +154,14 @@ namespace AppMotor.CliApp.Tests.CommandLine
                     },
                     param
                 );
-                app.Run().ShouldBe(0, app.TerminalOutput);
+                app.Run();
                 app.ShouldHaveNoOutput();
 
                 app = new TestApplicationWithParams(
                     () => throw new InvalidOperationException("We should not get here."),
                     param
                 );
-                app.Run("--help").ShouldBe(0, app.TerminalOutput);
+                app.Run("--help");
                 app.TerminalOutput.ShouldContain("--value", Case.Sensitive, app.TerminalOutput);
                 app.TerminalOutput.ShouldNotContain("[default:", Case.Sensitive, app.TerminalOutput);
             }
@@ -171,7 +171,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 () => param.Value.ShouldBe(new[] { "abc" }),
                 param
             );
-            app.Run("--value", "abc").ShouldBe(0, app.TerminalOutput);
+            app.Run("--value", "abc");
             app.ShouldHaveNoOutput();
 
             // Test - with two params
@@ -179,7 +179,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 () => param.Value.ShouldBe(new[] { "abc", "def" }),
                 param
             );
-            app.Run("--value", "abc", "--value", "def").ShouldBe(0, app.TerminalOutput);
+            app.Run("--value", "abc", "--value", "def");
             app.ShouldHaveNoOutput();
         }
 
@@ -235,7 +235,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                     () => throw new InvalidOperationException("We should not get here."),
                     param
                 );
-                app.Run().ShouldBe(1, app.TerminalOutput);
+                app.RunWithExpectedExitCode(1);
             }
             else
             {
@@ -259,14 +259,14 @@ namespace AppMotor.CliApp.Tests.CommandLine
                     },
                     param
                 );
-                app.Run().ShouldBe(0, app.TerminalOutput);
+                app.Run();
                 app.ShouldHaveNoOutput();
 
                 app = new TestApplicationWithParams(
                     () => throw new InvalidOperationException("We should not get here."),
                     param
                 );
-                app.Run("--help").ShouldBe(0, app.TerminalOutput);
+                app.Run("--help");
                 app.TerminalOutput.ShouldContain("value", Case.Sensitive, app.TerminalOutput);
                 app.TerminalOutput.ShouldNotContain("[default:", Case.Sensitive, app.TerminalOutput);
             }
@@ -276,7 +276,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 () => param.Value.ShouldBe(new[] { "abc" }),
                 param
             );
-            app.Run("abc").ShouldBe(0, app.TerminalOutput);
+            app.Run("abc");
             app.ShouldHaveNoOutput();
 
             // Test - with two params
@@ -284,7 +284,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 () => param.Value.ShouldBe(new[] { "abc", "def" }),
                 param
             );
-            app.Run("abc", "def").ShouldBe(0, app.TerminalOutput);
+            app.Run("abc", "def");
             app.ShouldHaveNoOutput();
         }
 
@@ -317,7 +317,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 () => param.Value.ShouldBe(42),
                 param
             );
-            app.Run().ShouldBe(0);
+            app.Run();
             app.ShouldHaveNoOutput();
 
             // Test with specifying parameter
@@ -325,7 +325,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 () => param.Value.ShouldBe(44),
                 param
             );
-            app.Run("--value", "44").ShouldBe(0);
+            app.Run("--value", "44");
             app.ShouldHaveNoOutput();
         }
 
@@ -355,7 +355,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 () => param.Value.ShouldBeNull(),
                 param
             );
-            app.Run().ShouldBe(0);
+            app.Run();
             app.ShouldHaveNoOutput();
 
             // Test with specifying parameter
@@ -363,7 +363,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 () => param.Value.ShouldBe(44),
                 param
             );
-            app.Run("--value", "44").ShouldBe(0);
+            app.Run("--value", "44");
             app.ShouldHaveNoOutput();
         }
 
@@ -393,7 +393,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 () => param.Value.ShouldBeNull(),
                 param
             );
-            app.Run().ShouldBe(0);
+            app.Run();
             app.ShouldHaveNoOutput();
 
             // Test with specifying parameter
@@ -401,7 +401,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 () => param.Value.ShouldBe("abc"),
                 param
             );
-            app.Run("--value", "abc").ShouldBe(0);
+            app.Run("--value", "abc");
             app.ShouldHaveNoOutput();
         }
 
@@ -424,7 +424,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 () => throw new Exception("We should not get here."),
                 param
             );
-            app.Run().ShouldBe(1);
+            app.RunWithExpectedExitCode(1);
             app.TerminalOutput.ShouldContain("Option '--value' is required.");
 
             // Test with specifying parameter
@@ -432,7 +432,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 () => param.Value.ShouldBe(44),
                 param
             );
-            app.Run("--value", "44").ShouldBe(0);
+            app.Run("--value", "44");
             app.ShouldHaveNoOutput();
         }
 
@@ -458,7 +458,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 () => param.Value.ShouldBe(false),
                 param
             );
-            app.Run().ShouldBe(0, app.TerminalOutput);
+            app.Run();
             app.ShouldHaveNoOutput();
 
             // Test with specifying parameter without value
@@ -466,7 +466,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 () => param.Value.ShouldBe(true),
                 param
             );
-            app.Run("--verbose").ShouldBe(0);
+            app.Run("--verbose");
             app.ShouldHaveNoOutput();
 
             // Test with specifying parameter with value=true
@@ -474,7 +474,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 () => param.Value.ShouldBe(true),
                 param
             );
-            app.Run("--verbose", "true").ShouldBe(0);
+            app.Run("--verbose", "true");
             app.ShouldHaveNoOutput();
 
             // Test with specifying parameter with value=false
@@ -482,7 +482,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 () => param.Value.ShouldBe(false),
                 param
             );
-            app.Run("--verbose", "false").ShouldBe(0);
+            app.Run("--verbose", "false");
             app.ShouldHaveNoOutput();
         }
 
@@ -508,7 +508,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 () => param.Value.ShouldBe("abc"),
                 param
             );
-            app.Run().ShouldBe(0);
+            app.Run();
             app.ShouldHaveNoOutput();
 
             // Test with specifying parameter
@@ -516,7 +516,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 () => param.Value.ShouldBe("def"),
                 param
             );
-            app.Run("def").ShouldBe(0, app.TerminalOutput);
+            app.Run("def");
             app.ShouldHaveNoOutput();
         }
 
@@ -538,7 +538,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 () => throw new Exception("We should not get here"),
                 param
             );
-            app.Run().ShouldBe(1, app.TerminalOutput);
+            app.RunWithExpectedExitCode(1);
             app.TerminalOutput.ShouldContain("Required argument missing for command");
 
             // Test with specifying parameter
@@ -546,7 +546,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 () => param.Value.ShouldBe("def"),
                 param
             );
-            app.Run("def").ShouldBe(0);
+            app.Run("def");
             app.ShouldHaveNoOutput();
         }
 
@@ -721,7 +721,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 () => param.Value.ShouldBe(null),
                 param
             );
-            app.Run().ShouldBe(0, app.TerminalOutput);
+            app.Run();
             app.ShouldHaveNoOutput();
         }
 
@@ -789,7 +789,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                     () => param.Value.ShouldBe(null),
                     param
                 );
-                app.Run().ShouldBe(0, app.TerminalOutput);
+                app.Run();
                 app.ShouldHaveNoOutput();
             }
             else
@@ -798,7 +798,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                     () => throw new InvalidOperationException("We should not get here."),
                     param
                 );
-                app.Run().ShouldBe(1, app.TerminalOutput);
+                app.RunWithExpectedExitCode(1);
                 app.TerminalOutput.ShouldContain("Required argument missing");
             }
         }
@@ -863,7 +863,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                     () => param.Value.ShouldBe(false),
                     param
                 );
-                app.Run().ShouldBe(0, app.TerminalOutput);
+                app.Run();
                 app.ShouldHaveNoOutput();
             }
             else
@@ -872,7 +872,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                     () => throw new InvalidOperationException("We should not get here."),
                     param
                 );
-                app.Run().ShouldBe(1, app.TerminalOutput);
+                app.RunWithExpectedExitCode(1);
                 app.TerminalOutput.ShouldContain("Required argument missing");
             }
         }

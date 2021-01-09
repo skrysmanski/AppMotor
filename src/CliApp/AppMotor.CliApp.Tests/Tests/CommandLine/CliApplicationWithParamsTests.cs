@@ -33,11 +33,11 @@ namespace AppMotor.CliApp.Tests.CommandLine
         {
             var app = new ExceptionTestApplication(throwErrorMessageException: false);
 
-            app.Run().ShouldBe(42);
+            var caughtException = app.RunWithExpectedException();
 
-            app.CaughtException.ShouldNotBeNull();
-            app.CaughtException.ShouldBeOfType<InvalidOperationException>();
-            app.CaughtException.Message.ShouldBe("This is a test");
+            caughtException.ShouldNotBeNull();
+            caughtException.ShouldBeOfType<InvalidOperationException>();
+            caughtException.Message.ShouldBe("This is a test");
 
             app.TerminalOutput.ShouldContain("This is a test");
             // Indicate the full exception report has been printed
@@ -49,11 +49,11 @@ namespace AppMotor.CliApp.Tests.CommandLine
         {
             var app = new ExceptionTestApplication(throwErrorMessageException: true);
 
-            app.Run().ShouldBe(1);
+            var caughtException = app.RunWithExpectedException(expectedExitCode: 1);
 
-            app.CaughtException.ShouldNotBeNull();
-            app.CaughtException.ShouldBeOfType<ErrorMessageException>();
-            app.CaughtException.Message.ShouldBe("This is an error message.");
+            caughtException.ShouldNotBeNull();
+            caughtException.ShouldBeOfType<ErrorMessageException>();
+            caughtException.Message.ShouldBe("This is an error message.");
 
             // This must be the only output.
             app.TerminalOutput.Trim().ShouldBe("This is an error message.");

@@ -46,18 +46,18 @@ namespace AppMotor.CliApp.Tests.CommandLine
 
             var testApp = new TestApplicationWithVerbs(testGroup);
 
-            testApp.Run("parent", "sub1", "--value", "42").ShouldBe(0, testApp.TerminalOutput);
+            testApp.Run("parent", "sub1", "--value", "42");
             testApp.ShouldHaveNoOutput();
             testCommand1.Executed.ShouldBe(true);
             testCommand1.Executed = false;
 
-            testApp.Run("parent", "sub2", "--value", "42").ShouldBe(0, testApp.TerminalOutput);
+            testApp.Run("parent", "sub2", "--value", "42");
             testApp.ShouldHaveNoOutput();
             testCommand2.Executed.ShouldBe(true);
             testCommand2.Executed = false;
 
             // The verb group itself must not be executable.
-            testApp.Run("parent").ShouldBe(1, testApp.TerminalOutput);
+            testApp.RunWithExpectedExitCode(expectedExitCode: 1, "parent");
         }
 
         [Theory]

@@ -35,7 +35,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             var app = new TestApplicationWithCommand(testCommand);
 
             // Test
-            app.Run("--value", "42").ShouldBe(0, app.TerminalOutput);
+            app.Run("--value", "42");
 
             // Verify
             app.TerminalOutput.ShouldBeEmpty();
@@ -53,7 +53,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             };
 
             // Test
-            app.Run("--value", "42").ShouldBe(0, app.TerminalOutput);
+            app.Run("--value", "42");
 
             // Verify
             app.TerminalOutput.ShouldBeEmpty();
@@ -73,12 +73,12 @@ namespace AppMotor.CliApp.Tests.CommandLine
             var app = new TestApplicationWithCommand();
 
             // Test
-            app.Run("abc").ShouldBe(-1, app.TerminalOutput);
+            var caughtException = app.RunWithExpectedException("abc");
 
             // Verify
-            app.CaughtException.ShouldNotBeNull();
-            app.CaughtException.ShouldBeOfType<InvalidOperationException>();
-            app.CaughtException.Message.ShouldBe($"The property '{nameof(app.Command)}' has never been set.");
+            caughtException.ShouldNotBeNull();
+            caughtException.ShouldBeOfType<InvalidOperationException>();
+            caughtException.Message.ShouldBe($"The property '{nameof(app.Command)}' has never been set.");
         }
 
         private sealed class TestCommand : CliCommand

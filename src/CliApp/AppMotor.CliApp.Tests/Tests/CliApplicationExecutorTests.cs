@@ -45,11 +45,10 @@ namespace AppMotor.CliApp.Tests
             var testApplication = new TestApplication(new CliApplicationExecutor(Execute));
 
             // Test
-            var exitCode = testApplication.Run(TEST_ARGS);
+            testApplication.Run(TEST_ARGS);
 
             // Verify
             called.ShouldBe(true);
-            exitCode.ShouldBe(0);
             testApplication.ShouldHaveNoOutput();
         }
 
@@ -68,11 +67,10 @@ namespace AppMotor.CliApp.Tests
             var testApplication = new TestApplication(new CliApplicationExecutor(Execute));
 
             // Test
-            var exitCode = testApplication.Run(TEST_ARGS);
+            testApplication.Run(TEST_ARGS);
 
             // Verify
             called.ShouldBe(true);
-            exitCode.ShouldBe(0);
             testApplication.ShouldHaveNoOutput();
         }
 
@@ -94,18 +92,10 @@ namespace AppMotor.CliApp.Tests
             var testApplication = new TestApplication(new CliApplicationExecutor(Execute));
 
             // Test
-            var exitCode = testApplication.Run(TEST_ARGS);
+            testApplication.RunWithExpectedExitCode(retVal ? 0 : 1, TEST_ARGS);
 
             // Verify
             called.ShouldBe(true);
-            if (retVal)
-            {
-                exitCode.ShouldBe(0);
-            }
-            else
-            {
-                exitCode.ShouldBe(1);
-            }
             testApplication.ShouldHaveNoOutput();
         }
 
@@ -129,18 +119,10 @@ namespace AppMotor.CliApp.Tests
             var testApplication = new TestApplication(new CliApplicationExecutor(Execute));
 
             // Test
-            var exitCode = testApplication.Run(TEST_ARGS);
+            testApplication.RunWithExpectedExitCode(retVal ? 0 : 1, TEST_ARGS);
 
             // Verify
             called.ShouldBe(true);
-            if (retVal)
-            {
-                exitCode.ShouldBe(0);
-            }
-            else
-            {
-                exitCode.ShouldBe(1);
-            }
             testApplication.ShouldHaveNoOutput();
         }
 
@@ -163,11 +145,10 @@ namespace AppMotor.CliApp.Tests
             var testApplication = new TestApplication(new CliApplicationExecutor(Execute));
 
             // Test
-            var exitCode = testApplication.Run(TEST_ARGS);
+            testApplication.RunWithExpectedExitCode(retVal, TEST_ARGS);
 
             // Verify
             called.ShouldBe(true);
-            exitCode.ShouldBe(retVal);
             testApplication.ShouldHaveNoOutput();
         }
 
@@ -192,11 +173,10 @@ namespace AppMotor.CliApp.Tests
             var testApplication = new TestApplication(new CliApplicationExecutor(Execute));
 
             // Test
-            var exitCode = testApplication.Run(TEST_ARGS);
+            testApplication.RunWithExpectedExitCode(retVal, TEST_ARGS);
 
             // Verify
             called.ShouldBe(true);
-            exitCode.ShouldBe(retVal);
             testApplication.ShouldHaveNoOutput();
         }
 
