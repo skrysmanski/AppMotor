@@ -34,10 +34,12 @@ namespace AppMotor.CliApp.TestUtils
 
         public TestApplicationWithCommand()
         {
+            this.Terminal = this._testTerminal;
         }
 
         public TestApplicationWithCommand([NotNull] CliCommand command) : base(command)
         {
+            this.Terminal = this._testTerminal;
         }
 
         [MustUseReturnValue]
