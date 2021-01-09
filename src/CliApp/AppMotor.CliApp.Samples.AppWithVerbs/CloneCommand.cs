@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 using AppMotor.CliApp.CommandLine;
 using AppMotor.CliApp.Terminals;
@@ -30,8 +31,20 @@ namespace AppMotor.CliApp.Samples.AppWithVerbs
             HelpText = "Instead of pointing the newly created HEAD to the branch pointed to by the cloned repository’s HEAD, point to <name> branch instead.",
         };
 
+        private CliParam<string[]> ConfigParam { get; } = new("--config", "-c")
+        {
+            DefaultValue = Array.Empty<string>(),
+            HelpText = "Set a configuration variable in the newly-created repository; this takes effect immediately after the repository is initialized, but before the remote history is fetched or any files checked out.",
+        };
+
         private void Execute()
         {
+            if (this.QuietParam.Value)
+            {
+                Terminal.WriteLine((TextInDarkGray)"This command would run quite.");
+                Terminal.WriteLine();
+            }
+
             if (this.VerboseParam.Value)
             {
                 Terminal.WriteLine((TextInDarkGray)"This command would run verbose.");
@@ -49,6 +62,11 @@ namespace AppMotor.CliApp.Samples.AppWithVerbs
             Terminal.WriteLine("With the selected branch:");
             Terminal.WriteLine();
             Terminal.WriteLine((TextInWhite)$"  {this.BranchParam.Value ?? "<the default branch>"}");
+
+            foreach (var configPair in this.ConfigParam.Value)
+            {
+                Terminal.WriteLine($"Setting config: {configPair}");
+            }
         }
     }
 }
