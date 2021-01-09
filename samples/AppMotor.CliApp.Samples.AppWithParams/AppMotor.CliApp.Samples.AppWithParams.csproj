@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AppMotor.CliApp\AppMotor.CliApp.csproj" />
+    <ProjectReference Include="..\..\src\CliApp\AppMotor.CliApp\AppMotor.CliApp.csproj" />
   </ItemGroup>
 
 </Project>
