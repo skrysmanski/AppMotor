@@ -42,8 +42,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             param.Names.ShouldBe(new[] { "--value", "-v" });
             param.PrimaryName.ShouldBe("--value");
 
-            param.IsNamedParameter.ShouldBe(true);
-            param.IsPositionalParameter.ShouldBe(false);
+            param.ParameterType.ShouldBe(CliParamTypes.Named);
             param.PositionIndex.ShouldBe(null);
 
             param.HelpText.ShouldBe("abc");
@@ -68,8 +67,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             param.Names.ShouldBe(new[] { "index" });
             param.PrimaryName.ShouldBe("index");
 
-            param.IsNamedParameter.ShouldBe(false);
-            param.IsPositionalParameter.ShouldBe(true);
+            param.ParameterType.ShouldBe(CliParamTypes.Positional);
             param.PositionIndex.ShouldBe(42);
 
             var underlyingImplementation = (Argument<int>)param.UnderlyingImplementation;
@@ -135,7 +133,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             }
 
             // Assumptions
-            param.IsNamedParameter.ShouldBe(true);
+            param.ParameterType.ShouldBe(CliParamTypes.Named);
             param.DefaultValue.IsSet.ShouldBe(collectionDefaultValue is not null);
 
             // Tests
@@ -260,7 +258,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             }
 
             // Assumptions
-            param.IsPositionalParameter.ShouldBe(true);
+            param.ParameterType.ShouldBe(CliParamTypes.Positional);
             param.DefaultValue.IsSet.ShouldBe(collectionDefaultValue is not null);
 
             // Tests
@@ -348,7 +346,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             };
 
             // Assumptions
-            param.IsNamedParameter.ShouldBe(true);
+            param.ParameterType.ShouldBe(CliParamTypes.Named);
             param.DefaultValue.IsSet.ShouldBe(true);
 
             // Tests
@@ -383,7 +381,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             };
 
             // Assumptions
-            param.IsPositionalParameter.ShouldBe(true);
+            param.ParameterType.ShouldBe(CliParamTypes.Positional);
             param.DefaultValue.IsSet.ShouldBe(true);
 
             // Tests
@@ -415,7 +413,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             {
                 DefaultValue = 42,
             };
-            param.IsPositionalParameter.ShouldBe(false);
+            param.ParameterType.ShouldBe(CliParamTypes.Named);
 
             // Test
             param.DefaultValue.IsSet.ShouldBe(true);
@@ -453,7 +451,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             {
                 DefaultValue = null,
             };
-            param.IsPositionalParameter.ShouldBe(false);
+            param.ParameterType.ShouldBe(CliParamTypes.Named);
 
             // Test
             param.DefaultValue.IsSet.ShouldBe(true);
@@ -491,7 +489,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             {
                 DefaultValue = null,
             };
-            param.IsPositionalParameter.ShouldBe(false);
+            param.ParameterType.ShouldBe(CliParamTypes.Named);
 
             // Test
             param.DefaultValue.IsSet.ShouldBe(true);
@@ -523,7 +521,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
         {
             // Setup
             var param = new CliParam<int>("--value");
-            param.IsPositionalParameter.ShouldBe(false);
+            param.ParameterType.ShouldBe(CliParamTypes.Named);
 
             // Test
             param.DefaultValue.IsSet.ShouldBe(false);
@@ -557,7 +555,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
         {
             // Setup
             var param = new CliParam<bool>("--verbose");
-            param.IsPositionalParameter.ShouldBe(false);
+            param.ParameterType.ShouldBe(CliParamTypes.Named);
 
             // Test
             param.DefaultValue.IsSet.ShouldBe(true);
@@ -607,7 +605,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             {
                 DefaultValue = "abc",
             };
-            param.IsPositionalParameter.ShouldBe(true);
+            param.ParameterType.ShouldBe(CliParamTypes.Positional);
 
             // Test
             param.DefaultValue.IsSet.ShouldBe(true);
@@ -638,7 +636,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
         {
             // Setup
             var param = new CliParam<string>("value", positionIndex: 42);
-            param.IsPositionalParameter.ShouldBe(true);
+            param.ParameterType.ShouldBe(CliParamTypes.Positional);
 
             // Test
             param.DefaultValue.IsSet.ShouldBe(false);
@@ -716,14 +714,14 @@ namespace AppMotor.CliApp.Tests.CommandLine
         }
 
         [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public void TestNullableParameter_ValueType_WithoutDefaultValue(bool named)
+        [InlineData(CliParamTypes.Named)]
+        [InlineData(CliParamTypes.Positional)]
+        public void TestNullableParameter_ValueType_WithoutDefaultValue(CliParamTypes paramType)
         {
             // Setup
-            var param = named ? new CliParam<int?>("--value")
-                              : new CliParam<int?>("value", positionIndex: 0);
-            param.IsNamedParameter.ShouldBe(named);
+            var param = paramType == CliParamTypes.Named ? new CliParam<int?>("--value")
+                                                         : new CliParam<int?>("value", positionIndex: 0);
+            param.ParameterType.ShouldBe(paramType);
 
             // Test
             param.DefaultValue.IsSet.ShouldBe(true);
@@ -731,28 +729,28 @@ namespace AppMotor.CliApp.Tests.CommandLine
         }
 
         [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public void TestNonNullableParameter_ValueType_WithoutDefaultValue(bool named)
+        [InlineData(CliParamTypes.Named)]
+        [InlineData(CliParamTypes.Positional)]
+        public void TestNonNullableParameter_ValueType_WithoutDefaultValue(CliParamTypes paramType)
         {
             // Setup
-            var param = named ? new CliParam<int>("--value")
-                      : new CliParam<int>("value", positionIndex: 0);
-            param.IsNamedParameter.ShouldBe(named);
+            var param = paramType == CliParamTypes.Named ? new CliParam<int>("--value")
+                                                         : new CliParam<int>("value", positionIndex: 0);
+            param.ParameterType.ShouldBe(paramType);
 
             // Test
             param.DefaultValue.IsSet.ShouldBe(false);
         }
 
         [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public void TestNullableParameter_RefType_WithoutDefaultValue(bool named)
+        [InlineData(CliParamTypes.Named)]
+        [InlineData(CliParamTypes.Positional)]
+        public void TestNullableParameter_RefType_WithoutDefaultValue(CliParamTypes paramType)
         {
             // Setup
-            var param = named ? new CliParam<string?>("--value")
-                              : new CliParam<string?>("value", positionIndex: 0);
-            param.IsNamedParameter.ShouldBe(named);
+            var param = paramType == CliParamTypes.Named ? new CliParam<string?>("--value")
+                                                         : new CliParam<string?>("value", positionIndex: 0);
+            param.ParameterType.ShouldBe(paramType);
 
             // Test
             // NOTE: Ideally we would the default value to be set for nullable reference types
@@ -763,14 +761,14 @@ namespace AppMotor.CliApp.Tests.CommandLine
         }
 
         [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public void TestNonNullableParameter_RefType_WithoutDefaultValue(bool named)
+        [InlineData(CliParamTypes.Named)]
+        [InlineData(CliParamTypes.Positional)]
+        public void TestNonNullableParameter_RefType_WithoutDefaultValue(CliParamTypes paramType)
         {
             // Setup
-            var param = named ? new CliParam<string>("--value")
-                              : new CliParam<string>("value", positionIndex: 0);
-            param.IsNamedParameter.ShouldBe(named);
+            var param = paramType == CliParamTypes.Named ? new CliParam<string>("--value")
+                                                         : new CliParam<string>("value", positionIndex: 0);
+            param.ParameterType.ShouldBe(paramType);
 
             // Test
             param.DefaultValue.IsSet.ShouldBe(false);
@@ -794,7 +792,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             {
                 param = new CliParam<int?>("--value");
             }
-            param.IsPositionalParameter.ShouldBe(false);
+            param.ParameterType.ShouldBe(CliParamTypes.Named);
 
             // Test
             param.DefaultValue.IsSet.ShouldBe(true);
@@ -822,7 +820,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             {
                 param = new CliParam<int?>("value", positionIndex: 42);
             }
-            param.IsPositionalParameter.ShouldBe(true);
+            param.ParameterType.ShouldBe(CliParamTypes.Positional);
 
             // Test
             param.DefaultValue.IsSet.ShouldBe(true);
@@ -856,7 +854,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             {
                 param = new CliParam<string?>("--value");
             }
-            param.IsPositionalParameter.ShouldBe(false);
+            param.ParameterType.ShouldBe(CliParamTypes.Named);
 
             // Test
             param.DefaultValue.IsSet.ShouldBe(explicitSet);
@@ -884,7 +882,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             {
                 param = new CliParam<string?>("value", positionIndex: 42);
             }
-            param.IsPositionalParameter.ShouldBe(true);
+            param.ParameterType.ShouldBe(CliParamTypes.Positional);
 
             // Test
             param.DefaultValue.IsSet.ShouldBe(explicitSet);
@@ -934,7 +932,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             {
                 param = new CliParam<bool>("--value");
             }
-            param.IsPositionalParameter.ShouldBe(false);
+            param.ParameterType.ShouldBe(CliParamTypes.Named);
 
             // Test
             param.DefaultValue.IsSet.ShouldBe(true);
@@ -962,7 +960,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             {
                 param = new CliParam<bool>("value", positionIndex: 42);
             }
-            param.IsPositionalParameter.ShouldBe(true);
+            param.ParameterType.ShouldBe(CliParamTypes.Positional);
 
             // Test
             param.DefaultValue.IsSet.ShouldBe(explicitSet);

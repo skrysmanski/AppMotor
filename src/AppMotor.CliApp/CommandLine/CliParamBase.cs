@@ -44,30 +44,15 @@ namespace AppMotor.CliApp.CommandLine
         public string PrimaryName => this.Names[0];
 
         /// <summary>
-        /// Whether this parameter is a positional parameter (created via <see cref="CliParam{T}(string,int)"/>).
-        /// Positional parameters are identified only by their position on the command line (and not by their name).
-        /// For example, a copy command would be <c>copy "c:\test.txt" "d:\"</c> with both parameters being
-        /// positional ones (first: source, second: destination).
-        ///
-        /// <para>Opposite of a named parameter (see <see cref="IsNamedParameter"/>).</para>
+        /// Whether the parameter is named or positional.
         /// </summary>
         [PublicAPI]
-        public bool IsPositionalParameter => this.PositionIndex != null;
-
-        /// <summary>
-        /// Whether this parameter is a named parameter (created via <see cref="CliParam{T}(string,string[])"/>).
-        /// Named parameters can either be flags/standalone (only for <c>bool</c> parameters; like <c>--verbose</c>) or
-        /// key value pairs (like <c>--message "my text"</c>).
-        ///
-        /// <para>Opposite of a positional parameter (see <see cref="IsPositionalParameter"/>).</para>
-        /// </summary>
-        [PublicAPI]
-        public bool IsNamedParameter => !this.IsPositionalParameter;
+        public CliParamTypes ParameterType => this.PositionIndex is null ? CliParamTypes.Named : CliParamTypes.Positional;
 
         /// <summary>
         /// The names (or aliases) of this parameter.
         ///
-        /// <para>Note: Positional parameters (<see cref="IsPositionalParameter"/>) always only have one name.</para>
+        /// <para>Note: Positional parameters (see <see cref="ParameterType"/>) always only have one name.</para>
         /// </summary>
         [PublicAPI]
         public ImmutableArray<string> Names { get; }
@@ -76,7 +61,7 @@ namespace AppMotor.CliApp.CommandLine
         /// The position of this positional parameter among all other positional parameters; positional parameters
         /// are ordered by this value. No two positional parameter can have the same position index.
         ///
-        /// <para>Is <c>null</c> for named parameters (<see cref="IsNamedParameter"/>).</para>
+        /// <para>Is <c>null</c> for named parameters (see <see cref="ParameterType"/>).</para>
         /// </summary>
         /// <remarks>
         /// This property is a safety feature. It primarily exists because positional parameters must be ordered, and because,
@@ -98,7 +83,7 @@ namespace AppMotor.CliApp.CommandLine
         internal abstract Symbol UnderlyingImplementation { get; }
 
         /// <summary>
-        /// Creates a named parameter (in contrast to a positional one). See <see cref="IsNamedParameter"/> for more details.
+        /// Creates a named parameter (in contrast to a positional one). See <see cref="CliParamTypes.Named"/> for more details.
         /// </summary>
         /// <param name="names">The names/aliases for this parameter; for better documentation purposes these
         /// should start with either "--", "-" or "/".</param>
@@ -139,7 +124,7 @@ namespace AppMotor.CliApp.CommandLine
         }
 
         /// <summary>
-        /// Creates a positional parameter (in contrast to a named parameter). See <see cref="IsPositionalParameter"/> for more details.
+        /// Creates a positional parameter (in contrast to a named parameter). See <see cref="CliParamTypes.Positional"/> for more details.
         /// </summary>
         /// <param name="name">The name of this parameter; only used for generating the help text.</param>
         /// <param name="positionIndex">The position of this parameter among all other positional parameters; positional parameters

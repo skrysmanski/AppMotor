@@ -33,7 +33,7 @@ namespace AppMotor.CliApp.CommandLine.Utils
         /// <summary>
         /// Uses reflection to obtain all <see cref="CliParamBase"/> instances from the container. Note that only
         /// instance (i.e. non-static) properties and fields are checked. Base classes are also checked.
-        /// Positional parameters (<see cref="CliParamBase.IsPositionalParameter"/>) are returned first and in order
+        /// Positional parameters (<see cref="CliParamBase.ParameterType"/>) are returned first and in order
         /// of <see cref="CliParamBase.PositionIndex"/>.
         /// </summary>
         /// <param name="container">The object that holds the parameters.</param>

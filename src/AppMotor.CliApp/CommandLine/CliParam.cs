@@ -32,9 +32,8 @@ using JetBrains.Annotations;
 namespace AppMotor.CliApp.CommandLine
 {
     /// <summary>
-    /// Represents a command line parameter - either named or positional. See <see cref="CliParamBase.IsNamedParameter"/>,
-    /// <see cref="CliParamBase.IsPositionalParameter"/>, and <see cref="CliParamBase.PositionIndex"/> for more details on
-    /// the difference between these two parameter types.
+    /// Represents a command line parameter - either named or positional. See <see cref="CliParamBase.ParameterType"/>,
+    /// and <see cref="CliParamBase.PositionIndex"/> for more details on the difference between these two parameter types.
     ///
     /// <para>Parameter must (usually) be defined in a container type - either in a subclass of <see cref="CliCommand"/>
     /// or <see cref="CliApplicationWithParams"/>.</para>
@@ -57,7 +56,7 @@ namespace AppMotor.CliApp.CommandLine
         /// </item>
         /// <item>
         /// <description>If <typeparamref name="T"/> is <c>bool</c> and the parameter is a named parameter (see
-        /// <see cref="CliParamBase.IsNamedParameter"/>), the default value will be set to <c>false</c>.</description>
+        /// <see cref="CliParamBase.ParameterType"/>), the default value will be set to <c>false</c>.</description>
         /// </item>
         /// </list>
         ///
@@ -93,7 +92,7 @@ namespace AppMotor.CliApp.CommandLine
         private Optional<T> _value;
 
         /// <summary>
-        /// Creates a named parameter (in contrast to a positional one). See <see cref="CliParamBase.IsNamedParameter"/> for more details.
+        /// Creates a named parameter (in contrast to a positional one). See <see cref="CliParamTypes.Named"/> for more details.
         /// </summary>
         /// <param name="primaryName">The primary name for this parameter; for better documentation purposes this
         /// should start with either "--", "-" or "/".</param>
@@ -105,7 +104,7 @@ namespace AppMotor.CliApp.CommandLine
         }
 
         /// <summary>
-        /// Creates a named parameter (in contrast to a positional one). See <see cref="CliParamBase.IsNamedParameter"/> for more details.
+        /// Creates a named parameter (in contrast to a positional one). See <see cref="CliParamTypes.Named"/> for more details.
         ///
         /// <para>Note: You should prefer the other constructor (<see cref="CliParam{T}(string,string[])"/>) over this
         /// one.</para>
@@ -124,7 +123,7 @@ namespace AppMotor.CliApp.CommandLine
         }
 
         /// <summary>
-        /// Creates a positional parameter (in contrast to a named parameter). See <see cref="CliParamBase.IsPositionalParameter"/> for more details.
+        /// Creates a positional parameter (in contrast to a named parameter). See <see cref="CliParamTypes.Positional"/> for more details.
         /// </summary>
         /// <param name="name">The name of this parameter; only used for generating the help text.</param>
         /// <param name="positionIndex">The position of this parameter among all other positional parameters; positional parameters
@@ -200,7 +199,7 @@ namespace AppMotor.CliApp.CommandLine
         [MustUseReturnValue]
         private bool ShouldSetUnderlyingDefaultValueForOptionalParameter()
         {
-            if (this.IsNamedParameter && typeof(T) == typeof(bool))
+            if (this.ParameterType == CliParamTypes.Named && typeof(T) == typeof(bool))
             {
                 return this.DefaultValue.Value as bool? == true;
             }
