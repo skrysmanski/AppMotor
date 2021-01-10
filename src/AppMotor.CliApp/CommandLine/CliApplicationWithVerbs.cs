@@ -46,6 +46,13 @@ namespace AppMotor.CliApp.CommandLine
         public string? AppDescription { get; init; }
 
         /// <summary>
+        /// Whether to automatically add a debug parameter (<c>--debug</c>/<c>-d</c>) to this application.
+        /// Will only be added if at least one of the parameter names is not in use.
+        /// </summary>
+        [PublicAPI]
+        public bool EnableGlobalDebugParam { get; set; } = true;
+
+        /// <summary>
         /// The verbs of this application.
         /// </summary>
         // NOTE: The type of this property is not ImmutableArray on purpose - because you can't initialize
@@ -81,7 +88,7 @@ namespace AppMotor.CliApp.CommandLine
                     throw new InvalidOperationException("Verbs must not be null.");
                 }
 
-                rootCommand.AddCommand(cliVerb.ToUnderlyingImplementation());
+                rootCommand.AddCommand(cliVerb.ToUnderlyingImplementation(enableDebugParam: this.EnableGlobalDebugParam, this.Terminal));
             }
 
             return await rootCommand.InvokeAsync(SortHelpFirst(args), new CommandLineConsole(this.Terminal)).ConfigureAwait(continueOnCapturedContext: false);

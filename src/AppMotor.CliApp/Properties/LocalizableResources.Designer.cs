@@ -61,11 +61,29 @@ namespace AppMotor.CliApp.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Launches a debugger when the process starts.
+        /// </summary>
+        internal static string DebugParamHelpText {
+            get {
+                return ResourceManager.GetString("DebugParamHelpText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Press any key to exit....
         /// </summary>
         internal static string PressAnyKeyToExit {
             get {
                 return ResourceManager.GetString("PressAnyKeyToExit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waiting until a debugger is attached to process {0} ({1})..
+        /// </summary>
+        internal static string WaitForDebuggerAttach {
+            get {
+                return ResourceManager.GetString("WaitForDebuggerAttach", resourceCulture);
             }
         }
     }

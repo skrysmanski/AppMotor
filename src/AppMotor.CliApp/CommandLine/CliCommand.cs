@@ -20,6 +20,8 @@ using System.CommandLine.Invocation;
 using System.Threading.Tasks;
 
 using AppMotor.CliApp.CommandLine.Utils;
+using AppMotor.CliApp.Properties;
+using AppMotor.CliApp.Terminals;
 
 using JetBrains.Annotations;
 
@@ -71,17 +73,47 @@ namespace AppMotor.CliApp.CommandLine
         {
             private readonly CliCommand _command;
 
+            private readonly IOutputTerminal _terminal;
+
             public ImmutableArray<CliParamBase> AllParams { get; }
 
-            public CliCommandHandler(CliCommand command)
+            private CliParam<bool>? DebugParam { get; }
+
+            public CliCommandHandler(CliCommand command, bool enableDebugParam, IOutputTerminal terminal)
             {
                 this._command = command;
+                this._terminal = terminal;
 
                 var paramsCollectionBuilder = new ParamsCollectionBuilder();
 
                 foreach (var cliParam in command.GetAllParams())
                 {
                     paramsCollectionBuilder.AddParam(cliParam);
+                }
+
+                if (enableDebugParam)
+                {
+                    var availableAliases = new List<string>();
+
+                    if (!paramsCollectionBuilder.RegisteredAliases.Contains("--debug"))
+                    {
+                        availableAliases.Add("--debug");
+                    }
+
+                    if (!paramsCollectionBuilder.RegisteredAliases.Contains("-d"))
+                    {
+                        availableAliases.Add("-d");
+                    }
+
+                    if (availableAliases.Count > 0)
+                    {
+                        this.DebugParam = new(availableAliases)
+                        {
+                            HelpText = LocalizableResources.DebugParamHelpText,
+                        };
+
+                        paramsCollectionBuilder.AddParam(this.DebugParam);
+                    }
                 }
 
                 this.AllParams = paramsCollectionBuilder.Build();
@@ -93,6 +125,11 @@ namespace AppMotor.CliApp.CommandLine
                 foreach (var cliParam in this.AllParams)
                 {
                     cliParam.SetValueFromParseResult(context.ParseResult);
+                }
+
+                if (this.DebugParam?.Value == true && !DebuggerUtils.IsDebuggerAttached)
+                {
+                    DebuggerUtils.LaunchDebugger(this._terminal);
                 }
 
                 return await this._command.Execute().ConfigureAwait(continueOnCapturedContext: false);

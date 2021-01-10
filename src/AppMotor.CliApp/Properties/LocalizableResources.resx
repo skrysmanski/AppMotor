@@ -117,7 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DebugParamHelpText" xml:space="preserve">
+    <value>Launches a debugger when the process starts</value>
+  </data>
   <data name="PressAnyKeyToExit" xml:space="preserve">
     <value>Press any key to exit...</value>
+  </data>
+  <data name="WaitForDebuggerAttach" xml:space="preserve">
+    <value>Waiting until a debugger is attached to process {0} ({1}).</value>
   </data>
 </root>
