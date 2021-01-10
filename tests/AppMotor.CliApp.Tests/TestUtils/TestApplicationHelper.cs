@@ -16,6 +16,8 @@
 
 using System;
 
+using AppMotor.CliApp.CommandLine.Utils;
+
 using JetBrains.Annotations;
 
 using Shouldly;
@@ -36,6 +38,8 @@ namespace AppMotor.CliApp.TestUtils
 
         public TestApplicationHelper(CliApplication application)
         {
+            DebuggerUtils.IsTestRun = true;
+
             application.Terminal = this._testTerminal;
 
             this._application = application;

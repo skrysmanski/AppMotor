@@ -15,10 +15,10 @@
 #endregion
 
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 
 using AppMotor.CliApp.CommandLine;
+using AppMotor.CliApp.CommandLine.Utils;
 using AppMotor.CliApp.Properties;
 using AppMotor.CliApp.Terminals;
 using AppMotor.Core.Exceptions;
@@ -135,12 +135,12 @@ namespace AppMotor.CliApp
             {
                 exitCode = await this.MainExecutor.Execute(args).ConfigureAwait(continueOnCapturedContext: false);
             }
-            catch (Exception exception) when (!Debugger.IsAttached)
+            catch (Exception exception) when (!DebuggerUtils.IsDebuggerAttached)
             {
                 exitCode = ProcessUnhandledException(exception);
             }
 
-            if ((Debugger.IsAttached || this.WaitForKeyPressOnExit) && !this.Terminal.IsInputRedirected)
+            if ((DebuggerUtils.IsDebuggerAttached || this.WaitForKeyPressOnExit) && !this.Terminal.IsInputRedirected)
             {
                 this.Terminal.WriteLine();
                 this.Terminal.WriteLine(LocalizableResources.PressAnyKeyToExit);

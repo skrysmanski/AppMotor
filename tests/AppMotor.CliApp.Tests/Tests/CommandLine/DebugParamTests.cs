@@ -29,11 +29,6 @@ namespace AppMotor.CliApp.Tests.CommandLine
 {
     public sealed class DebugParamTests
     {
-        public DebugParamTests()
-        {
-            DebuggerUtils.IsTestRun = true;
-        }
-
         // ReSharper disable MultipleSpaces
         [Theory]
         [InlineData(TestScenarios.BothAliasesAvailable, true, true)]
