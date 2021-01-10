@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using System.Linq;
 using System.Reflection;
 
 using AppMotor.CliApp.Terminals;
@@ -221,6 +222,56 @@ namespace AppMotor.CliApp.Tests.Terminals
             coloredString[2].Color.ShouldBe(overrideColor2);
             coloredString[3].Text.ShouldBe("def");
             coloredString[3].Color.ShouldBe(overrideColor1);
+        }
+
+        [Fact]
+        public void TestAppend_WithColor_ColoredSubString_Null()
+        {
+            // Setup
+            ColoredString str = (TextInWhite)"abc";
+
+            // Test
+            str.Append(ConsoleColor.Black, (TextInBlack?)null);
+
+            // Verify
+            var subStringList = str.ToList();
+            subStringList.Count.ShouldBe(1);
+            subStringList[0].Color.ShouldBe(ConsoleColor.White);
+            subStringList[0].Text.ShouldBe("abc");
+        }
+
+
+        [Fact]
+        public void TestAppend_ColoredSubString_Null()
+        {
+            // Setup
+            ColoredString str = (TextInWhite)"abc";
+            TextInBlack? nullSubString = null;
+
+            // Test
+            str.Append(nullSubString);
+
+            // Verify
+            var subStringList = str.ToList();
+            subStringList.Count.ShouldBe(1);
+            subStringList[0].Color.ShouldBe(ConsoleColor.White);
+            subStringList[0].Text.ShouldBe("abc");
+        }
+
+        [Fact]
+        public void TestAppend_ColoredSubString_Empty()
+        {
+            // Setup
+            ColoredString str = (TextInWhite)"abc";
+
+            // Test
+            str.Append((TextInBlack)"");
+
+            // Verify
+            var subStringList = str.ToList();
+            subStringList.Count.ShouldBe(1);
+            subStringList[0].Color.ShouldBe(ConsoleColor.White);
+            subStringList[0].Text.ShouldBe("abc");
         }
 
         [Theory]

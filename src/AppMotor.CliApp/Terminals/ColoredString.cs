@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 using AppMotor.Core.Collections;
@@ -288,6 +289,7 @@ namespace AppMotor.CliApp.Terminals
             return this._substrings.GetEnumerator();
         }
 
+        [ExcludeFromCodeCoverage]
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
@@ -298,7 +300,7 @@ namespace AppMotor.CliApp.Terminals
         /// <inheritdoc />
         public ColoredString CloneShallow()
         {
-            return new ColoredString(this);
+            return new(this);
         }
 
         /// <summary>
