@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Help;
 using System.CommandLine.Parsing;
@@ -24,6 +25,7 @@ using System.Linq;
 using AppMotor.Core.DataModel;
 using AppMotor.Core.Exceptions;
 using AppMotor.Core.Extensions;
+using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
@@ -98,7 +100,20 @@ namespace AppMotor.CliApp.CommandLine
         /// <param name="aliases">Other names that represent the same parameter. Usually the <paramref name="primaryName"/>
         /// would be the long form (like <c>--length</c>) and the alias(es) would be the short form (like <c>-l</c>).</param>
         public CliParam(string primaryName, params string[] aliases)
-            : base(primaryName, aliases)
+            : this(ParamsUtils.Combine(primaryName, aliases))
+        {
+        }
+
+        /// <summary>
+        /// Creates a named parameter (in contrast to a positional one). See <see cref="CliParamBase.IsNamedParameter"/> for more details.
+        ///
+        /// <para>Note: You should prefer the other constructor (<see cref="CliParam{T}(string,string[])"/>) over this
+        /// one.</para>
+        /// </summary>
+        /// <param name="names">The names/aliases for this parameter; for better documentation purposes these
+        /// should start with either "--", "-" or "/".</param>
+        public CliParam(IEnumerable<string> names)
+            : base(names)
         {
             this._underlyingImplementation = new Lazy<Symbol>(CreateUnderlyingNamedParameter);
 

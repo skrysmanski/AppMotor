@@ -70,7 +70,7 @@ namespace AppMotor.CliApp.CommandLine
         /// <para>Note: Positional parameters (<see cref="IsPositionalParameter"/>) always only have one name.</para>
         /// </summary>
         [PublicAPI]
-        public IReadOnlyList<string> Names { get; }
+        public ImmutableArray<string> Names { get; }
 
         /// <summary>
         /// The position of this positional parameter among all other positional parameters; positional parameters
@@ -100,13 +100,17 @@ namespace AppMotor.CliApp.CommandLine
         /// <summary>
         /// Creates a named parameter (in contrast to a positional one). See <see cref="IsNamedParameter"/> for more details.
         /// </summary>
-        /// <param name="primaryName">The primary name for this parameter; for better documentation purposes this
+        /// <param name="names">The names/aliases for this parameter; for better documentation purposes these
         /// should start with either "--", "-" or "/".</param>
-        /// <param name="aliases">Other names that represent the same parameter. Usually the <paramref name="primaryName"/>
-        /// would be the long form (like <c>--length</c>) and the alias(es) would be the short form (like <c>-l</c>).</param>
-        protected CliParamBase(string primaryName, params string[] aliases)
+        protected CliParamBase(IEnumerable<string> names)
         {
-            var allNames = ParamsUtils.Combine(primaryName, aliases).ToImmutableList();
+            var allNames = names.ToImmutableArray();
+
+            if (allNames.Length == 0)
+            {
+                throw new ArgumentException("No names have been specified.", nameof(names));
+            }
+
             var namesSet = new HashSet<string>();
 
             foreach (var name in allNames)
@@ -149,7 +153,7 @@ namespace AppMotor.CliApp.CommandLine
                 throw new ArgumentException($"The name '{name}' is reserved and can't be used.");
             }
 
-            this.Names = new[] { name }.ToImmutableList();
+            this.Names = new[] { name }.ToImmutableArray();
             this.PositionIndex = positionIndex;
         }
 

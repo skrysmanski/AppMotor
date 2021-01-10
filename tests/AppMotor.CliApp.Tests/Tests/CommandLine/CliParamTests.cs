@@ -991,7 +991,13 @@ namespace AppMotor.CliApp.Tests.CommandLine
         }
 
         [Fact]
-        public void TestDuplicateNameForNamedParam()
+        public void TestConstructor_EmptyNamesList()
+        {
+            Should.Throw<ArgumentException>(() => new CliParam<int>(Array.Empty<string>()));
+        }
+
+        [Fact]
+        public void TestConstructor_DuplicateNameForNamedParam()
         {
             var ex1 = Should.Throw<ArgumentException>(() => new CliParam<int>("--value", "--value"));
             ex1.Message.ShouldContain("--value");
