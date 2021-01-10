@@ -33,7 +33,7 @@ namespace AppMotor.CliApp.Terminals
     /// by a <see cref="ColoredSubstring"/> instance - created through one of the <c>TextIn...</c> classes. The primary
     /// goal of this class is to be able to make color console output (via <see cref="Terminal"/>).
     /// </summary>
-    public sealed class ColoredString : IReadOnlyList<ColoredSubstring>, IShallowCloneable<ColoredString>
+    public sealed class ColoredString : IReadOnlyList<ColoredSubstring>, ICloneable<ColoredString>
     {
         private readonly AppendOnlyList<ColoredSubstring> _substrings;
 
@@ -298,7 +298,7 @@ namespace AppMotor.CliApp.Terminals
         #endregion ICollection<T>
 
         /// <inheritdoc />
-        public ColoredString CloneShallow()
+        public ColoredString Clone()
         {
             return new(this);
         }

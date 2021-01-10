@@ -371,5 +371,21 @@ namespace AppMotor.CliApp.Tests.Terminals
             var coloredString = ColoredString.New();
             coloredString.ToString().ShouldBe("");
         }
+
+        [Fact]
+        public void TestClone()
+        {
+            // Setup
+            var sourceString = "abc" + (TextInRed)"def";
+
+            // Test
+            var clone = sourceString.Clone();
+            sourceString += "ghi";
+            clone += "jkl";
+
+            // Verify
+            sourceString.ToString().ShouldBe("abcdefghi");
+            clone.ToString().ShouldBe("abcdefjkl");
+        }
     }
 }

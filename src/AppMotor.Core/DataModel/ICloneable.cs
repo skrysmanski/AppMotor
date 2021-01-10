@@ -1,5 +1,5 @@
 ﻿#region License
-// Copyright 2020 AppMotor Framework (https://github.com/skrysmanski/AppMotor)
+// Copyright 2021 AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,28 +14,28 @@
 // limitations under the License.
 #endregion
 
-using System;
-
 using JetBrains.Annotations;
 
 namespace AppMotor.Core.DataModel
 {
     /// <summary>
-    /// Represents a type that can create deep clones (copies) of itself.
+    /// Represents a type that can create clones (copies) of itself.
+    ///
+    /// <para>Only use this interface if for <typeparamref name="T"/> there's no
+    /// distinction between deep and shallow clones (for example, for strings).
+    /// Otherwise prefer <see cref="IShallowCloneable{T}"/> or <see cref="IDeepCloneable{T}"/>.
+    /// </para>
     /// </summary>
     /// <remarks>
-    /// This interface does not inherit <see cref="ICloneable"/> on purpose because
-    /// <see cref="ICloneable.Clone"/> makes no distinction of whether it's
-    /// a deep or a shallow clone.
+    /// For types that are mutable but only consist of immutable items it makes not sense
+    /// to differentiate between shallow and deep clones.
     /// </remarks>
-    /// <seealso cref="IShallowCloneable{T}"/>
-    /// <seealso cref="ICloneable{T}"/>
-    public interface IDeepCloneable<out T> where T : IDeepCloneable<T>
+    public interface ICloneable<out T> where T : ICloneable<T>
     {
         /// <summary>
-        /// Creates a deep copy of this object.
+        /// Creates a copy of this object.
         /// </summary>
         [PublicAPI, Pure]
-        T CloneDeep();
+        T Clone();
     }
 }
