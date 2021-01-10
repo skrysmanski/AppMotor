@@ -17,7 +17,6 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.CommandLine.Invocation;
-using System.Diagnostics;
 using System.Threading.Tasks;
 
 using AppMotor.CliApp.CommandLine.Utils;
@@ -124,9 +123,9 @@ namespace AppMotor.CliApp.CommandLine
                     cliParam.SetValueFromParseResult(context.ParseResult);
                 }
 
-                if (this.DebugParam?.Value == true && !Debugger.IsAttached)
+                if (this.DebugParam?.Value == true && !DebuggerUtils.IsDebuggerAttached)
                 {
-                    Debugger.Launch();
+                    DebuggerUtils.LaunchDebugger();
                 }
 
                 return await this._command.Execute().ConfigureAwait(continueOnCapturedContext: false);

@@ -48,7 +48,7 @@ namespace AppMotor.CliApp.CommandLine
         /// Will only be added if at least one of the parameter names is not in use.
         /// </summary>
         [PublicAPI]
-        protected virtual bool EnableGlobalDebugParam => true;
+        public bool EnableGlobalDebugParam { get; set; } = true;
 
         /// <inheritdoc />
         protected sealed override CliApplicationExecutor MainExecutor => new(Execute);
