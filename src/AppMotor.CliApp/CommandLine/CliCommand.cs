@@ -71,12 +71,20 @@ namespace AppMotor.CliApp.CommandLine
         {
             private readonly CliCommand _command;
 
-            public ImmutableList<CliParamBase> AllParams { get; }
+            public ImmutableArray<CliParamBase> AllParams { get; }
 
             public CliCommandHandler(CliCommand command)
             {
                 this._command = command;
-                this.AllParams = command.GetAllParams().ToImmutableList();
+
+                var paramsCollectionBuilder = new ParamsCollectionBuilder();
+
+                foreach (var cliParam in command.GetAllParams())
+                {
+                    paramsCollectionBuilder.AddParam(cliParam);
+                }
+
+                this.AllParams = paramsCollectionBuilder.Build();
             }
 
             /// <inheritdoc />
