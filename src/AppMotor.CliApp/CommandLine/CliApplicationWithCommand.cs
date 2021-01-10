@@ -43,6 +43,13 @@ namespace AppMotor.CliApp.CommandLine
         [PublicAPI]
         public string? AppDescription { get; init; }
 
+        /// <summary>
+        /// Whether to automatically add a debug parameter (<c>--debug</c>/<c>-d</c>) to this application.
+        /// Will only be added if at least one of the parameter names is not in use.
+        /// </summary>
+        [PublicAPI]
+        protected virtual bool EnableGlobalDebugParam => true;
+
         /// <inheritdoc />
         protected sealed override CliApplicationExecutor MainExecutor => new(Execute);
 
@@ -82,7 +89,7 @@ namespace AppMotor.CliApp.CommandLine
                 exceptionHandlerFunc: ProcessUnhandledException
             );
 
-            var commandHandler = new CliCommand.CliCommandHandler(this.Command);
+            var commandHandler = new CliCommand.CliCommandHandler(this.Command, this.EnableGlobalDebugParam);
 
             foreach (var cliParam in commandHandler.AllParams)
             {

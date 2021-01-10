@@ -114,7 +114,7 @@ namespace AppMotor.CliApp.CommandLine
         /// <summary>
         /// Creates the underlying implementation.
         /// </summary>
-        internal Command ToUnderlyingImplementation()
+        internal Command ToUnderlyingImplementation(bool enableDebugParam)
         {
             if (this._underlyingImplementation is null)
             {
@@ -129,13 +129,13 @@ namespace AppMotor.CliApp.CommandLine
                 {
                     foreach (var subVerb in this.SubVerbs)
                     {
-                        command.AddCommand(subVerb.ToUnderlyingImplementation());
+                        command.AddCommand(subVerb.ToUnderlyingImplementation(enableDebugParam: enableDebugParam));
                     }
                 }
 
                 if (this.Command is not null)
                 {
-                    var commandHandler = new CliCommand.CliCommandHandler(this.Command);
+                    var commandHandler = new CliCommand.CliCommandHandler(this.Command, enableDebugParam: enableDebugParam);
 
                     foreach (var cliParam in commandHandler.AllParams)
                     {

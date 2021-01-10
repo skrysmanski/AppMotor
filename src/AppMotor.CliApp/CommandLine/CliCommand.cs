@@ -17,9 +17,11 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.CommandLine.Invocation;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 using AppMotor.CliApp.CommandLine.Utils;
+using AppMotor.CliApp.Properties;
 
 using JetBrains.Annotations;
 
@@ -73,7 +75,9 @@ namespace AppMotor.CliApp.CommandLine
 
             public ImmutableArray<CliParamBase> AllParams { get; }
 
-            public CliCommandHandler(CliCommand command)
+            private CliParam<bool>? DebugParam { get; }
+
+            public CliCommandHandler(CliCommand command, bool enableDebugParam)
             {
                 this._command = command;
 
@@ -82,6 +86,31 @@ namespace AppMotor.CliApp.CommandLine
                 foreach (var cliParam in command.GetAllParams())
                 {
                     paramsCollectionBuilder.AddParam(cliParam);
+                }
+
+                if (enableDebugParam)
+                {
+                    var availableAliases = new List<string>();
+
+                    if (!paramsCollectionBuilder.RegisteredAliases.Contains("--debug"))
+                    {
+                        availableAliases.Add("--debug");
+                    }
+
+                    if (!paramsCollectionBuilder.RegisteredAliases.Contains("-d"))
+                    {
+                        availableAliases.Add("-d");
+                    }
+
+                    if (availableAliases.Count > 0)
+                    {
+                        this.DebugParam = new(availableAliases)
+                        {
+                            HelpText = LocalizableResources.DebugParamHelpText,
+                        };
+
+                        paramsCollectionBuilder.AddParam(this.DebugParam);
+                    }
                 }
 
                 this.AllParams = paramsCollectionBuilder.Build();
@@ -93,6 +122,11 @@ namespace AppMotor.CliApp.CommandLine
                 foreach (var cliParam in this.AllParams)
                 {
                     cliParam.SetValueFromParseResult(context.ParseResult);
+                }
+
+                if (this.DebugParam?.Value == true && !Debugger.IsAttached)
+                {
+                    Debugger.Launch();
                 }
 
                 return await this._command.Execute().ConfigureAwait(continueOnCapturedContext: false);

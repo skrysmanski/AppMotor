@@ -30,6 +30,8 @@ namespace AppMotor.CliApp.CommandLine.Utils
 
         private readonly HashSet<string> _aliases = new();
 
+        public IReadOnlySet<string> RegisteredAliases => this._aliases;
+
         public void AddParam(CliParamBase param)
         {
             foreach (var paramName in param.Names)
