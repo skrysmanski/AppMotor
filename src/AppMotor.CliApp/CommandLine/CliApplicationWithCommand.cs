@@ -89,7 +89,7 @@ namespace AppMotor.CliApp.CommandLine
                 exceptionHandlerFunc: ProcessUnhandledException
             );
 
-            var commandHandler = new CliCommand.CliCommandHandler(this.Command, this.EnableGlobalDebugParam);
+            var commandHandler = new CliCommand.CliCommandHandler(this.Command, this.EnableGlobalDebugParam, this.Terminal);
 
             foreach (var cliParam in commandHandler.AllParams)
             {

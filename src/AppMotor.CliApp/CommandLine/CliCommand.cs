@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 
 using AppMotor.CliApp.CommandLine.Utils;
 using AppMotor.CliApp.Properties;
+using AppMotor.CliApp.Terminals;
 
 using JetBrains.Annotations;
 
@@ -72,13 +73,16 @@ namespace AppMotor.CliApp.CommandLine
         {
             private readonly CliCommand _command;
 
+            private readonly IOutputTerminal _terminal;
+
             public ImmutableArray<CliParamBase> AllParams { get; }
 
             private CliParam<bool>? DebugParam { get; }
 
-            public CliCommandHandler(CliCommand command, bool enableDebugParam)
+            public CliCommandHandler(CliCommand command, bool enableDebugParam, IOutputTerminal terminal)
             {
                 this._command = command;
+                this._terminal = terminal;
 
                 var paramsCollectionBuilder = new ParamsCollectionBuilder();
 
@@ -125,7 +129,7 @@ namespace AppMotor.CliApp.CommandLine
 
                 if (this.DebugParam?.Value == true && !DebuggerUtils.IsDebuggerAttached)
                 {
-                    DebuggerUtils.LaunchDebugger();
+                    DebuggerUtils.LaunchDebugger(this._terminal);
                 }
 
                 return await this._command.Execute().ConfigureAwait(continueOnCapturedContext: false);

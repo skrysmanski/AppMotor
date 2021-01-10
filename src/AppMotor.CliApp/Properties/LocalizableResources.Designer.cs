@@ -77,5 +77,14 @@ namespace AppMotor.CliApp.Properties {
                 return ResourceManager.GetString("PressAnyKeyToExit", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waiting until a debugger is attached to process {0} ({1})..
+        /// </summary>
+        internal static string WaitForDebuggerAttach {
+            get {
+                return ResourceManager.GetString("WaitForDebuggerAttach", resourceCulture);
+            }
+        }
     }
 }

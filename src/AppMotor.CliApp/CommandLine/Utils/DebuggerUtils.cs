@@ -16,6 +16,12 @@
 
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
+using System.Threading;
+
+using AppMotor.CliApp.Properties;
+using AppMotor.CliApp.Terminals;
+using AppMotor.Core.Extensions;
 
 namespace AppMotor.CliApp.CommandLine.Utils
 {
@@ -50,15 +56,36 @@ namespace AppMotor.CliApp.CommandLine.Utils
         /// <summary>
         /// Should be used instead of <see cref="Debugger.Launch"/>.
         /// </summary>
-        public static void LaunchDebugger()
+        public static void LaunchDebugger(IOutputTerminal terminal)
         {
+            if (IsDebuggerAttached)
+            {
+                return;
+            }
+
             if (IsTestRun)
             {
                 DebuggerLaunchCount++;
             }
             else
             {
-                Debugger.Launch();
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    // This is only supported on Windows.
+                    Debugger.Launch();
+                }
+                else
+                {
+                    var process = Process.GetCurrentProcess();
+
+                    terminal.WriteLine(LocalizableResources.WaitForDebuggerAttach.With(process.Id, process.ProcessName));
+                    terminal.WriteLine();
+
+                    while (!Debugger.IsAttached)
+                    {
+                        Thread.Sleep(50);
+                    }
+                }
             }
         }
     }

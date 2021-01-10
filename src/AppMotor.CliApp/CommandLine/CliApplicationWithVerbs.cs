@@ -88,7 +88,7 @@ namespace AppMotor.CliApp.CommandLine
                     throw new InvalidOperationException("Verbs must not be null.");
                 }
 
-                rootCommand.AddCommand(cliVerb.ToUnderlyingImplementation(enableDebugParam: this.EnableGlobalDebugParam));
+                rootCommand.AddCommand(cliVerb.ToUnderlyingImplementation(enableDebugParam: this.EnableGlobalDebugParam, this.Terminal));
             }
 
             return await rootCommand.InvokeAsync(SortHelpFirst(args), new CommandLineConsole(this.Terminal)).ConfigureAwait(continueOnCapturedContext: false);

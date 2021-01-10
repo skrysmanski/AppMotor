@@ -20,6 +20,7 @@ using System.Collections.Immutable;
 using System.CommandLine;
 
 using AppMotor.CliApp.CommandLine.Utils;
+using AppMotor.CliApp.Terminals;
 using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
@@ -114,7 +115,7 @@ namespace AppMotor.CliApp.CommandLine
         /// <summary>
         /// Creates the underlying implementation.
         /// </summary>
-        internal Command ToUnderlyingImplementation(bool enableDebugParam)
+        internal Command ToUnderlyingImplementation(bool enableDebugParam, IOutputTerminal terminal)
         {
             if (this._underlyingImplementation is null)
             {
@@ -129,13 +130,13 @@ namespace AppMotor.CliApp.CommandLine
                 {
                     foreach (var subVerb in this.SubVerbs)
                     {
-                        command.AddCommand(subVerb.ToUnderlyingImplementation(enableDebugParam: enableDebugParam));
+                        command.AddCommand(subVerb.ToUnderlyingImplementation(enableDebugParam: enableDebugParam, terminal));
                     }
                 }
 
                 if (this.Command is not null)
                 {
-                    var commandHandler = new CliCommand.CliCommandHandler(this.Command, enableDebugParam: enableDebugParam);
+                    var commandHandler = new CliCommand.CliCommandHandler(this.Command, enableDebugParam: enableDebugParam, terminal);
 
                     foreach (var cliParam in commandHandler.AllParams)
                     {

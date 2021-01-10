@@ -123,4 +123,7 @@
   <data name="PressAnyKeyToExit" xml:space="preserve">
     <value>Press any key to exit...</value>
   </data>
+  <data name="WaitForDebuggerAttach" xml:space="preserve">
+    <value>Waiting until a debugger is attached to process {0} ({1}).</value>
+  </data>
 </root>
