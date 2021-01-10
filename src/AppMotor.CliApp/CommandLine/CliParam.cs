@@ -185,11 +185,6 @@ namespace AppMotor.CliApp.CommandLine
         [MustUseReturnValue]
         private bool ShouldSetUnderlyingDefaultValueForOptionalParameter()
         {
-            if (!this.DefaultValue.IsSet)
-            {
-                throw new InvalidOperationException("This parameter is not optional.");
-            }
-
             if (this.IsNamedParameter && typeof(T) == typeof(bool))
             {
                 return this.DefaultValue.Value as bool? == true;

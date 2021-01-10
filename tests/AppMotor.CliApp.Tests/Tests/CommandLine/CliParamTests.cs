@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Builder;
 
@@ -82,21 +83,23 @@ namespace AppMotor.CliApp.Tests.CommandLine
         [InlineData(null)]
         [InlineData(CollectionDefaultValues.Null)]
         [InlineData(CollectionDefaultValues.EmptyArray)]
+        [InlineData(CollectionDefaultValues.EmptyList)]
+        [InlineData(CollectionDefaultValues.EmptyReadOnlyList)]
         public void TestNamedParameter_Collection(CollectionDefaultValues? collectionDefaultValue)
         {
             // Setup
-            CliParam<string[]?> param;
+            CliParam<ICollection<string>?> param;
             switch (collectionDefaultValue)
             {
                 case null:
-                    param = new CliParam<string[]?>("--value")
+                    param = new("--value")
                     {
                         HelpText = "A collection of values.",
                     };
                     break;
 
                 case CollectionDefaultValues.Null:
-                    param = new CliParam<string[]?>("--value")
+                    param = new("--value")
                     {
                         HelpText = "A collection of values.",
                         DefaultValue = null,
@@ -104,10 +107,26 @@ namespace AppMotor.CliApp.Tests.CommandLine
                     break;
 
                 case CollectionDefaultValues.EmptyArray:
-                    param = new CliParam<string[]?>("--value")
+                    param = new("--value")
                     {
                         HelpText = "A collection of values.",
                         DefaultValue = Array.Empty<string>(),
+                    };
+                    break;
+
+                case CollectionDefaultValues.EmptyList:
+                    param = new("--value")
+                    {
+                        HelpText = "A collection of values.",
+                        DefaultValue = new List<string>(),
+                    };
+                    break;
+
+                case CollectionDefaultValues.EmptyReadOnlyList:
+                    param = new("--value")
+                    {
+                        HelpText = "A collection of values.",
+                        DefaultValue = new List<string>().AsReadOnly(),
                     };
                     break;
 
@@ -144,8 +163,10 @@ namespace AppMotor.CliApp.Tests.CommandLine
                                 break;
 
                             case CollectionDefaultValues.EmptyArray:
+                            case CollectionDefaultValues.EmptyList:
+                            case CollectionDefaultValues.EmptyReadOnlyList:
                                 param.Value.ShouldNotBeNull();
-                                param.Value.Length.ShouldBe(0);
+                                param.Value.Count.ShouldBe(0);
                                 break;
 
                             default:
@@ -187,21 +208,23 @@ namespace AppMotor.CliApp.Tests.CommandLine
         [InlineData(null)]
         [InlineData(CollectionDefaultValues.Null)]
         [InlineData(CollectionDefaultValues.EmptyArray)]
+        [InlineData(CollectionDefaultValues.EmptyList)]
+        [InlineData(CollectionDefaultValues.EmptyReadOnlyList)]
         public void TestPositionalParameter_Collection(CollectionDefaultValues? collectionDefaultValue)
         {
             // Setup
-            CliParam<string[]?> param;
+            CliParam<ICollection<string>?> param;
             switch (collectionDefaultValue)
             {
                 case null:
-                    param = new CliParam<string[]?>("value", positionIndex: 42)
+                    param = new("value", positionIndex: 42)
                     {
                         HelpText = "A collection of values.",
                     };
                     break;
 
                 case CollectionDefaultValues.Null:
-                    param = new CliParam<string[]?>("value", positionIndex: 42)
+                    param = new("value", positionIndex: 42)
                     {
                         HelpText = "A collection of values.",
                         DefaultValue = null,
@@ -209,10 +232,26 @@ namespace AppMotor.CliApp.Tests.CommandLine
                     break;
 
                 case CollectionDefaultValues.EmptyArray:
-                    param = new CliParam<string[]?>("value", positionIndex: 42)
+                    param = new("value", positionIndex: 42)
                     {
                         HelpText = "A collection of values.",
                         DefaultValue = Array.Empty<string>(),
+                    };
+                    break;
+
+                case CollectionDefaultValues.EmptyList:
+                    param = new ("value", positionIndex: 42)
+                    {
+                        HelpText = "A collection of values.",
+                        DefaultValue = new List<string>(),
+                    };
+                    break;
+
+                case CollectionDefaultValues.EmptyReadOnlyList:
+                    param = new("value", positionIndex: 42)
+                    {
+                        HelpText = "A collection of values.",
+                        DefaultValue = new List<string>().AsReadOnly(),
                     };
                     break;
 
@@ -249,8 +288,10 @@ namespace AppMotor.CliApp.Tests.CommandLine
                                 break;
 
                             case CollectionDefaultValues.EmptyArray:
+                            case CollectionDefaultValues.EmptyList:
+                            case CollectionDefaultValues.EmptyReadOnlyList:
                                 param.Value.ShouldNotBeNull();
-                                param.Value.Length.ShouldBe(0);
+                                param.Value.Count.ShouldBe(0);
                                 break;
 
                             default:
@@ -292,6 +333,78 @@ namespace AppMotor.CliApp.Tests.CommandLine
         {
             Null,
             EmptyArray,
+            EmptyList,
+            EmptyReadOnlyList,
+        }
+
+        [Fact]
+        public void TestNamedParameter_Collection_NonEmptyDefaultValue()
+        {
+            // Setup
+            CliParam<List<string>> param = new("--value")
+            {
+                HelpText = "A collection of values.",
+                DefaultValue = new List<string>() { "abc", "def" },
+            };
+
+            // Assumptions
+            param.IsNamedParameter.ShouldBe(true);
+            param.DefaultValue.IsSet.ShouldBe(true);
+
+            // Tests
+            TestApplicationWithParams app = new(
+                () =>
+                {
+                    param.Value.ShouldNotBeNull();
+                    param.Value.Count.ShouldBe(2);
+                },
+                param
+            );
+            app.Run();
+            app.ShouldHaveNoOutput();
+
+            app = new TestApplicationWithParams(
+                () => throw new InvalidOperationException("We should not get here."),
+                param
+            );
+            app.Run("--help");
+            app.TerminalOutput.ShouldContain("--value", Case.Sensitive, app.TerminalOutput);
+            app.TerminalOutput.ShouldContain("[default:", Case.Sensitive, app.TerminalOutput);
+        }
+
+        [Fact]
+        public void TestPositionalParameter_Collection_NonEmptyDefaultValue()
+        {
+            // Setup
+            CliParam<ICollection<string>?> param = new("value", positionIndex: 42)
+            {
+                HelpText = "A collection of values.",
+                DefaultValue = new List<string>() { "abc", "def" },
+            };
+
+            // Assumptions
+            param.IsPositionalParameter.ShouldBe(true);
+            param.DefaultValue.IsSet.ShouldBe(true);
+
+            // Tests
+            TestApplicationWithParams app = new(
+                () =>
+                {
+                    param.Value.ShouldNotBeNull();
+                    param.Value.Count.ShouldBe(2);
+                },
+                param
+            );
+            app.Run();
+            app.ShouldHaveNoOutput();
+
+            app = new TestApplicationWithParams(
+                () => throw new InvalidOperationException("We should not get here."),
+                param
+            );
+            app.Run("--help");
+            app.TerminalOutput.ShouldContain("value", Case.Sensitive, app.TerminalOutput);
+            app.TerminalOutput.ShouldContain("[default:", Case.Sensitive, app.TerminalOutput);
         }
 
         [Fact]
