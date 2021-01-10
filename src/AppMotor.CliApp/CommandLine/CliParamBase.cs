@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.CommandLine;
 using System.CommandLine.Parsing;
+using System.ComponentModel;
 
 using AppMotor.CliApp.CommandLine.Utils;
 using AppMotor.Core.Utils;
@@ -91,7 +92,7 @@ namespace AppMotor.CliApp.CommandLine
         /// <summary>
         /// The help text for this parameter.
         /// </summary>
-        [PublicAPI]
+        [PublicAPI, Localizable(true)]
         public string? HelpText { get; init; }
 
         internal abstract Symbol UnderlyingImplementation { get; }
