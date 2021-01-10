@@ -44,7 +44,7 @@ namespace AppMotor.CliApp.Terminals
 
         private ColoredString(ColoredString? other)
         {
-            if (other != null)
+            if (other is not null)
             {
                 this._substrings = other._substrings.CloneShallow();
             }
@@ -60,7 +60,7 @@ namespace AppMotor.CliApp.Terminals
         [PublicAPI, Pure]
         public static ColoredString New()
         {
-            return new ColoredString(null);
+            return new(null);
         }
 
         /// <summary>
@@ -74,12 +74,12 @@ namespace AppMotor.CliApp.Terminals
         [PublicAPI]
         public ColoredString Append(ConsoleColor? color, ColoredString? value)
         {
-            if (value == null || value.Count == 0)
+            if (value is null || value.Count == 0)
             {
                 return this;
             }
 
-            if (color == null)
+            if (color is null)
             {
                 //
                 // No change in color. We can use the more efficient "AppendRange()" method.
@@ -106,7 +106,7 @@ namespace AppMotor.CliApp.Terminals
 
                 foreach (var coloredSubstring in substringsToAdd)
                 {
-                    if (coloredSubstring.Color == null)
+                    if (coloredSubstring.Color is null)
                     {
                         // Set color.
                         this._substrings.Append(new ColoredSubstring(color, coloredSubstring.Text));
@@ -137,12 +137,12 @@ namespace AppMotor.CliApp.Terminals
         [PublicAPI]
         public ColoredString Append(ConsoleColor? color, ColoredSubstring? value)
         {
-            if (value == null)
+            if (value is null)
             {
                 return this;
             }
 
-            if (color == null)
+            if (color is null)
             {
                 return Append(value);
             }
@@ -159,7 +159,7 @@ namespace AppMotor.CliApp.Terminals
         [PublicAPI]
         public ColoredString Append(ColoredSubstring? substring)
         {
-            if (substring == null || string.IsNullOrEmpty(substring.Text))
+            if (substring is null || string.IsNullOrEmpty(substring.Text))
             {
                 // If it's empty, don't add it (wouldn't be visible anyways).
                 return this;
