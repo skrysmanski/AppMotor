@@ -195,7 +195,7 @@ namespace AppMotor.CliApp.CommandLine
         /// default value is <c>null</c>), we don't set the default value as it will show up
         /// as <c>[default: ]</c> in the parameters help text - and that's not useful.
         ///
-        /// <para>For more details, see <see cref="HelpBuilder.ShouldShowDefaultValueHint"/>.</para>
+        /// <para>For more details, see <c>HelpBuilder.ShouldShowDefaultValueHint</c>.</para>
         /// </summary>
         [MustUseReturnValue]
         private bool ShouldSetUnderlyingDefaultValueForOptionalParameter()
