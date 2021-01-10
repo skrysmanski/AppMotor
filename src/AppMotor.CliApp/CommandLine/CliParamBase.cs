@@ -85,8 +85,7 @@ namespace AppMotor.CliApp.CommandLine
         /// <summary>
         /// Creates a named parameter (in contrast to a positional one). See <see cref="CliParamTypes.Named"/> for more details.
         /// </summary>
-        /// <param name="names">The names/aliases for this parameter; for better documentation purposes these
-        /// should start with either "--", "-" or "/".</param>
+        /// <param name="names">The names/aliases for this parameter; must start with either "--" or "-".</param>
         protected CliParamBase(IEnumerable<string> names)
         {
             var allNames = names.ToImmutableArray();
@@ -112,6 +111,8 @@ namespace AppMotor.CliApp.CommandLine
                     throw new ArgumentException($"Passing the same name ('{name}') multiple times is not allowed.", nameof(names));
                 }
 
+                Validate.ValueWithName(nameof(name)).IsValidParameterName(name, CliParamTypes.Named);
+
                 if (HelpParamUtils.IsHelpParamName(name))
                 {
                     throw new ArgumentException($"The name '{name}' is reserved and can't be used.", nameof(names));
@@ -131,7 +132,7 @@ namespace AppMotor.CliApp.CommandLine
         /// are ordered by this value</param>
         protected CliParamBase(string name, int positionIndex)
         {
-            Validate.ArgumentWithName(nameof(name)).IsNotNullOrWhiteSpace(name);
+            Validate.ArgumentWithName(nameof(name)).IsValidParameterName(name, CliParamTypes.Positional);
 
             if (HelpParamUtils.IsHelpParamName(name))
             {
