@@ -76,6 +76,36 @@ namespace AppMotor.Core.Tests.Utils
         }
 
         [Fact]
+        public void Test_NotNull_GenericType_ForArgument()
+        {
+            static void RunTest<T>(T notNullValue, T nullValue)
+            {
+                Should.NotThrow(() => Validate.Argument.IsNotNullUnconstrained(notNullValue, "abc"));
+
+                var exception = Should.Throw<ArgumentNullException>(() => Validate.Argument.IsNotNullUnconstrained(nullValue, "abc"));
+                exception.Message.ShouldContain(Validate.ExceptionMessages.VALUE_IS_NULL);
+                exception.Message.ShouldContain("abc", Case.Sensitive);
+            }
+
+            RunTest<string?>(notNullValue: "abc", nullValue: null);
+        }
+
+        [Fact]
+        public void Test_NotNull_GenericType_ForValue()
+        {
+            static void RunTest<T>(T notNullValue, T nullValue)
+            {
+                Should.NotThrow(() => Validate.Value.IsNotNullUnconstrained(notNullValue, "abc"));
+
+                var exception = Should.Throw<ValueNullException>(() => Validate.Value.IsNotNullUnconstrained(nullValue, "abc"));
+                exception.Message.ShouldContain(Validate.ExceptionMessages.VALUE_IS_NULL);
+                exception.Message.ShouldContain("abc", Case.Sensitive);
+            }
+
+            RunTest<string?>(notNullValue: "abc", nullValue: null);
+        }
+
+        [Fact]
         public void TestNotNullOrEmpty_String_ForArgument()
         {
             Should.NotThrow(() => Validate.Argument.IsNotNullOrEmpty("a test", "abc"));
