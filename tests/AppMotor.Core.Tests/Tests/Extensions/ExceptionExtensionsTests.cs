@@ -39,13 +39,13 @@ namespace AppMotor.Core.Tests.Extensions
     /// </summary>
     public sealed class ExceptionExtensionsTests
     {
-        private readonly ITestOutputHelper m_testOutputHelper;
+        private readonly ITestOutputHelper _testOutputHelper;
 
         public ExceptionExtensionsTests(ITestOutputHelper testOutputHelper)
         {
             Validate.Argument.IsNotNull(testOutputHelper, nameof(testOutputHelper));
 
-            this.m_testOutputHelper = testOutputHelper;
+            this._testOutputHelper = testOutputHelper;
         }
 
         #region AddData()
@@ -120,7 +120,7 @@ namespace AppMotor.Core.Tests.Extensions
             var rethrownException = Should.Throw<MySpecialException>(() => SomeOtherMethod(caughtException));
 
             // for manual verification
-            this.m_testOutputHelper.WriteLine(rethrownException.ToString());
+            this._testOutputHelper.WriteLine(rethrownException.ToString());
 
             // verify
             rethrownException.StackTrace!.ShouldContain(nameof(ExceptionCreator<MySpecialException>.CreateAndCatch));

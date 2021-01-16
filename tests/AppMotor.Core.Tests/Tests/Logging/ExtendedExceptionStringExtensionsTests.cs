@@ -30,13 +30,13 @@ namespace AppMotor.Core.Tests.Logging
 {
     public sealed class ExtendedExceptionStringExtensionsTests
     {
-        private readonly ITestOutputHelper m_testOutputHelper;
+        private readonly ITestOutputHelper _testOutputHelper;
 
         public ExtendedExceptionStringExtensionsTests(ITestOutputHelper testOutputHelper)
         {
             Validate.Argument.IsNotNull(testOutputHelper, nameof(testOutputHelper));
 
-            this.m_testOutputHelper = testOutputHelper;
+            this._testOutputHelper = testOutputHelper;
         }
 
         [Fact]
@@ -50,7 +50,7 @@ namespace AppMotor.Core.Tests.Logging
             var extendedString = exception.ToStringExtended();
 
             // just for manual verification of the output
-            this.m_testOutputHelper.WriteLine(extendedString);
+            this._testOutputHelper.WriteLine(extendedString);
 
             // verify
             extendedString.ShouldContain(exceptionMessage);
@@ -71,7 +71,7 @@ namespace AppMotor.Core.Tests.Logging
             var extendedString = outerException.ToStringExtended();
 
             // just for manual verification of the output
-            this.m_testOutputHelper.WriteLine(extendedString);
+            this._testOutputHelper.WriteLine(extendedString);
 
             // verify
             extendedString.ShouldContain(innerExceptionMessage);
@@ -103,7 +103,7 @@ namespace AppMotor.Core.Tests.Logging
             var extendedString = exception.ToStringExtended();
 
             // just for manual verification of the output
-            this.m_testOutputHelper.WriteLine(extendedString);
+            this._testOutputHelper.WriteLine(extendedString);
 
             // verify
             extendedString.ShouldContain(messageGuid1.ToString());
