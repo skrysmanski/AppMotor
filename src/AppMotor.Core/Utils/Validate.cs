@@ -31,6 +31,75 @@ namespace AppMotor.Core.Utils
     /// </summary>
     public static class Validate
     {
+        private sealed class ArgumentValidator : ValidatorBase<ArgumentException>
+        {
+            /// <inheritdoc />
+            protected override ArgumentException CreateNullException(string? valueName)
+            {
+                return new ArgumentNullException(
+                    message: ExceptionMessages.VALUE_IS_NULL, // <-- we specify this here so that the message doesn't get translated
+                    paramName: valueName ?? ExceptionMessages.DEFAULT_VALUE_NAME
+                );
+            }
+
+            /// <inheritdoc />
+            protected override ArgumentException CreateCollectionIsReadOnlyException(string? valueName)
+            {
+                return new CollectionIsReadOnlyArgumentException(paramName: valueName ?? ExceptionMessages.DEFAULT_VALUE_NAME);
+            }
+
+            /// <inheritdoc />
+            protected override ArgumentException CreateRootException(string message, string? valueName)
+            {
+                return new ArgumentException(message: message, paramName: valueName ?? ExceptionMessages.DEFAULT_VALUE_NAME);
+            }
+        }
+
+        private sealed class ValueValidator : ValidatorBase<ValueException>
+        {
+            /// <inheritdoc />
+            protected override ValueException CreateNullException(string? valueName)
+            {
+                return new ValueNullException(message: null, valueName: valueName ?? ExceptionMessages.DEFAULT_VALUE_NAME);
+            }
+
+            /// <inheritdoc />
+            protected override ValueException CreateCollectionIsReadOnlyException(string? valueName)
+            {
+                return new CollectionIsReadOnlyValueException(valueName: valueName ?? ExceptionMessages.DEFAULT_VALUE_NAME);
+            }
+
+            /// <inheritdoc />
+            protected override ValueException CreateRootException(string message, string? valueName)
+            {
+                return new ValueException(message: message, valueName: valueName ?? ExceptionMessages.DEFAULT_VALUE_NAME);
+            }
+        }
+
+        private abstract partial class ValidatorBase<TBaseException> where TBaseException : Exception
+        {
+            protected abstract TBaseException CreateNullException(string? valueName);
+
+            protected abstract TBaseException CreateCollectionIsReadOnlyException(string? valueName);
+
+            protected abstract TBaseException CreateRootException(string message, string? valueName);
+        }
+
+        internal static class ExceptionMessages
+        {
+            public const string DEFAULT_VALUE_NAME = "unknown";
+
+            public const string DEFAULT_MESSAGE = "The value is invalid.";
+
+            public const string VALUE_IS_NULL = "The value must not be null.";
+
+            public const string STRING_IS_EMPTY = "The string must not be empty.";
+
+            public const string STRING_IS_WHITE_SPACES = "The string must not contain just white space characters.";
+
+            public const string COLLECTION_IS_EMPTY = "The collection must not be empty.";
+        }
+
         #region Argument Validation
 
         /// <summary>
@@ -127,30 +196,6 @@ namespace AppMotor.Core.Utils
             public static void IsNotReadOnly<T>([NotNullOnExit] ICollection<T> value, [InvokerParameterName] string paramName)
             {
                 VALIDATOR.IsNotReadOnly(value, paramName);
-            }
-
-            private sealed class ArgumentValidator : ValidatorBase<ArgumentException>
-            {
-                /// <inheritdoc />
-                protected override ArgumentException CreateNullException(string? valueName)
-                {
-                    return new ArgumentNullException(
-                        message: ExceptionMessages.VALUE_IS_NULL, // <-- we specify this here so that the message doesn't get translated
-                        paramName: valueName ?? ExceptionMessages.DEFAULT_VALUE_NAME
-                    );
-                }
-
-                /// <inheritdoc />
-                protected override ArgumentException CreateCollectionIsReadOnlyException(string? valueName)
-                {
-                    return new CollectionIsReadOnlyArgumentException(paramName: valueName ?? ExceptionMessages.DEFAULT_VALUE_NAME);
-                }
-
-                /// <inheritdoc />
-                protected override ArgumentException CreateRootException(string message, string? valueName)
-                {
-                    return new ArgumentException(message: message, paramName: valueName ?? ExceptionMessages.DEFAULT_VALUE_NAME);
-                }
             }
         }
 
@@ -249,41 +294,14 @@ namespace AppMotor.Core.Utils
             {
                 VALIDATOR.IsNotReadOnly(value, valueName);
             }
-
-            private sealed class ValueValidator : ValidatorBase<ValueException>
-            {
-                /// <inheritdoc />
-                protected override ValueException CreateNullException(string? valueName)
-                {
-                    return new ValueNullException(message: null, valueName: valueName ?? ExceptionMessages.DEFAULT_VALUE_NAME);
-                }
-
-                /// <inheritdoc />
-                protected override ValueException CreateCollectionIsReadOnlyException(string? valueName)
-                {
-                    return new CollectionIsReadOnlyValueException(valueName: valueName ?? ExceptionMessages.DEFAULT_VALUE_NAME);
-                }
-
-                /// <inheritdoc />
-                protected override ValueException CreateRootException(string message, string? valueName)
-                {
-                    return new ValueException(message: message, valueName: valueName ?? ExceptionMessages.DEFAULT_VALUE_NAME);
-                }
-            }
         }
 
         #endregion Value Validation
 
         // ReSharper disable ParameterOnlyUsedForPreconditionCheck.Local
 
-        private abstract class ValidatorBase<TBaseException> where TBaseException : Exception
+        private abstract partial class ValidatorBase<TBaseException> where TBaseException : Exception
         {
-            protected abstract TBaseException CreateNullException(string? valueName);
-
-            protected abstract TBaseException CreateCollectionIsReadOnlyException(string? valueName);
-
-            protected abstract TBaseException CreateRootException(string message, string? valueName);
-
             /// <summary>
             /// Validates that the given reference type value is not null.
             /// </summary>
@@ -393,21 +411,6 @@ namespace AppMotor.Core.Utils
         }
 
         // ReSharper restore ParameterOnlyUsedForPreconditionCheck.Local
-
-        internal static class ExceptionMessages
-        {
-            public const string DEFAULT_VALUE_NAME = "unknown";
-
-            public const string DEFAULT_MESSAGE = "The value is invalid.";
-
-            public const string VALUE_IS_NULL = "The value must not be null.";
-
-            public const string STRING_IS_EMPTY = "The string must not be empty.";
-
-            public const string STRING_IS_WHITE_SPACES = "The string must not contain just white space characters.";
-
-            public const string COLLECTION_IS_EMPTY = "The collection must not be empty.";
-        }
     }
 
     /// <summary>
