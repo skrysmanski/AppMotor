@@ -120,7 +120,7 @@ namespace AppMotor.Core.Utils
 
             /// <summary>
             /// Verifies that the <see cref="ICollection{T}.IsReadOnly"/> property of <paramref name="value"/>
-            /// is <c>true</c>; otherwise a <see cref="CollectionIsReadOnlyArgumentException"/> will be thrown.
+            /// is <c>false</c>; otherwise a <see cref="CollectionIsReadOnlyArgumentException"/> will be thrown.
             /// </summary>
             /// <exception cref="CollectionIsReadOnlyArgumentException">Thrown if the collection is read-only.</exception>
             [PublicAPI]
@@ -302,7 +302,7 @@ namespace AppMotor.Core.Utils
 
             /// <summary>
             /// Verifies that the <see cref="ICollection{T}.IsReadOnly"/> property of <paramref name="value"/>
-            /// is <c>true</c>; otherwise a <see cref="CollectionIsReadOnlyValueException"/> will be thrown.
+            /// is <c>false</c>; otherwise a <see cref="CollectionIsReadOnlyValueException"/> will be thrown.
             /// </summary>
             /// <exception cref="CollectionIsReadOnlyValueException">Thrown if the collection is read-only.</exception>
             [PublicAPI]
@@ -441,16 +441,11 @@ namespace AppMotor.Core.Utils
 
             /// <summary>
             /// Verifies that the <see cref="ICollection{T}.IsReadOnly"/> property of <paramref name="value"/>
-            /// is <c>true</c>; otherwise a <see cref="CollectionIsReadOnlyArgumentException"/> will be thrown.
+            /// is <c>false</c>; otherwise a <see cref="CollectionIsReadOnlyArgumentException"/> will be thrown.
             /// </summary>
             /// <exception cref="CollectionIsReadOnlyArgumentException">Thrown if the collection is read-only.</exception>
             public void IsNotReadOnly<T>([NotNullOnExit] ICollection<T> value, string valueName)
             {
-                if (value is null)
-                {
-                    throw CreateNullException(valueName);
-                }
-
                 if (value.IsReadOnly)
                 {
                     throw CreateCollectionIsReadOnlyException(valueName);

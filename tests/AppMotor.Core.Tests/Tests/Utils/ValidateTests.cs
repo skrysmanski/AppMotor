@@ -212,13 +212,8 @@ namespace AppMotor.Core.Tests.Utils
         {
             Should.NotThrow(() => Validate.Argument.IsNotReadOnly(new List<string>(), "abc"));
 
-            // ReSharper disable once AssignNullToNotNullAttribute
-            var exception1 = Should.Throw<ArgumentNullException>(() => Validate.Argument.IsNotReadOnly((List<string>)null!, "abc"));
-            exception1.Message.ShouldContain(Validate.ExceptionMessages.VALUE_IS_NULL);
-            exception1.Message.ShouldContain("abc", Case.Sensitive);
-
-            var exception2 = Should.Throw<CollectionIsReadOnlyArgumentException>(() => Validate.Argument.IsNotReadOnly(new ReadOnlyCollection<string>(new List<string>()), "abc"));
-            exception2.Message.ShouldContain("abc", Case.Sensitive);
+            var exception = Should.Throw<CollectionIsReadOnlyArgumentException>(() => Validate.Argument.IsNotReadOnly(new ReadOnlyCollection<string>(new List<string>()), "abc"));
+            exception.Message.ShouldContain("abc", Case.Sensitive);
         }
 
         [Fact]
@@ -226,13 +221,8 @@ namespace AppMotor.Core.Tests.Utils
         {
             Should.NotThrow(() => Validate.Value.IsNotReadOnly(new List<string>(), "abc"));
 
-            // ReSharper disable once AssignNullToNotNullAttribute
-            var exception1 = Should.Throw<ValueNullException>(() => Validate.Value.IsNotReadOnly((List<string>)null!, "abc"));
-            exception1.Message.ShouldContain(Validate.ExceptionMessages.VALUE_IS_NULL);
-            exception1.Message.ShouldContain("abc", Case.Sensitive);
-
-            var exception2 = Should.Throw<CollectionIsReadOnlyValueException>(() => Validate.Value.IsNotReadOnly(new ReadOnlyCollection<string>(new List<string>()), "abc"));
-            exception2.Message.ShouldContain("abc", Case.Sensitive);
+            var exception = Should.Throw<CollectionIsReadOnlyValueException>(() => Validate.Value.IsNotReadOnly(new ReadOnlyCollection<string>(new List<string>()), "abc"));
+            exception.Message.ShouldContain("abc", Case.Sensitive);
         }
     }
 }
