@@ -198,7 +198,7 @@ namespace AppMotor.Core.Collections
         /// </summary>
         private sealed class ListRange : ICollection<T>
         {
-            private readonly List<T> m_underlyingList;
+            private readonly List<T> _underlyingList;
 
             /// <summary>
             /// The length of this range.
@@ -219,7 +219,7 @@ namespace AppMotor.Core.Collections
                     );
                 }
 
-                this.m_underlyingList = underlyingList;
+                this._underlyingList = underlyingList;
                 this.Count = rangeLength;
             }
 
@@ -229,7 +229,7 @@ namespace AppMotor.Core.Collections
             {
                 for (var i = 0; i < this.Count; i++)
                 {
-                    yield return this.m_underlyingList[i];
+                    yield return this._underlyingList[i];
                 }
             }
 
@@ -263,7 +263,7 @@ namespace AppMotor.Core.Collections
                     return false;
                 }
 
-                var index = this.m_underlyingList.IndexOf(item);
+                var index = this._underlyingList.IndexOf(item);
                 if (index == -1 || index >= this.Count)
                 {
                     return false;
@@ -275,7 +275,7 @@ namespace AppMotor.Core.Collections
             /// <inheritdoc />
             public void CopyTo(T[] array, int destArrayIndex)
             {
-                this.m_underlyingList.CopyTo(0, array, destArrayIndex, this.Count);
+                this._underlyingList.CopyTo(0, array, destArrayIndex, this.Count);
             }
 
             /// <inheritdoc />
