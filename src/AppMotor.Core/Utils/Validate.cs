@@ -156,67 +156,6 @@ namespace AppMotor.Core.Utils
 
         #endregion Argument Validation
 
-        #region Argument Validation Extension Methods
-
-        /// <summary>
-        /// This method does the same thing as <see cref="Argument.IsNotNull{T}(T,string)"/> and primarily
-        /// exists for constructor chaining where argument members are passed to another constructor
-        /// and thus can't be validated with a statement.
-        /// </summary>
-        /// <returns>Simply returns <paramref name="value"/>.</returns>
-        [PublicAPI]
-        [MustUseReturnValue]
-        public static T AsNotNullArgument<T>(
-                [InstantHandle, NoEnumeration, NotNullOnExit] this T? value,
-                [InvokerParameterName] string paramName
-            )
-                where T : class
-        {
-            Argument.IsNotNull(value, paramName);
-
-            return value;
-        }
-
-        /// <summary>
-        /// This method does the same thing as <see cref="Argument.IsNotNull{T}(T?,string)"/> and primarily
-        /// exists for constructor chaining where argument members are passed to another constructor
-        /// and thus can't be validated with a statement.
-        /// </summary>
-        /// <returns>Simply returns <paramref name="value"/>.</returns>
-        [PublicAPI]
-        [MustUseReturnValue]
-        public static T AsNotNullArgument<T>(
-                [InstantHandle, NoEnumeration, NotNullOnExit] this T? value,
-                [InvokerParameterName] string paramName
-            )
-                where T : struct
-        {
-            Argument.IsNotNull(value, paramName);
-
-            return value.Value;
-        }
-
-        /// <summary>
-        /// This method does the same thing as <see cref="Argument.IsNotNullUnconstrained{T}"/> and primarily
-        /// exists for constructor chaining where argument members are passed to another constructor
-        /// and thus can't be validated with a statement.
-        /// </summary>
-        /// <returns>Simply returns <paramref name="value"/>.</returns>
-        [PublicAPI]
-        [MustUseReturnValue]
-        [return: NotNullOnExit]
-        public static T AsNotNullArgumentUnconstrained<T>(
-                [InstantHandle, NoEnumeration, NotNullOnExit] this T value,
-                [InvokerParameterName] string paramName
-            )
-        {
-            Argument.IsNotNullUnconstrained(value, paramName);
-
-            return value;
-        }
-
-        #endregion Argument Validation Extension Methods
-
         #region Value Validation
 
         /// <summary>
@@ -468,6 +407,73 @@ namespace AppMotor.Core.Utils
             public const string STRING_IS_WHITE_SPACES = "The string must not contain just white space characters.";
 
             public const string COLLECTION_IS_EMPTY = "The collection must not be empty.";
+        }
+    }
+
+    /// <summary>
+    /// Contains extension methods that use <see cref="Validate"/>.
+    /// </summary>
+    /// <remarks>
+    /// These methods are not defined directly in <see cref="Validate"/> so that the don't appear in
+    /// the code completion list of <see cref="Validate"/>.
+    /// </remarks>
+    public static class ValidationExtensionMethods
+    {
+        /// <summary>
+        /// This method does the same thing as <see cref="Validate.Argument.IsNotNull{T}(T,string)"/> and primarily
+        /// exists for constructor chaining where argument members are passed to another constructor
+        /// and thus can't be validated with a statement.
+        /// </summary>
+        /// <returns>Simply returns <paramref name="value"/>.</returns>
+        [PublicAPI]
+        [MustUseReturnValue]
+        public static T AsNotNullArgument<T>(
+                [InstantHandle, NoEnumeration, NotNullOnExit] this T? value,
+                [InvokerParameterName] string paramName
+            )
+                where T : class
+        {
+            Validate.Argument.IsNotNull(value, paramName);
+
+            return value;
+        }
+
+        /// <summary>
+        /// This method does the same thing as <see cref="Validate.Argument.IsNotNull{T}(T?,string)"/> and primarily
+        /// exists for constructor chaining where argument members are passed to another constructor
+        /// and thus can't be validated with a statement.
+        /// </summary>
+        /// <returns>Simply returns <paramref name="value"/>.</returns>
+        [PublicAPI]
+        [MustUseReturnValue]
+        public static T AsNotNullArgument<T>(
+                [InstantHandle, NoEnumeration, NotNullOnExit] this T? value,
+                [InvokerParameterName] string paramName
+            )
+                where T : struct
+        {
+            Validate.Argument.IsNotNull(value, paramName);
+
+            return value.Value;
+        }
+
+        /// <summary>
+        /// This method does the same thing as <see cref="Validate.Argument.IsNotNullUnconstrained{T}"/> and primarily
+        /// exists for constructor chaining where argument members are passed to another constructor
+        /// and thus can't be validated with a statement.
+        /// </summary>
+        /// <returns>Simply returns <paramref name="value"/>.</returns>
+        [PublicAPI]
+        [MustUseReturnValue]
+        [return: NotNullOnExit]
+        public static T AsNotNullArgumentUnconstrained<T>(
+                [InstantHandle, NoEnumeration, NotNullOnExit] this T value,
+                [InvokerParameterName] string paramName
+            )
+        {
+            Validate.Argument.IsNotNullUnconstrained(value, paramName);
+
+            return value;
         }
     }
 }
