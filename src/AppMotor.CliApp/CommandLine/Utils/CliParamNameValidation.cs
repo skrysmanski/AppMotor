@@ -25,8 +25,15 @@ using NotNullOnExitAttribute = System.Diagnostics.CodeAnalysis.NotNullAttribute;
 
 namespace AppMotor.CliApp.CommandLine.Utils
 {
+    /// <summary>
+    /// Provides validation methods for parameter names (as used in <see cref="CliParam{T}"/>).
+    /// </summary>
     public static class CliParamNameValidation
     {
+        /// <summary>
+        /// Validation method to be used with <see cref="Validate"/>. See <see cref="CheckIfNameIsValid"/> for more details.
+        /// </summary>
+        [PublicAPI]
         public static void IsValidParameterName(this NamedValidator validator, [NotNullOnExit] string? paramName, CliParamTypes paramType, bool allowReservedParamName = false)
         {
             validator.IsNotNullOrWhiteSpace(paramName);
@@ -60,11 +67,20 @@ namespace AppMotor.CliApp.CommandLine.Utils
             }
         }
 
+        /// <summary>
+        /// Checks if the given parameter name (<paramref name="paramName"/>) is a valid parameter name for the given parameter
+        /// type (<paramref name="paramType"/>) and returns the result. See <see cref="CliParamNameValidityCheckResults"/> for
+        /// details on name rules.
+        /// </summary>
+        /// <param name="paramName">The name to check</param>
+        /// <param name="paramType">The parameter type this name is to be used for.</param>
+        /// <param name="allowReservedParamName">Whether reserved names are allowed for <paramref name="paramName"/>. Is <c>false</c>
+        /// by default.</param>
+        /// <returns>The result of the check.</returns>
+        /// <seealso cref="IsValidParameterName"/>
         [PublicAPI, MustUseReturnValue]
         public static CliParamNameValidityCheckResults CheckIfNameIsValid(string paramName, CliParamTypes paramType, bool allowReservedParamName = false)
         {
-            Validate.ArgumentWithName(nameof(paramName)).IsNotNull(paramName);
-
             if (string.IsNullOrWhiteSpace(paramName))
             {
                 return CliParamNameValidityCheckResults.Invalid;
@@ -126,16 +142,54 @@ namespace AppMotor.CliApp.CommandLine.Utils
 
             return CliParamNameValidityCheckResults.Valid;
         }
-
-
     }
 
+    /// <summary>
+    /// The result of <see cref="CliParamNameValidation.CheckIfNameIsValid"/>. See each enum member
+    /// for details on the rules.
+    /// </summary>
     public enum CliParamNameValidityCheckResults
     {
+        /// <summary>
+        /// The name is valid.
+        /// </summary>
         Valid,
-        Invalid,
+
+        /// <summary>
+        /// The name contains spaces which is not allowed.
+        /// </summary>
         ContainsSpaces,
+
+        /// <summary>
+        /// The name is a reserved name that must not be used.
+        /// </summary>
         ReservedName,
+
+        /// <summary>
+        /// The name is invalid for some other reason. The primary problems are:
+        ///
+        /// <list type="bullet">
+        /// <item>
+        /// <description>The name is null or empty or just white space characters.</description>
+        /// </item>
+        /// <item>
+        /// <description>The name is for a named parameter and does not start with the "-" or "--" prefix.</description>
+        /// </item>
+        /// <item>
+        /// <description>The name is for a named parameter, stats with a single "-" but has more than one character after that.
+        /// For example, allowed are <c>-m</c>, <c>-t</c> but not <c>-abc</c>.</description>
+        /// </item>
+        /// <item>
+        /// <description>The name is for a named parameter, stats with "--" but only has one character after that.
+        /// For example, allowed are <c>--my-value</c>, <c>--temp</c> but not <c>--a</c>.</description>
+        /// </item>
+        /// <item>
+        /// <description>The name is for a positional parameter but stats with "-" or "/". Names for positional
+        /// parameters must not have a prefix.</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        Invalid,
     }
 
 }

@@ -21,6 +21,7 @@ using System.CommandLine;
 using System.CommandLine.Parsing;
 using System.Linq;
 
+using AppMotor.CliApp.CommandLine.Utils;
 using AppMotor.Core.DataModel;
 using AppMotor.Core.Exceptions;
 using AppMotor.Core.Extensions;
@@ -93,9 +94,11 @@ namespace AppMotor.CliApp.CommandLine
         /// <summary>
         /// Creates a named parameter (in contrast to a positional one). See <see cref="CliParamTypes.Named"/> for more details.
         /// </summary>
-        /// <param name="primaryName">The primary name for this parameter; must start with either "--" or "-".</param>
+        /// <param name="primaryName">The primary name for this parameter; must be a valid named parameter name (i.e. start with
+        /// either "--" or "-") - see <see cref="CliParamNameValidation.CheckIfNameIsValid"/> for more details.</param>
         /// <param name="aliases">Other names that represent the same parameter. Usually the <paramref name="primaryName"/>
-        /// would be the long form (like <c>--length</c>) and the alias(es) would be the short form (like <c>-l</c>).</param>
+        /// would be the long form (like <c>--length</c>) and the alias(es) would be the short form (like <c>-l</c>);
+        /// must be valid named parameter names.</param>
         public CliParam(string primaryName, params string[] aliases)
             : this(ParamsUtils.Combine(primaryName, aliases))
         {
@@ -107,7 +110,8 @@ namespace AppMotor.CliApp.CommandLine
         /// <para>Note: You should prefer the other constructor (<see cref="CliParam{T}(string,string[])"/>) over this
         /// one.</para>
         /// </summary>
-        /// <param name="names">The names/aliases for this parameter; must start with either "--" or "-".</param>
+        /// <param name="names">The names/aliases for this parameter; must be a valid named parameter name (i.e. start with
+        /// either "--" or "-") - see <see cref="CliParamNameValidation.CheckIfNameIsValid"/> for more details.</param>
         public CliParam(IEnumerable<string> names)
             : base(names)
         {
@@ -122,7 +126,8 @@ namespace AppMotor.CliApp.CommandLine
         /// <summary>
         /// Creates a positional parameter (in contrast to a named parameter). See <see cref="CliParamTypes.Positional"/> for more details.
         /// </summary>
-        /// <param name="name">The name of this parameter; only used for generating the help text.</param>
+        /// <param name="name">The name of this parameter; only used for generating the help text; must be a valid positional
+        /// parameter name - see <see cref="CliParamNameValidation.CheckIfNameIsValid"/> for more details.</param>
         /// <param name="positionIndex">The position of this parameter among all other positional parameters; positional parameters
         /// are ordered by this value</param>
         public CliParam(string name, int positionIndex)

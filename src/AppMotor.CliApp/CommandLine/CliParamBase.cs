@@ -85,7 +85,8 @@ namespace AppMotor.CliApp.CommandLine
         /// <summary>
         /// Creates a named parameter (in contrast to a positional one). See <see cref="CliParamTypes.Named"/> for more details.
         /// </summary>
-        /// <param name="names">The names/aliases for this parameter; must start with either "--" or "-".</param>
+        /// <param name="names">The names/aliases for this parameter; must be a valid named parameter name (i.e. start with
+        /// either "--" or "-") - see <see cref="CliParamNameValidation.CheckIfNameIsValid"/> for more details.</param>
         protected CliParamBase(IEnumerable<string> names)
         {
             var allNames = names.ToImmutableArray();
@@ -123,7 +124,8 @@ namespace AppMotor.CliApp.CommandLine
         /// <summary>
         /// Creates a positional parameter (in contrast to a named parameter). See <see cref="CliParamTypes.Positional"/> for more details.
         /// </summary>
-        /// <param name="name">The name of this parameter; only used for generating the help text.</param>
+        /// <param name="name">The name of this parameter; only used for generating the help text; must be a valid positional
+        /// parameter name - see <see cref="CliParamNameValidation.CheckIfNameIsValid"/> for more details.</param>
         /// <param name="positionIndex">The position of this parameter among all other positional parameters; positional parameters
         /// are ordered by this value</param>
         protected CliParamBase(string name, int positionIndex)
