@@ -31,6 +31,34 @@ namespace AppMotor.Core.Utils
     /// </summary>
     public static class Validate
     {
+        /// <summary>
+        /// Validates arguments/parameters. Throws <see cref="ArgumentException"/> (or one of its child classes) in
+        /// case the validation fails.
+        /// </summary>
+        /// <remarks>
+        /// This class is called <c>Argument</c> rather than <c>Parameter</c> because all of its
+        /// methods throw <see cref="ArgumentException"/>s.
+        /// </remarks>
+        /// <seealso cref="Value"/>
+#pragma warning disable CA1034 // Nested types should not be visible
+        public static partial class Argument
+#pragma warning restore CA1034 // Nested types should not be visible
+        {
+            private static readonly ArgumentValidator VALIDATOR = new();
+        }
+
+        /// <summary>
+        /// Validates regular values (i.e. everything that's not an argument/parameter). Throws <see cref="ValueException"/>
+        /// (or one of its child classes) in case the validation fails.
+        /// </summary>
+        /// <seealso cref="Argument"/>
+#pragma warning disable CA1034 // Nested types should not be visible
+        public static partial class Value
+#pragma warning restore CA1034 // Nested types should not be visible
+        {
+            private static readonly ValueValidator VALIDATOR = new();
+        }
+
         private sealed class ArgumentValidator : ValidatorBase<ArgumentException>
         {
             /// <inheritdoc />
@@ -102,21 +130,8 @@ namespace AppMotor.Core.Utils
 
         #region Argument Validation
 
-        /// <summary>
-        /// Validates arguments/parameters. Throws <see cref="ArgumentException"/> (or one of its child classes) in
-        /// case the validation fails.
-        /// </summary>
-        /// <remarks>
-        /// This class is called <c>Argument</c> rather than <c>Parameter</c> because all of its
-        /// methods throw <see cref="ArgumentException"/>s.
-        /// </remarks>
-        /// <seealso cref="Value"/>
-#pragma warning disable CA1034 // Nested types should not be visible
-        public static class Argument
-#pragma warning restore CA1034 // Nested types should not be visible
+        public static partial class Argument
         {
-            private static readonly ArgumentValidator VALIDATOR = new();
-
             [PublicAPI]
             public static void IsNotNull<T>(
                     [InstantHandle, NoEnumeration, NotNullOnExit] T? value,
@@ -175,17 +190,8 @@ namespace AppMotor.Core.Utils
 
         #region Value Validation
 
-        /// <summary>
-        /// Validates regular values (i.e. everything that's not an argument/parameter). Throws <see cref="ValueException"/>
-        /// (or one of its child classes) in case the validation fails.
-        /// </summary>
-        /// <seealso cref="Argument"/>
-#pragma warning disable CA1034 // Nested types should not be visible
-        public static class Value
-#pragma warning restore CA1034 // Nested types should not be visible
+        public static partial class Value
         {
-            private static readonly ValueValidator VALIDATOR = new();
-
             [PublicAPI]
             public static void IsNotNull<T>(
                     [InstantHandle, NoEnumeration, NotNullOnExit] T? value,
