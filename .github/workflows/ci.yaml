@@ -25,7 +25,8 @@ jobs:
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v1.7.2
         with:
-          dotnet-version: '5.x'
+          # NOTE: Apparently only the 3rd component can be "x"; i.e. "5.x" is not supported.
+          dotnet-version: '5.0.x'
 
       - name: Install dependencies
         run: dotnet restore
