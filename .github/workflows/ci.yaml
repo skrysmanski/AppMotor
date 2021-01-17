@@ -15,14 +15,14 @@ jobs:
     steps:
       # Checks out a copy of your repository on the ubuntu-latest machine
       # See: https://github.com/actions/checkout
-      - name: Checkout code
+      - name: Get code
         uses: actions/checkout@v2
         with:
           lfs: true
           submodules: true
 
       # See: https://github.com/actions/setup-dotnet
-      - name: Setup .NET Core SDK
+      - name: Setup .NET build environment
         uses: actions/setup-dotnet@v1.7.2
         with:
           # NOTE: Apparently only the 3rd component can be "x"; i.e. "5.x" is not supported.
@@ -39,4 +39,4 @@ jobs:
       - name: Run tests
         # See: https://docs.microsoft.com/de-de/dotnet/core/tools/dotnet-test
         # NOTE: Without specifying a solution file, "dotnet test" searches for a .sln file in the current directory.
-        run: dotnet test --configuration Release --no-restore --no-build
+        run: dotnet test --configuration Release --no-restore --no-build --nologo
