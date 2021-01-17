@@ -117,10 +117,6 @@ namespace AppMotor.Core.Utils
         {
             private static readonly ArgumentValidator VALIDATOR = new();
 
-            /// <summary>
-            /// Validates that the given (reference type) argument is not null.
-            /// </summary>
-            /// <seealso cref="IsNotNullUnconstrained{T}"/>
             [PublicAPI]
             public static void IsNotNull<T>(
                     [InstantHandle, NoEnumeration, NotNullOnExit] T? value,
@@ -131,10 +127,6 @@ namespace AppMotor.Core.Utils
                 VALIDATOR.IsNotNull(value, paramName);
             }
 
-            /// <summary>
-            /// Validates that the given (value type) argument is not null.
-            /// </summary>
-            /// <seealso cref="IsNotNullUnconstrained{T}"/>
             [PublicAPI]
             public static void IsNotNull<T>(
                     [InstantHandle, NoEnumeration, NotNullOnExit] T? value,
@@ -145,12 +137,6 @@ namespace AppMotor.Core.Utils
                 VALIDATOR.IsNotNull(value, paramName);
             }
 
-            /// <summary>
-            /// Validates that the given (unconstrained generic type) argument is not null.
-            ///
-            /// <para>Note: You should prefer <c>IsNotNull()</c> instead. Only use this method
-            /// if you have an argument with a generic type that is unconstrained.</para>
-            /// </summary>
             [PublicAPI]
             public static void IsNotNullUnconstrained<T>(
                     [InstantHandle, NoEnumeration, NotNullOnExit] T value,
@@ -160,38 +146,24 @@ namespace AppMotor.Core.Utils
                 VALIDATOR.IsNotNullUnconstrained(value, paramName);
             }
 
-            /// <summary>
-            /// Validates that the the given string argument is neither <c>null</c> nor empty.
-            /// </summary>
             [PublicAPI]
             public static void IsNotNullOrEmpty([NotNullOnExit] string? value, [InvokerParameterName] string paramName)
             {
                 VALIDATOR.IsNotNullOrEmpty(value, paramName);
             }
 
-            /// <summary>
-            /// Validates that the the given string argument is neither <c>null</c> nor empty nor only white space characters.
-            /// </summary>
             [PublicAPI]
             public static void IsNotNullOrWhiteSpace([NotNullOnExit] string? value, [InvokerParameterName] string paramName)
             {
                 VALIDATOR.IsNotNullOrWhiteSpace(value, paramName);
             }
 
-            /// <summary>
-            /// Validates that the the given collection argument is neither <c>null</c> nor empty.
-            /// </summary>
             [PublicAPI]
             public static void IsNotNullOrEmpty<T>([NotNullOnExit] IReadOnlyCollection<T>? value, [InvokerParameterName] string paramName)
             {
                 VALIDATOR.IsNotNullOrEmpty(value, paramName);
             }
 
-            /// <summary>
-            /// Verifies that the <see cref="ICollection{T}.IsReadOnly"/> property of <paramref name="value"/>
-            /// is <c>false</c>; otherwise a <see cref="CollectionIsReadOnlyArgumentException"/> will be thrown.
-            /// </summary>
-            /// <exception cref="CollectionIsReadOnlyArgumentException">Thrown if the collection is read-only.</exception>
             [PublicAPI]
             public static void IsNotReadOnly<T>([NotNullOnExit] ICollection<T> value, [InvokerParameterName] string paramName)
             {
@@ -214,10 +186,6 @@ namespace AppMotor.Core.Utils
         {
             private static readonly ValueValidator VALIDATOR = new();
 
-            /// <summary>
-            /// Validates that the given reference type value is not null.
-            /// </summary>
-            /// <seealso cref="IsNotNullUnconstrained{T}"/>
             [PublicAPI]
             public static void IsNotNull<T>(
                     [InstantHandle, NoEnumeration, NotNullOnExit] T? value,
@@ -228,10 +196,6 @@ namespace AppMotor.Core.Utils
                 VALIDATOR.IsNotNull(value, valueName);
             }
 
-            /// <summary>
-            /// Validates that the given reference type value is not null.
-            /// </summary>
-            /// <seealso cref="IsNotNullUnconstrained{T}"/>
             [PublicAPI]
             public static void IsNotNull<T>(
                     [InstantHandle, NoEnumeration, NotNullOnExit] T? value,
@@ -242,12 +206,6 @@ namespace AppMotor.Core.Utils
                 VALIDATOR.IsNotNull(value, valueName);
             }
 
-            /// <summary>
-            /// Validates that the given unconstrained generic type value is not null.
-            ///
-            /// <para>Note: You should prefer <c>IsNotNull()</c> instead. Only use this method
-            /// if you have a value with a generic type that is unconstrained.</para>
-            /// </summary>
             [PublicAPI]
             public static void IsNotNullUnconstrained<T>(
                     [InstantHandle, NoEnumeration, NotNullOnExit] T value,
@@ -257,38 +215,24 @@ namespace AppMotor.Core.Utils
                 VALIDATOR.IsNotNullUnconstrained(value, valueName);
             }
 
-            /// <summary>
-            /// Validates that the the given string is neither <c>null</c> nor empty.
-            /// </summary>
             [PublicAPI]
             public static void IsNotNullOrEmpty([NotNullOnExit] string? value, string valueName)
             {
                 VALIDATOR.IsNotNullOrEmpty(value, valueName);
             }
 
-            /// <summary>
-            /// Validates that the the given string is neither <c>null</c> nor empty nor only white space characters.
-            /// </summary>
             [PublicAPI]
             public static void IsNotNullOrWhiteSpace([NotNullOnExit] string? value, string valueName)
             {
                 VALIDATOR.IsNotNullOrWhiteSpace(value, valueName);
             }
 
-            /// <summary>
-            /// Validates that the the given collection is neither <c>null</c> nor empty.
-            /// </summary>
             [PublicAPI]
             public static void IsNotNullOrEmpty<T>([NotNullOnExit] IReadOnlyCollection<T>? value, string valueName)
             {
                 VALIDATOR.IsNotNullOrEmpty(value, valueName);
             }
 
-            /// <summary>
-            /// Verifies that the <see cref="ICollection{T}.IsReadOnly"/> property of <paramref name="value"/>
-            /// is <c>false</c>; otherwise a <see cref="CollectionIsReadOnlyValueException"/> will be thrown.
-            /// </summary>
-            /// <exception cref="CollectionIsReadOnlyValueException">Thrown if the collection is read-only.</exception>
             [PublicAPI]
             public static void IsNotReadOnly<T>([NotNullOnExit] ICollection<T> value, string valueName)
             {
@@ -303,12 +247,13 @@ namespace AppMotor.Core.Utils
         private abstract partial class ValidatorBase<TBaseException> where TBaseException : Exception
         {
             /// <summary>
-            /// Validates that the given reference type value is not null.
+            /// Validates that the given (reference type) value is not null.
             /// </summary>
             /// <remarks>
             /// This check is split into this method and the other overload so that it can't be
             /// accidentally called for non-nullable value types. Especially structs may be misinterpreted
-            /// as classes and thus unnecessarily checked for null.
+            /// as classes and thus unnecessarily checked for null. (This is why this method needs the
+            /// "where T : class" constraint.)
             ///
             /// <para>Also, the overload for value types becomes faster this way as it avoids any boxing. See:
             /// https://sharplab.io/#v2:EYLgtghgzgLgpgJwDQxASwDYB8ACAmARgFgAoHAZgAJ9KBhSgb1MpcuAHt2NKBZAgHgAqAPgAUgygA8AlJQDuAC0RxKEkNTyUAvMKmU0USgDsArhgwBuUgEgOXXniFjBAfimzFy1ZXWwEJgGMYbV1JfUNTcysSAF8gA=
@@ -317,6 +262,7 @@ namespace AppMotor.Core.Utils
             /// <para>Only downside is that we can no longer use this to check values with unconstrained generic types.
             /// Instead, <see cref="IsNotNullUnconstrained{T}"/> must be used.</para>
             /// </remarks>
+            /// <seealso cref="IsNotNullUnconstrained{T}"/>
             public void IsNotNull<T>([InstantHandle, NoEnumeration, NotNullOnExit] T? value, string valueName) where T : class
             {
                 if (value is null)
@@ -326,11 +272,12 @@ namespace AppMotor.Core.Utils
             }
 
             /// <summary>
-            /// Validates that the given value type value is not null.
+            /// Validates that the given (value type) value is not null.
             /// </summary>
             /// <remarks>
-            /// This check is split into this method and the other overload. See other overload for more details.
+            /// This check is split into this method and the other <c>IsNotNull</c> overload. See other overload for more details.
             /// </remarks>
+            /// <seealso cref="IsNotNullUnconstrained{T}"/>
             public void IsNotNull<T>([InstantHandle, NoEnumeration, NotNullOnExit] T? value, string valueName) where T : struct
             {
                 if (!value.HasValue)
@@ -340,7 +287,10 @@ namespace AppMotor.Core.Utils
             }
 
             /// <summary>
-            /// Validates that the given unconstrained generic type value is not null.
+            /// Validates that the given (unconstrained generic type) value is not null.
+            ///
+            /// <para>Note: You should prefer <c>IsNotNull()</c> instead. Only use this method
+            /// if you have a value with a generic type that is unconstrained.</para>
             /// </summary>
             public void IsNotNullUnconstrained<T>([InstantHandle, NoEnumeration, NotNullOnExit] T value, string valueName)
             {
@@ -350,6 +300,9 @@ namespace AppMotor.Core.Utils
                 }
             }
 
+            /// <summary>
+            /// Validates that the the given string is neither <c>null</c> nor empty.
+            /// </summary>
             public void IsNotNullOrEmpty([NotNullOnExit] string? value, string valueName)
             {
                 if (value is null)
@@ -363,6 +316,9 @@ namespace AppMotor.Core.Utils
                 }
             }
 
+            /// <summary>
+            /// Validates that the the given string is neither <c>null</c> nor empty nor only white space characters.
+            /// </summary>
             public void IsNotNullOrWhiteSpace([NotNullOnExit] string? value, string valueName)
             {
                 // NOTE: For performance reasons (in case this check passes), we use this check first. If it fails,
@@ -383,6 +339,9 @@ namespace AppMotor.Core.Utils
                 }
             }
 
+            /// <summary>
+            /// Validates that the the given collection is neither <c>null</c> nor empty.
+            /// </summary>
             public void IsNotNullOrEmpty<T>([NotNullOnExit] IReadOnlyCollection<T>? value, string valueName)
             {
                 if (value is null)
@@ -397,10 +356,10 @@ namespace AppMotor.Core.Utils
             }
 
             /// <summary>
-            /// Verifies that the <see cref="ICollection{T}.IsReadOnly"/> property of <paramref name="value"/>
-            /// is <c>false</c>; otherwise a <see cref="CollectionIsReadOnlyArgumentException"/> will be thrown.
+            /// Verifies that the <see cref="ICollection{T}.IsReadOnly"/> property of the specified value
+            /// is <c>false</c>; otherwise a <see cref="CollectionIsReadOnlyArgumentException"/> or
+            /// <see cref="CollectionIsReadOnlyValueException"/> is thrown (depending on the value type).
             /// </summary>
-            /// <exception cref="CollectionIsReadOnlyArgumentException">Thrown if the collection is read-only.</exception>
             public void IsNotReadOnly<T>([NotNullOnExit] ICollection<T> value, string valueName)
             {
                 if (value.IsReadOnly)
