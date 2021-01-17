@@ -5,8 +5,6 @@
 -->
 <Project>
 
-  <Import Project="../CommonNuGet.props" />
-
   <!--
     See 'Project.NuGetPackage.props' for more details.
   -->

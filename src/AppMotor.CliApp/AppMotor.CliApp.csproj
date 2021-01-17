@@ -2,6 +2,7 @@
 
   <Import Project="$(ProjectCommonsDirectory)Project.Code.props" />
   <Import Project="$(ProjectCommonsDirectory)Project.NuGetPackage.props" />
+  <Import Project="../Common.props" />
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
