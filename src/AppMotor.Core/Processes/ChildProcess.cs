@@ -84,7 +84,7 @@ namespace AppMotor.Core.Processes
         [PublicAPI]
         public static ChildProcessResult Exec(ChildProcessStartInfo startInfo)
         {
-            Validate.Argument.IsNotNull(startInfo, nameof(startInfo));
+            Validate.ArgumentWithName(nameof(startInfo)).IsNotNull(startInfo);
 
             var runningProcess = StartProcess(startInfo);
 
@@ -140,7 +140,7 @@ namespace AppMotor.Core.Processes
         [PublicAPI]
         public static async Task<ChildProcessResult> ExecAsync(ChildProcessStartInfo startInfo)
         {
-            Validate.Argument.IsNotNull(startInfo, nameof(startInfo));
+            Validate.ArgumentWithName(nameof(startInfo)).IsNotNull(startInfo);
 
             var runningProcess = StartProcess(startInfo);
 
@@ -204,8 +204,8 @@ namespace AppMotor.Core.Processes
 
             public PreparedProcess(Process process, ChildProcessStartInfo startInfo)
             {
-                Validate.Argument.IsNotNull(process, nameof(process));
-                Validate.Argument.IsNotNull(startInfo, nameof(startInfo));
+                Validate.ArgumentWithName(nameof(process)).IsNotNull(process);
+                Validate.ArgumentWithName(nameof(startInfo)).IsNotNull(startInfo);
 
                 this._process = process;
                 this._startInfo = startInfo;

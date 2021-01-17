@@ -43,7 +43,7 @@ namespace AppMotor.Core.Tests.Extensions
 
         public ExceptionExtensionsTests(ITestOutputHelper testOutputHelper)
         {
-            Validate.Argument.IsNotNull(testOutputHelper, nameof(testOutputHelper));
+            Validate.ArgumentWithName(nameof(testOutputHelper)).IsNotNull(testOutputHelper);
 
             this._testOutputHelper = testOutputHelper;
         }

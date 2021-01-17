@@ -41,7 +41,7 @@ namespace AppMotor.CliApp.CommandLine.Utils
         [MustUseReturnValue]
         public static bool IsHelpParamName(string arg)
         {
-            Validate.Argument.IsNotNull(arg, nameof(arg));
+            Validate.ArgumentWithName(nameof(arg)).IsNotNull(arg);
 
             switch (arg.ToLowerInvariant())
             {

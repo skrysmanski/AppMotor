@@ -77,7 +77,7 @@ namespace AppMotor.CliApp.CommandLine
         /// <param name="command">The value for <see cref="Command"/></param>
         public CliApplicationWithCommand(CliCommand command)
         {
-            Validate.Argument.IsNotNull(command, nameof(command));
+            Validate.ArgumentWithName(nameof(command)).IsNotNull(command);
 
             this.Command = command;
         }

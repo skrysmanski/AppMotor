@@ -43,7 +43,7 @@ namespace AppMotor.Core.Extensions
         [PublicAPI, Pure]
         public static bool IsNumericType(this Type type)
         {
-            Validate.Argument.IsNotNull(type, nameof(type));
+            Validate.ArgumentWithName(nameof(type)).IsNotNull(type);
 
             switch (type.FullName)
             {
@@ -82,7 +82,7 @@ namespace AppMotor.Core.Extensions
         [PublicAPI, Pure]
         public static bool IsNumericIntegerType(this Type type)
         {
-            Validate.Argument.IsNotNull(type, nameof(type));
+            Validate.ArgumentWithName(nameof(type)).IsNotNull(type);
 
             switch (type.FullName)
             {
@@ -116,7 +116,7 @@ namespace AppMotor.Core.Extensions
         [PublicAPI, Pure]
         public static bool IsNumericFloatType(this Type type)
         {
-            Validate.Argument.IsNotNull(type, nameof(type));
+            Validate.ArgumentWithName(nameof(type)).IsNotNull(type);
 
             switch (type.FullName)
             {
@@ -141,7 +141,7 @@ namespace AppMotor.Core.Extensions
                   "Because of this, it's no longer advisable to use this method.")]
         public static bool IsNullableType(this Type type)
         {
-            Validate.Argument.IsNotNull(type, nameof(type));
+            Validate.ArgumentWithName(nameof(type)).IsNotNull(type);
 
             return !type.IsValueType || type.IsNullableValueType();
         }
@@ -153,7 +153,7 @@ namespace AppMotor.Core.Extensions
         [PublicAPI, Pure]
         public static bool IsNullableValueType(this Type type)
         {
-            Validate.Argument.IsNotNull(type, nameof(type));
+            Validate.ArgumentWithName(nameof(type)).IsNotNull(type);
 
             return Nullable.GetUnderlyingType(type) != null;
         }
@@ -187,8 +187,8 @@ namespace AppMotor.Core.Extensions
         [PublicAPI, Pure]
         public static bool Is(this Type typeToCheck, Type baseType)
         {
-            Validate.Argument.IsNotNull(typeToCheck, nameof(typeToCheck));
-            Validate.Argument.IsNotNull(baseType, nameof(baseType));
+            Validate.ArgumentWithName(nameof(typeToCheck)).IsNotNull(typeToCheck);
+            Validate.ArgumentWithName(nameof(baseType)).IsNotNull(baseType);
 
             return baseType.IsAssignableFrom(typeToCheck);
         }

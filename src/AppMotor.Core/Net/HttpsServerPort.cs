@@ -64,7 +64,7 @@ namespace AppMotor.Core.Net
         [PublicAPI]
         public HttpsServerPort(SocketListenAddresses listenAddress, int port, Func<X509Certificate2> certificateProvider) : base(listenAddress, port)
         {
-            Validate.Argument.IsNotNull(certificateProvider, nameof(certificateProvider));
+            Validate.ArgumentWithName(nameof(certificateProvider)).IsNotNull(certificateProvider);
 
             this.CertificateProvider = certificateProvider;
         }

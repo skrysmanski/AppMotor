@@ -49,7 +49,7 @@ namespace AppMotor.Core.Processes
         /// </summary>
         public ChildProcessResult(int exitCode, string output, string? errorOutput)
         {
-            Validate.Argument.IsNotNull(output, nameof(output));
+            Validate.ArgumentWithName(nameof(output)).IsNotNull(output);
 
             this.ExitCode = exitCode;
             this.Output = output;

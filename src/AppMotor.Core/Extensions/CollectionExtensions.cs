@@ -36,9 +36,9 @@ namespace AppMotor.Core.Extensions
         [PublicAPI]
         public static void AddRange<T>(this ICollection<T> collection, IEnumerable<T> itemsToAdd)
         {
-            Validate.Argument.IsNotNull(collection, nameof(collection));
-            Validate.Argument.IsNotNull(itemsToAdd, nameof(itemsToAdd));
-            Validate.Argument.IsNotReadOnly(collection, nameof(collection));
+            Validate.ArgumentWithName(nameof(collection)).IsNotNull(collection);
+            Validate.ArgumentWithName(nameof(collection)).IsNotReadOnly(collection);
+            Validate.ArgumentWithName(nameof(itemsToAdd)).IsNotNull(itemsToAdd);
 
             foreach (var item in itemsToAdd)
             {
@@ -57,9 +57,9 @@ namespace AppMotor.Core.Extensions
         public static List<T> RemoveWhere<T>(this ICollection<T> collection, Predicate<T> predicate)
 #pragma warning restore CA1002 // Do not expose generic lists
         {
-            Validate.Argument.IsNotNull(collection, nameof(collection));
-            Validate.Argument.IsNotNull(predicate, nameof(predicate));
-            Validate.Argument.IsNotReadOnly(collection, nameof(collection));
+            Validate.ArgumentWithName(nameof(collection)).IsNotNull(collection);
+            Validate.ArgumentWithName(nameof(collection)).IsNotReadOnly(collection);
+            Validate.ArgumentWithName(nameof(predicate)).IsNotNull(predicate);
 
             var leftOver = new List<T>(collection.Count);
             var removed = new List<T>(collection.Count);

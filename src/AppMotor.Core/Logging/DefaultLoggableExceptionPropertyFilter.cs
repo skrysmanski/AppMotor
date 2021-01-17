@@ -32,7 +32,7 @@ namespace AppMotor.Core.Logging
         /// <inheritdoc />
         public virtual bool ExcludeProperty(PropertyInfo loggableProperty)
         {
-            Validate.Argument.IsNotNull(loggableProperty, nameof(loggableProperty));
+            Validate.ArgumentWithName(nameof(loggableProperty)).IsNotNull(loggableProperty);
 
             switch (loggableProperty.Name)
             {
@@ -50,7 +50,7 @@ namespace AppMotor.Core.Logging
         /// <inheritdoc />
         public virtual bool ExcludePropertyValue(object? propertyValue, PropertyInfo loggableProperty)
         {
-            Validate.Argument.IsNotNull(loggableProperty, nameof(loggableProperty));
+            Validate.ArgumentWithName(nameof(loggableProperty)).IsNotNull(loggableProperty);
 
             if (propertyValue is null)
             {
