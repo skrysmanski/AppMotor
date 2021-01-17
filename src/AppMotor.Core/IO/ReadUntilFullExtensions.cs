@@ -47,7 +47,7 @@ namespace AppMotor.Core.IO
         [PublicAPI, MustUseReturnValue]
         public static int ReadUntilFull(this IReadOnlyStream stream, Span<byte> buffer)
         {
-            Validate.Argument.IsNotNull(stream, nameof(stream));
+            Validate.ArgumentWithName(nameof(stream)).IsNotNull(stream);
 
             int offset = 0;
             int count = buffer.Length;
@@ -87,7 +87,7 @@ namespace AppMotor.Core.IO
         [PublicAPI, MustUseReturnValue]
         public static async ValueTask<int> ReadUntilFullAsync(this IReadOnlyStream stream, Memory<byte> buffer, CancellationToken cancellationToken = default)
         {
-            Validate.Argument.IsNotNull(stream, nameof(stream));
+            Validate.ArgumentWithName(nameof(stream)).IsNotNull(stream);
 
             int offset = 0;
             int count = buffer.Length;
@@ -126,7 +126,7 @@ namespace AppMotor.Core.IO
         [PublicAPI, MustUseReturnValue]
         public static int ReadUntilFull(this Stream stream, Span<byte> buffer)
         {
-            Validate.Argument.IsNotNull(stream, nameof(stream));
+            Validate.ArgumentWithName(nameof(stream)).IsNotNull(stream);
 
             int offset = 0;
             int count = buffer.Length;
@@ -166,7 +166,7 @@ namespace AppMotor.Core.IO
         [PublicAPI, MustUseReturnValue]
         public static async ValueTask<int> ReadUntilFullAsync(this Stream stream, Memory<byte> buffer, CancellationToken cancellationToken = default)
         {
-            Validate.Argument.IsNotNull(stream, nameof(stream));
+            Validate.ArgumentWithName(nameof(stream)).IsNotNull(stream);
 
             int offset = 0;
             int count = buffer.Length;

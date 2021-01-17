@@ -34,7 +34,7 @@ namespace AppMotor.Core.Tests.Logging
 
         public ExtendedExceptionStringExtensionsTests(ITestOutputHelper testOutputHelper)
         {
-            Validate.Argument.IsNotNull(testOutputHelper, nameof(testOutputHelper));
+            Validate.ArgumentWithName(nameof(testOutputHelper)).IsNotNull(testOutputHelper);
 
             this._testOutputHelper = testOutputHelper;
         }

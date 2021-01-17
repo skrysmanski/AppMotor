@@ -63,7 +63,7 @@ namespace AppMotor.Core.IO
         /// <param name="underlyingStream">The stream to wrap in this read-only stream.</param>
         public ReadOnlyStream(Stream underlyingStream)
         {
-            Validate.Argument.IsNotNull(underlyingStream, nameof(underlyingStream));
+            Validate.ArgumentWithName(nameof(underlyingStream)).IsNotNull(underlyingStream);
 
             if (!underlyingStream.CanRead)
             {

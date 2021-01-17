@@ -101,7 +101,7 @@ namespace AppMotor.Core.Utils
 
         private Base32Encoding(char[] symbols, bool createCopyOfSymbols, char? paddingChar)
         {
-            Validate.Argument.IsNotNull(symbols, nameof(symbols));
+            Validate.ArgumentWithName(nameof(symbols)).IsNotNull(symbols);
 
             if (symbols.Length != 32)
             {
@@ -165,8 +165,8 @@ namespace AppMotor.Core.Utils
         /// <seealso cref="EncodeAsync"/>
         public override void Encode(IReadOnlyStream data, TextWriter outputWriter)
         {
-            Validate.Argument.IsNotNull(outputWriter, nameof(outputWriter));
-            Validate.Argument.IsNotNull(data, nameof(data));
+            Validate.ArgumentWithName(nameof(outputWriter)).IsNotNull(outputWriter);
+            Validate.ArgumentWithName(nameof(data)).IsNotNull(data);
 
             using var encoder = new StreamBasedSymbolGroupEncoder(data, this._symbols, this.PaddingChar);
 
@@ -189,8 +189,8 @@ namespace AppMotor.Core.Utils
         /// <seealso cref="Encode(IReadOnlyStream,TextWriter)"/>
         public override async Task EncodeAsync(IReadOnlyStream data, TextWriter outputWriter)
         {
-            Validate.Argument.IsNotNull(outputWriter, nameof(outputWriter));
-            Validate.Argument.IsNotNull(data, nameof(data));
+            Validate.ArgumentWithName(nameof(outputWriter)).IsNotNull(outputWriter);
+            Validate.ArgumentWithName(nameof(data)).IsNotNull(data);
 
             using var encoder = new StreamBasedSymbolGroupEncoder(data, this._symbols, this.PaddingChar);
 
@@ -232,7 +232,7 @@ namespace AppMotor.Core.Utils
         /// </summary>
         public override byte[] Decode(string encodedString)
         {
-            Validate.Argument.IsNotNull(encodedString, nameof(encodedString));
+            Validate.ArgumentWithName(nameof(encodedString)).IsNotNull(encodedString);
 
             if (encodedString.Length == 0)
             {
@@ -276,8 +276,8 @@ namespace AppMotor.Core.Utils
         /// <seealso cref="DecodeAsync"/>
         public override void Decode(TextReader encodedString, Stream destination)
         {
-            Validate.Argument.IsNotNull(encodedString, nameof(encodedString));
-            Validate.Argument.IsNotNull(destination, nameof(destination));
+            Validate.ArgumentWithName(nameof(encodedString)).IsNotNull(encodedString);
+            Validate.ArgumentWithName(nameof(destination)).IsNotNull(destination);
 
             using var decoder = new StringReaderBasedSymbolGroupDecoder(encodedString, this._inverseSymbols, this.PaddingChar);
 
@@ -299,8 +299,8 @@ namespace AppMotor.Core.Utils
         /// <seealso cref="Decode(TextReader,Stream)"/>
         public override async Task DecodeAsync(TextReader encodedString, Stream destination)
         {
-            Validate.Argument.IsNotNull(encodedString, nameof(encodedString));
-            Validate.Argument.IsNotNull(destination, nameof(destination));
+            Validate.ArgumentWithName(nameof(encodedString)).IsNotNull(encodedString);
+            Validate.ArgumentWithName(nameof(destination)).IsNotNull(destination);
 
             using var decoder = new StringReaderBasedSymbolGroupDecoder(encodedString, this._inverseSymbols, this.PaddingChar);
 

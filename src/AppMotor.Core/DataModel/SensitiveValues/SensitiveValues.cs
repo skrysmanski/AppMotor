@@ -40,7 +40,7 @@ namespace AppMotor.Core.DataModel
         [PublicAPI, Pure]
         public static bool IsSensitiveValue<T>([NotNullOnExit] this T value) where T : notnull
         {
-            Validate.Argument.IsNotNullUnconstrained(value, nameof(value));
+            Validate.ArgumentWithName(nameof(value)).IsNotNullUnconstrained(value);
 
             if (value is SecureString || value is ISensitiveValue)
             {

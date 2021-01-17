@@ -42,7 +42,7 @@ namespace AppMotor.Core.Logging
         [PublicAPI, Pure]
         public static string ToStringExtended(this Exception exception, IValueFormatter? valueFormatter = null)
         {
-            Validate.Argument.IsNotNull(exception, nameof(exception));
+            Validate.ArgumentWithName(nameof(exception)).IsNotNull(exception);
 
             var builder = new ExtendedStringBuilder(valueFormatter);
 

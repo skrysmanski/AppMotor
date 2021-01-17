@@ -1,5 +1,5 @@
 ﻿#region License
-// Copyright 2020 AppMotor Framework (https://github.com/skrysmanski/AppMotor)
+// Copyright 2021 AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 using AppMotor.Core.Exceptions;
 
@@ -31,36 +33,73 @@ namespace AppMotor.Core.Utils
     /// </summary>
     public static class Validate
     {
+        private static readonly ArgumentExceptionFactory s_argumentExceptionFactory = new();
+
+        private static readonly ValueExceptionFactory s_valueExceptionFactory = new();
+
         /// <summary>
-        /// Validates arguments/parameters. Throws <see cref="ArgumentException"/> (or one of its child classes) in
-        /// case the validation fails.
+        /// Creates a validator for arguments/parameters. Throws <see cref="ArgumentException"/>s (or one of its
+        /// child classes) in case the validation fails.
+        ///
+        /// <para>Usage: <c>Validate.ArgumentWithName(nameof(myParam)).IsNotNull(myParam);</c></para>
         /// </summary>
         /// <remarks>
-        /// This class is called <c>Argument</c> rather - than <c>Parameter</c> - because its
+        /// This method is called <c>ArgumentWithName</c> - rather than <c>ParameterWithName</c> - because its
         /// associated exception is named <see cref="ArgumentException"/> (and not <c>ParameterException</c>).
         /// </remarks>
-        /// <seealso cref="Value"/>
-#pragma warning disable CA1034 // Nested types should not be visible
-        public static partial class Argument
-#pragma warning restore CA1034 // Nested types should not be visible
+        /// <seealso cref="ValueWithName"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static NamedValidator ArgumentWithName([InvokerParameterName] string paramName)
         {
-            private static readonly ArgumentValidator VALIDATOR = new();
+            return new NamedValidator(s_argumentExceptionFactory, paramName);
         }
 
         /// <summary>
-        /// Validates regular values (i.e. everything that's not an argument/parameter). Throws <see cref="ValueException"/>
-        /// (or one of its child classes) in case the validation fails.
+        /// Creates a validator for regular values (i.e. everything that's not an argument/parameter). Throws
+        /// <see cref="ValueException"/>s (or one of its child classes) in case the validation fails.
+        ///
+        /// <para>Usage: <c>Validate.ValueWithName(nameof(myValue)).IsNotNull(myValue);</c></para>
         /// </summary>
-        /// <seealso cref="Argument"/>
-#pragma warning disable CA1034 // Nested types should not be visible
-        public static partial class Value
-#pragma warning restore CA1034 // Nested types should not be visible
+        /// <seealso cref="ArgumentWithName"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static NamedValidator ValueWithName(string valueName)
         {
-            private static readonly ValueValidator VALIDATOR = new();
+            return new NamedValidator(s_valueExceptionFactory, valueName);
         }
 
-        private sealed class ArgumentValidator : ValidatorBase<ArgumentException>
+        /// <summary>
+        /// Non-generic version of <see cref="ExceptionFactoryBase{TBaseException}"/>. Used by <see cref="NamedValidator"/>
+        /// to create exceptions (as <see cref="NamedValidator"/> is also non-generic).
+        /// </summary>
+        internal interface IExceptionFactory
         {
+            /// <summary>
+            /// The type of factory - for use in <see cref="NamedValidator.ToString"/>.
+            /// </summary>
+            string TypeNameForToString { get; }
+
+            /// <inheritdoc cref="NamedValidator.CreateNullException"/>
+            [MustUseReturnValue]
+            Exception CreateNullException(string? valueName);
+
+            /// <inheritdoc cref="NamedValidator.CreateCollectionIsReadOnlyException"/>
+            [MustUseReturnValue]
+            Exception CreateCollectionIsReadOnlyException(string? valueName);
+
+            /// <inheritdoc cref="NamedValidator.CreateRootException"/>
+            [MustUseReturnValue]
+            Exception CreateRootException(string message, string? valueName);
+        }
+
+        /// <summary>
+        /// Creates <see cref="ArgumentException"/>s.
+        /// </summary>
+        /// <seealso cref="ValueExceptionFactory"/>
+        private sealed class ArgumentExceptionFactory : ExceptionFactoryBase<ArgumentException>
+        {
+            /// <inheritdoc />
+            public override string TypeNameForToString => "argument/parameter";
+
             /// <inheritdoc />
             protected override ArgumentException CreateNullException(string? valueName)
             {
@@ -83,8 +122,15 @@ namespace AppMotor.Core.Utils
             }
         }
 
-        private sealed class ValueValidator : ValidatorBase<ValueException>
+        /// <summary>
+        /// Creates <see cref="ValueException"/>s.
+        /// </summary>
+        /// <seealso cref="ArgumentExceptionFactory"/>
+        private sealed class ValueExceptionFactory : ExceptionFactoryBase<ValueException>
         {
+            /// <inheritdoc />
+            public override string TypeNameForToString => "value";
+
             /// <inheritdoc />
             protected override ValueException CreateNullException(string? valueName)
             {
@@ -104,12 +150,46 @@ namespace AppMotor.Core.Utils
             }
         }
 
-        private abstract partial class ValidatorBase<TBaseException> where TBaseException : Exception
+        /// <summary>
+        /// Base class for an exception factory for a certain value type (either value or argument).
+        /// </summary>
+        /// <typeparam name="TBaseException">The common base exception type for the value type</typeparam>
+        private abstract class ExceptionFactoryBase<TBaseException> : IExceptionFactory where TBaseException : Exception
         {
+            /// <inheritdoc />
+            public abstract string TypeNameForToString { get; }
+
+            /// <inheritdoc />
+            Exception IExceptionFactory.CreateNullException(string? valueName)
+            {
+                return CreateNullException(valueName);
+            }
+
+            /// <inheritdoc />
+            Exception IExceptionFactory.CreateCollectionIsReadOnlyException(string? valueName)
+            {
+                return CreateCollectionIsReadOnlyException(valueName);
+            }
+
+            /// <inheritdoc />
+            Exception IExceptionFactory.CreateRootException(string message, string? valueName)
+            {
+                return CreateRootException(message, valueName);
+            }
+
+            /// <summary>
+            /// See <see cref="NamedValidator.CreateNullException"/> for details.
+            /// </summary>
             protected abstract TBaseException CreateNullException(string? valueName);
 
+            /// <summary>
+            /// See <see cref="NamedValidator.CreateCollectionIsReadOnlyException"/> for details.
+            /// </summary>
             protected abstract TBaseException CreateCollectionIsReadOnlyException(string? valueName);
 
+            /// <summary>
+            /// See <see cref="NamedValidator.CreateRootException"/> for details.
+            /// </summary>
             protected abstract TBaseException CreateRootException(string message, string? valueName);
         }
 
@@ -127,255 +207,198 @@ namespace AppMotor.Core.Utils
 
             public const string COLLECTION_IS_EMPTY = "The collection must not be empty.";
         }
+    }
 
-        #region Argument Validation
+    /// <summary>
+    /// This struct is the base for all validation methods (e.g. <see cref="IsNotNull{T}(T?)"/>). It can be used to write new validation methods
+    /// as extension methods. For extension methods, use one of the <c>Create...Exception()</c> methods to create the validation exception.
+    /// It will automatically have the correct type (i.e. <see cref="ArgumentException"/> or <see cref="ValueException"/>) and value name.
+    /// </summary>
+    /// <remarks>
+    /// This struct is not a real data type but rather a "trick" to achieve extensibility for validation methods. Instances of this struct
+    /// can't be created from the outside. They must always be obtained via <see cref="Validate.ArgumentWithName"/> or <see cref="Validate.ValueWithName"/>.
+    ///
+    /// <para>Note that this is a <c>struct</c> on purpose to make creating it cheap and so that it can't be <c>null</c> when used in
+    /// extension methods (primarily prevents CA1062).</para>
+    /// </remarks>
+    [SuppressMessage("Performance", "CA1815:Override equals and operator equals on value types", Justification = "Not a real data type")]
+    public readonly struct NamedValidator
+    {
+        private readonly string? _valueName;
 
-        public static partial class Argument
+        private readonly Validate.IExceptionFactory? _exceptionFactory;
+
+        private Validate.IExceptionFactory ExceptionFactory => this._exceptionFactory ?? throw new InvalidOperationException("No exception factory has been set.");
+
+        internal NamedValidator(Validate.IExceptionFactory exceptionFactory, string? valueName)
         {
-            [PublicAPI]
-            public static void IsNotNull<T>(
-                    [InstantHandle, NoEnumeration, NotNullOnExit] T? value,
-                    [InvokerParameterName] string paramName
-                )
-                    where T : class
-            {
-                VALIDATOR.IsNotNull(value, paramName);
-            }
+            this._exceptionFactory = exceptionFactory;
+            this._valueName = valueName;
+        }
 
-            [PublicAPI]
-            public static void IsNotNull<T>(
-                    [InstantHandle, NoEnumeration, NotNullOnExit] T? value,
-                    [InvokerParameterName] string paramName
-                )
-                    where T : struct
-            {
-                VALIDATOR.IsNotNull(value, paramName);
-            }
+        /// <summary>
+        /// Creates a <see cref="ArgumentNullException"/> or <see cref="ValueNullException"/> based on the value's type.
+        /// </summary>
+        [PublicAPI, MustUseReturnValue]
+        public Exception CreateNullException()
+        {
+            return this.ExceptionFactory.CreateNullException(this._valueName);
+        }
 
-            [PublicAPI]
-            public static void IsNotNullUnconstrained<T>(
-                    [InstantHandle, NoEnumeration, NotNullOnExit] T value,
-                    [InvokerParameterName] string paramName
-                )
-            {
-                VALIDATOR.IsNotNullUnconstrained(value, paramName);
-            }
+        /// <summary>
+        /// Creates a <see cref="CollectionIsReadOnlyArgumentException"/> or <see cref="CollectionIsReadOnlyArgumentException"/>
+        /// based on the value's type.
+        /// </summary>
+        [PublicAPI, MustUseReturnValue]
+        public Exception CreateCollectionIsReadOnlyException()
+        {
+            return this.ExceptionFactory.CreateCollectionIsReadOnlyException(this._valueName);
+        }
 
-            [PublicAPI]
-            public static void IsNotNullOrEmpty([NotNullOnExit] string? value, [InvokerParameterName] string paramName)
-            {
-                VALIDATOR.IsNotNullOrEmpty(value, paramName);
-            }
+        /// <summary>
+        /// Creates a <see cref="ArgumentException"/> or <see cref="ValueException"/> based on the value's type.
+        /// </summary>
+        /// <param name="message">The exception message to be used by the created exception.</param>
+        [PublicAPI, MustUseReturnValue]
+        public Exception CreateRootException(string message)
+        {
+            return this.ExceptionFactory.CreateRootException(message, this._valueName);
+        }
 
-            [PublicAPI]
-            public static void IsNotNullOrWhiteSpace([NotNullOnExit] string? value, [InvokerParameterName] string paramName)
+        /// <summary>
+        /// Validates that the given (reference type) value is not null.
+        /// </summary>
+        /// <remarks>
+        /// This check is split into this method and the other overload so that it can't be
+        /// accidentally called for non-nullable value types. Especially structs may be misinterpreted
+        /// as classes and thus unnecessarily checked for null. (This is why this method needs the
+        /// "where T : class" constraint.)
+        ///
+        /// <para>Also, the overload for value types becomes faster this way as it avoids any boxing. See:
+        /// https://sharplab.io/#v2:EYLgtghgzgLgpgJwDQxASwDYB8ACAmARgFgAoHAZgAJ9KBhSgb1MpcuAHt2NKBZAgHgAqAPgAUgygA8AlJQDuAC0RxKEkNTyUAvMKmU0USgDsArhgwBuUgEgOXXniFjBAfimzFy1ZXWwEJgGMYbV1JfUNTcysSAF8gA=
+        /// </para>
+        ///
+        /// <para>Only downside is that we can no longer use this to check values with unconstrained generic types.
+        /// Instead, <see cref="IsNotNullUnconstrained{T}"/> must be used.</para>
+        /// </remarks>
+        /// <seealso cref="IsNotNullUnconstrained{T}"/>
+        [PublicAPI]
+        public void IsNotNull<T>([InstantHandle, NoEnumeration, NotNullOnExit] T? value) where T : class
+        {
+            if (value is null)
             {
-                VALIDATOR.IsNotNullOrWhiteSpace(value, paramName);
-            }
-
-            [PublicAPI]
-            public static void IsNotNullOrEmpty<T>([NotNullOnExit] IReadOnlyCollection<T>? value, [InvokerParameterName] string paramName)
-            {
-                VALIDATOR.IsNotNullOrEmpty(value, paramName);
-            }
-
-            [PublicAPI]
-            public static void IsNotReadOnly<T>([NotNullOnExit] ICollection<T> value, [InvokerParameterName] string paramName)
-            {
-                VALIDATOR.IsNotReadOnly(value, paramName);
+                throw CreateNullException();
             }
         }
 
-        #endregion Argument Validation
-
-        #region Value Validation
-
-        public static partial class Value
+        /// <summary>
+        /// Validates that the given (value type) value is not null.
+        /// </summary>
+        /// <remarks>
+        /// This check is split into this method and the other <c>IsNotNull</c> overload. See other overload for more details.
+        /// </remarks>
+        /// <seealso cref="IsNotNullUnconstrained{T}"/>
+        [PublicAPI]
+        public void IsNotNull<T>([InstantHandle, NoEnumeration, NotNullOnExit] T? value) where T : struct
         {
-            [PublicAPI]
-            public static void IsNotNull<T>(
-                    [InstantHandle, NoEnumeration, NotNullOnExit] T? value,
-                    string valueName
-                )
-                    where T : class
+            if (!value.HasValue)
             {
-                VALIDATOR.IsNotNull(value, valueName);
-            }
-
-            [PublicAPI]
-            public static void IsNotNull<T>(
-                    [InstantHandle, NoEnumeration, NotNullOnExit] T? value,
-                    string valueName
-                )
-                    where T : struct
-            {
-                VALIDATOR.IsNotNull(value, valueName);
-            }
-
-            [PublicAPI]
-            public static void IsNotNullUnconstrained<T>(
-                    [InstantHandle, NoEnumeration, NotNullOnExit] T value,
-                    string valueName
-                )
-            {
-                VALIDATOR.IsNotNullUnconstrained(value, valueName);
-            }
-
-            [PublicAPI]
-            public static void IsNotNullOrEmpty([NotNullOnExit] string? value, string valueName)
-            {
-                VALIDATOR.IsNotNullOrEmpty(value, valueName);
-            }
-
-            [PublicAPI]
-            public static void IsNotNullOrWhiteSpace([NotNullOnExit] string? value, string valueName)
-            {
-                VALIDATOR.IsNotNullOrWhiteSpace(value, valueName);
-            }
-
-            [PublicAPI]
-            public static void IsNotNullOrEmpty<T>([NotNullOnExit] IReadOnlyCollection<T>? value, string valueName)
-            {
-                VALIDATOR.IsNotNullOrEmpty(value, valueName);
-            }
-
-            [PublicAPI]
-            public static void IsNotReadOnly<T>([NotNullOnExit] ICollection<T> value, string valueName)
-            {
-                VALIDATOR.IsNotReadOnly(value, valueName);
+                throw CreateNullException();
             }
         }
 
-        #endregion Value Validation
-
-        // ReSharper disable ParameterOnlyUsedForPreconditionCheck.Local
-
-        private abstract partial class ValidatorBase<TBaseException> where TBaseException : Exception
+        /// <summary>
+        /// Validates that the given (unconstrained generic type) value is not null.
+        ///
+        /// <para>Note: You should prefer <c>IsNotNull()</c> instead. Only use this method
+        /// if you have a value with a generic type that is unconstrained.</para>
+        /// </summary>
+        [PublicAPI]
+        public void IsNotNullUnconstrained<T>([InstantHandle, NoEnumeration, NotNullOnExit] T value)
         {
-            /// <summary>
-            /// Validates that the given (reference type) value is not null.
-            /// </summary>
-            /// <remarks>
-            /// This check is split into this method and the other overload so that it can't be
-            /// accidentally called for non-nullable value types. Especially structs may be misinterpreted
-            /// as classes and thus unnecessarily checked for null. (This is why this method needs the
-            /// "where T : class" constraint.)
-            ///
-            /// <para>Also, the overload for value types becomes faster this way as it avoids any boxing. See:
-            /// https://sharplab.io/#v2:EYLgtghgzgLgpgJwDQxASwDYB8ACAmARgFgAoHAZgAJ9KBhSgb1MpcuAHt2NKBZAgHgAqAPgAUgygA8AlJQDuAC0RxKEkNTyUAvMKmU0USgDsArhgwBuUgEgOXXniFjBAfimzFy1ZXWwEJgGMYbV1JfUNTcysSAF8gA=
-            /// </para>
-            ///
-            /// <para>Only downside is that we can no longer use this to check values with unconstrained generic types.
-            /// Instead, <see cref="IsNotNullUnconstrained{T}"/> must be used.</para>
-            /// </remarks>
-            /// <seealso cref="IsNotNullUnconstrained{T}"/>
-            public void IsNotNull<T>([InstantHandle, NoEnumeration, NotNullOnExit] T? value, string valueName) where T : class
+            if (value is null)
+            {
+                throw CreateNullException();
+            }
+        }
+
+        /// <summary>
+        /// Validates that the the given string is neither <c>null</c> nor empty.
+        /// </summary>
+        [PublicAPI]
+        public void IsNotNullOrEmpty([NotNullOnExit] string? value)
+        {
+            if (value is null)
+            {
+                throw CreateNullException();
+            }
+
+            if (value.Length == 0)
+            {
+                throw CreateRootException(Validate.ExceptionMessages.STRING_IS_EMPTY);
+            }
+        }
+
+        /// <summary>
+        /// Validates that the the given string is neither <c>null</c> nor empty nor only white space characters.
+        /// </summary>
+        [PublicAPI]
+        public void IsNotNullOrWhiteSpace([NotNullOnExit] string? value)
+        {
+            // NOTE: For performance reasons (in case this check passes), we use this check first. If it fails,
+            //   we're already in an exception situation and then performance is no longer this important.
+            if (string.IsNullOrWhiteSpace(value))
             {
                 if (value is null)
                 {
-                    throw CreateNullException(valueName);
-                }
-            }
-
-            /// <summary>
-            /// Validates that the given (value type) value is not null.
-            /// </summary>
-            /// <remarks>
-            /// This check is split into this method and the other <c>IsNotNull</c> overload. See other overload for more details.
-            /// </remarks>
-            /// <seealso cref="IsNotNullUnconstrained{T}"/>
-            public void IsNotNull<T>([InstantHandle, NoEnumeration, NotNullOnExit] T? value, string valueName) where T : struct
-            {
-                if (!value.HasValue)
-                {
-                    throw CreateNullException(valueName);
-                }
-            }
-
-            /// <summary>
-            /// Validates that the given (unconstrained generic type) value is not null.
-            ///
-            /// <para>Note: You should prefer <c>IsNotNull()</c> instead. Only use this method
-            /// if you have a value with a generic type that is unconstrained.</para>
-            /// </summary>
-            public void IsNotNullUnconstrained<T>([InstantHandle, NoEnumeration, NotNullOnExit] T value, string valueName)
-            {
-                if (value is null)
-                {
-                    throw CreateNullException(valueName);
-                }
-            }
-
-            /// <summary>
-            /// Validates that the the given string is neither <c>null</c> nor empty.
-            /// </summary>
-            public void IsNotNullOrEmpty([NotNullOnExit] string? value, string valueName)
-            {
-                if (value is null)
-                {
-                    throw CreateNullException(valueName);
+                    throw CreateNullException();
                 }
 
                 if (value.Length == 0)
                 {
-                    throw CreateRootException(ExceptionMessages.STRING_IS_EMPTY, valueName);
-                }
-            }
-
-            /// <summary>
-            /// Validates that the the given string is neither <c>null</c> nor empty nor only white space characters.
-            /// </summary>
-            public void IsNotNullOrWhiteSpace([NotNullOnExit] string? value, string valueName)
-            {
-                // NOTE: For performance reasons (in case this check passes), we use this check first. If it fails,
-                //   we're already in an exception situation and then performance is no longer this important.
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    if (value is null)
-                    {
-                        throw CreateNullException(valueName);
-                    }
-
-                    if (value.Length == 0)
-                    {
-                        throw CreateRootException(ExceptionMessages.STRING_IS_EMPTY, valueName);
-                    }
-
-                    throw CreateRootException(ExceptionMessages.STRING_IS_WHITE_SPACES, valueName);
-                }
-            }
-
-            /// <summary>
-            /// Validates that the the given collection is neither <c>null</c> nor empty.
-            /// </summary>
-            public void IsNotNullOrEmpty<T>([NotNullOnExit] IReadOnlyCollection<T>? value, string valueName)
-            {
-                if (value is null)
-                {
-                    throw CreateNullException(valueName);
+                    throw CreateRootException(Validate.ExceptionMessages.STRING_IS_EMPTY);
                 }
 
-                if (value.Count == 0)
-                {
-                    throw CreateRootException(ExceptionMessages.COLLECTION_IS_EMPTY, valueName);
-                }
-            }
-
-            /// <summary>
-            /// Verifies that the <see cref="ICollection{T}.IsReadOnly"/> property of the specified value
-            /// is <c>false</c>; otherwise a <see cref="CollectionIsReadOnlyArgumentException"/> or
-            /// <see cref="CollectionIsReadOnlyValueException"/> is thrown (depending on the value type).
-            /// </summary>
-            public void IsNotReadOnly<T>([NotNullOnExit] ICollection<T> value, string valueName)
-            {
-                if (value.IsReadOnly)
-                {
-                    throw CreateCollectionIsReadOnlyException(valueName);
-                }
+                throw CreateRootException(Validate.ExceptionMessages.STRING_IS_WHITE_SPACES);
             }
         }
 
-        // ReSharper restore ParameterOnlyUsedForPreconditionCheck.Local
+        /// <summary>
+        /// Validates that the the given collection is neither <c>null</c> nor empty.
+        /// </summary>
+        [PublicAPI]
+        public void IsNotNullOrEmpty<T>([NotNullOnExit] IReadOnlyCollection<T>? value)
+        {
+            if (value is null)
+            {
+                throw CreateNullException();
+            }
+
+            if (value.Count == 0)
+            {
+                throw CreateRootException(Validate.ExceptionMessages.COLLECTION_IS_EMPTY);
+            }
+        }
+
+        /// <summary>
+        /// Verifies that the <see cref="ICollection{T}.IsReadOnly"/> property of the specified value
+        /// is <c>false</c>; otherwise a <see cref="CollectionIsReadOnlyArgumentException"/> or
+        /// <see cref="CollectionIsReadOnlyValueException"/> is thrown (depending on the value type).
+        /// </summary>
+        [PublicAPI]
+        public void IsNotReadOnly<T>([NotNullOnExit] ICollection<T> value)
+        {
+            if (value.IsReadOnly)
+            {
+                throw CreateCollectionIsReadOnlyException();
+            }
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"Validator for {this.ExceptionFactory.TypeNameForToString} '{this._valueName}'";
+        }
     }
 
     /// <summary>
@@ -388,7 +411,7 @@ namespace AppMotor.Core.Utils
     public static class ValidationExtensionMethods
     {
         /// <summary>
-        /// This method does the same thing as <see cref="Validate.Argument.IsNotNull{T}(T,string)"/> and primarily
+        /// This method does the same thing as <see cref="NamedValidator.IsNotNull{T}(T)"/> and primarily
         /// exists for constructor chaining where argument members are passed to another constructor
         /// and thus can't be validated with a statement.
         /// </summary>
@@ -401,13 +424,13 @@ namespace AppMotor.Core.Utils
             )
                 where T : class
         {
-            Validate.Argument.IsNotNull(value, paramName);
+            Validate.ArgumentWithName(paramName).IsNotNull(value);
 
             return value;
         }
 
         /// <summary>
-        /// This method does the same thing as <see cref="Validate.Argument.IsNotNull{T}(T?,string)"/> and primarily
+        /// This method does the same thing as <see cref="NamedValidator.IsNotNull{T}(T?)"/> and primarily
         /// exists for constructor chaining where argument members are passed to another constructor
         /// and thus can't be validated with a statement.
         /// </summary>
@@ -420,13 +443,13 @@ namespace AppMotor.Core.Utils
             )
                 where T : struct
         {
-            Validate.Argument.IsNotNull(value, paramName);
+            Validate.ArgumentWithName(paramName).IsNotNull(value);
 
             return value.Value;
         }
 
         /// <summary>
-        /// This method does the same thing as <see cref="Validate.Argument.IsNotNullUnconstrained{T}"/> and primarily
+        /// This method does the same thing as <see cref="NamedValidator.IsNotNullUnconstrained{T}"/> and primarily
         /// exists for constructor chaining where argument members are passed to another constructor
         /// and thus can't be validated with a statement.
         /// </summary>
@@ -439,7 +462,7 @@ namespace AppMotor.Core.Utils
                 [InvokerParameterName] string paramName
             )
         {
-            Validate.Argument.IsNotNullUnconstrained(value, paramName);
+            Validate.ArgumentWithName(paramName).IsNotNullUnconstrained(value);
 
             return value;
         }

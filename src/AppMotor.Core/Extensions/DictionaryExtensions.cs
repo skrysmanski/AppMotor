@@ -41,9 +41,9 @@ namespace AppMotor.Core.Extensions
             )
                 where TKey : notnull
         {
-            Validate.Argument.IsNotNull(dictionary, nameof(dictionary));
-            Validate.Argument.IsNotNull(itemsToAdd, nameof(itemsToAdd));
-            Validate.Argument.IsNotReadOnly(dictionary, nameof(dictionary));
+            Validate.ArgumentWithName(nameof(dictionary)).IsNotNull(dictionary);
+            Validate.ArgumentWithName(nameof(dictionary)).IsNotReadOnly(dictionary);
+            Validate.ArgumentWithName(nameof(itemsToAdd)).IsNotNull(itemsToAdd);
 
             foreach (var item in itemsToAdd)
             {

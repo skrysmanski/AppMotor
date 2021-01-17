@@ -40,7 +40,7 @@ namespace AppMotor.Core.Logging
         /// <param name="type">The type for which the loggability has changed.</param>
         public LoggabilityChangedEventArgs(Type type)
         {
-            Validate.Argument.IsNotNull(type, nameof(type));
+            Validate.ArgumentWithName(nameof(type)).IsNotNull(type);
 
             this.Type = type;
         }

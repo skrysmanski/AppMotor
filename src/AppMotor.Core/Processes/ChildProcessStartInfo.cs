@@ -82,7 +82,7 @@ namespace AppMotor.Core.Processes
         /// <param name="processFileName">The path to the file to execute.</param>
         public ChildProcessStartInfo(string processFileName)
         {
-            Validate.Argument.IsNotNullOrWhiteSpace(processFileName, nameof(processFileName));
+            Validate.ArgumentWithName(nameof(processFileName)).IsNotNullOrWhiteSpace(processFileName);
 
             this.ProcessFileName = processFileName;
         }

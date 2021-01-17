@@ -90,7 +90,7 @@ namespace AppMotor.CliApp.CommandLine
         public CliVerb(string name, CliCommand? command, params string[] aliases)
         {
             ValidateCommandName(name);
-            Validate.Argument.IsNotNull(aliases, nameof(aliases));
+            Validate.ArgumentWithName(nameof(aliases)).IsNotNull(aliases);
 
             foreach (var alias in aliases)
             {
@@ -104,7 +104,7 @@ namespace AppMotor.CliApp.CommandLine
 
         private static void ValidateCommandName(string name)
         {
-            Validate.Argument.IsNotNullOrWhiteSpace(name, nameof(name));
+            Validate.ArgumentWithName(nameof(name)).IsNotNullOrWhiteSpace(name);
 
             if (HelpParamUtils.IsHelpParamName(name) || name.Equals(HelpParamUtils.HelpCommandName, StringComparison.OrdinalIgnoreCase))
             {

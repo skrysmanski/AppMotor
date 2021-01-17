@@ -131,7 +131,7 @@ namespace AppMotor.CliApp.CommandLine
         /// are ordered by this value</param>
         protected CliParamBase(string name, int positionIndex)
         {
-            Validate.Argument.IsNotNullOrWhiteSpace(name, nameof(name));
+            Validate.ArgumentWithName(nameof(name)).IsNotNullOrWhiteSpace(name);
 
             if (HelpParamUtils.IsHelpParamName(name))
             {

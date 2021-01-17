@@ -42,7 +42,7 @@ namespace AppMotor.CliApp.CommandLine.Utils
         public static List<CliParamBase> GetAllParamsFor(object container)
 #pragma warning restore CA1002 // Do not expose generic lists
         {
-            Validate.Argument.IsNotNull(container, nameof(container));
+            Validate.ArgumentWithName(nameof(container)).IsNotNull(container);
 
             var allParams = new List<CliParamBase>();
             var alreadyFoundCliParams = new HashSet<CliParamBase>(ReferenceEqualityComparer.Instance);
