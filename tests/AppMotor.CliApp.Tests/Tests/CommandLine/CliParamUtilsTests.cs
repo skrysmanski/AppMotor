@@ -56,8 +56,8 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 allParamsAsDict.ShouldContainKey(GetBaseParamName(visibility, Scopes.Instance, MemberTypes.Property));
             }
 
-            allParamsAsDict.ShouldContainKey("instance_property_param_with_backing_field");
-            allParamsAsDict.ShouldContainKey("instance_property_param_with_backing_field_base");
+            allParamsAsDict.ShouldContainKey("--instance_property_param_with_backing_field");
+            allParamsAsDict.ShouldContainKey("--instance_property_param_with_backing_field_base");
         }
 
         [Fact]
@@ -107,13 +107,13 @@ namespace AppMotor.CliApp.Tests.CommandLine
         [MustUseReturnValue]
         private static string GetParamName(Visibilities visibility, Scopes scope, MemberTypes memberType)
         {
-            return $"{visibility}_{scope}_{memberType}_param";
+            return $"--{visibility}_{scope}_{memberType}_param";
         }
 
         [MustUseReturnValue]
         private static string GetBaseParamName(Visibilities visibility, Scopes scope, MemberTypes memberType)
         {
-            return $"{visibility}_{scope}_{memberType}_base_param";
+            return $"--{visibility}_{scope}_{memberType}_base_param";
         }
 
         private class TestContainer : TestContainerBase
@@ -175,7 +175,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
 
 
 
-            private readonly CliParam<string> _propertyParamWithBackingField = new("instance_property_param_with_backing_field");
+            private readonly CliParam<string> _propertyParamWithBackingField = new("--instance_property_param_with_backing_field");
 
             /// <summary>
             /// This parameter must only occur once.
@@ -250,7 +250,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
 
 
 
-            private readonly CliParam<string> _propertyParamWithBackingBaseField = new("instance_property_param_with_backing_field_base");
+            private readonly CliParam<string> _propertyParamWithBackingBaseField = new("--instance_property_param_with_backing_field_base");
 
             /// <summary>
             /// This parameter must only occur once.
@@ -292,10 +292,10 @@ namespace AppMotor.CliApp.Tests.CommandLine
         private sealed class TestContainerWithDoubleParamNames
         {
             [UsedImplicitly]
-            public CliParam<string> Param1 { get; } = new("a_param_name");
+            public CliParam<string> Param1 { get; } = new("--a_param_name");
 
             [UsedImplicitly]
-            public CliParam<string> Param2 { get; } = new("a_param_name"); // same name as param1
+            public CliParam<string> Param2 { get; } = new("--a_param_name"); // same name as param1
         }
 
         private sealed class TestContainerWithPositionalParams

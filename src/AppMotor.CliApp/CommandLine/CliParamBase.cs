@@ -85,8 +85,8 @@ namespace AppMotor.CliApp.CommandLine
         /// <summary>
         /// Creates a named parameter (in contrast to a positional one). See <see cref="CliParamTypes.Named"/> for more details.
         /// </summary>
-        /// <param name="names">The names/aliases for this parameter; for better documentation purposes these
-        /// should start with either "--", "-" or "/".</param>
+        /// <param name="names">The names/aliases for this parameter; must be a valid named parameter name (i.e. start with
+        /// either "--" or "-") - see <see cref="CliParamNameValidation.CheckIfNameIsValid"/> for more details.</param>
         protected CliParamBase(IEnumerable<string> names)
         {
             var allNames = names.ToImmutableArray();
@@ -112,10 +112,8 @@ namespace AppMotor.CliApp.CommandLine
                     throw new ArgumentException($"Passing the same name ('{name}') multiple times is not allowed.", nameof(names));
                 }
 
-                if (HelpParamUtils.IsHelpParamName(name))
-                {
-                    throw new ArgumentException($"The name '{name}' is reserved and can't be used.", nameof(names));
-                }
+                // NOTE: We want "ArgumentExceptions" here for "names" - not "ValueExceptions" for "name".
+                Validate.ArgumentWithName(nameof(names)).IsValidParameterName(name, CliParamTypes.Named);
 
                 namesSet.Add(name);
             }
@@ -126,17 +124,13 @@ namespace AppMotor.CliApp.CommandLine
         /// <summary>
         /// Creates a positional parameter (in contrast to a named parameter). See <see cref="CliParamTypes.Positional"/> for more details.
         /// </summary>
-        /// <param name="name">The name of this parameter; only used for generating the help text.</param>
+        /// <param name="name">The name of this parameter; only used for generating the help text; must be a valid positional
+        /// parameter name - see <see cref="CliParamNameValidation.CheckIfNameIsValid"/> for more details.</param>
         /// <param name="positionIndex">The position of this parameter among all other positional parameters; positional parameters
         /// are ordered by this value</param>
         protected CliParamBase(string name, int positionIndex)
         {
-            Validate.ArgumentWithName(nameof(name)).IsNotNullOrWhiteSpace(name);
-
-            if (HelpParamUtils.IsHelpParamName(name))
-            {
-                throw new ArgumentException($"The name '{name}' is reserved and can't be used.", nameof(name));
-            }
+            Validate.ArgumentWithName(nameof(name)).IsValidParameterName(name, CliParamTypes.Positional);
 
             this.Names = new[] { name }.ToImmutableArray();
             this.PositionIndex = positionIndex;
