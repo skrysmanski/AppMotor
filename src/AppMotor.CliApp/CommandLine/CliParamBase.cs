@@ -102,19 +102,19 @@ namespace AppMotor.CliApp.CommandLine
             {
                 if (string.IsNullOrWhiteSpace(name))
                 {
-                    throw new ArgumentException("Parameter names can't be null or whitespace.");
+                    throw new ArgumentException("Parameter names can't be null or whitespace.", nameof(names));
                 }
 
                 if (namesSet.Contains(name))
                 {
                     // NOTE: Due to the potentially important order of the parameters (for help generation) it was
                     //   decided that it's easier to throw an exception in this case than to deduplicate the names.
-                    throw new ArgumentException($"Passing the same name ('{name}') multiple times is not allowed.");
+                    throw new ArgumentException($"Passing the same name ('{name}') multiple times is not allowed.", nameof(names));
                 }
 
                 if (HelpParamUtils.IsHelpParamName(name))
                 {
-                    throw new ArgumentException($"The name '{name}' is reserved and can't be used.");
+                    throw new ArgumentException($"The name '{name}' is reserved and can't be used.", nameof(names));
                 }
 
                 namesSet.Add(name);
@@ -135,7 +135,7 @@ namespace AppMotor.CliApp.CommandLine
 
             if (HelpParamUtils.IsHelpParamName(name))
             {
-                throw new ArgumentException($"The name '{name}' is reserved and can't be used.");
+                throw new ArgumentException($"The name '{name}' is reserved and can't be used.", nameof(name));
             }
 
             this.Names = new[] { name }.ToImmutableArray();
