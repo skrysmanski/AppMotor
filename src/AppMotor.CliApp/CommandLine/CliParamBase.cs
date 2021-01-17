@@ -111,7 +111,8 @@ namespace AppMotor.CliApp.CommandLine
                     throw new ArgumentException($"Passing the same name ('{name}') multiple times is not allowed.", nameof(names));
                 }
 
-                Validate.ValueWithName(nameof(name)).IsValidParameterName(name, CliParamTypes.Named);
+                // NOTE: We want "ArgumentExceptions" here for "names" - not "ValueExceptions" for "name".
+                Validate.ArgumentWithName(nameof(names)).IsValidParameterName(name, CliParamTypes.Named);
 
                 namesSet.Add(name);
             }
