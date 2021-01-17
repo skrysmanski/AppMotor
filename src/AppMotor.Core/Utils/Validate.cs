@@ -36,8 +36,8 @@ namespace AppMotor.Core.Utils
         /// case the validation fails.
         /// </summary>
         /// <remarks>
-        /// This class is called <c>Argument</c> rather than <c>Parameter</c> because all of its
-        /// methods throw <see cref="ArgumentException"/>s.
+        /// This class is called <c>Argument</c> rather - than <c>Parameter</c> - because its
+        /// associated exception is named <see cref="ArgumentException"/> (and not <c>ParameterException</c>).
         /// </remarks>
         /// <seealso cref="Value"/>
 #pragma warning disable CA1034 // Nested types should not be visible
