@@ -27,11 +27,11 @@ namespace AppMotor.CliApp.CommandLine.Utils
 {
     public static class CliParamNameValidation
     {
-        public static void IsValidParameterName(this NamedValidator validator, [NotNullOnExit] string? value, CliParamTypes paramType)
+        public static void IsValidParameterName(this NamedValidator validator, [NotNullOnExit] string? paramName, CliParamTypes paramType, bool allowReservedParamName = false)
         {
-            validator.IsNotNullOrWhiteSpace(value);
+            validator.IsNotNullOrWhiteSpace(paramName);
 
-            var checkResult = CheckIfNameIsValid(value, paramType);
+            var checkResult = CheckIfNameIsValid(paramName, paramType, allowReservedParamName: allowReservedParamName);
 
             switch (checkResult)
             {
@@ -42,15 +42,18 @@ namespace AppMotor.CliApp.CommandLine.Utils
                 case CliParamNameValidityCheckResults.Invalid:
                     if (paramType == CliParamTypes.Named)
                     {
-                        throw validator.CreateRootException($"The parameter name '{value}' is invalid. Names of named parameters must either be '-x' or '--some-name'.");
+                        throw validator.CreateRootException($"The parameter name '{paramName}' is invalid. Names of named parameters must either be '-x' or '--some-name'.");
                     }
                     else
                     {
-                        throw validator.CreateRootException($"The parameter name '{value}' is invalid. Names of positional parameters must not start with a prefix.");
+                        throw validator.CreateRootException($"The parameter name '{paramName}' is invalid. Names of positional parameters must not start with a prefix.");
                     }
 
                 case CliParamNameValidityCheckResults.ContainsSpaces:
-                    throw validator.CreateRootException($"The parameter name '{value}' is invalid because it contains spaces.");
+                    throw validator.CreateRootException($"The parameter name '{paramName}' is invalid because it contains spaces.");
+
+                case CliParamNameValidityCheckResults.ReservedName:
+                    throw validator.CreateRootException($"The name '{paramName}' is reserved and can't be used.");
 
                 default:
                     throw new UnexpectedSwitchValueException(nameof(checkResult), checkResult);
@@ -58,11 +61,11 @@ namespace AppMotor.CliApp.CommandLine.Utils
         }
 
         [PublicAPI, MustUseReturnValue]
-        public static CliParamNameValidityCheckResults CheckIfNameIsValid(string value, CliParamTypes paramType)
+        public static CliParamNameValidityCheckResults CheckIfNameIsValid(string paramName, CliParamTypes paramType, bool allowReservedParamName = false)
         {
-            Validate.ArgumentWithName(nameof(value)).IsNotNull(value);
+            Validate.ArgumentWithName(nameof(paramName)).IsNotNull(paramName);
 
-            if (string.IsNullOrWhiteSpace(value))
+            if (string.IsNullOrWhiteSpace(paramName))
             {
                 return CliParamNameValidityCheckResults.Invalid;
             }
@@ -71,23 +74,23 @@ namespace AppMotor.CliApp.CommandLine.Utils
             {
                 char firstCharAfterPrefix;
 
-                if (value.Length == 2)
+                if (paramName.Length == 2)
                 {
-                    if (!value.StartsWith('-'))
+                    if (!paramName.StartsWith('-'))
                     {
                         return CliParamNameValidityCheckResults.Invalid;
                     }
 
-                    firstCharAfterPrefix = value[1];
+                    firstCharAfterPrefix = paramName[1];
                 }
-                else if (value.Length >= 4)
+                else if (paramName.Length >= 4)
                 {
-                    if (!value.StartsWith("--", StringComparison.Ordinal))
+                    if (!paramName.StartsWith("--", StringComparison.Ordinal))
                     {
                         return CliParamNameValidityCheckResults.Invalid;
                     }
 
-                    firstCharAfterPrefix = value[2];
+                    firstCharAfterPrefix = paramName[2];
                 }
                 else
                 {
@@ -101,7 +104,7 @@ namespace AppMotor.CliApp.CommandLine.Utils
             }
             else
             {
-                var firstChar = value[0];
+                var firstChar = paramName[0];
 
                 switch (firstChar)
                 {
@@ -111,9 +114,14 @@ namespace AppMotor.CliApp.CommandLine.Utils
                 }
             }
 
-            if (value.Contains(' ', StringComparison.Ordinal))
+            if (paramName.Contains(' ', StringComparison.Ordinal))
             {
                 return CliParamNameValidityCheckResults.ContainsSpaces;
+            }
+
+            if (!allowReservedParamName && HelpParamUtils.IsHelpParamName(paramName))
+            {
+                return CliParamNameValidityCheckResults.ReservedName;
             }
 
             return CliParamNameValidityCheckResults.Valid;
@@ -127,6 +135,7 @@ namespace AppMotor.CliApp.CommandLine.Utils
         Valid,
         Invalid,
         ContainsSpaces,
+        ReservedName,
     }
 
 }

@@ -113,11 +113,6 @@ namespace AppMotor.CliApp.CommandLine
 
                 Validate.ValueWithName(nameof(name)).IsValidParameterName(name, CliParamTypes.Named);
 
-                if (HelpParamUtils.IsHelpParamName(name))
-                {
-                    throw new ArgumentException($"The name '{name}' is reserved and can't be used.", nameof(names));
-                }
-
                 namesSet.Add(name);
             }
 
@@ -133,11 +128,6 @@ namespace AppMotor.CliApp.CommandLine
         protected CliParamBase(string name, int positionIndex)
         {
             Validate.ArgumentWithName(nameof(name)).IsValidParameterName(name, CliParamTypes.Positional);
-
-            if (HelpParamUtils.IsHelpParamName(name))
-            {
-                throw new ArgumentException($"The name '{name}' is reserved and can't be used.", nameof(name));
-            }
 
             this.Names = new[] { name }.ToImmutableArray();
             this.PositionIndex = positionIndex;

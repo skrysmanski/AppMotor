@@ -102,6 +102,11 @@ dotnet_diagnostic.CA1303.severity = error
 #   this rule is supposed to prevent.)
 dotnet_diagnostic.CA1308.severity = none
 
+# CA1700: Do not name enum values 'Reserved'
+# Reason: Left over from old "worst-pratice" implementations. We don't do this. If left enabled it
+#   prevents naming an enum member "ReservedName", even though this is a valid name.
+dotnet_diagnostic.CA1700.severity = none
+
 # CA1707: Identifiers should not contain underscores
 # Reason: Our style guide uses underscores for constants.
 dotnet_diagnostic.CA1707.severity = none
