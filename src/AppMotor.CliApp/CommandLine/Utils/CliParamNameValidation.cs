@@ -79,7 +79,7 @@ namespace AppMotor.CliApp.CommandLine.Utils
         /// <returns>The result of the check.</returns>
         /// <seealso cref="IsValidParameterName"/>
         [PublicAPI, MustUseReturnValue]
-        public static CliParamNameValidityCheckResults CheckIfNameIsValid(string paramName, CliParamTypes paramType, bool allowReservedParamName = false)
+        public static CliParamNameValidityCheckResults CheckIfNameIsValid(string? paramName, CliParamTypes paramType, bool allowReservedParamName = false)
         {
             if (string.IsNullOrWhiteSpace(paramName))
             {
