@@ -176,20 +176,19 @@ namespace AppMotor.CliApp.CommandLine.Utils
         /// <description>The name is for a named parameter and does not start with the "-" or "--" prefix.</description>
         /// </item>
         /// <item>
-        /// <description>The name is for a named parameter, stats with a single "-" but has more than one character after that.
+        /// <description>The name is for a named parameter, starts with a single "-" but has more than one character after that.
         /// For example, allowed are <c>-m</c>, <c>-t</c> but not <c>-abc</c>.</description>
         /// </item>
         /// <item>
-        /// <description>The name is for a named parameter, stats with "--" but only has one character after that.
+        /// <description>The name is for a named parameter, starts with "--" but only has one character after that.
         /// For example, allowed are <c>--my-value</c>, <c>--temp</c> but not <c>--a</c>.</description>
         /// </item>
         /// <item>
-        /// <description>The name is for a positional parameter but stats with "-" or "/". Names for positional
+        /// <description>The name is for a positional parameter but starts with "-" or "/". Names for positional
         /// parameters must not have a prefix.</description>
         /// </item>
         /// </list>
         /// </summary>
         Invalid,
     }
-
 }
