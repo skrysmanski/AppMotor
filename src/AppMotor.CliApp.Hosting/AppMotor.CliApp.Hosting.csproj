@@ -7,7 +7,7 @@
     <TargetFramework>net5.0</TargetFramework>
 
     <!-- See also: https://docs.microsoft.com/en-us/nuget/create-packages/prerelease-packages -->
-    <Version>$(CliAppVersion)</Version>
+    <Version>$(AppMotorCliAppVersion)</Version>
 
     <Description>APIs for combining "AppMotor.CliApp" with "Microsoft.Extensions.Hosting".</Description>
   </PropertyGroup>

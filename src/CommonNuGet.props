@@ -9,7 +9,11 @@
 
     <RepositoryUrl>https://github.com/skrysmanski/AppMotor</RepositoryUrl>
 
-    <CliAppVersion>0.2.1</CliAppVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Versions">
+    <AppMotorCoreVersion>0.10.3</AppMotorCoreVersion>
+    <AppMotorCliAppVersion>0.2.1</AppMotorCliAppVersion>
   </PropertyGroup>
 
 </Project>
