@@ -8,6 +8,8 @@
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 
     <RepositoryUrl>https://github.com/skrysmanski/AppMotor</RepositoryUrl>
+
+    <CliAppVersion>0.2.1</CliAppVersion>
   </PropertyGroup>
 
 </Project>
