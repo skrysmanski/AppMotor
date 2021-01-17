@@ -31,6 +31,9 @@ namespace AppMotor.Core.Utils
     /// Provides various validation methods for parameters and values in general. Raises <see cref="ArgumentException"/>s
     /// and <see cref="ValueException"/>s.
     /// </summary>
+    /// <remarks>
+    /// For details on the design of this class, see: https://github.com/skrysmanski/AppMotor/issues/11
+    /// </remarks>
     public static class Validate
     {
         private static readonly ArgumentExceptionFactory s_argumentExceptionFactory = new();
