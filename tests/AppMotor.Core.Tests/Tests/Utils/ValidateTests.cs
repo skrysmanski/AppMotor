@@ -87,8 +87,7 @@ namespace AppMotor.Core.Tests.Utils
                 exception.Message.ShouldContain("abc", Case.Sensitive);
             }
 
-            // ReSharper disable once RedundantTypeArgumentsOfMethod - BUG: https://youtrack.jetbrains.com/issue/RSRP-482861
-            RunTest<string?>(notNullValue: "abc", nullValue: null);
+            RunTest(notNullValue: "abc", nullValue: default);
         }
 
         [Fact]
@@ -103,8 +102,7 @@ namespace AppMotor.Core.Tests.Utils
                 exception.Message.ShouldContain("abc", Case.Sensitive);
             }
 
-            // ReSharper disable once RedundantTypeArgumentsOfMethod - BUG: https://youtrack.jetbrains.com/issue/RSRP-482861
-            RunTest<string?>(notNullValue: "abc", nullValue: null);
+            RunTest(notNullValue: "abc", nullValue: default);
         }
 
         [Fact]
