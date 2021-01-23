@@ -97,6 +97,10 @@ dotnet_diagnostic.CA1040.severity = none
 #   no plan to translate the application into other languages.
 dotnet_diagnostic.CA1303.severity = error
 
+# CA1307: Specify StringComparison for clarity
+# Reason: Creates too much noise (this is actually the reason why CA1307 was extracted from CA1310).
+dotnet_diagnostic.CA1307.severity = none
+
 # CA1308: Normalize strings to uppercase
 # Reason: In almost all cases this rule is irrelevant - and just causes noise. (I've yet to see an example of the problem
 #   this rule is supposed to prevent.)
