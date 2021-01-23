@@ -15,8 +15,8 @@
 #endregion
 
 using System;
-using System.Security.Cryptography.X509Certificates;
 
+using AppMotor.Core.Certificates;
 using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
@@ -43,7 +43,7 @@ namespace AppMotor.Core.Net
         /// it doesn't keep the certificate in memory.
         /// </remarks>
         [PublicAPI]
-        public Func<X509Certificate2> CertificateProvider { get; }
+        public Func<TlsCertificate> CertificateProvider { get; }
 
         /// <summary>
         /// Constructor. Uses <see cref="DEFAULT_PORT"/> as port.
@@ -51,7 +51,7 @@ namespace AppMotor.Core.Net
         /// <param name="listenAddress">From where to accept connections.</param>
         /// <param name="certificateProvider">Provides the certificate to be used; see <see cref="CertificateProvider"/> for more details.</param>
         [PublicAPI]
-        public HttpsServerPort(SocketListenAddresses listenAddress, Func<X509Certificate2> certificateProvider) : this(listenAddress, port: DEFAULT_PORT, certificateProvider)
+        public HttpsServerPort(SocketListenAddresses listenAddress, Func<TlsCertificate> certificateProvider) : this(listenAddress, port: DEFAULT_PORT, certificateProvider)
         {
         }
 
@@ -62,7 +62,7 @@ namespace AppMotor.Core.Net
         /// <param name="port">The port to use</param>
         /// <param name="certificateProvider">Provides the certificate to be used; see <see cref="CertificateProvider"/> for more details.</param>
         [PublicAPI]
-        public HttpsServerPort(SocketListenAddresses listenAddress, int port, Func<X509Certificate2> certificateProvider) : base(listenAddress, port)
+        public HttpsServerPort(SocketListenAddresses listenAddress, int port, Func<TlsCertificate> certificateProvider) : base(listenAddress, port)
         {
             Validate.ArgumentWithName(nameof(certificateProvider)).IsNotNull(certificateProvider);
 

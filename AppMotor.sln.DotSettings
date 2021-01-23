@@ -24,4 +24,6 @@ limitations under the License.&#xD;
 	<s:String x:Key="/Default/FilterSettingsManager/CoverageFilterXml/@EntryValue">&lt;data&gt;&lt;IncludeFilters /&gt;&lt;ExcludeFilters&gt;&lt;Filter ModuleMask="*.Tests" ModuleVersionMask="*" ClassMask="*" FunctionMask="*" IsEnabled="True" /&gt;&lt;Filter ModuleMask="*" ModuleVersionMask="*" ClassMask="*.Samples.*" FunctionMask="*" IsEnabled="True" /&gt;&lt;/ExcludeFilters&gt;&lt;/data&gt;</s:String>
 	<s:String x:Key="/Default/PatternsAndTemplates/Todo/TodoPatterns/=4386F01B791C56499C7EA059B55FFB54/UrlPattern/@EntryValue">https://github.com/skrysmanski/AppMotor/issues/${ISSUE_ID}</s:String>
 	<s:String x:Key="/Default/PatternsAndTemplates/Todo/TodoPatterns/=961894CCC510410ABE2B99132B253C80/UrlPattern/@EntryValue">https://github.com/skrysmanski/AppMotor/issues/${ISSUE_ID}</s:String>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=ECDSA/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=Oids/@EntryIndexedValue">True</s:Boolean>
 </wpf:ResourceDictionary>
