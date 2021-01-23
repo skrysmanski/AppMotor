@@ -89,6 +89,12 @@ dotnet_diagnostic.CA1032.severity = none
 # Reason: This rule does not provide any real benefit but on the other hand limits the code design unnecessarily.
 dotnet_diagnostic.CA1040.severity = none
 
+# CA1062: Validate arguments of public methods
+# Reason: With C#'s nullable reference types enabled, this rule is less useful (as the compiler already checks this).
+#   One could argue that this rule is still useful for consumers with NRT disabled - but we simply require NRT to
+#   be enabled for consumer and reduce the noise of this rule by disabling it.
+dotnet_diagnostic.CA1062.severity = none
+
 # CA1303: Do not pass literals as localized parameters
 # Reason: Library projects should have this enabled and provide a LocalizableResources.resx file (Resources File) for the
 #   texts they display to the user (English-only is sufficient; internal visibility is sufficient). This way they
