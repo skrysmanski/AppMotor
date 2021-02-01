@@ -91,7 +91,8 @@ namespace AppMotor.CliApp.CommandLine
                 rootCommand.AddCommand(cliVerb.ToUnderlyingImplementation(enableDebugParam: this.EnableGlobalDebugParam, this.Terminal));
             }
 
-            return await rootCommand.InvokeAsync(SortHelpFirst(args), new CommandLineConsole(this.Terminal)).ConfigureAwait(continueOnCapturedContext: false);
+            return await rootCommand.InvokeAsync(SortHelpFirst(args), CommandLineConsole.FromTerminal(this.Terminal))
+                                    .ConfigureAwait(continueOnCapturedContext: false);
         }
 
         /// <summary>
