@@ -98,7 +98,8 @@ namespace AppMotor.CliApp.CommandLine
 
             rootCommand.Handler = commandHandler;
 
-            return await rootCommand.InvokeAsync(args, new CommandLineConsole(this.Terminal)).ConfigureAwait(continueOnCapturedContext: false);
+            return await rootCommand.InvokeAsync(args, CommandLineConsole.FromTerminal(this.Terminal))
+                                    .ConfigureAwait(continueOnCapturedContext: false);
         }
     }
 }

@@ -44,12 +44,32 @@ namespace AppMotor.CliApp.CommandLine.Utils
         [ExcludeFromCodeCoverage]
         public bool IsInputRedirected => this._terminal.IsInputRedirected;
 
-        public CommandLineConsole(ITerminal terminal)
+        private CommandLineConsole(ITerminal terminal)
         {
             this._terminal = terminal;
 
             this.Out = StandardStreamWriter.Create(terminal.Out);
             this.Error = StandardStreamWriter.Create(terminal.Error);
         }
+
+        /// <summary>
+        /// Returns the <see cref="IConsole"/> instance for <paramref name="terminal"/>.
+        /// </summary>
+        public static IConsole? FromTerminal(ITerminal terminal)
+        {
+            if (ReferenceEquals(terminal, Terminal.Instance))
+            {
+                // IMPORTANT: We must return "null" here so that we can get properly aligned
+                //   help texts. Unfortunately, alignment is only supported if "IConsole"
+                //   is "null".
+                //   See: https://github.com/dotnet/command-line-api/issues/1174#issuecomment-770774549
+                return null;
+            }
+            else
+            {
+                return new CommandLineConsole(terminal);
+            }
+        }
+
     }
 }

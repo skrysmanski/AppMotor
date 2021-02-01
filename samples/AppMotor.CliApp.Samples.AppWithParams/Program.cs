@@ -22,7 +22,7 @@ namespace AppMotor.CliApp.Samples.AppWithParams
 
         private CliParam<bool> NoPromptParam { get; } = new("-y")
         {
-            HelpText = "Suppresses prompting to confirm you want to overwrite an existing destination file.",
+            HelpText = "Suppresses prompting to confirm you want to overwrite an existing destination file. (With some very long text that's hopefully so long that it has to wrap.)",
         };
 
         private CliParam<bool> AssumeTargetIsDirectoryParam { get; } = new("--assume-directory", "-d")
