@@ -30,7 +30,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
     /// </summary>
     public sealed class CliRegressionTests
     {
-        [Fact(Skip = "InDevelopment")] // TODO: Fix with result of https://github.com/dotnet/command-line-api/issues/1162
+        [Fact]
         public void TestArrayParamWithPositionalParams()
         {
             // Setup

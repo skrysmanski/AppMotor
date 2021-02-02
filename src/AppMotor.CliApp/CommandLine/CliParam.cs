@@ -143,7 +143,10 @@ namespace AppMotor.CliApp.CommandLine
 
         private Symbol CreateUnderlyingNamedParameter()
         {
-            var option = new Option<T>(this.Names.ToArray(), this.HelpText);
+            var option = new Option<T>(this.Names.ToArray(), this.HelpText)
+            {
+                AllowMultipleArgumentsPerToken = false,
+            };
 
             if (this.DefaultValue.IsSet)
             {
