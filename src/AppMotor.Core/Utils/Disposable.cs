@@ -141,8 +141,17 @@ namespace AppMotor.Core.Utils
             var value = Interlocked.CompareExchange(ref this._disposeState, DisposedStatesAsIntegers.NOT_DISPOSED, DisposedStatesAsIntegers.NOT_DISPOSED);
             if (value != DisposedStatesAsIntegers.NOT_DISPOSED)
             {
-                throw new ObjectDisposedException(GetType().Name);
+                throw CreateObjectDisposedException();
             }
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="ObjectDisposedException"/> to be used in situations where you want to throw one.
+        /// </summary>
+        [PublicAPI, MustUseReturnValue]
+        protected ObjectDisposedException CreateObjectDisposedException()
+        {
+            return new(GetType().Name);
         }
 
         // NOTE: This should be an enum but it can't be because "Interlocked" requires an int field.
