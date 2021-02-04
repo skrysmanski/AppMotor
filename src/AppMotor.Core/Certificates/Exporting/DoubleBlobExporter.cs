@@ -40,7 +40,9 @@ namespace AppMotor.Core.Certificates.Exporting
         public (ReadOnlyMemory<byte> publicKeyBytes, ReadOnlyMemory<byte> privateKeyBytes) ToBytes()
         {
             //return ((ReadOnlyMemory<byte>)this._publicKeyBytes, (ReadOnlyMemory<byte>)this._privateKeyBytes);
+#pragma warning disable 8619 // TODO false positive: https://youtrack.jetbrains.com/issue/RSRP-483085
             return (this._publicKeyBytes, this._privateKeyBytes);
+#pragma warning restore 8619
         }
 
         public void ToFile(string publicKeyFilePath, string privateKeyFilePath, IFileSystem? fileSystem = null)
