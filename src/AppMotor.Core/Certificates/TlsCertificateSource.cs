@@ -76,7 +76,7 @@ namespace AppMotor.Core.Certificates
         }
 
         [PublicAPI, MustUseReturnValue]
-        public static TlsCertificateSource FromFile(string certificateFilePath, string? separatePrivateKeyFilePath = null, IFileSystem? fileSystem = null)
+        public static TlsCertificateSource FromFile(string certificateFilePath, string? separatePrivateKeyFilePath, IFileSystem? fileSystem = null)
         {
             fileSystem ??= RealFileSystem.Instance;
 

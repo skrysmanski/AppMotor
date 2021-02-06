@@ -16,8 +16,6 @@
 
 using AppMotor.Core.Certificates;
 
-using Microsoft.VisualBasic;
-
 using Shouldly;
 
 using Xunit;
@@ -31,6 +29,18 @@ namespace AppMotor.Core.Tests.Certificates
         {
             // Test
             var source = TlsCertificateSource.FromFile("Tests/Certificates/cert-files/cert.pem", "Tests/Certificates/cert-files/key.pem");
+            var cert = new TlsCertificate(source);
+
+            // Validate
+            cert.HasPrivateKey.ShouldBe(true);
+            cert.SubjectName.Name.ShouldBe("CN=www.example.com, OU=Org, O=Company Name, L=Portland, S=Oregon, C=US");
+        }
+
+        [Fact]
+        public void Test_ImportPfx()
+        {
+            // Test
+            var source = TlsCertificateSource.FromFile("Tests/Certificates/cert-files/cert.pfx");
             var cert = new TlsCertificate(source);
 
             // Validate
