@@ -15,13 +15,10 @@
 #endregion
 
 using System;
-using System.IO.Abstractions;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Threading.Tasks;
 
 using AppMotor.Core.Exceptions;
-using AppMotor.Core.IO;
 
 using JetBrains.Annotations;
 
@@ -36,18 +33,22 @@ namespace AppMotor.Core.Certificates.Exporting
             this._certificate = certificate;
         }
 
-        [MustUseReturnValue]
-        public byte[] ToByteArray(CertificateFileFormats exportFormat)
+        [PublicAPI, MustUseReturnValue]
+        public SingleBlobExporter AsPfx()
         {
-            switch (exportFormat)
-            {
-                case CertificateFileFormats.PFX:
+            return new(() =>
                 {
                     using var tempCert = new X509Certificate2(this._certificate.UnderlyingCertificate.Export(X509ContentType.Cert));
                     return tempCert.Export(X509ContentType.Pfx);
                 }
+            );
+        }
 
-                case CertificateFileFormats.PEM:
+        [PublicAPI, MustUseReturnValue]
+        public SingleBlobExporter AsPem()
+        {
+            return new(
+                () =>
                 {
                     var outputBuilder = new StringBuilder();
 
@@ -62,24 +63,23 @@ namespace AppMotor.Core.Certificates.Exporting
 
                     return Encoding.UTF8.GetBytes(outputBuilder.ToString());
                 }
+            );
+        }
+
+        [PublicAPI, MustUseReturnValue]
+        public SingleBlobExporter As(CertificateFileFormats exportFormat)
+        {
+            switch (exportFormat)
+            {
+                case CertificateFileFormats.PFX:
+                    return AsPfx();
+
+                case CertificateFileFormats.PEM:
+                    return AsPem();
 
                 default:
                     throw new UnexpectedSwitchValueException(nameof(exportFormat), exportFormat);
             }
-        }
-
-        public void ToFile(string filePath, CertificateFileFormats exportFormat, IFileSystem? fileSystem = null)
-        {
-            var bytes = ToByteArray(exportFormat);
-
-            (fileSystem ?? RealFileSystem.Instance).File.WriteAllBytes(filePath, bytes);
-        }
-
-        public async Task ToFileAsync(string filePath, CertificateFileFormats exportFormat, IFileSystem? fileSystem = null)
-        {
-            var bytes = ToByteArray(exportFormat);
-
-            await (fileSystem ?? RealFileSystem.Instance).File.WriteAllBytesAsync(filePath, bytes).ConfigureAwait(false);
         }
     }
 }

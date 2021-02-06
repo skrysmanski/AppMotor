@@ -32,11 +32,13 @@ namespace AppMotor.Core.Certificates.Exporting
             this._certificate = certificate;
         }
 
+        [MustUseReturnValue]
         public SingleBlobExporter AsPfx()
         {
             return new(() => this._certificate.UnderlyingCertificate.Export(X509ContentType.Pfx));
         }
 
+        [MustUseReturnValue]
         public DoubleBlobExporter AsPem()
         {
             Func<byte[]> privateKeyBytesExporterFunc;
@@ -56,6 +58,7 @@ namespace AppMotor.Core.Certificates.Exporting
             );
         }
 
+        [MustUseReturnValue]
         private static byte[] ConvertToPem(byte[] bytes, string type)
         {
             var outputBuilder = new StringBuilder();

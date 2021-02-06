@@ -108,7 +108,7 @@ namespace AppMotor.Core.Tests.Certificates.Exporting
         {
             // Setup
             using var originalCert = TlsCertificate.CreateSelfSigned("example.com", TimeSpan.FromDays(20));
-            var exportedBytes = originalCert.ExportPublicKey().ToByteArray(CertificateFileFormats.PEM);
+            var exportedBytes = originalCert.ExportPublicKey().AsPem().ToBytes();
             using var certWithoutPrivateKey = new TlsCertificate(TlsCertificateSource.FromBytes(exportedBytes), allowPrivateKeyExport: true);
 
             // Test our assumptions
