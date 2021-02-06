@@ -56,9 +56,8 @@ namespace AppMotor.Core.Tests.Certificates
             reimportedCert2.ExportPublicAndPrivateKey().ExportPrivateKey().ShouldBe(originalPrivateKey);
         }
 
-        [Theory]
-        [InlineData(CertificateFileFormats.PEM)]
-        public void Test_AsDoubleBlob(CertificateFileFormats format)
+        [Fact]
+        public void Test_AsPem()
         {
             // Setup
             using var originalCert = TlsCertificate.CreateSelfSigned("example.com", TimeSpan.FromDays(20));
@@ -68,13 +67,11 @@ namespace AppMotor.Core.Tests.Certificates
             originalCert.HasPrivateKey.ShouldBe(true);
 
             // Test
-            var exporter = format == CertificateFileFormats.PEM ? originalCert.ExportPublicAndPrivateKey().AsPem()
-                                                                : originalCert.ExportPublicAndPrivateKey().AsDer();
-            var (publicKeyBytes, privateKeyBytes) = exporter.ToBytes();
+            var (publicKeyBytes, privateKeyBytes) = originalCert.ExportPublicAndPrivateKey().AsPem().ToBytes();
 
             // Validate
-            CheckExportedBytesForCorrectFormat(publicKeyBytes.Span, format);
-            CheckExportedBytesForCorrectFormat(privateKeyBytes.Span, format);
+            CheckExportedBytesForCorrectFormat(publicKeyBytes.Span, CertificateFileFormats.PEM);
+            CheckExportedBytesForCorrectFormat(privateKeyBytes.Span, CertificateFileFormats.PEM);
 
             using var reimportedCert = new TlsCertificate(TlsCertificateSource.FromBytes(publicKeyBytes, privateKeyBytes), allowPrivateKeyExport: true);
             reimportedCert.PublicKey.ShouldBe(originalCert.PublicKey);
@@ -82,9 +79,7 @@ namespace AppMotor.Core.Tests.Certificates
             reimportedCert.ExportPublicAndPrivateKey().ExportPrivateKey().ShouldBe(originalPrivateKey);
 
             // Test: Export of private key after it has been (re)imported first
-            var exporter2 = format == CertificateFileFormats.PEM ? originalCert.ExportPublicAndPrivateKey().AsPem()
-                                                                 : originalCert.ExportPublicAndPrivateKey().AsDer();
-            var (exportedPublicKeyBytes2, exportedPrivateKeyBytes2) = exporter2.ToBytes();
+            var (exportedPublicKeyBytes2, exportedPrivateKeyBytes2) = reimportedCert.ExportPublicAndPrivateKey().AsPem().ToBytes();
             using var reimportedCert2 = new TlsCertificate(TlsCertificateSource.FromBytes(exportedPublicKeyBytes2, exportedPrivateKeyBytes2), allowPrivateKeyExport: true);
             reimportedCert2.PublicKey.ShouldBe(originalCert.PublicKey);
             reimportedCert2.HasPrivateKey.ShouldBe(true);
@@ -122,57 +117,5 @@ namespace AppMotor.Core.Tests.Certificates
             // Test
             Should.Throw<InvalidOperationException>(() => certWithoutPrivateKey.ExportPublicAndPrivateKey());
         }
-
-        /*[Theory]
-        [InlineData(CertificateExportFormats.DER)]
-        [InlineData(CertificateExportFormats.PEM)]
-        [InlineData(CertificateExportFormats.PFX)]
-        public void Test_ToFile(CertificateExportFormats exportFormat)
-        {
-            // Setup
-            using var originalCert = TlsCertificate.CreateSelfSigned("example.com", TimeSpan.FromDays(20));
-
-            var mockFileSystem = new MockFileSystem();
-            mockFileSystem.AddDirectory("/test");
-
-            var filePath = $@"/test/certificate{CertFileExtensionHelper.GetFileExtensionFor(CertExportOptions.PublicKeyOnly, exportFormat)}";
-
-            // Test our assumptions
-            originalCert.HasPrivateKey.ShouldBe(true);
-
-            // Test
-            originalCert.ExportPublicAndPrivateKey().ToFile(filePath, exportFormat, mockFileSystem);
-
-            // Validate
-            using var reimportedCert = new TlsCertificate(filePath, mockFileSystem);
-            reimportedCert.PublicKey.ShouldBe(originalCert.PublicKey);
-            reimportedCert.HasPrivateKey.ShouldBe(true);
-        }
-
-        [Theory]
-        [InlineData(CertificateExportFormats.DER)]
-        [InlineData(CertificateExportFormats.PEM)]
-        [InlineData(CertificateExportFormats.PFX)]
-        public async Task Test_ToFileAsync(CertificateExportFormats exportFormat)
-        {
-            // Setup
-            using var originalCert = TlsCertificate.CreateSelfSigned("example.com", TimeSpan.FromDays(20));
-
-            var mockFileSystem = new MockFileSystem();
-            mockFileSystem.AddDirectory("/test");
-
-            var filePath = $@"/test/certificate{CertFileExtensionHelper.GetFileExtensionFor(CertExportOptions.PublicKeyOnly, exportFormat)}";
-
-            // Test our assumptions
-            originalCert.HasPrivateKey.ShouldBe(true);
-
-            // Test
-            await originalCert.ExportPublicAndPrivateKey().ToFileAsync(filePath, exportFormat, mockFileSystem);
-
-            // Validate
-            using var reimportedCert = new TlsCertificate(filePath, mockFileSystem);
-            reimportedCert.PublicKey.ShouldBe(originalCert.PublicKey);
-            reimportedCert.HasPrivateKey.ShouldBe(true);
-        }*/
     }
 }

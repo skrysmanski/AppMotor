@@ -37,14 +37,6 @@ namespace AppMotor.Core.Certificates.Exporting
             return new(() => this._certificate.UnderlyingCertificate.Export(X509ContentType.Pfx));
         }
 
-        public DoubleBlobExporter AsDer()
-        {
-            return new(
-                publicKeyBytes: this._certificate.UnderlyingCertificate.Export(X509ContentType.Cert),
-                privateKeyBytesExporterFunc: ExportPrivateKey
-            );
-        }
-
         public DoubleBlobExporter AsPem()
         {
             Func<byte[]> privateKeyBytesExporterFunc;
