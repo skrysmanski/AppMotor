@@ -24,11 +24,13 @@ namespace AppMotor.Core.Tests.Certificates
 {
     public sealed class TlsCertificateSourceTests
     {
+        private const string TEST_CERT_FILES_BASE_PATH = "Tests/Certificates/cert-files";
+
         [Fact]
         public void Test_ImportPem()
         {
             // Test
-            var source = TlsCertificateSource.FromFile("Tests/Certificates/cert-files/cert.pem", "Tests/Certificates/cert-files/key.pem");
+            var source = TlsCertificateSource.FromFile($"{TEST_CERT_FILES_BASE_PATH}/cert.pem", $"{TEST_CERT_FILES_BASE_PATH}/key.pem");
             var cert = new TlsCertificate(source);
 
             // Validate
@@ -40,7 +42,7 @@ namespace AppMotor.Core.Tests.Certificates
         public void Test_ImportPfx()
         {
             // Test
-            var source = TlsCertificateSource.FromFile("Tests/Certificates/cert-files/cert.pfx");
+            var source = TlsCertificateSource.FromFile($"{TEST_CERT_FILES_BASE_PATH}/cert.pfx");
             var cert = new TlsCertificate(source);
 
             // Validate
