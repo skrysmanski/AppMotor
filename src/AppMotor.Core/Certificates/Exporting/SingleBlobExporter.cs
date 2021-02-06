@@ -27,31 +27,38 @@ namespace AppMotor.Core.Certificates.Exporting
 {
     public sealed class SingleBlobExporter
     {
-        private readonly byte[] _bytes;
+        private readonly Func<byte[]> _bytesExporter;
 
-        internal SingleBlobExporter(byte[] bytes)
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="bytesExporter">The exporter function; NOTE: Since the bytes
+        /// may contain sensitive data, we store just the exporter function and only
+        /// use it when needed. This way the sensitive data doesn't float around in
+        /// memory unnecessarily.</param>
+        internal SingleBlobExporter(Func<byte[]> bytesExporter)
         {
-            this._bytes = bytes;
+            this._bytesExporter = bytesExporter;
         }
 
         [MustUseReturnValue]
         public ReadOnlyMemory<byte> ToBytes()
         {
-            return this._bytes;
+            return this._bytesExporter();
         }
 
         public void ToFile(string filePath, IFileSystem? fileSystem = null)
         {
             fileSystem ??= RealFileSystem.Instance;
 
-            fileSystem.File.WriteAllBytes(filePath, this._bytes);
+            fileSystem.File.WriteAllBytes(filePath, this._bytesExporter());
         }
 
         public async Task ToFileAsync(string filePath, IFileSystem? fileSystem = null)
         {
             fileSystem ??= RealFileSystem.Instance;
 
-            await fileSystem.File.WriteAllBytesAsync(filePath, this._bytes).ConfigureAwait(false);
+            await fileSystem.File.WriteAllBytesAsync(filePath, this._bytesExporter()).ConfigureAwait(false);
         }
     }
 }

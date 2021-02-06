@@ -34,24 +34,24 @@ namespace AppMotor.Core.Certificates.Exporting
 
         public SingleBlobExporter AsPfx()
         {
-            return new(this._certificate.UnderlyingCertificate.Export(X509ContentType.Pfx));
+            return new(() => this._certificate.UnderlyingCertificate.Export(X509ContentType.Pfx));
         }
 
         public DoubleBlobExporter AsDer()
         {
             return new(
                 publicKeyBytes: this._certificate.UnderlyingCertificate.Export(X509ContentType.Cert),
-                privateKeyBytes: ExportPrivateKey()
+                privateKeyBytesExporterFunc: ExportPrivateKey
             );
         }
 
         public DoubleBlobExporter AsPem()
         {
-            byte[] privateKeyBytes;
+            Func<byte[]> privateKeyBytesExporterFunc;
 
             if (this._certificate.KeyAlgorithm == CertificateKeyAlgorithms.RSA)
             {
-                privateKeyBytes = ConvertToPem(ExportPrivateKey(), "RSA PRIVATE KEY");
+                privateKeyBytesExporterFunc = () => ConvertToPem(ExportPrivateKey(), "RSA PRIVATE KEY");
             }
             else
             {
@@ -60,7 +60,7 @@ namespace AppMotor.Core.Certificates.Exporting
 
             return new DoubleBlobExporter(
                 publicKeyBytes: ConvertToPem(this._certificate.UnderlyingCertificate.Export(X509ContentType.Cert), "CERTIFICATE"),
-                privateKeyBytes: privateKeyBytes
+                privateKeyBytesExporterFunc: privateKeyBytesExporterFunc
             );
         }
 

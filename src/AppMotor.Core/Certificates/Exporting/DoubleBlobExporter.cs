@@ -28,20 +28,26 @@ namespace AppMotor.Core.Certificates.Exporting
     {
         private readonly byte[] _publicKeyBytes;
 
-        private readonly byte[] _privateKeyBytes;
+        private readonly Func<byte[]> _privateKeyBytesExporterFunc;
 
-        public DoubleBlobExporter(byte[] publicKeyBytes, byte[] privateKeyBytes)
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="publicKeyBytes">The public key bytes.</param>
+        /// <param name="privateKeyBytesExporterFunc">The exported function for the private key bytes; NOTE:
+        /// Since the bytes contain sensitive data, we store just the exporter function and only use it when
+        /// needed. This way the sensitive data doesn't float around in memory unnecessarily.</param>
+        public DoubleBlobExporter(byte[] publicKeyBytes, Func<byte[]> privateKeyBytesExporterFunc)
         {
             this._publicKeyBytes = publicKeyBytes;
-            this._privateKeyBytes = privateKeyBytes;
+            this._privateKeyBytesExporterFunc = privateKeyBytesExporterFunc;
         }
 
         [MustUseReturnValue]
         public (ReadOnlyMemory<byte> publicKeyBytes, ReadOnlyMemory<byte> privateKeyBytes) ToBytes()
         {
-            //return ((ReadOnlyMemory<byte>)this._publicKeyBytes, (ReadOnlyMemory<byte>)this._privateKeyBytes);
 #pragma warning disable 8619 // TODO false positive: https://youtrack.jetbrains.com/issue/RSRP-483085
-            return (this._publicKeyBytes, this._privateKeyBytes);
+            return (this._publicKeyBytes, this._privateKeyBytesExporterFunc());
 #pragma warning restore 8619
         }
 
@@ -50,7 +56,7 @@ namespace AppMotor.Core.Certificates.Exporting
             fileSystem ??= RealFileSystem.Instance;
 
             fileSystem.File.WriteAllBytes(publicKeyFilePath, this._publicKeyBytes);
-            fileSystem.File.WriteAllBytes(privateKeyFilePath, this._privateKeyBytes);
+            fileSystem.File.WriteAllBytes(privateKeyFilePath, this._privateKeyBytesExporterFunc());
         }
 
         public async Task ToFileAsync(string publicKeyFilePath, string privateKeyFilePath, IFileSystem? fileSystem = null)
@@ -58,7 +64,7 @@ namespace AppMotor.Core.Certificates.Exporting
             fileSystem ??= RealFileSystem.Instance;
 
             var publicKeyWriteTask = fileSystem.File.WriteAllBytesAsync(publicKeyFilePath, this._publicKeyBytes);
-            var privateKeyWriteTask = fileSystem.File.WriteAllBytesAsync(privateKeyFilePath, this._privateKeyBytes);
+            var privateKeyWriteTask = fileSystem.File.WriteAllBytesAsync(privateKeyFilePath, this._privateKeyBytesExporterFunc());
 
             await Task.WhenAll(publicKeyWriteTask, privateKeyWriteTask).ConfigureAwait(false);
         }
