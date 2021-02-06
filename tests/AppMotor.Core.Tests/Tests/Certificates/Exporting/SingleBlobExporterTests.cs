@@ -40,7 +40,6 @@ namespace AppMotor.Core.Tests.Certificates.Exporting
             return bytes;
         }
 
-
         [Fact]
         public void Test_ToBytes()
         {
