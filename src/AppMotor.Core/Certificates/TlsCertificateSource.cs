@@ -32,7 +32,8 @@ namespace AppMotor.Core.Certificates
     /// </summary>
     public abstract class TlsCertificateSource
     {
-        private static readonly byte[] DER_MAGIC_NUMBER = { 0x30, 0x82 };
+        // NOTE: Strangely enough, these magic numbers also seem to be used by .pfx files.
+        private static readonly byte[] PFX_MAGIC_NUMBER = { 0x30, 0x82 };
 
         // TODO: Are the number of dashes fixed?
         private const string PEM_MAGIC_NUMBER = "-----BEGIN ";
@@ -60,9 +61,6 @@ namespace AppMotor.Core.Certificates
 
                 case CertificateFileFormats.PFX:
                     return new PfxCertificateSource(certificateBytes, separatePrivateKeyBytes);
-
-                case CertificateFileFormats.DER:
-                    return new DerCertificateSource(certificateBytes, separatePrivateKeyBytes);
 
                 default:
                     throw new UnexpectedSwitchValueException(nameof(certFormat), certFormat);
@@ -95,9 +93,9 @@ namespace AppMotor.Core.Certificates
         [MustUseReturnValue]
         private static CertificateFileFormats DetermineCertificateFormat(ReadOnlySpan<byte> bytes)
         {
-            if (bytes.Length > 2 && ByteArrayEquals(bytes[0..2], DER_MAGIC_NUMBER))
+            if (bytes.Length > 2 && ByteArrayEquals(bytes[0..2], PFX_MAGIC_NUMBER))
             {
-                return CertificateFileFormats.DER;
+                return CertificateFileFormats.PFX;
             }
             else if (bytes.Length > PEM_MAGIC_NUMBER.Length && ByteArrayEquals(bytes[0..PEM_MAGIC_NUMBER.Length], Encoding.ASCII.GetBytes(PEM_MAGIC_NUMBER))) // TODO: Cache the ASCII conversion, if possible
             {
@@ -105,8 +103,7 @@ namespace AppMotor.Core.Certificates
             }
             else
             {
-                // Unfortunately, PFX doesn't seem to have any "magic numbers". So we leave it as last option.
-                return CertificateFileFormats.PFX;
+                throw new NotSupportedException("The certificate type could not be determined.");
             }
         }
 
@@ -240,34 +237,6 @@ namespace AppMotor.Core.Certificates
             protected override void ImportPrivateKeyInto(RSA rsa)
             {
                 throw new NotSupportedException("Pfx certificates can't have a separate private key.");
-            }
-        }
-
-        private sealed class DerCertificateSource : TlsCertificateSource
-        {
-            private readonly ReadOnlyMemory<byte> _encodedCertificate;
-
-            private readonly ReadOnlyMemory<byte>? _separateEncodedPrivateKey;
-
-            /// <inheritdoc />
-            protected override bool HasSeparatePrivateKeySource => this._separateEncodedPrivateKey is not null;
-
-            public DerCertificateSource(ReadOnlyMemory<byte> encodedCertificate, ReadOnlyMemory<byte>? separateEncodedPrivateKey)
-            {
-                this._encodedCertificate = encodedCertificate;
-                this._separateEncodedPrivateKey = separateEncodedPrivateKey;
-            }
-
-            /// <inheritdoc />
-            protected override X509Certificate2 CreatePrimaryUnderlyingCertificate(X509KeyStorageFlags storageFlags)
-            {
-                return new(this._encodedCertificate.Span, null, storageFlags);
-            }
-
-            /// <inheritdoc />
-            protected override void ImportPrivateKeyInto(RSA rsa)
-            {
-                rsa.ImportPkcs8PrivateKey(this._separateEncodedPrivateKey!.Value.Span, out _);
             }
         }
     }

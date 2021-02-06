@@ -36,7 +36,7 @@ namespace AppMotor.Core.Certificates
 
             this._rsaAlgorithm = RSA.Create();
 
-            // TODO: Add support multiple hostnames
+            // TODO: Add support multiple hostnames (SAN)
             this._underlyingCertificateRequest = new CertificateRequest(
                 $"cn={hostname}",
                 this._rsaAlgorithm,

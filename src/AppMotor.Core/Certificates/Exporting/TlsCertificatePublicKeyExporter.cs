@@ -47,9 +47,6 @@ namespace AppMotor.Core.Certificates.Exporting
                     return tempCert.Export(X509ContentType.Pfx);
                 }
 
-                case CertificateFileFormats.DER:
-                    return this._certificate.UnderlyingCertificate.Export(X509ContentType.Cert);
-
                 case CertificateFileFormats.PEM:
                 {
                     var outputBuilder = new StringBuilder();

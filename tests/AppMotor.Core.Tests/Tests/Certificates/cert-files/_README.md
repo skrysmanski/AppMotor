@@ -9,3 +9,5 @@ This folder contains test certificates. These were generated as follows.
 ## `cert.pfx`
 
     openssl pkcs12 -inkey key.pem -in cert.pem -export -out cert.pfx
+
+When asked for a password, just hit Enter (without entering any).

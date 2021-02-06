@@ -39,10 +39,6 @@ namespace AppMotor.Core.Certificates
                     fileExtension = ".pem";
                     break;
 
-                case CertificateFileFormats.DER:
-                    fileExtension = ".der";
-                    break;
-
                 default:
                     throw new UnexpectedSwitchValueException(nameof(exportFormat), exportFormat);
             }

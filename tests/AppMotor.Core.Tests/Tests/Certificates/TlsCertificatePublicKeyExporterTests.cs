@@ -30,7 +30,6 @@ namespace AppMotor.Core.Tests.Certificates
     public sealed class TlsCertificatePublicKeyExporterTests : TlsCertificateExporterTestBase
     {
         [Theory]
-        [InlineData(CertificateFileFormats.DER)]
         [InlineData(CertificateFileFormats.PEM)]
         [InlineData(CertificateFileFormats.PFX)]
         public void Test_ToByteArray(CertificateFileFormats exportFormat)
@@ -53,7 +52,6 @@ namespace AppMotor.Core.Tests.Certificates
         }
 
         [Theory]
-        [InlineData(CertificateFileFormats.DER)]
         [InlineData(CertificateFileFormats.PEM)]
         [InlineData(CertificateFileFormats.PFX)]
         public void Test_ToFile(CertificateFileFormats exportFormat)
@@ -79,7 +77,6 @@ namespace AppMotor.Core.Tests.Certificates
         }
 
         [Theory]
-        [InlineData(CertificateFileFormats.DER)]
         [InlineData(CertificateFileFormats.PEM)]
         [InlineData(CertificateFileFormats.PFX)]
         public async Task Test_ToFileAsync(CertificateFileFormats exportFormat)

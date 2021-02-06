@@ -58,7 +58,6 @@ namespace AppMotor.Core.Tests.Certificates
 
         [Theory]
         [InlineData(CertificateFileFormats.PEM)]
-        //[InlineData(CertificateFileFormats.DER)] // TODO: Implement
         public void Test_AsDoubleBlob(CertificateFileFormats format)
         {
             // Setup
@@ -114,7 +113,7 @@ namespace AppMotor.Core.Tests.Certificates
         {
             // Setup
             using var originalCert = TlsCertificate.CreateSelfSigned("example.com", TimeSpan.FromDays(20));
-            var exportedBytes = originalCert.ExportPublicKey().ToByteArray(CertificateFileFormats.DER);
+            var exportedBytes = originalCert.ExportPublicKey().ToByteArray(CertificateFileFormats.PEM);
             using var certWithoutPrivateKey = new TlsCertificate(TlsCertificateSource.FromBytes(exportedBytes), allowPrivateKeyExport: true);
 
             // Test our assumptions

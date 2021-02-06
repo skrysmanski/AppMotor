@@ -32,16 +32,12 @@ namespace AppMotor.Core.Tests.Certificates
         {
             switch (exportFormat)
             {
-                case CertificateFileFormats.DER:
-                    exportedBytes[0..2].ToArray().ShouldBe(new byte[] { 0x30, 0x82 });
-                    break;
-
                 case CertificateFileFormats.PEM:
                     exportedBytes[0..PEM_START.Length].ToArray().ShouldBe(Encoding.ASCII.GetBytes(PEM_START));
                     break;
 
                 case CertificateFileFormats.PFX:
-                    // Unfortunaltey, PFX doesn't seem to have any "magic numbers".
+                    // Unfortunately, PFX doesn't seem to have any "magic numbers".
                     break;
 
                 default:
