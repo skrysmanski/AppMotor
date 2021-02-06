@@ -22,7 +22,7 @@ using AppMotor.Core.Exceptions;
 
 using Shouldly;
 
-namespace AppMotor.Core.Tests.Certificates
+namespace AppMotor.Core.Tests.Certificates.Exporting
 {
     public abstract class TlsCertificateExporterTestBase
     {

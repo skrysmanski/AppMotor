@@ -23,7 +23,7 @@ using Shouldly;
 
 using Xunit;
 
-namespace AppMotor.Core.Tests.Certificates
+namespace AppMotor.Core.Tests.Certificates.Exporting
 {
     public sealed class TlsCertificatePrivateKeyExporterTests : TlsCertificateExporterTestBase
     {
