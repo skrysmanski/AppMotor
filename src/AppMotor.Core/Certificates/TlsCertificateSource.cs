@@ -22,6 +22,7 @@ using System.Text;
 
 using AppMotor.Core.Exceptions;
 using AppMotor.Core.IO;
+using AppMotor.Core.Security;
 
 using JetBrains.Annotations;
 
@@ -112,12 +113,11 @@ namespace AppMotor.Core.Certificates
             return a1.SequenceEqual(a2);
         }
 
-        // TODO: Add password parameter
         /// <summary>
         /// Creates the underlying certificate.
         /// </summary>
-        /// <seealso cref="TlsCertificate(TlsCertificateSource)"/>
-        internal X509Certificate2 CreateUnderlyingCertificate(bool allowPrivateKeyExport)
+        /// <seealso cref="TlsCertificate(TlsCertificateSource,SecureStringSecret)"/>
+        internal X509Certificate2 CreateUnderlyingCertificate(bool allowPrivateKeyExport, SecureStringSecret? password)
         {
             var storageFlags = X509KeyStorageFlags.DefaultKeySet;
             if (allowPrivateKeyExport)
@@ -129,7 +129,7 @@ namespace AppMotor.Core.Certificates
 
             try
             {
-                primaryCert = CreatePrimaryUnderlyingCertificate(storageFlags);
+                primaryCert = CreatePrimaryUnderlyingCertificate(storageFlags, password);
                 if (!this.HasSeparatePrivateKeySource)
                 {
                     return primaryCert;
@@ -146,7 +146,7 @@ namespace AppMotor.Core.Certificates
                     case CertificateKeyAlgorithms.RSA:
                         using (var rsa = RSA.Create())
                         {
-                            ImportPrivateKeyInto(rsa);
+                            ImportPrivateKeyInto(rsa, password);
                             return primaryCert.CopyWithPrivateKey(rsa);
                         }
 
@@ -168,13 +168,13 @@ namespace AppMotor.Core.Certificates
         /// </summary>
         /// <seealso cref="HasSeparatePrivateKeySource"/>
         // TODO: All implementations seem to be the same here
-        protected abstract X509Certificate2 CreatePrimaryUnderlyingCertificate(X509KeyStorageFlags storageFlags);
+        protected abstract X509Certificate2 CreatePrimaryUnderlyingCertificate(X509KeyStorageFlags storageFlags, SecureStringSecret? password);
 
         /// <summary>
         /// Imports the private key into the specified RSA instance. Note that this
         /// method is only called if <see cref="HasSeparatePrivateKeySource"/> is <c>true</c>.
         /// </summary>
-        protected abstract void ImportPrivateKeyInto(RSA rsa);
+        protected abstract void ImportPrivateKeyInto(RSA rsa, SecureStringSecret? password);
 
         private sealed class PemCertificateSource : TlsCertificateSource
         {
@@ -194,19 +194,31 @@ namespace AppMotor.Core.Certificates
             public PemCertificateSource(ReadOnlyMemory<byte> pemEncodedCertificate, ReadOnlyMemory<byte>? separatePemEncodedPrivateKey)
             {
                 this._pemEncodedCertificate = pemEncodedCertificate;
-                this._separatePemEncodedPrivateKey = separatePemEncodedPrivateKey is not null ? Encoding.ASCII.GetString(separatePemEncodedPrivateKey.Value.Span) : null;
+                this._separatePemEncodedPrivateKey = separatePemEncodedPrivateKey is not null
+                                                   ? Encoding.ASCII.GetString(separatePemEncodedPrivateKey.Value.Span)
+                                                   : null;
             }
 
             /// <inheritdoc />
-            protected override X509Certificate2 CreatePrimaryUnderlyingCertificate(X509KeyStorageFlags storageFlags)
+            protected override X509Certificate2 CreatePrimaryUnderlyingCertificate(
+                    X509KeyStorageFlags storageFlags,
+                    SecureStringSecret? password
+                )
             {
                 return new(this._pemEncodedCertificate.Span, null, storageFlags);
             }
 
             /// <inheritdoc />
-            protected override void ImportPrivateKeyInto(RSA rsa)
+            protected override void ImportPrivateKeyInto(RSA rsa, SecureStringSecret? password)
             {
-                rsa.ImportFromPem(this._separatePemEncodedPrivateKey);
+                if (password is null)
+                {
+                    rsa.ImportFromPem(this._separatePemEncodedPrivateKey);
+                }
+                else
+                {
+                    rsa.ImportFromEncryptedPem(this._separatePemEncodedPrivateKey, "P@ssw0rd");
+                }
             }
         }
 
@@ -228,13 +240,23 @@ namespace AppMotor.Core.Certificates
             }
 
             /// <inheritdoc />
-            protected override X509Certificate2 CreatePrimaryUnderlyingCertificate(X509KeyStorageFlags storageFlags)
+            protected override X509Certificate2 CreatePrimaryUnderlyingCertificate(
+                    X509KeyStorageFlags storageFlags,
+                    SecureStringSecret? password
+                )
             {
-                return new(this._encodedCertificate.Span, null, storageFlags);
+                if (password is null)
+                {
+                    return new(this._encodedCertificate.Span, password: null, storageFlags);
+                }
+                else
+                {
+                    return new(this._encodedCertificate.Span, password: password.AsSpan, storageFlags);
+                }
             }
 
             /// <inheritdoc />
-            protected override void ImportPrivateKeyInto(RSA rsa)
+            protected override void ImportPrivateKeyInto(RSA rsa, SecureStringSecret? password)
             {
                 throw new NotSupportedException("Pfx certificates can't have a separate private key.");
             }

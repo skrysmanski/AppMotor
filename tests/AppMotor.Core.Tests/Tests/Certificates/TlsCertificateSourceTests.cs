@@ -15,6 +15,7 @@
 #endregion
 
 using AppMotor.Core.Certificates;
+using AppMotor.Core.Security;
 
 using Shouldly;
 
@@ -39,11 +40,39 @@ namespace AppMotor.Core.Tests.Certificates
         }
 
         [Fact]
+        public void Test_ImportPem_EncryptedPrivateKey()
+        {
+            using var password = new SecureStringSecret("P@ssw0rd");
+
+            // Test
+            var source = TlsCertificateSource.FromFile($"{TEST_CERT_FILES_BASE_PATH}/cert.pem", $"{TEST_CERT_FILES_BASE_PATH}/key_encrypted.pem");
+            var cert = new TlsCertificate(source, password);
+
+            // Validate
+            cert.HasPrivateKey.ShouldBe(true);
+            cert.SubjectName.Name.ShouldBe("CN=www.example.com, OU=Org, O=Company Name, L=Portland, S=Oregon, C=US");
+        }
+
+        [Fact]
         public void Test_ImportPfx()
         {
             // Test
             var source = TlsCertificateSource.FromFile($"{TEST_CERT_FILES_BASE_PATH}/cert.pfx");
             var cert = new TlsCertificate(source);
+
+            // Validate
+            cert.HasPrivateKey.ShouldBe(true);
+            cert.SubjectName.Name.ShouldBe("CN=www.example.com, OU=Org, O=Company Name, L=Portland, S=Oregon, C=US");
+        }
+
+        [Fact]
+        public void Test_ImportPfx_Encrypted()
+        {
+            using var password = new SecureStringSecret("P@ssw0rd");
+
+            // Test
+            var source = TlsCertificateSource.FromFile($"{TEST_CERT_FILES_BASE_PATH}/cert_encrypted.pfx");
+            var cert = new TlsCertificate(source, password);
 
             // Validate
             cert.HasPrivateKey.ShouldBe(true);
