@@ -90,7 +90,18 @@ namespace AppMotor.Core.Certificates
         /// <param name="certificateSource">The source from which to load the certificate.</param>
         /// <param name="password">The password, if the certificate is encrypted.</param>
         public TlsCertificate(TlsCertificateSource certificateSource, SecureStringSecret? password = null)
-            : this(certificateSource, allowPrivateKeyExport: false, password)
+            : this(certificateSource, password, allowPrivateKeyExport: false)
+        {
+        }
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="certificateSource">The source from which to load the certificate.</param>
+        /// <param name="allowPrivateKeyExport">Whether exporting the private key of the certificate
+        /// is allowed. See <see cref="IsPrivateKeyExportAllowed"/> for more details.</param>
+        public TlsCertificate(TlsCertificateSource certificateSource, bool allowPrivateKeyExport)
+            : this(certificateSource, password: null, allowPrivateKeyExport)
         {
         }
 
@@ -101,7 +112,7 @@ namespace AppMotor.Core.Certificates
         /// <param name="allowPrivateKeyExport">Whether exporting the private key of the certificate
         /// is allowed. See <see cref="IsPrivateKeyExportAllowed"/> for more details.</param>
         /// <param name="password">The password, if the certificate is encrypted.</param>
-        public TlsCertificate(TlsCertificateSource certificateSource, bool allowPrivateKeyExport, SecureStringSecret? password = null)
+        public TlsCertificate(TlsCertificateSource certificateSource, SecureStringSecret? password, bool allowPrivateKeyExport)
             : this(certificateSource.CreateUnderlyingCertificate(allowPrivateKeyExport, password), allowPrivateKeyExport)
         {
         }

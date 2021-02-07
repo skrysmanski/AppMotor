@@ -32,25 +32,32 @@ namespace AppMotor.Core.Tests.Certificates
         {
             // Test
             var source = TlsCertificateSource.FromFile($"{TEST_CERT_FILES_BASE_PATH}/cert.pem", $"{TEST_CERT_FILES_BASE_PATH}/key.pem");
-            var cert = new TlsCertificate(source);
+            using var cert = new TlsCertificate(source);
 
             // Validate
             cert.HasPrivateKey.ShouldBe(true);
             cert.SubjectName.Name.ShouldBe("CN=www.example.com, OU=Org, O=Company Name, L=Portland, S=Oregon, C=US");
         }
 
+        // https://stackoverflow.com/questions/49230122/encrypted-private-key-to-rsa-private-key
         [Fact]
         public void Test_ImportPem_EncryptedPrivateKey()
         {
+            using var unencryptedCert = new TlsCertificate(
+                TlsCertificateSource.FromFile($"{TEST_CERT_FILES_BASE_PATH}/cert.pfx"),
+                allowPrivateKeyExport: true
+            );
+
             using var password = new SecureStringSecret("P@ssw0rd");
 
             // Test
             var source = TlsCertificateSource.FromFile($"{TEST_CERT_FILES_BASE_PATH}/cert.pem", $"{TEST_CERT_FILES_BASE_PATH}/key_encrypted.pem");
-            var cert = new TlsCertificate(source, password);
+            using var cert = new TlsCertificate(source, password, allowPrivateKeyExport: true);
 
             // Validate
-            cert.HasPrivateKey.ShouldBe(true);
             cert.SubjectName.Name.ShouldBe("CN=www.example.com, OU=Org, O=Company Name, L=Portland, S=Oregon, C=US");
+            cert.HasPrivateKey.ShouldBe(true);
+            cert.ExportPublicAndPrivateKey().ExportPrivateKey().ShouldBe(unencryptedCert.ExportPublicAndPrivateKey().ExportPrivateKey());
         }
 
         [Fact]
@@ -58,7 +65,7 @@ namespace AppMotor.Core.Tests.Certificates
         {
             // Test
             var source = TlsCertificateSource.FromFile($"{TEST_CERT_FILES_BASE_PATH}/cert.pfx");
-            var cert = new TlsCertificate(source);
+            using var cert = new TlsCertificate(source);
 
             // Validate
             cert.HasPrivateKey.ShouldBe(true);
@@ -68,15 +75,21 @@ namespace AppMotor.Core.Tests.Certificates
         [Fact]
         public void Test_ImportPfx_Encrypted()
         {
+            using var unencryptedCert = new TlsCertificate(
+                TlsCertificateSource.FromFile($"{TEST_CERT_FILES_BASE_PATH}/cert.pfx"),
+                allowPrivateKeyExport: true
+            );
+
             using var password = new SecureStringSecret("P@ssw0rd");
 
             // Test
             var source = TlsCertificateSource.FromFile($"{TEST_CERT_FILES_BASE_PATH}/cert_encrypted.pfx");
-            var cert = new TlsCertificate(source, password);
+            using var cert = new TlsCertificate(source, password, allowPrivateKeyExport: true);
 
             // Validate
-            cert.HasPrivateKey.ShouldBe(true);
             cert.SubjectName.Name.ShouldBe("CN=www.example.com, OU=Org, O=Company Name, L=Portland, S=Oregon, C=US");
+            cert.HasPrivateKey.ShouldBe(true);
+            cert.ExportPublicAndPrivateKey().ExportPrivateKey().ShouldBe(unencryptedCert.ExportPublicAndPrivateKey().ExportPrivateKey());
         }
     }
 }

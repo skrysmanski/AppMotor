@@ -217,7 +217,7 @@ namespace AppMotor.Core.Certificates
                 }
                 else
                 {
-                    rsa.ImportFromEncryptedPem(this._separatePemEncodedPrivateKey, "P@ssw0rd");
+                    rsa.ImportFromEncryptedPem(this._separatePemEncodedPrivateKey, password.AsSpan);
                 }
             }
         }
