@@ -22,7 +22,6 @@ using System.Text;
 
 using AppMotor.Core.Exceptions;
 using AppMotor.Core.IO;
-using AppMotor.Core.Security;
 
 using JetBrains.Annotations;
 
@@ -116,7 +115,6 @@ namespace AppMotor.Core.Certificates
         /// <summary>
         /// Creates the underlying certificate.
         /// </summary>
-        /// <seealso cref="TlsCertificate(TlsCertificateSource,SecureStringSecret)"/>
         internal X509Certificate2 CreateUnderlyingCertificate(bool allowPrivateKeyExport, ReadOnlySpan<char> password)
         {
             var storageFlags = X509KeyStorageFlags.DefaultKeySet;
@@ -217,7 +215,20 @@ namespace AppMotor.Core.Certificates
                 }
                 else
                 {
-                    rsa.ImportFromEncryptedPem(this._separatePemEncodedPrivateKey, password);
+                    try
+                    {
+                        rsa.ImportFromEncryptedPem(this._separatePemEncodedPrivateKey, password);
+                    }
+                    catch (ArgumentException)
+                    {
+                        var pemFile = new PemFileInfo(this._separatePemEncodedPrivateKey);
+                        if (pemFile.Blocks.Length == 1 && pemFile.Blocks[0].BlockType.Equals("RSA PRIVATE KEY", StringComparison.OrdinalIgnoreCase))
+                        {
+                            throw new NotSupportedException("PEM files in the PKCS#1 format are not supported. Only the PKCS#8 format is supported.");
+                        }
+
+                        throw;
+                    }
                 }
             }
         }

@@ -14,6 +14,8 @@
 // limitations under the License.
 #endregion
 
+using System;
+
 using AppMotor.Core.Certificates;
 using AppMotor.Core.Security;
 
@@ -58,6 +60,22 @@ namespace AppMotor.Core.Tests.Certificates
             cert.SubjectName.Name.ShouldBe("CN=www.example.com, OU=Org, O=Company Name, L=Portland, S=Oregon, C=US");
             cert.HasPrivateKey.ShouldBe(true);
             cert.ExportPublicAndPrivateKey().ExportPrivateKey().ShouldBe(unencryptedCert.ExportPublicAndPrivateKey().ExportPrivateKey());
+        }
+
+        [Fact]
+        public void Test_ImportPem_EncryptedPrivateKey_Pkcs1()
+        {
+            using var unencryptedCert = new TlsCertificate(
+                TlsCertificateSource.FromFile($"{TEST_CERT_FILES_BASE_PATH}/cert.pfx"),
+                allowPrivateKeyExport: true
+            );
+
+            using var password = new SecureStringSecret("P@ssw0rd");
+
+            // Test
+            var source = TlsCertificateSource.FromFile($"{TEST_CERT_FILES_BASE_PATH}/cert.pem", $"{TEST_CERT_FILES_BASE_PATH}/key_encrypted_pkcs1.pem");
+            var ex = Should.Throw<NotSupportedException>(() => new TlsCertificate(source, password.AsSpan));
+            ex.Message.ShouldContain("PKCS#1");
         }
 
         [Fact]

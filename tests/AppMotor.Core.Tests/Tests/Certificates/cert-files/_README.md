@@ -12,6 +12,12 @@ This folder contains test certificates. These were generated as follows.
 
 Use `P@ssw0rd` as password.
 
+## `key_encrypted_pkcs1.pem`
+
+    openssl rsa -aes256 -in key.pem -out key_encrypted_pkcs1.pem
+
+Use `P@ssw0rd` as password.
+
 ## `cert.pfx`
 
     openssl pkcs12 -inkey key.pem -in cert.pem -export -out cert.pfx
