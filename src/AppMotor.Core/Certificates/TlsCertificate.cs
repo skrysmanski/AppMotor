@@ -18,7 +18,6 @@ using System;
 using System.Security.Cryptography.X509Certificates;
 
 using AppMotor.Core.Certificates.Exporting;
-using AppMotor.Core.Security;
 using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
@@ -28,7 +27,7 @@ namespace AppMotor.Core.Certificates
     /// <summary>
     /// A certificate used for TLS encryption (e.g. HTTPS). To create an instance of this class,
     /// it's recommended to create an instance of <see cref="TlsCertificateSource"/> and pass it
-    /// to <see cref="TlsCertificate(TlsCertificateSource,SecureStringSecret)"/>.
+    /// to <see cref="TlsCertificate(TlsCertificateSource,ReadOnlySpan{char})"/>.
     /// </summary>
     /// <remarks>
     /// This class' primary purpose is to make <see cref="X509Certificate2"/> instances easier to
@@ -89,7 +88,7 @@ namespace AppMotor.Core.Certificates
         /// </summary>
         /// <param name="certificateSource">The source from which to load the certificate.</param>
         /// <param name="password">The password, if the certificate is encrypted.</param>
-        public TlsCertificate(TlsCertificateSource certificateSource, SecureStringSecret? password = null)
+        public TlsCertificate(TlsCertificateSource certificateSource, ReadOnlySpan<char> password = default)
             : this(certificateSource, password, allowPrivateKeyExport: false)
         {
         }
@@ -112,7 +111,7 @@ namespace AppMotor.Core.Certificates
         /// <param name="allowPrivateKeyExport">Whether exporting the private key of the certificate
         /// is allowed. See <see cref="IsPrivateKeyExportAllowed"/> for more details.</param>
         /// <param name="password">The password, if the certificate is encrypted.</param>
-        public TlsCertificate(TlsCertificateSource certificateSource, SecureStringSecret? password, bool allowPrivateKeyExport)
+        public TlsCertificate(TlsCertificateSource certificateSource, ReadOnlySpan<char> password, bool allowPrivateKeyExport)
             : this(certificateSource.CreateUnderlyingCertificate(allowPrivateKeyExport, password), allowPrivateKeyExport)
         {
         }

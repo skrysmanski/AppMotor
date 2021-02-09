@@ -52,7 +52,7 @@ namespace AppMotor.Core.Tests.Certificates
 
             // Test
             var source = TlsCertificateSource.FromFile($"{TEST_CERT_FILES_BASE_PATH}/cert.pem", $"{TEST_CERT_FILES_BASE_PATH}/key_encrypted.pem");
-            using var cert = new TlsCertificate(source, password, allowPrivateKeyExport: true);
+            using var cert = new TlsCertificate(source, password.AsSpan, allowPrivateKeyExport: true);
 
             // Validate
             cert.SubjectName.Name.ShouldBe("CN=www.example.com, OU=Org, O=Company Name, L=Portland, S=Oregon, C=US");
@@ -84,7 +84,7 @@ namespace AppMotor.Core.Tests.Certificates
 
             // Test
             var source = TlsCertificateSource.FromFile($"{TEST_CERT_FILES_BASE_PATH}/cert_encrypted.pfx");
-            using var cert = new TlsCertificate(source, password, allowPrivateKeyExport: true);
+            using var cert = new TlsCertificate(source, password.AsSpan, allowPrivateKeyExport: true);
 
             // Validate
             cert.SubjectName.Name.ShouldBe("CN=www.example.com, OU=Org, O=Company Name, L=Portland, S=Oregon, C=US");
