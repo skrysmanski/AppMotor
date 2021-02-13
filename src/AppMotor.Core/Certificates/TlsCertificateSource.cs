@@ -20,6 +20,7 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
+using AppMotor.Core.Certificates.Pem;
 using AppMotor.Core.Exceptions;
 using AppMotor.Core.IO;
 

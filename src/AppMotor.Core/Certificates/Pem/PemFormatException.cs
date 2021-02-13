@@ -18,7 +18,7 @@ using System;
 
 using JetBrains.Annotations;
 
-namespace AppMotor.Core.Certificates
+namespace AppMotor.Core.Certificates.Pem
 {
     public sealed class PemFormatException : Exception
     {
