@@ -200,6 +200,9 @@ namespace AppMotor.Core.Certificates
         /// The block type; i.e. the text after "----BEGIN " and "-----END ". For example,
         /// "CERTIFICATE", "PUBLIC KEY", "RSA PRIVATE KEY", ...
         /// </summary>
+        /// <remarks>
+        /// For this, see also: https://stackoverflow.com/a/5356351/614177
+        /// </remarks>
         [PublicAPI]
         public string BlockType { get; }
 
