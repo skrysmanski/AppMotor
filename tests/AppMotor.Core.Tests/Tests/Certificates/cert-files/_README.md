@@ -8,7 +8,7 @@ This folder contains test certificates. These were generated as follows.
 
 ## `key_encrypted.pem`
 
-    openssl rsa -aes256 -in key.pem -out key_encrypted.pem
+    openssl pkcs8 -topk8 -inform PEM -outform PEM -in key.pem -out key_encrypted.pem
 
 Use `P@ssw0rd` as password.
 
