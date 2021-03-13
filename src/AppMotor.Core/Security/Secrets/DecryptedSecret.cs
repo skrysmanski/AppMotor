@@ -17,8 +17,7 @@
 using System;
 using System.IO;
 using System.IO.Abstractions;
-using System.Security.Cryptography;
-using System.Text;
+using System.Text.Json;
 
 using AppMotor.Core.IO;
 using AppMotor.Core.Utils;
@@ -31,23 +30,21 @@ namespace AppMotor.Core.Security.Secrets
 
         public ReadOnlySpan<byte> Span => this._secretData.Span;
 
-        internal DecryptedSecret(CryptoStream cryptoStream, int decryptedBytesCount)
+        internal DecryptedSecret(int size)
         {
-            var secretData = new SecretsArray<byte>(decryptedBytesCount);
+            this._secretData = new SecretsArray<byte>(size);
+        }
 
-            try
-            {
-                cryptoStream.Write(secretData.UnderlyingArray);
-            }
-            catch (Exception)
-            {
-                // Delete everything so that we don't leak secrets on exceptions.
-                secretData.Dispose();
+        private DecryptedSecret(ReadOnlySpan<byte> source)
+        {
+            this._secretData = new SecretsArray<byte>(source.Length);
 
-                throw;
-            }
+            source.CopyTo(this._secretData.UnderlyingArray);
+        }
 
-            this._secretData = secretData;
+        public static DecryptedSecret FromInMemorySource(ReadOnlySpan<byte> source)
+        {
+            return new DecryptedSecret(source);
         }
 
         /// <inheritdoc />
@@ -90,6 +87,37 @@ namespace AppMotor.Core.Security.Secrets
         public DecryptedStringSecret ToStringSecret(DecryptedStringSecret.SupportedEncodings encoding)
         {
             return new DecryptedStringSecret(this, encoding);
+        }
+
+        public T? DeserializeAsJson<T>(JsonSerializerOptions? options = null) where T : ObjectWithSecrets
+        {
+            var byteSecretConverter = new ByteSecretJsonConverter();
+            var stringSecretConverter = new StringSecretJsonConverter();
+
+            // NOTE: We create a copy of the options here so that we don't mess around
+            //   with the original options (and don't leak the converters).
+            var actualOptions = options is not null ? new JsonSerializerOptions(options) : new JsonSerializerOptions();
+            actualOptions.Converters.Add(byteSecretConverter);
+            actualOptions.Converters.Add(stringSecretConverter);
+
+            try
+            {
+                return JsonSerializer.Deserialize<T>(this.Span, actualOptions);
+            }
+            catch (Exception)
+            {
+                foreach (var createdSecret in byteSecretConverter.CreatedSecrets)
+                {
+                    createdSecret.Dispose();
+                }
+
+                foreach (var createdSecret in stringSecretConverter.CreatedSecrets)
+                {
+                    createdSecret.Dispose();
+                }
+
+                throw;
+            }
         }
     }
 }
