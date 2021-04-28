@@ -24,27 +24,27 @@ using AppMotor.Core.Utils;
 
 namespace AppMotor.Core.Security.Secrets
 {
-    public sealed class DecryptedSecret : Disposable
+    public sealed class SecretBytes : Disposable
     {
         private readonly SecretsArray<byte> _secretData;
 
         public ReadOnlySpan<byte> Span => this._secretData.Span;
 
-        internal DecryptedSecret(int size)
+        internal SecretBytes(int size)
         {
             this._secretData = new SecretsArray<byte>(size);
         }
 
-        private DecryptedSecret(ReadOnlySpan<byte> source)
+        private SecretBytes(ReadOnlySpan<byte> source)
         {
             this._secretData = new SecretsArray<byte>(source.Length);
 
             source.CopyTo(this._secretData.UnderlyingArray);
         }
 
-        public static DecryptedSecret FromInMemorySource(ReadOnlySpan<byte> source)
+        public static SecretBytes FromInMemorySource(ReadOnlySpan<byte> source)
         {
-            return new DecryptedSecret(source);
+            return new SecretBytes(source);
         }
 
         /// <inheritdoc />
@@ -84,9 +84,9 @@ namespace AppMotor.Core.Security.Secrets
             writeStream.Write(secretData);
         }
 
-        public DecryptedStringSecret ToStringSecret(DecryptedStringSecret.SupportedEncodings encoding)
+        public SecretString ToStringSecret(SecretString.SupportedEncodings encoding)
         {
-            return new DecryptedStringSecret(this, encoding);
+            return new SecretString(this, encoding);
         }
 
         public T? DeserializeAsJson<T>(JsonSerializerOptions? options = null) where T : ObjectWithSecrets

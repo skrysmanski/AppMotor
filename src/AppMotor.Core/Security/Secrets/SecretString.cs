@@ -24,7 +24,7 @@ using AppMotor.Core.Utils;
 
 namespace AppMotor.Core.Security.Secrets
 {
-    public sealed class DecryptedStringSecret : Disposable
+    public sealed class SecretString : Disposable
     {
         private static readonly UTF8Encoding UTF8_ENCODING = new();
 
@@ -32,7 +32,7 @@ namespace AppMotor.Core.Security.Secrets
 
         public ReadOnlySpan<char> Span => this._secretData.Span;
 
-        internal DecryptedStringSecret(CryptoStream cryptoStream, int decryptedLength)
+        internal SecretString(CryptoStream cryptoStream, int decryptedLength)
         {
             using var secretBytes = new SecretsArray<byte>(decryptedLength * 2);
 
@@ -64,7 +64,7 @@ namespace AppMotor.Core.Security.Secrets
             this._secretData = secretData;
         }
 
-        public DecryptedStringSecret(DecryptedSecret byteSecret, SupportedEncodings encoding)
+        public SecretString(SecretBytes byteSecret, SupportedEncodings encoding)
         {
             switch (encoding)
             {
@@ -85,7 +85,7 @@ namespace AppMotor.Core.Security.Secrets
             }
         }
 
-        private static SecretsArray<char> DecodeAscii(DecryptedSecret byteSecret)
+        private static SecretsArray<char> DecodeAscii(SecretBytes byteSecret)
         {
             var source = byteSecret.Span;
 
@@ -110,7 +110,7 @@ namespace AppMotor.Core.Security.Secrets
             }
         }
 
-        private static SecretsArray<char> DecodeUtf16(DecryptedSecret byteSecret)
+        private static SecretsArray<char> DecodeUtf16(SecretBytes byteSecret)
         {
             var source = byteSecret.Span;
 
@@ -140,7 +140,7 @@ namespace AppMotor.Core.Security.Secrets
             }
         }
 
-        private static SecretsArray<char> DecodeUtf8(DecryptedSecret byteSecret)
+        private static SecretsArray<char> DecodeUtf8(SecretBytes byteSecret)
         {
             var source = byteSecret.GetUnderlyingArray();
 

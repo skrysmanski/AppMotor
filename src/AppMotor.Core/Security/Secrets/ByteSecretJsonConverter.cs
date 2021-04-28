@@ -21,14 +21,14 @@ using System.Text.Json.Serialization;
 
 namespace AppMotor.Core.Security.Secrets
 {
-    internal sealed class ByteSecretJsonConverter : JsonConverter<DecryptedSecret>
+    internal sealed class ByteSecretJsonConverter : JsonConverter<SecretBytes>
     {
-        private readonly List<DecryptedSecret> _createdSecrets = new();
+        private readonly List<SecretBytes> _createdSecrets = new();
 
-        public IReadOnlyList<DecryptedSecret> CreatedSecrets => this._createdSecrets;
+        public IReadOnlyList<SecretBytes> CreatedSecrets => this._createdSecrets;
 
         /// <inheritdoc />
-        public override DecryptedSecret? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override SecretBytes? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.HasValueSequence)
             {
@@ -36,10 +36,10 @@ namespace AppMotor.Core.Security.Secrets
             }
 
             ReadOnlySpan<byte> span = reader.ValueSpan;
-            using var base64EncodedSecret = DecryptedSecret.FromInMemorySource(span);
-            using var base64EncodedStringSecret = base64EncodedSecret.ToStringSecret(DecryptedStringSecret.SupportedEncodings.Ascii);
+            using var base64EncodedSecret = SecretBytes.FromInMemorySource(span);
+            using var base64EncodedStringSecret = base64EncodedSecret.ToStringSecret(SecretString.SupportedEncodings.Ascii);
 
-            var byteSecret = new DecryptedSecret(span.Length);
+            var byteSecret = new SecretBytes(span.Length);
             var underlyingArray = byteSecret.GetUnderlyingArray();
 
             if (!Convert.TryFromBase64Chars(base64EncodedStringSecret.Span, underlyingArray.UnderlyingArray, out int bytesWritten))
@@ -56,7 +56,7 @@ namespace AppMotor.Core.Security.Secrets
         }
 
         /// <inheritdoc />
-        public override void Write(Utf8JsonWriter writer, DecryptedSecret value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, SecretBytes value, JsonSerializerOptions options)
         {
             throw new NotSupportedException();
         }

@@ -24,14 +24,14 @@ using System.Text.Json.Serialization;
 
 namespace AppMotor.Core.Security.Secrets
 {
-    internal sealed class StringSecretJsonConverter : JsonConverter<DecryptedStringSecret>
+    internal sealed class StringSecretJsonConverter : JsonConverter<SecretString>
     {
-        private readonly List<DecryptedStringSecret> _createdSecrets = new();
+        private readonly List<SecretString> _createdSecrets = new();
 
-        public IReadOnlyList<DecryptedStringSecret> CreatedSecrets => this._createdSecrets;
+        public IReadOnlyList<SecretString> CreatedSecrets => this._createdSecrets;
 
         /// <inheritdoc />
-        public override DecryptedStringSecret? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override SecretString? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.HasValueSequence)
             {
@@ -39,16 +39,16 @@ namespace AppMotor.Core.Security.Secrets
             }
 
             ReadOnlySpan<byte> span = reader.ValueSpan;
-            using var decryptedSecret = DecryptedSecret.FromInMemorySource(span);
+            using var decryptedSecret = SecretBytes.FromInMemorySource(span);
 
-            var stringSecret = decryptedSecret.ToStringSecret(DecryptedStringSecret.SupportedEncodings.Utf8);
+            var stringSecret = decryptedSecret.ToStringSecret(SecretString.SupportedEncodings.Utf8);
             this._createdSecrets.Add(stringSecret);
 
             return stringSecret;
         }
 
         /// <inheritdoc />
-        public override void Write(Utf8JsonWriter writer, DecryptedStringSecret value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, SecretString value, JsonSerializerOptions options)
         {
             throw new NotSupportedException();
         }
