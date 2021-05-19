@@ -31,22 +31,21 @@ namespace AppMotor.Core.Security.Secrets
         [PublicAPI]
         public const int MAX_LENGTH = int.MaxValue;
 
-        private bool _isOpen = true;
-
         private int _position;
 
         private int _length;
 
         private readonly bool _isWritable;
 
-        // TODO: Replace with "Secret" type
-        private byte[] _buffer;
+        private SecretsArray<byte> _buffer;
 
-        public override bool CanRead => this._isOpen;
+        private bool IsOpen => this._buffer.DisposedState == DisposedStates.NotDisposed;
 
-        public override bool CanSeek => this._isOpen;
+        public override bool CanRead => this.IsOpen;
 
-        public override bool CanWrite => this._isOpen && this._isWritable;
+        public override bool CanSeek => this.IsOpen;
+
+        public override bool CanWrite => this.IsOpen && this._isWritable;
 
         public override long Length => this._length;
 
@@ -78,14 +77,24 @@ namespace AppMotor.Core.Security.Secrets
 
                 if (value != this._buffer.Length)
                 {
-                    byte[] newBuffer = new byte[value];
+                    var newBuffer = new SecretsArray<byte>(value);
 
                     if (this._length > 0)
                     {
-                        Buffer.BlockCopy(this._buffer, 0, newBuffer, 0, this._length);
+                        try
+                        {
+                            Buffer.BlockCopy(this._buffer.UnderlyingArray, 0, newBuffer.UnderlyingArray, 0, this._length);
+                        }
+                        catch (Exception)
+                        {
+                            newBuffer.Dispose();
+                            throw;
+                        }
                     }
 
+                    var oldBuffer = this._buffer;
                     this._buffer = newBuffer;
+                    oldBuffer.Dispose();
                 }
             }
         }
@@ -96,7 +105,7 @@ namespace AppMotor.Core.Security.Secrets
 
         public SecretMemoryStream(int requiredMinimumCapacity)
         {
-            this._buffer = new byte[Math.Max(requiredMinimumCapacity, MIN_CAPACITY)];
+            this._buffer = new SecretsArray<byte>(Math.Max(requiredMinimumCapacity, MIN_CAPACITY));
             this._isWritable = true;
         }
 
@@ -106,8 +115,7 @@ namespace AppMotor.Core.Security.Secrets
         {
             if (disposing)
             {
-                this._isOpen = false;
-                // TODO: Dispose secret
+                this._buffer.Dispose();
             }
 
             base.Dispose(disposing);
@@ -115,7 +123,7 @@ namespace AppMotor.Core.Security.Secrets
 
         private void EnsureNotClosed()
         {
-            if (!this._isOpen)
+            if (!this.IsOpen)
             {
                 throw new ObjectDisposedException("This stream has already been disposed.", (Exception?)null);
             }
@@ -230,14 +238,15 @@ namespace AppMotor.Core.Security.Secrets
             // Apparently it's more efficient to use a for loop when writing small amounts of bytes (up to 8 bytes).
             if (bytesToRead <= 8)
             {
+                var bufferArray = this._buffer.UnderlyingArray;
                 for (int x = 0; x < bytesToRead; x++)
                 {
-                    buffer[offset + x] = this._buffer[this._position + x];
+                    buffer[offset + x] = bufferArray[this._position + x];
                 }
             }
             else
             {
-                Buffer.BlockCopy(this._buffer, this._position, buffer, offset, bytesToRead);
+                Buffer.BlockCopy(this._buffer.UnderlyingArray, this._position, buffer, offset, bytesToRead);
             }
 
             this._position += bytesToRead;
@@ -288,14 +297,15 @@ namespace AppMotor.Core.Security.Secrets
             // Apparently it's more efficient to use a for loop when writing small amounts of bytes (up to 8 bytes).
             if (count <= 8)
             {
+                var bufferArray = this._buffer.UnderlyingArray;
                 for (int x = 0; x < count; x++)
                 {
-                    this._buffer[this._position + x] = buffer[offset + x];
+                    bufferArray[this._position + x] = buffer[offset + x];
                 }
             }
             else
             {
-                Buffer.BlockCopy(buffer, offset, this._buffer, this._position, count);
+                Buffer.BlockCopy(buffer, offset, this._buffer.UnderlyingArray, this._position, count);
             }
 
             this._position = newPositionAfterWriteOperation;
