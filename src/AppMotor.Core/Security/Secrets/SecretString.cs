@@ -15,15 +15,17 @@
 #endregion
 
 using System;
-using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
 
 using AppMotor.Core.Exceptions;
 using AppMotor.Core.Utils;
 
 namespace AppMotor.Core.Security.Secrets
 {
+    /// <summary>
+    /// An immutable secret consisting of characters.
+    /// </summary>
+    /// <seealso cref="SecretBytes"/>
     public sealed class SecretString : Disposable
     {
         private static readonly UTF8Encoding UTF8_ENCODING = new();
@@ -31,38 +33,6 @@ namespace AppMotor.Core.Security.Secrets
         private readonly SecretsArray<char> _secretData;
 
         public ReadOnlySpan<char> Span => this._secretData.Span;
-
-        internal SecretString(CryptoStream cryptoStream, int decryptedLength)
-        {
-            using var secretBytes = new SecretsArray<byte>(decryptedLength * 2);
-
-            var secretData = new SecretsArray<char>(decryptedLength);
-
-            try
-            {
-                cryptoStream.Write(secretBytes.UnderlyingArray);
-
-                var secretBytesData = secretBytes.UnderlyingArray;
-                var secretCharData = secretData.UnderlyingArray;
-
-                // NOTE: We don't use "Encoding.Unicode" here because it creates a copy of the output data
-                //   and this is not what we want (this would be a "leak"). Fortunately, decoding a UTF-16
-                //   encoded byte array is pretty simple.
-                for (var i = 0; i < secretCharData.Length; i++)
-                {
-                    secretCharData[i] = BitConverter.ToChar(secretBytesData.AsSpan(start: i * 2, length: 2));
-                }
-            }
-            catch (Exception)
-            {
-                // Delete everything so that we don't leak secrets on exceptions.
-                secretData.Dispose();
-
-                throw;
-            }
-
-            this._secretData = secretData;
-        }
 
         public SecretString(SecretBytes byteSecret, SupportedEncodings encoding)
         {

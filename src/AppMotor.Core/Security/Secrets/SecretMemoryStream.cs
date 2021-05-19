@@ -109,7 +109,11 @@ namespace AppMotor.Core.Security.Secrets
             this._isWritable = true;
         }
 
-        // TODO: Provide constructor with secret that is read-only
+        public SecretMemoryStream(SecretBytes bytes)
+        {
+            this._buffer = bytes.GetUnderlyingArray();
+            this._isWritable = false;
+        }
 
         protected override void Dispose(bool disposing)
         {
@@ -204,7 +208,7 @@ namespace AppMotor.Core.Security.Secrets
             }
         }
 
-        public override int Read([NotNull] byte[] buffer, int offset, int count)
+        public override int Read(byte[] buffer, int offset, int count)
         {
             Validate.ArgumentWithName(nameof(buffer)).IsNotNull(buffer);
 

@@ -24,6 +24,10 @@ using AppMotor.Core.Utils;
 
 namespace AppMotor.Core.Security.Secrets
 {
+    /// <summary>
+    /// An immutable secret consisting of bytes.
+    /// </summary>
+    /// <seealso cref="SecretString"/>
     public sealed class SecretBytes : Disposable
     {
         private readonly SecretsArray<byte> _secretData;
