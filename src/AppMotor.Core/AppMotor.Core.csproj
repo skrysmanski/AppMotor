@@ -11,9 +11,6 @@
     <Version>$(AppMotorCoreVersion)</Version>
 
     <Description>The core APIs for the AppMotor framework.</Description>
-
-    <!-- Just temporary -->
-    <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

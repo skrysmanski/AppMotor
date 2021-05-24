@@ -118,21 +118,33 @@ namespace AppMotor.Core.Certificates
             return new(oid);
         }
 
+        /// <summary>
+        /// Converts <see cref="Oid"/> into <see cref="CertificateOid"/>.
+        /// </summary>
         public static implicit operator CertificateOid(Oid source)
         {
             return new(source);
         }
 
+        /// <summary>
+        /// Converts <see cref="CertificateOid"/> into <see cref="Oid"/>.
+        /// </summary>
         public static implicit operator Oid(CertificateOid source)
         {
             return source.UnderlyingOid;
         }
 
+        /// <summary>
+        /// Compares two <see cref="CertificateOid"/> instances for equality.
+        /// </summary>
         public static bool operator ==(CertificateOid left, CertificateOid right)
         {
             return left.Equals(right);
         }
 
+        /// <summary>
+        /// Compares two <see cref="CertificateOid"/> instances for inequality.
+        /// </summary>
         public static bool operator !=(CertificateOid left, CertificateOid right)
         {
             return !left.Equals(right);

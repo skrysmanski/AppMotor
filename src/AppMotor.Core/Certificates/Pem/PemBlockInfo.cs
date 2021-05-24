@@ -49,6 +49,9 @@ namespace AppMotor.Core.Certificates.Pem
         [PublicAPI]
         public Range BlockContentRange { get; }
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public PemBlockInfo(string blockType, Range blockContentRange)
         {
             this.BlockType = blockType;

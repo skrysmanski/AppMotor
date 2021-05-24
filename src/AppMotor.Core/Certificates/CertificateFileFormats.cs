@@ -16,6 +16,9 @@
 
 namespace AppMotor.Core.Certificates
 {
+    /// <summary>
+    /// The various file formats for storing certificates.
+    /// </summary>
     public enum CertificateFileFormats
     {
         // ReSharper disable InconsistentNaming

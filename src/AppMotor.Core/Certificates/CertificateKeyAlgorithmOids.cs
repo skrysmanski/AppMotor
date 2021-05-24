@@ -18,6 +18,9 @@ using JetBrains.Annotations;
 
 namespace AppMotor.Core.Certificates
 {
+    /// <summary>
+    /// Contains the OIDs for various certificate key algorithms.
+    /// </summary>
     public static class CertificateKeyAlgorithmOids
     {
         // ReSharper disable InconsistentNaming

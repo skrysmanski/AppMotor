@@ -24,12 +24,19 @@ using JetBrains.Annotations;
 
 namespace AppMotor.Core.Certificates
 {
+    /// <summary>
+    /// Represents a certificate request (i.e. a request to be signed by a CA to get a certificate).
+    /// </summary>
     public sealed class TlsCertificateRequest : Disposable
     {
         private readonly CertificateRequest _underlyingCertificateRequest;
 
         private readonly RSA _rsaAlgorithm;
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="hostname">The hostname for which to create the request (or certificate).</param>
         public TlsCertificateRequest(string hostname)
         {
             Validate.ArgumentWithName(nameof(hostname)).IsNotNullOrWhiteSpace(hostname);

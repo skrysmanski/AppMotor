@@ -24,6 +24,10 @@ using JetBrains.Annotations;
 
 namespace AppMotor.Core.Certificates.Exporting
 {
+    /// <summary>
+    /// Exports two certificate blobs: the private key and the public key.
+    /// </summary>
+    /// <seealso cref="SingleBlobExporter"/>
     public sealed class DoubleBlobExporter
     {
         private readonly byte[] _publicKeyBytes;
@@ -43,14 +47,22 @@ namespace AppMotor.Core.Certificates.Exporting
             this._privateKeyBytesExporterFunc = privateKeyBytesExporterFunc;
         }
 
+        /// <summary>
+        /// Returns the blobs as <see cref="ReadOnlyMemory{T}"/>.
+        /// </summary>
+        /// <returns></returns>
         [MustUseReturnValue]
         public (ReadOnlyMemory<byte> publicKeyBytes, ReadOnlyMemory<byte> privateKeyBytes) ToBytes()
         {
-#pragma warning disable 8619 // TODO false positive: https://youtrack.jetbrains.com/issue/RSRP-483085
             return (this._publicKeyBytes, this._privateKeyBytesExporterFunc());
-#pragma warning restore 8619
         }
 
+        /// <summary>
+        /// Stores the blobs in the file system.
+        /// </summary>
+        /// <param name="publicKeyFilePath">The file path to the public key file.</param>
+        /// <param name="privateKeyFilePath">The file path to the private key file.</param>
+        /// <param name="fileSystem">The file system to use; if <c>null</c>, <see cref="RealFileSystem.Instance"/> will be used.</param>
         public void ToFile(string publicKeyFilePath, string privateKeyFilePath, IFileSystem? fileSystem = null)
         {
             fileSystem ??= RealFileSystem.Instance;
@@ -59,6 +71,12 @@ namespace AppMotor.Core.Certificates.Exporting
             fileSystem.File.WriteAllBytes(privateKeyFilePath, this._privateKeyBytesExporterFunc());
         }
 
+        /// <summary>
+        /// Stores the blobs in the file system.
+        /// </summary>
+        /// <param name="publicKeyFilePath">The file path to the public key file.</param>
+        /// <param name="privateKeyFilePath">The file path to the private key file.</param>
+        /// <param name="fileSystem">The file system to use; if <c>null</c>, <see cref="RealFileSystem.Instance"/> will be used.</param>
         public async Task ToFileAsync(string publicKeyFilePath, string privateKeyFilePath, IFileSystem? fileSystem = null)
         {
             fileSystem ??= RealFileSystem.Instance;
@@ -68,6 +86,5 @@ namespace AppMotor.Core.Certificates.Exporting
 
             await Task.WhenAll(publicKeyWriteTask, privateKeyWriteTask).ConfigureAwait(false);
         }
-
     }
 }

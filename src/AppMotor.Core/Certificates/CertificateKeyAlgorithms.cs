@@ -16,8 +16,14 @@
 
 namespace AppMotor.Core.Certificates
 {
+    /// <summary>
+    /// The various key algorithms used in certificates.
+    /// </summary>
     public enum CertificateKeyAlgorithms
     {
+        /// <summary>
+        /// Other/unkown algorithm.
+        /// </summary>
         Other,
 
         // ReSharper disable InconsistentNaming

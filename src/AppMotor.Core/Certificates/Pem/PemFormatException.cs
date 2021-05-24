@@ -20,9 +20,15 @@ using JetBrains.Annotations;
 
 namespace AppMotor.Core.Certificates.Pem
 {
+    /// <summary>
+    /// Exception thrown for format errors in PEM files.
+    /// </summary>
     public sealed class PemFormatException : Exception
     {
-        /// <inheritdoc />
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="message"></param>
         public PemFormatException([CanBeNull] string? message) : base(message)
         {
         }

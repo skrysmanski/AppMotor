@@ -24,6 +24,11 @@ using JetBrains.Annotations;
 
 namespace AppMotor.Core.Certificates.Exporting
 {
+    /// <summary>
+    /// Exports a single certificate blob. This can either be only a public key or both the public key and the private
+    /// key combined into one blob.
+    /// </summary>
+    /// <seealso cref="DoubleBlobExporter"/>
     public sealed class SingleBlobExporter
     {
         private readonly Func<byte[]> _bytesExporter;
@@ -40,12 +45,20 @@ namespace AppMotor.Core.Certificates.Exporting
             this._bytesExporter = bytesExporter;
         }
 
+        /// <summary>
+        /// Returns the blob as <see cref="ReadOnlySpan{T}"/>.
+        /// </summary>
         [MustUseReturnValue]
-        public ReadOnlyMemory<byte> ToBytes()
+        public ReadOnlySpan<byte> ToBytes()
         {
             return this._bytesExporter();
         }
 
+        /// <summary>
+        /// Stores the blob in the file system.
+        /// </summary>
+        /// <param name="filePath">The file path to the certificate file.</param>
+        /// <param name="fileSystem">The file system to use; if <c>null</c>, <see cref="RealFileSystem.Instance"/> will be used.</param>
         public void ToFile(string filePath, IFileSystem? fileSystem = null)
         {
             fileSystem ??= RealFileSystem.Instance;
@@ -53,6 +66,11 @@ namespace AppMotor.Core.Certificates.Exporting
             fileSystem.File.WriteAllBytes(filePath, this._bytesExporter());
         }
 
+        /// <summary>
+        /// Stores the blob in the file system.
+        /// </summary>
+        /// <param name="filePath">The file path to the certificate file.</param>
+        /// <param name="fileSystem">The file system to use; if <c>null</c>, <see cref="RealFileSystem.Instance"/> will be used.</param>
         public async Task ToFileAsync(string filePath, IFileSystem? fileSystem = null)
         {
             fileSystem ??= RealFileSystem.Instance;

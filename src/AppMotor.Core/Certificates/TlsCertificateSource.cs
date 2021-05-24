@@ -45,12 +45,23 @@ namespace AppMotor.Core.Certificates
         /// </summary>
         protected abstract bool HasSeparatePrivateKeySource { get; }
 
+        /// <summary>
+        /// Creates a certificate source from a PEM encoded string.
+        /// </summary>
+        /// <param name="pemEncodedCertificate">The certificate as PEM encoded string.</param>
+        /// <param name="separatePemEncodedPrivateKey">The private key of the certificate as PEM encoded string, if it's
+        /// separate from <paramref name="pemEncodedCertificate"/>.</param>
         [PublicAPI, MustUseReturnValue]
         public static TlsCertificateSource FromPemString(string pemEncodedCertificate, string? separatePemEncodedPrivateKey = null)
         {
             return new PemCertificateSource(pemEncodedCertificate, separatePemEncodedPrivateKey);
         }
 
+        /// <summary>
+        /// Creates a certificate source from the specified bytes.
+        /// </summary>
+        /// <param name="certificateBytes">The certificate</param>
+        /// <param name="separatePrivateKeyBytes">The private key of the certificate, if it's separate from <paramref name="certificateBytes"/>.</param>
         [PublicAPI, MustUseReturnValue]
         public static TlsCertificateSource FromBytes(ReadOnlyMemory<byte> certificateBytes, ReadOnlyMemory<byte>? separatePrivateKeyBytes = null)
         {
@@ -68,12 +79,24 @@ namespace AppMotor.Core.Certificates
             }
         }
 
+        /// <summary>
+        /// Creates a certificate source from a file on disk.
+        /// </summary>
+        /// <param name="certificateFilePath">The path to the certificate file.</param>
+        /// <param name="fileSystem">The file system to use; if <c>null</c>, <see cref="RealFileSystem.Instance"/> will be used.</param>
         [PublicAPI, MustUseReturnValue]
         public static TlsCertificateSource FromFile(string certificateFilePath, IFileSystem? fileSystem = null)
         {
             return FromFile(certificateFilePath, separatePrivateKeyFilePath: null, fileSystem);
         }
 
+        /// <summary>
+        /// Creates a certificate source from files on disk.
+        /// </summary>
+        /// <param name="certificateFilePath">The path to the certificate file.</param>
+        /// <param name="separatePrivateKeyFilePath">The path to the private key file of the certificate. May be <c>null</c>,
+        /// if not needed.</param>
+        /// <param name="fileSystem">The file system to use; if <c>null</c>, <see cref="RealFileSystem.Instance"/> will be used.</param>
         [PublicAPI, MustUseReturnValue]
         public static TlsCertificateSource FromFile(string certificateFilePath, string? separatePrivateKeyFilePath, IFileSystem? fileSystem = null)
         {

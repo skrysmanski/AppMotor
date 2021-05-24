@@ -50,12 +50,21 @@ namespace AppMotor.Core.Certificates
         [PublicAPI]
         public CertificateKeyAlgorithms KeyAlgorithm => this.PublicKey.KeyAlgorithm;
 
+        /// <summary>
+        /// The subject name of this certificate.
+        /// </summary>
         [PublicAPI]
         public X500DistinguishedName SubjectName => this.UnderlyingCertificate.SubjectName;
 
+        /// <summary>
+        /// The public key of this certificate.
+        /// </summary>
         [PublicAPI]
         public CertificatePublicKey PublicKey { get; }
 
+        /// <summary>
+        /// Whether the private key of this certificate is available.
+        /// </summary>
         [PublicAPI]
         public bool HasPrivateKey => this.UnderlyingCertificate.HasPrivateKey;
 
@@ -74,12 +83,23 @@ namespace AppMotor.Core.Certificates
         [PublicAPI]
         public bool IsPrivateKeyExportAllowed { get; }
 
+        /// <summary>
+        /// This certificate is not valid before this timestamp.
+        /// </summary>
+        /// <seealso cref="NotAfter"/>
         [PublicAPI]
         public DateTime NotBefore => this.UnderlyingCertificate.NotBefore;
 
+        /// <summary>
+        /// This certificate is not valid after this timestamp.
+        /// </summary>
+        /// <seealso cref="NotBefore"/>
         [PublicAPI]
         public DateTime NotAfter => this.UnderlyingCertificate.NotAfter;
 
+        /// <summary>
+        /// The thumbprint of this certificate.
+        /// </summary>
         [PublicAPI]
         public string Thumbprint => this.UnderlyingCertificate.Thumbprint;
 
@@ -139,6 +159,9 @@ namespace AppMotor.Core.Certificates
             this._underlyingCertificate = null;
         }
 
+        /// <summary>
+        /// Implicit conversion to <see cref="X509Certificate2"/>.
+        /// </summary>
         public static implicit operator X509Certificate2(TlsCertificate source)
         {
             return source.UnderlyingCertificate;

@@ -23,6 +23,11 @@ using JetBrains.Annotations;
 
 namespace AppMotor.Core.Certificates.Exporting
 {
+    /// <summary>
+    /// Exports both the public key and the private key. Obtained via <see cref="TlsCertificate.ExportPublicAndPrivateKey"/>.
+    /// Use one of the <c>As...()</c> methods to specify the desired export format.
+    /// </summary>
+    /// <seealso cref="TlsCertificatePublicKeyExporter"/>
     public sealed class TlsCertificatePrivateKeyExporter
     {
         private readonly TlsCertificate _certificate;
@@ -32,12 +37,18 @@ namespace AppMotor.Core.Certificates.Exporting
             this._certificate = certificate;
         }
 
+        /// <summary>
+        /// Exports the public key and the private key in the PFX format.
+        /// </summary>
         [MustUseReturnValue]
         public SingleBlobExporter AsPfx()
         {
             return new(() => this._certificate.UnderlyingCertificate.Export(X509ContentType.Pfx));
         }
 
+        /// <summary>
+        /// Exports the public key and the private key in the PEM format.
+        /// </summary>
         [MustUseReturnValue]
         public DoubleBlobExporter AsPem()
         {

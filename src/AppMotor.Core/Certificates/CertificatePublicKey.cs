@@ -17,13 +17,19 @@
 using System;
 using System.Security.Cryptography.X509Certificates;
 
+using JetBrains.Annotations;
+
 namespace AppMotor.Core.Certificates
 {
+    /// <summary>
+    /// Represents the public key of a certificate.
+    /// </summary>
     public sealed class CertificatePublicKey : IEquatable<CertificatePublicKey>
     {
         /// <summary>
         /// The OID of the public key's algorithm (e.g. RSA). See <see cref="KeyAlgorithm"/> for the translation.
         /// </summary>
+        [PublicAPI]
         public CertificateOid Oid { get; }
 
         /// <summary>
@@ -33,6 +39,9 @@ namespace AppMotor.Core.Certificates
 
         private PublicKey UnderlyingValue { get; }
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public CertificatePublicKey(PublicKey source)
         {
             this.UnderlyingValue = source;
@@ -71,11 +80,17 @@ namespace AppMotor.Core.Certificates
             return HashCode.Combine(this.Oid, AsnEncodedDataEqualityComparer.Instance.GetHashCode(this.UnderlyingValue.EncodedKeyValue));
         }
 
+        /// <summary>
+        /// Compares two <seealso cref="CertificatePublicKey"/> instances for equality.
+        /// </summary>
         public static bool operator ==(CertificatePublicKey? left, CertificatePublicKey? right)
         {
             return Equals(left, right);
         }
 
+        /// <summary>
+        /// Compares two <seealso cref="CertificatePublicKey"/> instances for inequality.
+        /// </summary>
         public static bool operator !=(CertificatePublicKey? left, CertificatePublicKey? right)
         {
             return !Equals(left, right);
