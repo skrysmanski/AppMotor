@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using System.IO;
 
 using AppMotor.Core.Certificates;
 
@@ -29,7 +30,7 @@ namespace AppMotor.Core.Tests.Certificates
         private const string TEST_CERT_FILES_BASE_PATH = "Tests/Certificates/cert-files";
 
         [Fact]
-        public void Test_ImportPem()
+        public void Test_ImportPem_FromFile()
         {
             // Test
             var source = TlsCertificateSource.FromFile($"{TEST_CERT_FILES_BASE_PATH}/cert.pem", $"{TEST_CERT_FILES_BASE_PATH}/key.pem");
@@ -37,6 +38,21 @@ namespace AppMotor.Core.Tests.Certificates
 
             // Validate
             cert.HasPrivateKey.ShouldBe(true);
+            cert.SubjectName.Name.ShouldBe("CN=www.example.com, OU=Org, O=Company Name, L=Portland, S=Oregon, C=US");
+        }
+
+        [Fact]
+        public void Test_ImportPem_FromString()
+        {
+            // Setup
+            var pemPubKey = File.ReadAllText($"{TEST_CERT_FILES_BASE_PATH}/cert.pem");
+
+            // Test
+            var source = TlsCertificateSource.FromPemString(pemPubKey);
+            using var cert = new TlsCertificate(source);
+
+            // Validate
+            cert.HasPrivateKey.ShouldBe(false);
             cert.SubjectName.Name.ShouldBe("CN=www.example.com, OU=Org, O=Company Name, L=Portland, S=Oregon, C=US");
         }
 
