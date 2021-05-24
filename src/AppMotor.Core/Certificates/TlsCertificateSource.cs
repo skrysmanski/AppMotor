@@ -37,7 +37,7 @@ namespace AppMotor.Core.Certificates
         private static readonly byte[] PFX_MAGIC_NUMBER = { 0x30, 0x82 };
 
         // TODO: Are the number of dashes fixed?
-        private const string PEM_MAGIC_NUMBER = "-----BEGIN ";
+        private static readonly byte[] PEM_MAGIC_NUMBER = Encoding.ASCII.GetBytes("-----BEGIN ");
 
         /// <summary>
         /// Whether this source has a separate source for the private key (e.g. if the
@@ -121,7 +121,7 @@ namespace AppMotor.Core.Certificates
             {
                 return CertificateFileFormats.PFX;
             }
-            else if (bytes.Length > PEM_MAGIC_NUMBER.Length && ByteArrayEquals(bytes[0..PEM_MAGIC_NUMBER.Length], Encoding.ASCII.GetBytes(PEM_MAGIC_NUMBER))) // TODO: Cache the ASCII conversion, if possible
+            else if (bytes.Length > PEM_MAGIC_NUMBER.Length && ByteArrayEquals(bytes[0..PEM_MAGIC_NUMBER.Length], PEM_MAGIC_NUMBER))
             {
                 return CertificateFileFormats.PEM;
             }
@@ -189,7 +189,6 @@ namespace AppMotor.Core.Certificates
         /// be only the public key or the public and the private key combined.
         /// </summary>
         /// <seealso cref="HasSeparatePrivateKeySource"/>
-        // TODO: All implementations seem to be the same here
         protected abstract X509Certificate2 CreatePrimaryUnderlyingCertificate(X509KeyStorageFlags storageFlags, ReadOnlySpan<char> password);
 
         /// <summary>

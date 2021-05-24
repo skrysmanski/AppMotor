@@ -36,7 +36,6 @@ namespace AppMotor.Core.Certificates
     /// </remarks>
     public sealed class TlsCertificate : Disposable
     {
-        // TODO: What about X509Certificate3?
         private X509Certificate2? _underlyingCertificate;
 
         /// <summary>
