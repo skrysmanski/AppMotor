@@ -63,10 +63,7 @@ namespace AppMotor.Core.Processes
 
             foreach (var processArgument in this)
             {
-                if (processArgument != null)
-                {
-                    startInfoArguments.Add(processArgument);
-                }
+                startInfoArguments.Add(processArgument);
             }
         }
     }
