@@ -252,7 +252,7 @@ namespace AppMotor.Core.Tests.Threading
             var taskList = new TaskList<int>();
 
             var task1 = DoSomethingAndReturnSomethingAsync(milliseconds: 5);
-            var task2 = DoSomethingAndReturnSomethingAsync(milliseconds: 100);
+            var task2 = DoSomethingAndReturnSomethingAsync(milliseconds: 500);
 
             taskList += task1;
             taskList += task2;
