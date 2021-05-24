@@ -46,10 +46,10 @@ namespace AppMotor.Core.Certificates.Exporting
         }
 
         /// <summary>
-        /// Returns the blob as <see cref="ReadOnlySpan{T}"/>.
+        /// Returns the blob as <see cref="ReadOnlyMemory{T}"/>.
         /// </summary>
         [MustUseReturnValue]
-        public ReadOnlySpan<byte> ToBytes()
+        public ReadOnlyMemory<byte> ToBytes()
         {
             return this._bytesExporter();
         }
