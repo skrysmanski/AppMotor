@@ -17,7 +17,6 @@
 using System;
 
 using AppMotor.Core.Certificates;
-using AppMotor.Core.Security;
 
 using Shouldly;
 
@@ -50,11 +49,9 @@ namespace AppMotor.Core.Tests.Certificates
                 allowPrivateKeyExport: true
             );
 
-            using var password = new SecureStringSecret("P@ssw0rd");
-
             // Test
             var source = TlsCertificateSource.FromFile($"{TEST_CERT_FILES_BASE_PATH}/cert.pem", $"{TEST_CERT_FILES_BASE_PATH}/key_encrypted.pem");
-            using var cert = new TlsCertificate(source, password.AsSpan, allowPrivateKeyExport: true);
+            using var cert = new TlsCertificate(source, "P@ssw0rd", allowPrivateKeyExport: true);
 
             // Validate
             cert.SubjectName.Name.ShouldBe("CN=www.example.com, OU=Org, O=Company Name, L=Portland, S=Oregon, C=US");
@@ -70,11 +67,9 @@ namespace AppMotor.Core.Tests.Certificates
                 allowPrivateKeyExport: true
             );
 
-            using var password = new SecureStringSecret("P@ssw0rd");
-
             // Test
             var source = TlsCertificateSource.FromFile($"{TEST_CERT_FILES_BASE_PATH}/cert.pem", $"{TEST_CERT_FILES_BASE_PATH}/key_encrypted_pkcs1.pem");
-            var ex = Should.Throw<NotSupportedException>(() => new TlsCertificate(source, password.AsSpan));
+            var ex = Should.Throw<NotSupportedException>(() => new TlsCertificate(source, "P@ssw0rd"));
             ex.Message.ShouldContain("PKCS#1");
         }
 
@@ -98,11 +93,9 @@ namespace AppMotor.Core.Tests.Certificates
                 allowPrivateKeyExport: true
             );
 
-            using var password = new SecureStringSecret("P@ssw0rd");
-
             // Test
             var source = TlsCertificateSource.FromFile($"{TEST_CERT_FILES_BASE_PATH}/cert_encrypted.pfx");
-            using var cert = new TlsCertificate(source, password.AsSpan, allowPrivateKeyExport: true);
+            using var cert = new TlsCertificate(source, "P@ssw0rd", allowPrivateKeyExport: true);
 
             // Validate
             cert.SubjectName.Name.ShouldBe("CN=www.example.com, OU=Org, O=Company Name, L=Portland, S=Oregon, C=US");

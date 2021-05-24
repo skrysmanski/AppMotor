@@ -241,6 +241,7 @@ namespace AppMotor.Core.Certificates
             /// <inheritdoc />
             protected override bool HasSeparatePrivateKeySource => false;
 
+            // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
             public PfxCertificateSource(ReadOnlyMemory<byte> encodedCertificate, ReadOnlyMemory<byte>? separateEncodedPrivateKey)
             {
                 if (separateEncodedPrivateKey is not null)
