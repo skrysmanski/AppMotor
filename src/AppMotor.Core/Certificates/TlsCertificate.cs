@@ -26,8 +26,8 @@ namespace AppMotor.Core.Certificates
 {
     /// <summary>
     /// A certificate used for TLS encryption (e.g. HTTPS). To create an instance of this class,
-    /// it's recommended to create an instance of <see cref="TlsCertificateSource"/> and pass it
-    /// to <see cref="TlsCertificate(TlsCertificateSource,ReadOnlySpan{char})"/>.
+    /// it's first create an instance of <see cref="TlsCertificateSource"/> and then pass it to
+    /// the constructors of this class.
     /// </summary>
     /// <remarks>
     /// This class' primary purpose is to make <see cref="X509Certificate2"/> instances easier to
