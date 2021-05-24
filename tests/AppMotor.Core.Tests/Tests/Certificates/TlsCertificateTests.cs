@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using System.Security.Cryptography.X509Certificates;
 
 using AppMotor.Core.Certificates;
 
@@ -30,12 +31,14 @@ namespace AppMotor.Core.Tests.Certificates
         public void Test_CreateSelfSigned()
         {
             // Test
-            var cert = TlsCertificate.CreateSelfSigned("example.com", TimeSpan.FromDays(20));
+            using var cert = TlsCertificate.CreateSelfSigned("example.com", TimeSpan.FromDays(20));
 
             // Validate
             cert.SubjectName.Name.ShouldBe("CN=example.com");
             cert.NotAfter.Date.ShouldBe(DateTime.Today + TimeSpan.FromDays(20));
+            cert.NotBefore.Date.ShouldBe(DateTime.Today);
             cert.KeyAlgorithm.ShouldBe(CertificateKeyAlgorithms.RSA);
+            cert.Thumbprint.ShouldMatch("[A-F0-9]{40}");
         }
 
         [Fact]
@@ -53,5 +56,14 @@ namespace AppMotor.Core.Tests.Certificates
             certWithoutPrivateKey.HasPrivateKey.ShouldBe(false);
         }
 
+        [Fact]
+        public void Test_ConversionToX509Certificate()
+        {
+            using var cert = TlsCertificate.CreateSelfSigned("example.com", TimeSpan.FromDays(20));
+
+            X509Certificate2 nativeCert = cert;
+
+            nativeCert.ShouldBe(cert.UnderlyingCertificate);
+        }
     }
 }

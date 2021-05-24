@@ -17,6 +17,7 @@
 using System;
 
 using AppMotor.Core.Certificates;
+using AppMotor.Core.Exceptions;
 
 using Shouldly;
 
@@ -46,6 +47,16 @@ namespace AppMotor.Core.Tests.Certificates.Exporting
             using var reimportedCert = new TlsCertificate(TlsCertificateSource.FromBytes(exportedBytes));
             reimportedCert.PublicKey.ShouldBe(originalCert.PublicKey);
             reimportedCert.HasPrivateKey.ShouldBe(false);
+        }
+
+        [Fact]
+        public void Test_ExportInvalidFormat()
+        {
+            // Setup
+            using var originalCert = TlsCertificate.CreateSelfSigned("example.com", TimeSpan.FromDays(20));
+
+            // Test
+            Should.Throw<UnexpectedSwitchValueException>(() => originalCert.ExportPublicKey().As((CertificateFileFormats)1000));
         }
     }
 }

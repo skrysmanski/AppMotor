@@ -30,12 +30,31 @@ namespace AppMotor.Core.Tests.Certificates
         public void Test_Equals()
         {
             // Setup
-            var cert1 = TlsCertificate.CreateSelfSigned("example.com", TimeSpan.FromDays(2));
-            var cert2 = TlsCertificate.CreateSelfSigned("example.com", TimeSpan.FromDays(2));
+            using var cert1 = TlsCertificate.CreateSelfSigned("example.com", TimeSpan.FromDays(2));
+            using var cert2 = TlsCertificate.CreateSelfSigned("example.com", TimeSpan.FromDays(2));
 
             // Test
-            cert1.PublicKey.ShouldBe(cert1.PublicKey);
-            cert1.PublicKey.ShouldNotBe(cert2.PublicKey);
+            cert1.PublicKey.Equals(cert1.PublicKey).ShouldBe(true);
+            cert1.PublicKey.Equals(cert2.PublicKey).ShouldBe(false);
+
+            cert1.PublicKey.Equals((object?)cert1.PublicKey).ShouldBe(true);
+            cert1.PublicKey.Equals((object?)cert2.PublicKey).ShouldBe(false);
+
+            // ReSharper disable once EqualExpressionComparison
+            (cert1.PublicKey == cert1.PublicKey).ShouldBe(true);
+            (cert1.PublicKey != cert2.PublicKey).ShouldBe(true);
+
+            cert1.PublicKey.Equals(null).ShouldBe(false);
+        }
+
+        [Fact]
+        public void Test_GetHashCode()
+        {
+            // Setup
+            using var cert1 = TlsCertificate.CreateSelfSigned("example.com", TimeSpan.FromDays(2));
+
+            // Test
+            cert1.PublicKey.GetHashCode().ShouldNotBe(0);
         }
     }
 }

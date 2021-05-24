@@ -97,7 +97,8 @@ namespace AppMotor.Core.Certificates
         public DateTime NotAfter => this.UnderlyingCertificate.NotAfter;
 
         /// <summary>
-        /// The thumbprint of this certificate.
+        /// The thumbprint of this certificate. This property returns the thumbprint as upper-case hexadecimal string
+        /// (e.g. "3A164F12B1D0E208B3FBD94014634A0EBFD0B63B").
         /// </summary>
         [PublicAPI]
         public string Thumbprint => this.UnderlyingCertificate.Thumbprint;
