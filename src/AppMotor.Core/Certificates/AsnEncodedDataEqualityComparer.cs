@@ -21,11 +21,17 @@ using AppMotor.Core.Utils;
 
 namespace AppMotor.Core.Certificates
 {
-    public sealed class AsnEncodedDataComparer : SimpleRefTypeEqualityComparer<AsnEncodedData>
+    /// <summary>
+    /// Equality comparer for <see cref="AsnEncodedData"/>.
+    /// </summary>
+    public sealed class AsnEncodedDataEqualityComparer : SimpleRefTypeEqualityComparer<AsnEncodedData>
     {
-        public static AsnEncodedDataComparer Instance { get; } = new();
+        /// <summary>
+        /// The instance to use.
+        /// </summary>
+        public static AsnEncodedDataEqualityComparer Instance { get; } = new();
 
-        private AsnEncodedDataComparer()
+        private AsnEncodedDataEqualityComparer()
         {
         }
 

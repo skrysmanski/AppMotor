@@ -54,8 +54,8 @@ namespace AppMotor.Core.Certificates
             else
             {
                 return this.Oid == other.Oid
-                    && AsnEncodedDataComparer.Instance.Equals(this.UnderlyingValue.EncodedKeyValue, other.UnderlyingValue.EncodedKeyValue)
-                    && AsnEncodedDataComparer.Instance.Equals(this.UnderlyingValue.EncodedParameters, other.UnderlyingValue.EncodedParameters);
+                    && AsnEncodedDataEqualityComparer.Instance.Equals(this.UnderlyingValue.EncodedKeyValue, other.UnderlyingValue.EncodedKeyValue)
+                    && AsnEncodedDataEqualityComparer.Instance.Equals(this.UnderlyingValue.EncodedParameters, other.UnderlyingValue.EncodedParameters);
             }
         }
 
@@ -68,7 +68,7 @@ namespace AppMotor.Core.Certificates
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return HashCode.Combine(this.Oid, AsnEncodedDataComparer.Instance.GetHashCode(this.UnderlyingValue.EncodedKeyValue));
+            return HashCode.Combine(this.Oid, AsnEncodedDataEqualityComparer.Instance.GetHashCode(this.UnderlyingValue.EncodedKeyValue));
         }
 
         public static bool operator ==(CertificatePublicKey? left, CertificatePublicKey? right)
