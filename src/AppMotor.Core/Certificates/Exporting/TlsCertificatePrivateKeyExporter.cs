@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -82,6 +83,7 @@ namespace AppMotor.Core.Certificates.Exporting
         }
 
         [MustUseReturnValue]
+        [ExcludeFromCodeCoverage]
         internal byte[] ExportPrivateKey()
         {
             AsymmetricAlgorithm? privateKey = this._certificate.UnderlyingCertificate.PrivateKey;
