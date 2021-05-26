@@ -9,7 +9,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.IO.Abstractions.TestingHelpers" Version="13.2.9" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\AppMotor.Core\AppMotor.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Tests\Certificates\cert-files\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
