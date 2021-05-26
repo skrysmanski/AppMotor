@@ -125,17 +125,19 @@ namespace AppMotor.Core.Certificates.Pem
                         var blockType = DecodeBlockEnd(lineAsString);
                         if (blockType != curBlockType)
                         {
-                            throw new PemFormatException("Malformed PEM file (block types don't match)");
+                            throw new PemFormatException("Malformed PEM file (block types don't match).");
                         }
 
                         if (curBlockStart is null || curBlockEnd is null)
                         {
-                            throw new PemFormatException("Malformed PEM file (no block contents)");
+                            throw new PemFormatException("Malformed PEM file (no block contents).");
                         }
 
                         var blockInfo = new PemBlockInfo(blockType, new Range(curBlockStart.Value, curBlockEnd.Value));
                         blocks.Add(blockInfo);
                         curBlockType = null;
+                        curBlockStart = null;
+                        curBlockEnd = null;
                     }
                 }
                 else
@@ -144,7 +146,7 @@ namespace AppMotor.Core.Certificates.Pem
 
                     if (curBlockType is null)
                     {
-                        throw new PemFormatException("Malformed PEM file (missing block begin)");
+                        throw new PemFormatException("Malformed PEM file (missing block begin).");
                     }
 
                     // ReSharper disable once ConvertIfStatementToNullCoalescingAssignment
@@ -160,7 +162,7 @@ namespace AppMotor.Core.Certificates.Pem
 
             if (blocks.Count == 0)
             {
-                throw new PemFormatException("Malformed PEM file (no content)");
+                throw new PemFormatException("Malformed PEM file (no content).");
             }
 
             return blocks;
