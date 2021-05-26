@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO.Abstractions;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
@@ -173,7 +174,7 @@ namespace AppMotor.Core.Certificates
                         }
 
                     default:
-                        throw new InvalidOperationException($"Unsupported certificate key algorithm: {keyAlgorithm}");
+                        throw new NotSupportedException($"Unsupported certificate key algorithm: {keyAlgorithm}");
                 }
 
             }
@@ -291,6 +292,7 @@ namespace AppMotor.Core.Certificates
             }
 
             /// <inheritdoc />
+            [ExcludeFromCodeCoverage]
             protected override void ImportPrivateKeyInto(RSA rsa, ReadOnlySpan<char> password)
             {
                 throw new NotSupportedException("Pfx certificates can't have a separate private key.");

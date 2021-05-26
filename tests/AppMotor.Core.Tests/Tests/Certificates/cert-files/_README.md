@@ -29,3 +29,8 @@ When asked for a password, just hit Enter (without entering any).
     openssl pkcs12 -inkey key.pem -in cert.pem -export -out cert_encrypted.pfx
 
 Use `P@ssw0rd` as password.
+
+## `dsa_key.pem` and `dsa_pubkey.pem`
+
+    openssl dsaparam -genkey 2048 | openssl dsa -out dsa_key.pem
+    openssl req -new -key dsa_key.pem -subj "/C=US/ST=Oregon/L=Portland/O=Company Name/OU=Org/CN=www.example.com" | openssl x509 -req -signkey dsa_key.pem -out dsa_cert.pem

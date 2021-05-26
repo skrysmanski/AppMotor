@@ -89,6 +89,24 @@ namespace AppMotor.Core.Tests.Certificates
             ex.Message.ShouldContain("PKCS#1");
         }
 
+        /// <summary>
+        /// This test primarily exists to get code coverage to 100%.
+        /// </summary>
+        [Fact]
+        public void Test_ImportPem_ArgumentExceptionInMalformedPrivateKey()
+        {
+            var pubKey = File.ReadAllBytes($"{TEST_CERT_FILES_BASE_PATH}/cert.pem");
+            var privateKey = File.ReadAllBytes($"{TEST_CERT_FILES_BASE_PATH}/key.pem");
+
+            // Break private key Base64
+            privateKey[50] = 240;
+
+            var source = TlsCertificateSource.FromBytes(pubKey, privateKey);
+
+            // Test
+            Should.Throw<ArgumentException>(() => new TlsCertificate(source, password: "abc"));
+        }
+
         [Fact]
         public void Test_ImportPfx()
         {
@@ -117,6 +135,35 @@ namespace AppMotor.Core.Tests.Certificates
             cert.SubjectName.Name.ShouldBe("CN=www.example.com, OU=Org, O=Company Name, L=Portland, S=Oregon, C=US");
             cert.HasPrivateKey.ShouldBe(true);
             cert.ExportPublicAndPrivateKey().ExportPrivateKey().ShouldBe(unencryptedCert.ExportPublicAndPrivateKey().ExportPrivateKey());
+        }
+
+        [Fact]
+        public void Test_ImportPfx_WithSeparatePrivateKey()
+        {
+            // Test
+            Should.Throw<NotSupportedException>(() => TlsCertificateSource.FromFile($"{TEST_CERT_FILES_BASE_PATH}/cert.pfx", separatePrivateKeyFilePath: $"{TEST_CERT_FILES_BASE_PATH}/cert.pfx"));
+        }
+
+        [Fact]
+        public void Test_UnsupportedFormat()
+        {
+            var data = new byte[] { 0x00, 0x01, 0x02 };
+
+            var ex = Should.Throw<NotSupportedException>(() => TlsCertificateSource.FromBytes(data));
+            ex.Message.ShouldBe("The certificate type could not be determined.");
+        }
+
+        [Fact]
+        public void Test_UnsupportedKeyAlgorithm()
+        {
+            // Setup
+            // NOTE: We use a DSA certificate here to trigger the exception below. It's very unlikely that we ever add support for DSA.
+            var source = TlsCertificateSource.FromFile($"{TEST_CERT_FILES_BASE_PATH}/dsa_cert.pem", $"{TEST_CERT_FILES_BASE_PATH}/dsa_key.pem");
+
+            // Test
+            var ex = Should.Throw<NotSupportedException>(() => new TlsCertificate(source));
+
+            ex.Message.ShouldBe("Unsupported certificate key algorithm: DSA");
         }
     }
 }
