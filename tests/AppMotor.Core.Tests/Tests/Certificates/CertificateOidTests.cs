@@ -14,6 +14,8 @@
 // limitations under the License.
 #endregion
 
+using System.Security.Cryptography;
+
 using AppMotor.Core.Certificates;
 
 using Shouldly;
@@ -40,6 +42,16 @@ namespace AppMotor.Core.Tests.Certificates
 
             rsaOidById.Equals(rsaOidByName).ShouldBe(true);
             rsaOidById.Equals(otherOid).ShouldBe(false);
+
+            rsaOidById.Equals(rsaOidById).ShouldBe(true);
+            rsaOidById.Equals(new CertificateOid()).ShouldBe(false);
+
+            (rsaOidById == rsaOidByName).ShouldBe(true);
+            (rsaOidById != otherOid).ShouldBe(true);
+
+            // ReSharper disable once SuspiciousTypeConversion.Global
+            rsaOidById.Equals("").ShouldBe(false);
+            rsaOidById.Equals((object)rsaOidByName).ShouldBe(true);
         }
 
         [Fact]
@@ -49,6 +61,27 @@ namespace AppMotor.Core.Tests.Certificates
             var rsaOidByName = new CertificateOid("RSA");
 
             rsaOidById.GetHashCode().ShouldBe(rsaOidByName.GetHashCode());
+        }
+
+        [Fact]
+        public void Test_ToString()
+        {
+            var rsaOidById = new CertificateOid("1.2.840.113549.1.1.1");
+            var rsaOidByName = new CertificateOid("RSA");
+
+            rsaOidById.ToString().ShouldBe("1.2.840.113549.1.1.1");
+            rsaOidByName.ToString().ShouldBe("1.2.840.113549.1.1.1");
+
+            new CertificateOid().ToString().ShouldBe("");
+        }
+
+        [Fact]
+        public void Test_ImplicitConversion()
+        {
+            Oid oid = new CertificateOid("1.2.840.113549.1.1.1");
+            CertificateOid certOid = oid;
+
+            certOid.Value.ShouldBe("1.2.840.113549.1.1.1");
         }
     }
 }

@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 
 using AppMotor.Core.Utils;
@@ -66,6 +67,7 @@ namespace AppMotor.Core.Certificates
         /// Value to be disabled in a debugger.
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        [ExcludeFromCodeCoverage]
         private string DebuggerDisplayValue
         {
             get
@@ -91,7 +93,7 @@ namespace AppMotor.Core.Certificates
         /// </summary>
         /// <param name="oid">The oid as string - either as numbered notation (e.g. "1.2.840.113549.1.1.1")
         /// or a friendly name (e.g. "RSA").</param>
-        public CertificateOid([NotNull] string oid)
+        public CertificateOid(string oid)
         {
             Validate.ArgumentWithName(nameof(oid)).IsNotNullOrWhiteSpace(oid);
 
