@@ -18,7 +18,9 @@ using Microsoft.Extensions.Logging;
 namespace AppMotor.CliApp.HttpServer
 {
     /// <summary>
-    /// A <see cref="CliCommand"/> for running an HTTP(S) server (Kestrel).
+    /// A <see cref="CliCommand"/> for running an HTTP(S) server (Kestrel). You can use it as root
+    /// command with <see cref="CliApplicationWithCommand"/> or as a verb with <see cref="CliApplicationWithVerbs"/>.
+    /// See <see cref="CliCommand"/> for more details.
     /// </summary>
     [PublicAPI]
     public abstract class HttpServerCommand : CliCommandWithGenericHost

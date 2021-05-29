@@ -28,9 +28,12 @@ using JetBrains.Annotations;
 namespace AppMotor.CliApp.CommandLine
 {
     /// <summary>
-    /// Represents a command (or executable verb) in a command line call; e.g. in "git add ." the word "add" is the command.
+    /// Represents a command (or executable verb; see <see cref="CliVerb"/>) in a command line call; e.g.
+    /// in "git add ." the word "add" is the command.
     ///
     /// <para>Commands can be nested like "myapp command1 subcommmand --some-option".</para>
+    ///
+    /// <para>Can also be used as root command with <see cref="CliApplicationWithCommand"/>.</para>
     /// </summary>
     public abstract class CliCommand
     {
