@@ -47,7 +47,7 @@ namespace AppMotor.CliApp.CommandLine.Utils
 
             builder.UseExceptionHandler((exception, context) => {
                 int exitCode = exceptionHandlerFunc(exception);
-                context.ResultCode = exitCode;
+                context.ExitCode = exitCode;
             });
 
             builder.Build();

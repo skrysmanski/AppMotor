@@ -143,19 +143,20 @@ namespace AppMotor.CliApp.CommandLine
 
         private Symbol CreateUnderlyingNamedParameter()
         {
-            var option = new Option<T>(this.Names.ToArray(), this.HelpText)
-            {
-                AllowMultipleArgumentsPerToken = false,
-            };
+            Option<T> option;
 
-            if (this.DefaultValue.IsSet)
+            if (this.DefaultValue.IsSet && ShouldSetUnderlyingDefaultValueForOptionalParameter())
             {
-                if (ShouldSetUnderlyingDefaultValueForOptionalParameter())
-                {
-                    option.Argument.SetDefaultValue(this.DefaultValue.Value);
-                }
+                option = new Option<T>(this.Names.ToArray(), () => this.DefaultValue.Value, this.HelpText);
             }
             else
+            {
+                option = new Option<T>(this.Names.ToArray(), this.HelpText);
+            }
+
+            option.AllowMultipleArgumentsPerToken = false;
+
+            if (!this.DefaultValue.IsSet)
             {
                 option.IsRequired = true;
             }
@@ -194,7 +195,7 @@ namespace AppMotor.CliApp.CommandLine
         }
 
         /// <summary>
-        /// This method determines whether the default value is set in the underlying implementation
+        /// This method determines whether the default value is to be set in the underlying implementation
         /// (i.e. <see cref="Argument.SetDefaultValue"/>). For certain cases (especially when the
         /// default value is <c>null</c>), we don't set the default value as it will show up
         /// as <c>[default: ]</c> in the parameters help text - and that's not useful.

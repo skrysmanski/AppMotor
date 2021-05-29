@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
+using System.CommandLine.Binding;
 using System.CommandLine.Builder;
 
 using AppMotor.CliApp.CommandLine;
@@ -420,7 +421,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             param.DefaultValue.Value.ShouldBe(42);
 
             var underlyingImplementation = (Option<int>)param.UnderlyingImplementation;
-            underlyingImplementation.Argument.HasDefaultValue.ShouldBe(true);
+            ((IValueDescriptor)underlyingImplementation).HasDefaultValue.ShouldBe(true);
             underlyingImplementation.IsRequired.ShouldBe(false);
 
             // Test without specifying parameter
@@ -458,7 +459,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             param.DefaultValue.Value.ShouldBeNull();
 
             var underlyingImplementation = (Option<int?>)param.UnderlyingImplementation;
-            underlyingImplementation.Argument.HasDefaultValue.ShouldBe(false);
+            ((IValueDescriptor)underlyingImplementation).HasDefaultValue.ShouldBe(false);
             underlyingImplementation.IsRequired.ShouldBe(false);
 
             // Test without specifying parameter
@@ -496,7 +497,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             param.DefaultValue.Value.ShouldBeNull();
 
             var underlyingImplementation = (Option<string?>)param.UnderlyingImplementation;
-            underlyingImplementation.Argument.HasDefaultValue.ShouldBe(false);
+            ((IValueDescriptor)underlyingImplementation).HasDefaultValue.ShouldBe(false);
             underlyingImplementation.IsRequired.ShouldBe(false);
 
             // Test without specifying parameter
@@ -527,7 +528,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             param.DefaultValue.IsSet.ShouldBe(false);
 
             var underlyingImplementation = (Option<int>)param.UnderlyingImplementation;
-            underlyingImplementation.Argument.HasDefaultValue.ShouldBe(false);
+            ((IValueDescriptor)underlyingImplementation).HasDefaultValue.ShouldBe(false);
             underlyingImplementation.IsRequired.ShouldBe(true);
 
             // Test without specifying parameter
@@ -561,7 +562,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             param.DefaultValue.IsSet.ShouldBe(true);
 
             var underlyingImplementation = (Option<bool>)param.UnderlyingImplementation;
-            underlyingImplementation.Argument.HasDefaultValue.ShouldBe(false);
+            ((IValueDescriptor)underlyingImplementation).HasDefaultValue.ShouldBe(false);
             underlyingImplementation.IsRequired.ShouldBe(false);
 
             // Test without specifying parameter
@@ -799,7 +800,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
 
             var underlyingImplementation = (Option<int?>)param.UnderlyingImplementation;
             underlyingImplementation.IsRequired.ShouldBe(false);
-            underlyingImplementation.Argument.HasDefaultValue.ShouldBe(false);
+            ((IValueDescriptor)underlyingImplementation).HasDefaultValue.ShouldBe(false);
         }
 
         [Theory]
@@ -861,7 +862,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
 
             var underlyingImplementation = (Option<string?>)param.UnderlyingImplementation;
             underlyingImplementation.IsRequired.ShouldBe(!explicitSet);
-            underlyingImplementation.Argument.HasDefaultValue.ShouldBe(false);
+            ((IValueDescriptor)underlyingImplementation).HasDefaultValue.ShouldBe(false);
         }
 
         [Theory]
@@ -939,7 +940,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
 
             var underlyingImplementation = (Option<bool>)param.UnderlyingImplementation;
             underlyingImplementation.IsRequired.ShouldBe(false);
-            underlyingImplementation.Argument.HasDefaultValue.ShouldBe(false);
+            ((IValueDescriptor)underlyingImplementation).HasDefaultValue.ShouldBe(false);
         }
 
         [Theory]
