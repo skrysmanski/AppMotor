@@ -131,4 +131,9 @@
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
   </PropertyGroup>
 
+  <ItemGroup Label="Code Analysis">
+    <!-- This file specifies the severities of all CA rules. -->
+    <GlobalAnalyzerConfigFiles Include="$(ProjectsRootDirectory)_StyleGuide/ca.globalconfig" />
+  </ItemGroup>
+
 </Project>
