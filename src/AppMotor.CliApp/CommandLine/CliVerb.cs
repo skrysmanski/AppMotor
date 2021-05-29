@@ -31,6 +31,8 @@ namespace AppMotor.CliApp.CommandLine
     /// Represents a verb in a command line (like <c>add</c> in <c>git add .</c>). Verbs can be executable (if <see cref="Command"/>
     /// is set) or simply used for grouping.
     /// </summary>
+    /// <seealso cref="CliApplicationWithVerbs"/>
+    /// <seealso cref="CliCommand"/>
     public class CliVerb
     {
         /// <summary>

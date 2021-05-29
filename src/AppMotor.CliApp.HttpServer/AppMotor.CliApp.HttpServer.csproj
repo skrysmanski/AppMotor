@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <Import Project="$(ProjectCommonsDirectory)Project.Code.props" />
+  <Import Project="$(ProjectCommonsDirectory)Project.NuGetPackage.props" />
+  <Import Project="../Common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+
+    <OutputType>Library</OutputType>
+
+    <!-- See also: https://docs.microsoft.com/en-us/nuget/create-packages/prerelease-packages -->
+    <Version>$(AppMotorCliAppVersion)</Version>
+
+    <Description>APIs for running a HTTP(S) server (Kestrel) commandline application.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AppMotor.CliApp.Hosting\AppMotor.CliApp.Hosting.csproj" />
+    <ProjectReference Include="..\AppMotor.Core\AppMotor.Core.csproj" />
+  </ItemGroup>
+
+</Project>
