@@ -143,6 +143,32 @@ namespace AppMotor.CliApp.Tests.CommandLine
             app.TerminalOutput.ShouldContain("A sub command named #sub2#");
         }
 
+        /// <summary>
+        /// Verifies that the named parameters of the command appear before the general parameters (--debug, help, version).
+        /// </summary>
+        [Fact]
+        public void Test_NamedParameterOrder()
+        {
+            // Setup
+            var testCommand = new CommandWithNamedParam();
+            var app = new TestApplicationWithCommand()
+            {
+                Command = testCommand,
+            };
+
+            // Test
+            app.Run("--help");
+
+            // Verify
+            int valueParamIndex = app.TerminalOutput.IndexOf("--value", StringComparison.Ordinal);
+            valueParamIndex.ShouldNotBe(-1);
+
+            // These parameters must appear after "--value".
+            app.TerminalOutput.IndexOf("--debug", StringComparison.Ordinal).ShouldBeGreaterThan(valueParamIndex);
+            app.TerminalOutput.IndexOf("--help", StringComparison.Ordinal).ShouldBeGreaterThan(valueParamIndex);
+            app.TerminalOutput.IndexOf("--version", StringComparison.Ordinal).ShouldBeGreaterThan(valueParamIndex);
+        }
+
         private sealed class TestApplication : TestApplicationWithVerbs
         {
             /// <inheritdoc />
@@ -214,6 +240,20 @@ namespace AppMotor.CliApp.Tests.CommandLine
                 {
                     throw new InvalidOperationException("We should not get here.");
                 }
+            }
+        }
+
+        private sealed class CommandWithNamedParam : CliCommand
+        {
+            /// <inheritdoc />
+            protected override CliCommandExecutor Executor => new(Execute);
+
+            // ReSharper disable once UnusedMember.Local
+            public readonly CliParam<int> ValueParam = new("--value");
+
+            private void Execute()
+            {
+                throw new NotSupportedException();
             }
         }
     }

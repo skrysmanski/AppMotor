@@ -98,8 +98,6 @@ namespace AppMotor.CliApp.Tests.CommandLine
             var caughtException = app.RunWithExpectedException("abc");
 
             caughtException.ShouldNotBeNull();
-            caughtException.ShouldBeOfType<InvalidOperationException>();
-            caughtException.Message.ShouldBe("Verbs must not be null.");
         }
 
         private sealed class ExceptionTestApplication : TestApplicationWithVerbs

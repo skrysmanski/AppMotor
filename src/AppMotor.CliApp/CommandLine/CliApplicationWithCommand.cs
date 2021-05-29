@@ -15,7 +15,7 @@
 #endregion
 
 using System;
-using System.CommandLine;
+using System.Linq;
 using System.Threading.Tasks;
 
 using AppMotor.CliApp.CommandLine.Utils;
@@ -84,22 +84,17 @@ namespace AppMotor.CliApp.CommandLine
 
         private async Task<int> Execute(string[] args)
         {
-            var rootCommand = RootCommandFactory.CreateRootCommand(
-                appDescription: this.AppDescription,
-                exceptionHandlerFunc: ProcessUnhandledException
-            );
-
             var commandHandler = new CliCommand.CliCommandHandler(this.Command, this.EnableGlobalDebugParam, this.Terminal);
 
-            foreach (var cliParam in commandHandler.AllParams)
-            {
-                rootCommand.Add(cliParam.UnderlyingImplementation);
-            }
-
-            rootCommand.Handler = commandHandler;
-
-            return await rootCommand.InvokeAsync(args, CommandLineConsole.FromTerminal(this.Terminal))
-                                    .ConfigureAwait(continueOnCapturedContext: false);
+            return await RootCommandInvoker.InvokeRootCommand(
+                    this.AppDescription,
+                    commandHandler.AllParams.Select(p => p.UnderlyingImplementation),
+                    commandHandler,
+                    this.Terminal,
+                    args,
+                    ProcessUnhandledException
+                )
+                .ConfigureAwait(continueOnCapturedContext: false);
         }
     }
 }

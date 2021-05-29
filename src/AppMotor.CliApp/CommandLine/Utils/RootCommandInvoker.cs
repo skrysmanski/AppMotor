@@ -15,17 +15,26 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Builder;
+using System.CommandLine.Invocation;
+using System.Threading.Tasks;
 
-using JetBrains.Annotations;
+using AppMotor.CliApp.Terminals;
 
 namespace AppMotor.CliApp.CommandLine.Utils
 {
-    internal static class RootCommandFactory
+    internal static class RootCommandInvoker
     {
-        [MustUseReturnValue]
-        public static RootCommand CreateRootCommand(string? appDescription, Func<Exception, int> exceptionHandlerFunc)
+        public static async Task<int> InvokeRootCommand(
+                string? appDescription,
+                IEnumerable<Symbol> rootSymbols,
+                ICommandHandler? commandHandler,
+                ITerminal terminal,
+                string[] args,
+                Func<Exception, int> exceptionHandlerFunc
+            )
         {
             var rootCommand = new RootCommand();
 
@@ -34,9 +43,22 @@ namespace AppMotor.CliApp.CommandLine.Utils
                 rootCommand.Description = appDescription;
             }
 
+            foreach (var symbol in rootSymbols)
+            {
+                rootCommand.Add(symbol);
+            }
+
+            if (commandHandler is not null)
+            {
+                rootCommand.Handler = commandHandler;
+            }
+
+            // IMPORTANT: This must be called after all root symbols have been added - otherwise
+            //   the "--version" and the "--help" option will be listed before other named parameters.
             CreatePipelineFor(rootCommand, exceptionHandlerFunc);
 
-            return rootCommand;
+            return await rootCommand.InvokeAsync(args, CommandLineConsole.FromTerminal(terminal))
+                                    .ConfigureAwait(continueOnCapturedContext: false);
         }
 
         private static void CreatePipelineFor(RootCommand rootCommand, Func<Exception, int> exceptionHandlerFunc)

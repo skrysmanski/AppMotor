@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.CommandLine;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -71,28 +70,20 @@ namespace AppMotor.CliApp.CommandLine
 
         private async Task<int> Execute(string[] args)
         {
-            var rootCommand = RootCommandFactory.CreateRootCommand(
-                appDescription: this.AppDescription,
-                exceptionHandlerFunc: ProcessUnhandledException
-            );
-
             if (this.Verbs.Count == 0)
             {
                 throw new InvalidOperationException($"No verbs have be defined in property '{nameof(this.Verbs)}'.");
             }
 
-            foreach (var cliVerb in this.Verbs)
-            {
-                if (cliVerb is null)
-                {
-                    throw new InvalidOperationException("Verbs must not be null.");
-                }
-
-                rootCommand.AddCommand(cliVerb.ToUnderlyingImplementation(enableDebugParam: this.EnableGlobalDebugParam, this.Terminal));
-            }
-
-            return await rootCommand.InvokeAsync(SortHelpFirst(args), CommandLineConsole.FromTerminal(this.Terminal))
-                                    .ConfigureAwait(continueOnCapturedContext: false);
+            return await RootCommandInvoker.InvokeRootCommand(
+                    this.AppDescription,
+                    this.Verbs.Select(verb => verb.ToUnderlyingImplementation(enableDebugParam: this.EnableGlobalDebugParam, this.Terminal)),
+                    commandHandler: null,
+                    this.Terminal,
+                    args: SortHelpFirst(args),
+                    ProcessUnhandledException
+                )
+                .ConfigureAwait(continueOnCapturedContext: false);
         }
 
         /// <summary>
