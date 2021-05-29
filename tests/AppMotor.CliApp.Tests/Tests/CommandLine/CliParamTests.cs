@@ -239,7 +239,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
                     break;
 
                 case CollectionDefaultValues.EmptyList:
-                    param = new ("value", positionIndex: 42)
+                    param = new("value", positionIndex: 42)
                     {
                         HelpText = "A collection of values.",
                         DefaultValue = new List<string>(),
