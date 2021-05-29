@@ -46,6 +46,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.CliApp.Samples.App
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.CliApp.HttpServer", "src\AppMotor.CliApp.HttpServer\AppMotor.CliApp.HttpServer.csproj", "{19B3F8AF-2C1D-4516-94EC-B8DF155BFB17}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_StyleGuide", "_StyleGuide", "{515E0138-C1FA-48D0-A43D-AD50971E421A}"
+	ProjectSection(SolutionItems) = preProject
+		_StyleGuide\ca.globalconfig = _StyleGuide\ca.globalconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -94,6 +99,7 @@ Global
 		{F4EAF0C1-51E2-40BD-8A54-627D8D958428} = {684A5508-0B72-421D-9335-DC5286E76D40}
 		{40B23696-445C-42B2-85AA-5ED5A3EF428B} = {6A287989-1384-4140-AFC8-8CA4B1F52D41}
 		{33259BEB-A97E-4869-B1F2-9B668C2A00B9} = {6A287989-1384-4140-AFC8-8CA4B1F52D41}
+		{515E0138-C1FA-48D0-A43D-AD50971E421A} = {D449EFC6-4D96-4FF2-B01F-A4748B50D9C3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FF64C9CC-C599-47C6-892D-FB620795361C}
