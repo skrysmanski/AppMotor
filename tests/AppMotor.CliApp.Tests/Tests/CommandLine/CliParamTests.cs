@@ -369,6 +369,8 @@ namespace AppMotor.CliApp.Tests.CommandLine
             app.Run("--help");
             app.TerminalOutput.ShouldContain("--value", Case.Sensitive, app.TerminalOutput);
             app.TerminalOutput.ShouldContain("[default:", Case.Sensitive, app.TerminalOutput);
+            app.TerminalOutput.ShouldContain("abc", Case.Sensitive, app.TerminalOutput);
+            app.TerminalOutput.ShouldContain("def", Case.Sensitive, app.TerminalOutput);
         }
 
         [Fact]
