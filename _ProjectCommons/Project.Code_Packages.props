@@ -17,6 +17,10 @@
         an update of Visual Studio). With this NuGet package reference we have full control
         over the version that's being used (and can upgrade faster than the SDK, if necessary).
         See: https://github.com/dotnet/roslyn-analyzers/issues/4506
+
+      NOTE 2: We could instead use <AnalysisLevel>5.0.3</AnalysisLevel> - but with a NuGet package
+        we can "ask" NuGet whether a newer version is available. This is not possible with <AnalysisLevel>.
+        So we keep using the NuGet package.
     -->
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3" PrivateAssets="all" />
   </ItemGroup>
