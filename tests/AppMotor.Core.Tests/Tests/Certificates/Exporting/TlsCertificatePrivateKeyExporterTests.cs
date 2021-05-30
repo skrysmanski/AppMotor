@@ -41,7 +41,7 @@ namespace AppMotor.Core.Tests.Certificates.Exporting
             var exportedBytes = originalCert.ExportPublicAndPrivateKey().AsPfx().ToBytes();
 
             // Validate
-            CheckExportedBytesForCorrectFormat(exportedBytes.Span, CertificateFileFormats.PFX);
+            CheckExportedBytesForCorrectFormat(exportedBytes, CertificateFileFormats.PFX);
 
             using var reimportedCert = new TlsCertificate(TlsCertificateSource.FromBytes(exportedBytes), allowPrivateKeyExport: true);
             reimportedCert.PublicKey.ShouldBe(originalCert.PublicKey);
@@ -70,8 +70,8 @@ namespace AppMotor.Core.Tests.Certificates.Exporting
             var (publicKeyBytes, privateKeyBytes) = originalCert.ExportPublicAndPrivateKey().AsPem().ToBytes();
 
             // Validate
-            CheckExportedBytesForCorrectFormat(publicKeyBytes.Span, CertificateFileFormats.PEM);
-            CheckExportedBytesForCorrectFormat(privateKeyBytes.Span, CertificateFileFormats.PEM);
+            CheckExportedBytesForCorrectFormat(publicKeyBytes, CertificateFileFormats.PEM);
+            CheckExportedBytesForCorrectFormat(privateKeyBytes, CertificateFileFormats.PEM);
 
             using var reimportedCert = new TlsCertificate(TlsCertificateSource.FromBytes(publicKeyBytes, privateKeyBytes), allowPrivateKeyExport: true);
             reimportedCert.PublicKey.ShouldBe(originalCert.PublicKey);

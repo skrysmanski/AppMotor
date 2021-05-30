@@ -39,17 +39,23 @@ namespace AppMotor.Core.Certificates.Exporting
         /// <param name="bytesExporter">The exporter function; NOTE: Since the bytes
         /// may contain sensitive data, we store just the exporter function and only
         /// use it when needed. This way the sensitive data doesn't float around in
-        /// memory unnecessarily.</param>
+        /// memory unnecessarily. Also note that calling this method must create a
+        /// fresh copy of the data - not a shared cache.</param>
         internal SingleBlobExporter(Func<byte[]> bytesExporter)
         {
             this._bytesExporter = bytesExporter;
         }
 
         /// <summary>
-        /// Returns the blob as <see cref="ReadOnlyMemory{T}"/>.
+        /// Returns the blob as byte array.
         /// </summary>
+        /// <remarks>
+        /// The returned byte array is freshly created. The caller of this method takes
+        /// full ownership of it (and does not need to fear it is shared with some other
+        /// caller).
+        /// </remarks>
         [MustUseReturnValue]
-        public ReadOnlyMemory<byte> ToBytes()
+        public byte[] ToBytes()
         {
             return this._bytesExporter();
         }

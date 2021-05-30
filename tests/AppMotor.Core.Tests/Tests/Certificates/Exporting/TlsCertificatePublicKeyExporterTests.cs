@@ -42,7 +42,7 @@ namespace AppMotor.Core.Tests.Certificates.Exporting
             var exportedBytes = originalCert.ExportPublicKey().As(exportFormat).ToBytes();
 
             // Validate
-            CheckExportedBytesForCorrectFormat(exportedBytes.Span, exportFormat);
+            CheckExportedBytesForCorrectFormat(exportedBytes, exportFormat);
 
             using var reimportedCert = new TlsCertificate(TlsCertificateSource.FromBytes(exportedBytes));
             reimportedCert.PublicKey.ShouldBe(originalCert.PublicKey);

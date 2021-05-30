@@ -40,7 +40,8 @@ namespace AppMotor.Core.Certificates.Exporting
         /// <param name="publicKeyBytes">The public key bytes.</param>
         /// <param name="privateKeyBytesExporterFunc">The exported function for the private key bytes; NOTE:
         /// Since the bytes contain sensitive data, we store just the exporter function and only use it when
-        /// needed. This way the sensitive data doesn't float around in memory unnecessarily.</param>
+        /// needed. This way the sensitive data doesn't float around in memory unnecessarily. Also note that
+        /// calling this method must create a fresh copy of the data - not a shared cache.</param>
         public DoubleBlobExporter(byte[] publicKeyBytes, Func<byte[]> privateKeyBytesExporterFunc)
         {
             this._publicKeyBytes = publicKeyBytes;
@@ -48,13 +49,18 @@ namespace AppMotor.Core.Certificates.Exporting
         }
 
         /// <summary>
-        /// Returns the blobs as <see cref="ReadOnlyMemory{T}"/>.
+        /// Returns the blobs as byte arrays.
         /// </summary>
-        /// <returns></returns>
+        /// <remarks>
+        /// The returned byte arrays are freshly created. The caller of this method takes
+        /// full ownership of them (and does not need to fear they're shared with some other
+        /// caller).
+        /// </remarks>
         [MustUseReturnValue]
-        public (ReadOnlyMemory<byte> publicKeyBytes, ReadOnlyMemory<byte> privateKeyBytes) ToBytes()
+        public (byte[] publicKeyBytes, byte[] privateKeyBytes) ToBytes()
         {
-            return (this._publicKeyBytes, this._privateKeyBytesExporterFunc());
+            return ((byte[])this._publicKeyBytes.Clone(), this._privateKeyBytesExporterFunc());
+        }
         }
 
         /// <summary>
