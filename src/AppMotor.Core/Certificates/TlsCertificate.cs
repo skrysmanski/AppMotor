@@ -136,7 +136,12 @@ namespace AppMotor.Core.Certificates
         {
         }
 
-        internal TlsCertificate(X509Certificate2 certificate, bool allowPrivateKeyExport)
+        /// <summary>
+        /// Interop constructor. Only use it if you already an instance of <see cref="X509Certificate2"/>.
+        /// </summary>
+        /// <param name="certificate">The certificate.</param>
+        /// <param name="allowPrivateKeyExport">Whether the certificate was created with <see cref="X509KeyStorageFlags.Exportable"/>.</param>
+        public TlsCertificate(X509Certificate2 certificate, bool allowPrivateKeyExport)
         {
             Validate.ArgumentWithName(nameof(certificate)).IsNotNull(certificate);
 
