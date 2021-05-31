@@ -75,10 +75,38 @@ namespace AppMotor.Core.IO
         }
 
         /// <summary>
+        /// Implicitly converts the specified string into a <see cref="FilePath"/> instance.
+        /// </summary>
+        [ContractAnnotation("null => null; notnull => notnull")]
+        public static implicit operator FilePath?(string? value)
+        {
+            if (value is null)
+            {
+                return null;
+            }
+
+            return new(value);
+        }
+
+        /// <summary>
         /// Implicitly converts the specified <see cref="FileInfo"/> into a <see cref="FilePath"/> instance.
         /// </summary>
         public static implicit operator FilePath(FileInfo value)
         {
+            return new(value.FullName);
+        }
+
+        /// <summary>
+        /// Implicitly converts the specified <see cref="FileInfo"/> into a <see cref="FilePath"/> instance.
+        /// </summary>
+        [ContractAnnotation("null => null; notnull => notnull")]
+        public static implicit operator FilePath?(FileInfo? value)
+        {
+            if (value is null)
+            {
+                return null;
+            }
+
             return new(value.FullName);
         }
 

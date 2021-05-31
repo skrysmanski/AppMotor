@@ -58,7 +58,7 @@ namespace AppMotor.Core.IO
         }
 
         /// <summary>
-        /// Implicitly converts the specified string into a <see cref="FilePath"/> instance.
+        /// Implicitly converts the specified string into a <see cref="DirectoryPath"/> instance.
         /// </summary>
         public static implicit operator DirectoryPath(string value)
         {
@@ -66,10 +66,38 @@ namespace AppMotor.Core.IO
         }
 
         /// <summary>
-        /// Implicitly converts the specified <see cref="FileInfo"/> into a <see cref="FilePath"/> instance.
+        /// Implicitly converts the specified string into a <see cref="DirectoryPath"/> instance.
+        /// </summary>
+        [ContractAnnotation("null => null; notnull => notnull")]
+        public static implicit operator DirectoryPath?(string? value)
+        {
+            if (value is null)
+            {
+                return null;
+            }
+
+            return new(value);
+        }
+
+        /// <summary>
+        /// Implicitly converts the specified <see cref="DirectoryInfo"/> into a <see cref="DirectoryPath"/> instance.
         /// </summary>
         public static implicit operator DirectoryPath(DirectoryInfo value)
         {
+            return new(value.FullName);
+        }
+
+        /// <summary>
+        /// Implicitly converts the specified <see cref="DirectoryInfo"/> into a <see cref="DirectoryPath"/> instance.
+        /// </summary>
+        [ContractAnnotation("null => null; notnull => notnull")]
+        public static implicit operator DirectoryPath?(DirectoryInfo? value)
+        {
+            if (value is null)
+            {
+                return null;
+            }
+
             return new(value.FullName);
         }
 

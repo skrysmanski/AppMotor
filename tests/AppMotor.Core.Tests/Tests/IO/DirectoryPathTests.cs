@@ -28,40 +28,40 @@ using Xunit;
 
 namespace AppMotor.Core.Tests.IO
 {
-    public sealed class FilePathTests
+    public sealed class DirectoryPathTests
     {
-        private const string TEST_FILE_PATH = "some/file";
+        private const string TEST_DIRECTORY_PATH = "some/dir";
 
         [Fact]
         public void Test_Value()
         {
-            var validPath = new FilePath("/some/file");
-            validPath.Value.ShouldBe("/some/file");
+            var validPath = new DirectoryPath("/some/dir");
+            validPath.Value.ShouldBe("/some/dir");
 
-            var invalidPath = new FilePath();
+            var invalidPath = new DirectoryPath();
             Should.Throw<InvalidOperationException>(() => invalidPath.Value);
         }
 
         [Fact]
         public void Test_ImplicitConversionFromString()
         {
-            FilePath filePathNonNullable = "abc/def";
+            DirectoryPath filePathNonNullable = "abc/def";
             filePathNonNullable.Value.ShouldBe("abc/def");
 
             string? nullString = null;
-            FilePath? filePathNullable = nullString;
+            DirectoryPath? filePathNullable = nullString;
             filePathNullable.HasValue.ShouldBe(false);
         }
 
         [Fact]
         public void Test_ImplicitConversionFromFileInfo()
         {
-            var nonNullFileInfo = new FileInfo(Environment.ExpandEnvironmentVariables("%TEMP%/abc.txt"));
-            FilePath filePathNonNullable = nonNullFileInfo;
-            filePathNonNullable.Value.ShouldBe(nonNullFileInfo.FullName);
+            var nonNullDirectoryInfo = new DirectoryInfo(Environment.ExpandEnvironmentVariables("%TEMP%"));
+            DirectoryPath filePathNonNullable = nonNullDirectoryInfo;
+            filePathNonNullable.Value.ShouldBe(nonNullDirectoryInfo.FullName);
 
-            FileInfo? nullFileInfo = null;
-            FilePath? filePathNullable = nullFileInfo;
+            DirectoryInfo? nullDirectoryInfo = null;
+            DirectoryPath? filePathNullable = nullDirectoryInfo;
             filePathNullable.HasValue.ShouldBe(false);
         }
 
@@ -70,7 +70,7 @@ namespace AppMotor.Core.Tests.IO
         {
             var testGuid = Guid.NewGuid().ToString();
 
-            var path = new FilePath("some/file");
+            var path = new DirectoryPath("some/dir");
 
             var pathMock = new Mock<IPath>(MockBehavior.Strict);
             pathMock
@@ -88,27 +88,27 @@ namespace AppMotor.Core.Tests.IO
         [Fact]
         public void Test_Exists()
         {
-            var (path, fileMock, fileSystem) = CreateTestObjects();
+            var (path, directoryMock, fileSystem) = CreateTestObjects();
 
-            fileMock
-                .Setup(m => m.Exists(TEST_FILE_PATH))
+            directoryMock
+                .Setup(m => m.Exists(TEST_DIRECTORY_PATH))
                 .Returns(true);
 
             path.Exists(fileSystem).ShouldBe(true);
         }
 
-        private static (FilePath, Mock<IFile>, IFileSystem) CreateTestObjects()
+        private static (DirectoryPath, Mock<IDirectory>, IFileSystem) CreateTestObjects()
         {
-            var path = new FilePath(TEST_FILE_PATH);
+            var path = new DirectoryPath(TEST_DIRECTORY_PATH);
 
-            var fileMock = new Mock<IFile>(MockBehavior.Strict);
+            var directoryMock = new Mock<IDirectory>(MockBehavior.Strict);
 
             var fileSystemMock = new Mock<IFileSystem>(MockBehavior.Strict);
             fileSystemMock
-                .Setup(m => m.File)
-                .Returns(fileMock.Object);
+                .Setup(m => m.Directory)
+                .Returns(directoryMock.Object);
 
-            return (path, fileMock, fileSystemMock.Object);
+            return (path, directoryMock, fileSystemMock.Object);
         }
     }
 }
