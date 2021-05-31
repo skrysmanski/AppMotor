@@ -65,11 +65,9 @@ namespace AppMotor.Core.Certificates.Exporting
         /// </summary>
         /// <param name="filePath">The file path to the certificate file.</param>
         /// <param name="fileSystem">The file system to use; if <c>null</c>, <see cref="RealFileSystem.Instance"/> will be used.</param>
-        public void ToFile(string filePath, IFileSystem? fileSystem = null)
+        public void ToFile(FilePath filePath, IFileSystem? fileSystem = null)
         {
-            fileSystem ??= RealFileSystem.Instance;
-
-            fileSystem.File.WriteAllBytes(filePath, this._bytesExporter());
+            filePath.WriteAllBytes(this._bytesExporter(), fileSystem);
         }
 
         /// <summary>
@@ -77,11 +75,9 @@ namespace AppMotor.Core.Certificates.Exporting
         /// </summary>
         /// <param name="filePath">The file path to the certificate file.</param>
         /// <param name="fileSystem">The file system to use; if <c>null</c>, <see cref="RealFileSystem.Instance"/> will be used.</param>
-        public async Task ToFileAsync(string filePath, IFileSystem? fileSystem = null)
+        public async Task ToFileAsync(FilePath filePath, IFileSystem? fileSystem = null)
         {
-            fileSystem ??= RealFileSystem.Instance;
-
-            await fileSystem.File.WriteAllBytesAsync(filePath, this._bytesExporter()).ConfigureAwait(false);
+            await filePath.WriteAllBytesAsync(this._bytesExporter(), fileSystem).ConfigureAwait(false);
         }
     }
 }

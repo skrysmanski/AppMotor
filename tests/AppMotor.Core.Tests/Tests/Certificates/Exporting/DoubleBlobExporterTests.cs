@@ -14,7 +14,6 @@
 // limitations under the License.
 #endregion
 
-using System;
 using System.IO.Abstractions.TestingHelpers;
 using System.Security.Cryptography;
 using System.Threading.Tasks;

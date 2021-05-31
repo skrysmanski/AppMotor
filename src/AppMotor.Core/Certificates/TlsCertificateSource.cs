@@ -85,7 +85,7 @@ namespace AppMotor.Core.Certificates
         /// <param name="certificateFilePath">The path to the certificate file.</param>
         /// <param name="fileSystem">The file system to use; if <c>null</c>, <see cref="RealFileSystem.Instance"/> will be used.</param>
         [PublicAPI, MustUseReturnValue]
-        public static TlsCertificateSource FromFile(string certificateFilePath, IFileSystem? fileSystem = null)
+        public static TlsCertificateSource FromFile(FilePath certificateFilePath, IFileSystem? fileSystem = null)
         {
             return FromFile(certificateFilePath, separatePrivateKeyFilePath: null, fileSystem);
         }
@@ -98,18 +98,16 @@ namespace AppMotor.Core.Certificates
         /// if not needed.</param>
         /// <param name="fileSystem">The file system to use; if <c>null</c>, <see cref="RealFileSystem.Instance"/> will be used.</param>
         [PublicAPI, MustUseReturnValue]
-        public static TlsCertificateSource FromFile(string certificateFilePath, string? separatePrivateKeyFilePath, IFileSystem? fileSystem = null)
+        public static TlsCertificateSource FromFile(FilePath certificateFilePath, FilePath? separatePrivateKeyFilePath, IFileSystem? fileSystem = null)
         {
-            fileSystem ??= RealFileSystem.Instance;
-
-            var certificateBytes = fileSystem.File.ReadAllBytes(certificateFilePath);
+            var certificateBytes = certificateFilePath.ReadAllBytes(fileSystem);
             if (separatePrivateKeyFilePath is null)
             {
                 return FromBytes(certificateBytes);
             }
             else
             {
-                var separatePrivateKeyBytes = fileSystem.File.ReadAllBytes(separatePrivateKeyFilePath);
+                var separatePrivateKeyBytes = separatePrivateKeyFilePath.Value.ReadAllBytes(fileSystem);
                 return FromBytes(certificateBytes, separatePrivateKeyBytes);
             }
         }

@@ -61,6 +61,17 @@ namespace AppMotor.Core.Certificates.Exporting
         {
             return ((byte[])this._publicKeyBytes.Clone(), this._privateKeyBytesExporterFunc());
         }
+
+        /// <summary>
+        /// Stores the blobs in the file system.
+        /// </summary>
+        /// <param name="publicKeyFilePath">The file path to the public key file.</param>
+        /// <param name="privateKeyFilePath">The file path to the private key file.</param>
+        /// <param name="fileSystem">The file system to use; if <c>null</c>, <see cref="RealFileSystem.Instance"/> will be used.</param>
+        public void ToFile(FilePath publicKeyFilePath, FilePath privateKeyFilePath, IFileSystem? fileSystem = null)
+        {
+            publicKeyFilePath.WriteAllBytes(this._publicKeyBytes, fileSystem);
+            privateKeyFilePath.WriteAllBytes(this._privateKeyBytesExporterFunc(), fileSystem);
         }
 
         /// <summary>
@@ -69,26 +80,10 @@ namespace AppMotor.Core.Certificates.Exporting
         /// <param name="publicKeyFilePath">The file path to the public key file.</param>
         /// <param name="privateKeyFilePath">The file path to the private key file.</param>
         /// <param name="fileSystem">The file system to use; if <c>null</c>, <see cref="RealFileSystem.Instance"/> will be used.</param>
-        public void ToFile(string publicKeyFilePath, string privateKeyFilePath, IFileSystem? fileSystem = null)
+        public async Task ToFileAsync(FilePath publicKeyFilePath, FilePath privateKeyFilePath, IFileSystem? fileSystem = null)
         {
-            fileSystem ??= RealFileSystem.Instance;
-
-            fileSystem.File.WriteAllBytes(publicKeyFilePath, this._publicKeyBytes);
-            fileSystem.File.WriteAllBytes(privateKeyFilePath, this._privateKeyBytesExporterFunc());
-        }
-
-        /// <summary>
-        /// Stores the blobs in the file system.
-        /// </summary>
-        /// <param name="publicKeyFilePath">The file path to the public key file.</param>
-        /// <param name="privateKeyFilePath">The file path to the private key file.</param>
-        /// <param name="fileSystem">The file system to use; if <c>null</c>, <see cref="RealFileSystem.Instance"/> will be used.</param>
-        public async Task ToFileAsync(string publicKeyFilePath, string privateKeyFilePath, IFileSystem? fileSystem = null)
-        {
-            fileSystem ??= RealFileSystem.Instance;
-
-            var publicKeyWriteTask = fileSystem.File.WriteAllBytesAsync(publicKeyFilePath, this._publicKeyBytes);
-            var privateKeyWriteTask = fileSystem.File.WriteAllBytesAsync(privateKeyFilePath, this._privateKeyBytesExporterFunc());
+            var publicKeyWriteTask = publicKeyFilePath.WriteAllBytesAsync(this._publicKeyBytes, fileSystem);
+            var privateKeyWriteTask = privateKeyFilePath.WriteAllBytesAsync(this._privateKeyBytesExporterFunc(), fileSystem);
 
             await Task.WhenAll(publicKeyWriteTask, privateKeyWriteTask).ConfigureAwait(false);
         }
