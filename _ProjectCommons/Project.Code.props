@@ -98,24 +98,33 @@
   </Target>
 
   <!--
-    Make shared assembly attributes configurable.
-  -->
-  <Target Name="_AddConditionalsForCommonAssemblyInfo" BeforeTargets="CoreCompile">
-    <PropertyGroup>
-      <DefineConstants Condition=" '$(ClsCompliant)' != 'false' ">$(DefineConstants);CLS_COMPLIANT</DefineConstants>
-    </PropertyGroup>
-  </Target>
+    Defines assembly wide attributes.
 
-  <ItemGroup>
-    <!-- Shared assembly attributes that can't be set via .props file. -->
-    <Compile Include="$(MSBuildThisFileDirectory)CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
-  </ItemGroup>
-
-  <!--
-    Make internals automatically available to the associated tests project.
+    For "custom" assembly attributes, see: https://github.com/dotnet/msbuild/issues/2281#issuecomment-803217731
   -->
-  <ItemGroup>
+  <ItemGroup Label="Assembly Attributes">
+    <!--
+      Make internals automatically available to the associated tests project.
+    -->
     <InternalsVisibleTo Include="$(MSBuildProjectName).Tests" />
+
+    <!--
+      Mark this assembly as "CLS compliant" or "not CLS compliant".
+
+      You should always mark an assembly as "CLS compliant", if possible (this is also the default in "Project.Code.props").
+
+      The only reason to mark an assembly as "not CLS compliant" is if it's using "not CLS compliant"
+      dependencies that have "public" or "protected" visibility. ASP.NET Core is an example of such a dependency.
+
+      To mark this assembly as "not CLS compliant", add the property "<ClsCompliant>false</ClsCompliant>" to
+      your project file.
+
+      For details, see: https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/CA1014
+    -->
+    <AssemblyAttribute Include="System.CLSCompliantAttribute">
+        <_Parameter1 Condition=" '$(ClsCompliant)' != 'false' ">true</_Parameter1>
+        <_Parameter1 Condition=" '$(ClsCompliant)' == 'false' ">false</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
 
   <!--
