@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Moq" Version="4.16.1" />
     <PackageReference Include="System.IO.Abstractions.TestingHelpers" Version="13.2.33" />
   </ItemGroup>
 
