@@ -19,6 +19,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 using AppMotor.Core.Utils;
 
@@ -49,7 +51,7 @@ namespace AppMotor.Core.IO
         /// </summary>
         /// <param name="value">The value; must not be null, empty or just whitespace and must
         /// not end with <c>/</c> or <c>\</c>.</param>
-        public FilePath([NotNull] string value)
+        public FilePath(string value)
         {
             Validate.ArgumentWithName(nameof(value)).IsNotNullOrWhiteSpace(value);
 
@@ -177,18 +179,6 @@ namespace AppMotor.Core.IO
             return (fileSystem ?? RealFileSystem.Instance).File.OpenWrite(this.Value);
         }
 
-        /// <inheritdoc cref="File.AppendAllLines(string,IEnumerable{string},Encoding)"/>
-        public void AppendAllLines(IEnumerable<string> contents, Encoding encoding, IFileSystem? fileSystem = null)
-        {
-            (fileSystem ?? RealFileSystem.Instance).File.AppendAllLines(this.Value, contents, encoding);
-        }
-
-        /// <inheritdoc cref="File.AppendAllText(string,string,Encoding)"/>
-        public void AppendAllText(string contents, Encoding encoding, IFileSystem? fileSystem = null)
-        {
-            (fileSystem ?? RealFileSystem.Instance).File.AppendAllText(this.Value, contents, encoding);
-        }
-
         /// <inheritdoc cref="File.Copy(string,string,bool)"/>
         public void Copy(string destFileName, bool overwrite, IFileSystem? fileSystem = null)
         {
@@ -261,6 +251,12 @@ namespace AppMotor.Core.IO
             return (fileSystem ?? RealFileSystem.Instance).File.ReadAllBytes(this.Value);
         }
 
+        /// <inheritdoc cref="File.ReadAllBytesAsync"/>
+        public Task<byte[]> ReadAllBytesAsync(IFileSystem? fileSystem = null, CancellationToken cancellationToken = default)
+        {
+            return (fileSystem ?? RealFileSystem.Instance).File.ReadAllBytesAsync(this.Value, cancellationToken);
+        }
+
         /// <inheritdoc cref="File.ReadLines(string,Encoding)"/>
         public IEnumerable<string> ReadLines(Encoding encoding, IFileSystem? fileSystem = null)
         {
@@ -273,10 +269,46 @@ namespace AppMotor.Core.IO
             return (fileSystem ?? RealFileSystem.Instance).File.ReadAllLines(this.Value, encoding);
         }
 
+        /// <inheritdoc cref="File.ReadAllLinesAsync(string,Encoding,CancellationToken)"/>
+        public Task<string[]> ReadAllLinesAsync(Encoding encoding, IFileSystem? fileSystem = null, CancellationToken cancellationToken = default)
+        {
+            return (fileSystem ?? RealFileSystem.Instance).File.ReadAllLinesAsync(this.Value, encoding, cancellationToken);
+        }
+
         /// <inheritdoc cref="File.ReadAllText(string,Encoding)"/>
         public string ReadAllText(Encoding encoding, IFileSystem? fileSystem = null)
         {
             return (fileSystem ?? RealFileSystem.Instance).File.ReadAllText(this.Value, encoding);
+        }
+
+        ///<inheritdoc cref="File.ReadAllTextAsync(string,Encoding,CancellationToken)"/>
+        public Task<string> ReadAllTextAsync(Encoding encoding, IFileSystem? fileSystem = null, CancellationToken cancellationToken = default)
+        {
+            return (fileSystem ?? RealFileSystem.Instance).File.ReadAllTextAsync(this.Value, encoding, cancellationToken);
+        }
+
+        /// <inheritdoc cref="File.AppendAllLines(string,IEnumerable{string},Encoding)"/>
+        public void AppendAllLines(IEnumerable<string> contents, Encoding encoding, IFileSystem? fileSystem = null)
+        {
+            (fileSystem ?? RealFileSystem.Instance).File.AppendAllLines(this.Value, contents, encoding);
+        }
+
+        /// <inheritdoc cref="File.AppendAllLinesAsync(string,IEnumerable{string},Encoding,CancellationToken)"/>
+        public Task AppendAllLinesAsync(IEnumerable<string> contents, Encoding encoding, IFileSystem? fileSystem = null, CancellationToken cancellationToken = default)
+        {
+            return (fileSystem ?? RealFileSystem.Instance).File.AppendAllLinesAsync(this.Value, contents, encoding, cancellationToken);
+        }
+
+        /// <inheritdoc cref="File.AppendAllText(string,string,Encoding)"/>
+        public void AppendAllText(string contents, Encoding encoding, IFileSystem? fileSystem = null)
+        {
+            (fileSystem ?? RealFileSystem.Instance).File.AppendAllText(this.Value, contents, encoding);
+        }
+
+        /// <inheritdoc cref="File.AppendAllTextAsync(string,string,Encoding,CancellationToken)"/>
+        public Task AppendAllTextAsync(string contents, Encoding encoding, IFileSystem? fileSystem = null, CancellationToken cancellationToken = default)
+        {
+            return (fileSystem ?? RealFileSystem.Instance).File.AppendAllTextAsync(this.Value, contents, encoding, cancellationToken);
         }
 
         /// <inheritdoc cref="File.WriteAllBytes"/>
@@ -285,22 +317,34 @@ namespace AppMotor.Core.IO
             (fileSystem ?? RealFileSystem.Instance).File.WriteAllBytes(this.Value, bytes);
         }
 
+        /// <inheritdoc cref="File.WriteAllBytesAsync"/>
+        public Task WriteAllBytesAsync(byte[] bytes, IFileSystem? fileSystem = null, CancellationToken cancellationToken = default)
+        {
+            return (fileSystem ?? RealFileSystem.Instance).File.WriteAllBytesAsync(this.Value, bytes, cancellationToken);
+        }
+
         /// <inheritdoc cref="File.WriteAllLines(string,IEnumerable{string},Encoding)"/>
         public void WriteAllLines(IEnumerable<string> contents, Encoding encoding, IFileSystem? fileSystem = null)
         {
             (fileSystem ?? RealFileSystem.Instance).File.WriteAllLines(this.Value, contents, encoding);
         }
 
-        /// <inheritdoc cref="File.WriteAllLines(string,string[],Encoding)"/>
-        public void WriteAllLines(string[] contents, Encoding encoding, IFileSystem? fileSystem = null)
+        /// <inheritdoc cref="File.WriteAllLinesAsync(string,IEnumerable{string},Encoding,CancellationToken)"/>
+        public Task WriteAllLinesAsync(IEnumerable<string> contents, Encoding encoding, IFileSystem? fileSystem = null, CancellationToken cancellationToken = default)
         {
-            (fileSystem ?? RealFileSystem.Instance).File.WriteAllLines(this.Value, contents, encoding);
+            return (fileSystem ?? RealFileSystem.Instance).File.WriteAllLinesAsync(this.Value, contents, encoding, cancellationToken);
         }
 
         /// <inheritdoc cref="File.WriteAllText(string,string,Encoding)"/>
         public void WriteAllText(string contents, Encoding encoding, IFileSystem? fileSystem = null)
         {
             (fileSystem ?? RealFileSystem.Instance).File.WriteAllText(this.Value, contents, encoding);
+        }
+
+        /// <inheritdoc cref="File.WriteAllTextAsync(string,string,Encoding,CancellationToken)"/>
+        public Task WriteAllTextAsync(string contents, Encoding encoding, IFileSystem? fileSystem = null, CancellationToken cancellationToken = default)
+        {
+            return (fileSystem ?? RealFileSystem.Instance).File.WriteAllTextAsync(this.Value, contents, encoding, cancellationToken);
         }
 
         /// <inheritdoc />

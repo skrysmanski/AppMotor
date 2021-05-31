@@ -50,7 +50,7 @@ namespace AppMotor.Core.IO
         /// <summary>
         /// Constructor.
         /// </summary>
-        public DirectoryPath([NotNull] string value)
+        public DirectoryPath(string value)
         {
             Validate.ArgumentWithName(nameof(value)).IsNotNullOrWhiteSpace(value);
 
