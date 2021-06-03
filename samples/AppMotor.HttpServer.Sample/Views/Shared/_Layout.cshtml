@@ -1,0 +1,30 @@
+﻿@*
+    The default layout for all Razor pages/views. Defined in "_ViewStart.cshtml".
+
+    For more details, see: https://docs.microsoft.com/en-us/aspnet/core/mvc/views/layout
+*@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MetalInit.Server</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <div>
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer>
+        <div>
+            &copy; @DateTime.Today.Year
+        </div>
+    </footer>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -57,6 +57,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.HttpServer", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.HttpServer.Tests", "tests\AppMotor.HttpServer.Tests\AppMotor.HttpServer.Tests.csproj", "{C0EBEF12-DFB0-4078-BE78-7030F00756AA}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.HttpServer.Sample", "samples\AppMotor.HttpServer.Sample\AppMotor.HttpServer.Sample.csproj", "{DF00176B-0C36-4F74-826C-687236B1A7C6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -103,6 +105,10 @@ Global
 		{C0EBEF12-DFB0-4078-BE78-7030F00756AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0EBEF12-DFB0-4078-BE78-7030F00756AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0EBEF12-DFB0-4078-BE78-7030F00756AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF00176B-0C36-4F74-826C-687236B1A7C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF00176B-0C36-4F74-826C-687236B1A7C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF00176B-0C36-4F74-826C-687236B1A7C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF00176B-0C36-4F74-826C-687236B1A7C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -116,6 +122,7 @@ Global
 		{515E0138-C1FA-48D0-A43D-AD50971E421A} = {D449EFC6-4D96-4FF2-B01F-A4748B50D9C3}
 		{A67BAA24-CC7F-4680-90EB-F10958C4C75B} = {C835EA81-9921-4245-8020-9F65AB4D2175}
 		{C0EBEF12-DFB0-4078-BE78-7030F00756AA} = {684A5508-0B72-421D-9335-DC5286E76D40}
+		{DF00176B-0C36-4F74-826C-687236B1A7C6} = {6A287989-1384-4140-AFC8-8CA4B1F52D41}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FF64C9CC-C599-47C6-892D-FB620795361C}
