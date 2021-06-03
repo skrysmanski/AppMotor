@@ -10,9 +10,9 @@
     <OutputType>Library</OutputType>
 
     <!-- See also: https://docs.microsoft.com/en-us/nuget/create-packages/prerelease-packages -->
-    <Version>$(AppMotorCliAppVersion)</Version>
+    <Version>$(AppMotorServerVersion)</Version>
 
-    <Description>APIs for running a HTTP(S) server (Kestrel) commandline application.</Description>
+    <Description>APIs for running a HTTP(S) server (Kestrel).</Description>
   </PropertyGroup>
 
   <ItemGroup>
