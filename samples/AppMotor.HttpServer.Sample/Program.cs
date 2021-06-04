@@ -24,12 +24,6 @@ namespace AppMotor.HttpServer.Sample
             private const int HTTPS_PORT = 1235;
 
             /// <inheritdoc />
-            protected override object CreateStartupClass(WebHostBuilderContext context)
-            {
-                return new Startup();
-            }
-
-            /// <inheritdoc />
             protected override void RegisterServices(IServiceCollection services)
             {
                 base.RegisterServices(services);

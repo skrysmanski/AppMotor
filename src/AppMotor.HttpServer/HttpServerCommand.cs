@@ -26,10 +26,15 @@ namespace AppMotor.HttpServer
     public abstract class HttpServerCommand : CliCommandWithGenericHost
     {
         /// <summary>
-        /// Creates the <c>Startup</c> class to use. See https://docs.microsoft.com/en-us/aspnet/core/fundamentals/startup
+        /// Creates the <c>Startup</c> class instance to use. See https://docs.microsoft.com/en-us/aspnet/core/fundamentals/startup
         /// for more details.
+        ///
+        /// <para>The default implementation creates an instance of <see cref="MvcStartup"/>.</para>
         /// </summary>
-        protected abstract object CreateStartupClass(WebHostBuilderContext context);
+        protected virtual object CreateStartupClass(WebHostBuilderContext context)
+        {
+            return new MvcStartup(GetType().Assembly);
+        }
 
         /// <summary>
         /// Returns the server port definitions this HTTP service should listen on.
