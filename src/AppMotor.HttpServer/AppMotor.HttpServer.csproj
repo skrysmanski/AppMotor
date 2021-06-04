@@ -13,6 +13,9 @@
     <Version>$(AppMotorServerVersion)</Version>
 
     <Description>APIs for running a HTTP(S) server (Kestrel).</Description>
+
+    <!-- Must be "false" because some ASP.NET Core APIs are non-compliant. -->
+    <ClsCompliant>false</ClsCompliant>
   </PropertyGroup>
 
   <ItemGroup>
