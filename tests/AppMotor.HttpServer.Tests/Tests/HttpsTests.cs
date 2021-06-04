@@ -62,7 +62,10 @@ namespace AppMotor.CliApp.HttpServer.Tests
         private sealed class TestServerCommand : HttpServerCommand
         {
             /// <inheritdoc />
-            protected override Type StartupClass { get; } = typeof(Startup);
+            protected override object CreateStartupClass(WebHostBuilderContext context)
+            {
+                return new Startup();
+            }
 
             /// <inheritdoc />
             protected override IEnumerable<HttpServerPort> GetServerPorts(IServiceProvider serviceProvider)

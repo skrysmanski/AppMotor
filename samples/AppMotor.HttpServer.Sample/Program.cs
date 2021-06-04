@@ -6,6 +6,7 @@ using AppMotor.Core.Certificates;
 using AppMotor.Core.Net;
 using AppMotor.HttpServer.Sample.Services;
 
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AppMotor.HttpServer.Sample
@@ -23,7 +24,10 @@ namespace AppMotor.HttpServer.Sample
             private const int HTTPS_PORT = 1235;
 
             /// <inheritdoc />
-            protected override Type StartupClass { get; } = typeof(Startup);
+            protected override object CreateStartupClass(WebHostBuilderContext context)
+            {
+                return new Startup();
+            }
 
             /// <inheritdoc />
             protected override void RegisterServices(IServiceCollection services)

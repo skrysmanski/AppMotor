@@ -6,7 +6,7 @@ using Microsoft.Extensions.Hosting;
 namespace AppMotor.HttpServer.Sample
 {
     /// <summary>
-    /// Startup class for this ASP.NET Core application. Specified by <see cref="Program.SampleServerCommand.StartupClass"/>.
+    /// Startup class for this ASP.NET Core application. Specified by <see cref="Program.SampleServerCommand.CreateStartupClass"/>.
     /// </summary>
     /// <remarks>
     /// Both the constructor and <see cref="Configure"/> support dependency injection for their parameters.

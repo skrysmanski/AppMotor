@@ -26,12 +26,10 @@ namespace AppMotor.HttpServer
     public abstract class HttpServerCommand : CliCommandWithGenericHost
     {
         /// <summary>
-        /// The <c>Startup</c> class to use. See https://docs.microsoft.com/en-us/aspnet/core/fundamentals/startup
+        /// Creates the <c>Startup</c> class to use. See https://docs.microsoft.com/en-us/aspnet/core/fundamentals/startup
         /// for more details.
-        ///
-        /// <para>Note: This type must be a class.</para>
         /// </summary>
-        protected abstract Type StartupClass { get; }
+        protected abstract object CreateStartupClass(WebHostBuilderContext context);
 
         /// <summary>
         /// Returns the server port definitions this HTTP service should listen on.
@@ -52,7 +50,7 @@ namespace AppMotor.HttpServer
                 webBuilder.UseKestrel(ConfigureKestrel);
 
                 // Use our "Startup" class for any further configuration.
-                webBuilder.UseStartup(this.StartupClass);
+                webBuilder.UseStartup(CreateStartupClass);
             });
         }
 
