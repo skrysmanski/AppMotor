@@ -15,7 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace AppMotor.CliApp.HttpServer
+namespace AppMotor.HttpServer
 {
     /// <summary>
     /// A <see cref="CliCommand"/> for running an HTTP(S) server (Kestrel). You can use it as root

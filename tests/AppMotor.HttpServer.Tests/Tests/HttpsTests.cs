@@ -23,6 +23,7 @@ using AppMotor.CliApp.CommandLine;
 using AppMotor.Core.Certificates;
 using AppMotor.Core.Collections;
 using AppMotor.Core.Net;
+using AppMotor.HttpServer;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
