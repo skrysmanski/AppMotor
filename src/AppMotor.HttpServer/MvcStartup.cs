@@ -14,6 +14,7 @@
 // limitations under the License.
 #endregion
 
+using System.IO;
 using System.Reflection;
 
 using JetBrains.Annotations;
@@ -40,7 +41,7 @@ namespace AppMotor.HttpServer
     /// </remarks>
     public class MvcStartup
     {
-        private readonly Assembly _primaryAssembly;
+        private readonly Assembly _mainAssembly;
 
         /// <summary>
         /// The name of the default controller. This controller is used (together with <see cref="DefaultActionName"/>)
@@ -65,10 +66,10 @@ namespace AppMotor.HttpServer
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="primaryAssembly">The assembly where all the controllers and views are located.</param>
-        public MvcStartup(Assembly primaryAssembly)
+        /// <param name="mainAssembly">The assembly where all the controllers and views are located.</param>
+        public MvcStartup(Assembly mainAssembly)
         {
-            this._primaryAssembly = primaryAssembly;
+            this._mainAssembly = mainAssembly;
         }
 
         /// <summary>
@@ -83,14 +84,35 @@ namespace AppMotor.HttpServer
         {
             var mvcBuilder = services.AddControllersWithViews();
 
+            //
+            // Enable views and controllers from the main assembly.
+            //
             // See: https://docs.microsoft.com/en-us/aspnet/core/mvc/advanced/app-parts?view=aspnetcore-5.0#load-aspnet-core-features
-            mvcBuilder
-                .AddApplicationPart(this._primaryAssembly) // Enables controllers from this assembly
-                .AddRazorRuntimeCompilation(); // Enables Razor views from this assembly
+            //
+            // Enables controllers from this assembly
+            mvcBuilder.AddApplicationPart(this._mainAssembly);
 
+            // Load the precompiled Razor views - if they exist.
+            // NOTE: I could never figure out where this is done in ASP.NET Core. So this behavior may
+            //   break in the future.
+            string viewsAssemblyPath = Path.ChangeExtension(this._mainAssembly.Location, "Views.dll");
+            if (File.Exists(viewsAssemblyPath))
+            {
+                var viewsAssembly = Assembly.LoadFrom(viewsAssemblyPath);
+                mvcBuilder.AddApplicationPart(viewsAssembly);
+            }
+            else
+            {
+                // No precompiled Razor views exist. Enable runtime compilation instead.
+                // NOTE: Runtime compiling Razor views takes a lot longer than using precompiled
+                //   views - at least on the first call. This is why this is not enabled by default.
+                mvcBuilder.AddRazorRuntimeCompilation();
+            }
+
+            // NOTE: This is taken from the example at the link above. Not sure what it does exactly.
             services.Configure<MvcRazorRuntimeCompilationOptions>(options =>
             {
-                options.FileProviders.Add(new EmbeddedFileProvider(this._primaryAssembly));
+                options.FileProviders.Add(new EmbeddedFileProvider(this._mainAssembly));
             });
         }
 
