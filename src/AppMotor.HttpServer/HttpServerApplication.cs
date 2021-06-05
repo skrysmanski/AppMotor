@@ -28,7 +28,7 @@ using Microsoft.AspNetCore.Hosting;
 namespace AppMotor.HttpServer
 {
     /// <summary>
-    /// A very simple HTTP server reachable only on a single HTTP port.
+    /// A very simple HTTP server reachable only on a single HTTP port. Enables ASP.NET Core MVC (with Razor views).
     /// </summary>
     /// <remarks>
     /// The primary goal of this class is to make the on-boarding process as easy as possible. If you
