@@ -23,7 +23,7 @@ namespace AppMotor.HttpServer
     /// See <see cref="CliCommand"/> for more details.
     /// </summary>
     [PublicAPI]
-    public abstract class HttpServerCommand : CliCommandWithGenericHost
+    public abstract class HttpServerCommandBase : CliCommandWithGenericHost
     {
         /// <summary>
         /// Creates the <c>Startup</c> class instance to use. See https://docs.microsoft.com/en-us/aspnet/core/fundamentals/startup
@@ -61,7 +61,7 @@ namespace AppMotor.HttpServer
 
         private void ConfigureKestrel(KestrelServerOptions options)
         {
-            var logger = options.ApplicationServices.GetRequiredService<ILogger<HttpServerCommand>>();
+            var logger = options.ApplicationServices.GetRequiredService<ILogger<HttpServerCommandBase>>();
 
             foreach (var serverPort in GetServerPorts(options.ApplicationServices))
             {

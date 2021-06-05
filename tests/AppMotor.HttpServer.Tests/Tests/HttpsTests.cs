@@ -59,7 +59,7 @@ namespace AppMotor.CliApp.HttpServer.Tests
 
         }
 
-        private sealed class TestServerCommand : HttpServerCommand
+        private sealed class TestServerCommand : HttpServerCommandBase
         {
             /// <inheritdoc />
             protected override object CreateStartupClass(WebHostBuilderContext context)
