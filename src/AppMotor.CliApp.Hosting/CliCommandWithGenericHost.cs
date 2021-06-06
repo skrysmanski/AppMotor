@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 using AppMotor.CliApp.CommandLine;
@@ -38,7 +39,7 @@ namespace AppMotor.CliApp.Hosting
         /// <inheritdoc />
         protected sealed override CliCommandExecutor Executor => new(Execute);
 
-        private async Task Execute()
+        private async Task Execute(CancellationToken cancellationToken)
         {
             IHostBuilder hostBuilder = CreateHostBuilder();
 
@@ -50,7 +51,7 @@ namespace AppMotor.CliApp.Hosting
 
             IHost host = hostBuilder.Build();
 
-            await host.RunAsync().ConfigureAwait(false);
+            await host.RunAsync(cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
