@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.CommandLine;
+using System.Threading;
 
 using AppMotor.CliApp.CommandLine.Utils;
 using AppMotor.CliApp.Terminals;
@@ -117,7 +118,7 @@ namespace AppMotor.CliApp.CommandLine
         /// <summary>
         /// Creates the underlying implementation.
         /// </summary>
-        internal Command ToUnderlyingImplementation(bool enableDebugParam, IOutputTerminal terminal)
+        internal Command ToUnderlyingImplementation(bool enableDebugParam, IOutputTerminal terminal, CancellationToken cancellationToken)
         {
             if (this._underlyingImplementation is null)
             {
@@ -132,13 +133,13 @@ namespace AppMotor.CliApp.CommandLine
                 {
                     foreach (var subVerb in this.SubVerbs)
                     {
-                        command.AddCommand(subVerb.ToUnderlyingImplementation(enableDebugParam: enableDebugParam, terminal));
+                        command.AddCommand(subVerb.ToUnderlyingImplementation(enableDebugParam: enableDebugParam, terminal, cancellationToken));
                     }
                 }
 
                 if (this.Command is not null)
                 {
-                    var commandHandler = new CliCommand.CliCommandHandler(this.Command, enableDebugParam: enableDebugParam, terminal);
+                    var commandHandler = new CliCommand.CliCommandHandler(this.Command, enableDebugParam: enableDebugParam, terminal, cancellationToken);
 
                     foreach (var cliParam in commandHandler.AllParams)
                     {

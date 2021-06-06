@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 using AppMotor.CliApp.CommandLine.Utils;
@@ -68,7 +69,7 @@ namespace AppMotor.CliApp.CommandLine
         /// <inheritdoc />
         protected sealed override CliApplicationExecutor MainExecutor => new(Execute);
 
-        private async Task<int> Execute(string[] args)
+        private async Task<int> Execute(string[] args, CancellationToken cancellationToken)
         {
             if (this.Verbs.Count == 0)
             {
@@ -77,7 +78,7 @@ namespace AppMotor.CliApp.CommandLine
 
             return await RootCommandInvoker.InvokeRootCommand(
                     this.AppDescription,
-                    this.Verbs.Select(verb => verb.ToUnderlyingImplementation(enableDebugParam: this.EnableGlobalDebugParam, this.Terminal)),
+                    this.Verbs.Select(verb => verb.ToUnderlyingImplementation(enableDebugParam: this.EnableGlobalDebugParam, this.Terminal, cancellationToken)),
                     commandHandler: null,
                     this.Terminal,
                     args: SortHelpFirst(args),

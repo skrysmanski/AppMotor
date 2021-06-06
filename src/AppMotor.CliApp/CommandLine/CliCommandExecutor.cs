@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 using JetBrains.Annotations;
@@ -36,7 +37,7 @@ namespace AppMotor.CliApp.CommandLine
         //   for this class is generated the next time!!!
         //
 
-        private readonly Func<Task<int>> _action;
+        private readonly Func<CancellationToken, Task<int>> _action;
 
         /// <summary>
         /// Creates an executor for a method that: is synchronous, and returns no exit code (<c>void</c>).
@@ -46,9 +47,24 @@ namespace AppMotor.CliApp.CommandLine
         [PublicAPI]
         public CliCommandExecutor(Action action)
         {
-            this._action = () =>
+            this._action = _ =>
             {
                 action();
+                return Task.FromResult(0);
+            };
+        }
+
+        /// <summary>
+        /// Creates an executor for a method that: is synchronous, takes in the application cancellation token, and returns no exit code (<c>void</c>).
+        ///
+        /// <para>The exit code is always 0.</para>
+        /// </summary>
+        [PublicAPI]
+        public CliCommandExecutor(Action<CancellationToken> action)
+        {
+            this._action = cancellationToken =>
+            {
+                action(cancellationToken);
                 return Task.FromResult(0);
             };
         }
@@ -61,9 +77,24 @@ namespace AppMotor.CliApp.CommandLine
         [PublicAPI]
         public CliCommandExecutor(Func<int> action)
         {
-            this._action = () =>
+            this._action = _ =>
             {
                 int retVal = action();
+                return Task.FromResult(retVal);
+            };
+        }
+
+        /// <summary>
+        /// Creates an executor for a method that: is synchronous, takes in the application cancellation token, and returns an exit code.
+        ///
+        /// <para>The return value is directly taken as exit code.</para>
+        /// </summary>
+        [PublicAPI]
+        public CliCommandExecutor(Func<CancellationToken, int> action)
+        {
+            this._action = cancellationToken =>
+            {
+                int retVal = action(cancellationToken);
                 return Task.FromResult(retVal);
             };
         }
@@ -76,9 +107,24 @@ namespace AppMotor.CliApp.CommandLine
         [PublicAPI]
         public CliCommandExecutor(Func<bool> action)
         {
-            this._action = () =>
+            this._action = _ =>
             {
                 bool retVal = action();
+                return Task.FromResult(retVal ? 0 : 1);
+            };
+        }
+
+        /// <summary>
+        /// Creates an executor for a method that: is synchronous, takes in the application cancellation token, and returns a success <c>bool</c>.
+        ///
+        /// <para>The return value of <c>true</c> is translated into the exit code 0; <c>false</c> is translated into 1.</para>
+        /// </summary>
+        [PublicAPI]
+        public CliCommandExecutor(Func<CancellationToken, bool> action)
+        {
+            this._action = cancellationToken =>
+            {
+                bool retVal = action(cancellationToken);
                 return Task.FromResult(retVal ? 0 : 1);
             };
         }
@@ -91,9 +137,24 @@ namespace AppMotor.CliApp.CommandLine
         [PublicAPI]
         public CliCommandExecutor(Func<Task> action)
         {
-            this._action = async () =>
+            this._action = async _ =>
             {
                 await action().ConfigureAwait(continueOnCapturedContext: false);
+                return 0;
+            };
+        }
+
+        /// <summary>
+        /// Creates an executor for a method that: is asynchronous, takes in the application cancellation token, and returns no exit code (<c>Task</c>/<c>void</c>).
+        ///
+        /// <para>The exit code is always 0.</para>
+        /// </summary>
+        [PublicAPI]
+        public CliCommandExecutor(Func<CancellationToken, Task> action)
+        {
+            this._action = async cancellationToken =>
+            {
+                await action(cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
                 return 0;
             };
         }
@@ -106,6 +167,21 @@ namespace AppMotor.CliApp.CommandLine
         [PublicAPI]
         public CliCommandExecutor(Func<Task<int>> action)
         {
+            this._action = async _ =>
+            {
+                int retVal = await action().ConfigureAwait(continueOnCapturedContext: false);
+                return retVal;
+            };
+        }
+
+        /// <summary>
+        /// Creates an executor for a method that: is asynchronous, takes in the application cancellation token, and returns an exit code.
+        ///
+        /// <para>The return value is directly taken as exit code.</para>
+        /// </summary>
+        [PublicAPI]
+        public CliCommandExecutor(Func<CancellationToken, Task<int>> action)
+        {
             this._action = action;
         }
 
@@ -117,7 +193,7 @@ namespace AppMotor.CliApp.CommandLine
         [PublicAPI]
         public CliCommandExecutor(Func<Task<bool>> action)
         {
-            this._action = async () =>
+            this._action = async _ =>
             {
                 bool retVal = await action().ConfigureAwait(continueOnCapturedContext: false);
                 return retVal ? 0 : 1;
@@ -125,11 +201,26 @@ namespace AppMotor.CliApp.CommandLine
         }
 
         /// <summary>
+        /// Creates an executor for a method that: is asynchronous, takes in the application cancellation token, and returns a success <c>bool</c>.
+        ///
+        /// <para>The return value of <c>true</c> is translated into the exit code 0; <c>false</c> is translated into 1.</para>
+        /// </summary>
+        [PublicAPI]
+        public CliCommandExecutor(Func<CancellationToken, Task<bool>> action)
+        {
+            this._action = async cancellationToken =>
+            {
+                bool retVal = await action(cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+                return retVal ? 0 : 1;
+            };
+        }
+
+        /// <summary>
         /// Executes this executor and returns the exit code.
         /// </summary>
-        public async Task<int> Execute()
+        public async Task<int> Execute(CancellationToken cancellationToken)
         {
-            return await this._action().ConfigureAwait(continueOnCapturedContext: false);
+            return await this._action(cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
         }
 
         // END MARKER: Generated code

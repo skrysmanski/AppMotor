@@ -66,7 +66,8 @@ namespace AppMotor.CliApp.ExecutorGenerator
 
             var generator = new CliAppExecutorGenerator(
                 "CliApplicationExecutor",
-                new ExecutorParameterDescriptor("string[]", "args", "the command line params")
+                new ExecutorParameterDescriptor("string[]", "args", "the command line params"),
+                new ExecutorParameterDescriptor("CancellationToken", "cancellationToken", "the application cancellation token")
             );
 
             ProcessExecutorCodeFile(path, generator);
@@ -77,7 +78,8 @@ namespace AppMotor.CliApp.ExecutorGenerator
             var path = new FilePath(cliAppProjectDirectoryPath, "CommandLine/CliCommandExecutor.cs");
 
             var generator = new CliAppExecutorGenerator(
-                "CliCommandExecutor"
+                "CliCommandExecutor",
+                new ExecutorParameterDescriptor("CancellationToken", "cancellationToken", "the application cancellation token")
             );
 
             ProcessExecutorCodeFile(path, generator);
