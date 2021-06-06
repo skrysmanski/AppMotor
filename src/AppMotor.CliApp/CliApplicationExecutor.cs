@@ -28,12 +28,20 @@ namespace AppMotor.CliApp
     /// </summary>
     public class CliApplicationExecutor
     {
+        // START MARKER: Generated code
+
+        //
+        // NOTE: The code of this class has been generated with the 'ExecutorGenerator' tool. Do
+        //   not make manual changes to this class or they may get lost (by accident) when the code
+        //   for this class is generated the next time!!!
+        //
+
         private readonly Func<string[], Task<int>> _action;
 
         /// <summary>
-        /// Creates an executor for a method that: is synchronous, returns no exit code (<c>void</c>), and ignores the command line params.
+        /// Creates an executor for a method that: is synchronous, and returns no exit code (<c>void</c>).
         ///
-        /// <para>The return value is always 0.</para>
+        /// <para>The exit code is always 0.</para>
         /// </summary>
         [PublicAPI]
         public CliApplicationExecutor(Action action)
@@ -46,9 +54,9 @@ namespace AppMotor.CliApp
         }
 
         /// <summary>
-        /// Creates an executor for a method that: is synchronous, returns no exit code (<c>void</c>), and takes in the command line params.
+        /// Creates an executor for a method that: is synchronous, takes in the command line params, and returns no exit code (<c>void</c>).
         ///
-        /// <para>The return value is always 0.</para>
+        /// <para>The exit code is always 0.</para>
         /// </summary>
         [PublicAPI]
         public CliApplicationExecutor(Action<string[]> action)
@@ -61,7 +69,7 @@ namespace AppMotor.CliApp
         }
 
         /// <summary>
-        /// Creates an executor for a method that: is synchronous, returns an exit code, and ignores in the command line params.
+        /// Creates an executor for a method that: is synchronous, and returns an exit code.
         ///
         /// <para>The return value is directly taken as exit code.</para>
         /// </summary>
@@ -76,7 +84,7 @@ namespace AppMotor.CliApp
         }
 
         /// <summary>
-        /// Creates an executor for a method that: is synchronous, returns an exit code, and takes in the command line params.
+        /// Creates an executor for a method that: is synchronous, takes in the command line params, and returns an exit code.
         ///
         /// <para>The return value is directly taken as exit code.</para>
         /// </summary>
@@ -91,10 +99,9 @@ namespace AppMotor.CliApp
         }
 
         /// <summary>
-        /// Creates an executor for a method that: is synchronous, returns a success <c>bool</c>, and ignores in the command line params.
+        /// Creates an executor for a method that: is synchronous, and returns a success <c>bool</c>.
         ///
-        /// <para>The return value of <c>true</c> is translated into the exit code 0; <c>false</c>
-        /// is translated into 1.</para>
+        /// <para>The return value of <c>true</c> is translated into the exit code 0; <c>false</c> is translated into 1.</para>
         /// </summary>
         [PublicAPI]
         public CliApplicationExecutor(Func<bool> action)
@@ -107,10 +114,9 @@ namespace AppMotor.CliApp
         }
 
         /// <summary>
-        /// Creates an executor for a method that: is synchronous, returns a success <c>bool</c>, and takes in the command line params.
+        /// Creates an executor for a method that: is synchronous, takes in the command line params, and returns a success <c>bool</c>.
         ///
-        /// <para>The return value of <c>true</c> is translated into the exit code 0; <c>false</c>
-        /// is translated into 1.</para>
+        /// <para>The return value of <c>true</c> is translated into the exit code 0; <c>false</c> is translated into 1.</para>
         /// </summary>
         [PublicAPI]
         public CliApplicationExecutor(Func<string[], bool> action)
@@ -123,9 +129,9 @@ namespace AppMotor.CliApp
         }
 
         /// <summary>
-        /// Creates an executor for a method that: is asynchronous, returns no exit code (<c>Task</c>/<c>void</c>), and ignores in the command line params.
+        /// Creates an executor for a method that: is asynchronous, and returns no exit code (<c>Task</c>/<c>void</c>).
         ///
-        /// <para>The return value is always 0.</para>
+        /// <para>The exit code is always 0.</para>
         /// </summary>
         [PublicAPI]
         public CliApplicationExecutor(Func<Task> action)
@@ -138,9 +144,9 @@ namespace AppMotor.CliApp
         }
 
         /// <summary>
-        /// Creates an executor for a method that: is asynchronous, returns no exit code (<c>Task</c>/<c>void</c>), and takes in the command line params.
+        /// Creates an executor for a method that: is asynchronous, takes in the command line params, and returns no exit code (<c>Task</c>/<c>void</c>).
         ///
-        /// <para>The return value is always 0.</para>
+        /// <para>The exit code is always 0.</para>
         /// </summary>
         [PublicAPI]
         public CliApplicationExecutor(Func<string[], Task> action)
@@ -153,18 +159,22 @@ namespace AppMotor.CliApp
         }
 
         /// <summary>
-        /// Creates an executor for a method that: is asynchronous, returns an exit code, and ignores in the command line params.
+        /// Creates an executor for a method that: is asynchronous, and returns an exit code.
         ///
         /// <para>The return value is directly taken as exit code.</para>
         /// </summary>
         [PublicAPI]
         public CliApplicationExecutor(Func<Task<int>> action)
         {
-            this._action = _ => action();
+            this._action = async _ =>
+            {
+                int retVal = await action().ConfigureAwait(continueOnCapturedContext: false);
+                return retVal;
+            };
         }
 
         /// <summary>
-        /// Creates an executor for a method that: is asynchronous, returns an exit code, and takes in the command line params.
+        /// Creates an executor for a method that: is asynchronous, takes in the command line params, and returns an exit code.
         ///
         /// <para>The return value is directly taken as exit code.</para>
         /// </summary>
@@ -175,10 +185,9 @@ namespace AppMotor.CliApp
         }
 
         /// <summary>
-        /// Creates an executor for a method that: is asynchronous, returns a success <c>bool</c>, and takes in the command line params.
+        /// Creates an executor for a method that: is asynchronous, and returns a success <c>bool</c>.
         ///
-        /// <para>The return value of <c>true</c> is translated into the exit code 0; <c>false</c>
-        /// is translated into 1.</para>
+        /// <para>The return value of <c>true</c> is translated into the exit code 0; <c>false</c> is translated into 1.</para>
         /// </summary>
         [PublicAPI]
         public CliApplicationExecutor(Func<Task<bool>> action)
@@ -191,10 +200,9 @@ namespace AppMotor.CliApp
         }
 
         /// <summary>
-        /// Creates an executor for a method that: is asynchronous, returns a success <c>bool</c>, and takes in the command line params.
+        /// Creates an executor for a method that: is asynchronous, takes in the command line params, and returns a success <c>bool</c>.
         ///
-        /// <para>The return value of <c>true</c> is translated into the exit code 0; <c>false</c>
-        /// is translated into 1.</para>
+        /// <para>The return value of <c>true</c> is translated into the exit code 0; <c>false</c> is translated into 1.</para>
         /// </summary>
         [PublicAPI]
         public CliApplicationExecutor(Func<string[], Task<bool>> action)
@@ -213,5 +221,7 @@ namespace AppMotor.CliApp
         {
             return await this._action(args).ConfigureAwait(continueOnCapturedContext: false);
         }
+
+        // END MARKER: Generated code
     }
 }

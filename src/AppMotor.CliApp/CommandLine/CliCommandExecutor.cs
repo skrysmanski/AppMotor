@@ -28,12 +28,20 @@ namespace AppMotor.CliApp.CommandLine
     /// </summary>
     public class CliCommandExecutor
     {
+        // START MARKER: Generated code
+
+        //
+        // NOTE: The code of this class has been generated with the 'ExecutorGenerator' tool. Do
+        //   not make manual changes to this class or they may get lost (by accident) when the code
+        //   for this class is generated the next time!!!
+        //
+
         private readonly Func<Task<int>> _action;
 
         /// <summary>
-        /// Creates an executor for an synchronous method that returns nothing (<c>void</c>).
+        /// Creates an executor for a method that: is synchronous, and returns no exit code (<c>void</c>).
         ///
-        /// <para>The return value is always 0.</para>
+        /// <para>The exit code is always 0.</para>
         /// </summary>
         [PublicAPI]
         public CliCommandExecutor(Action action)
@@ -46,7 +54,7 @@ namespace AppMotor.CliApp.CommandLine
         }
 
         /// <summary>
-        /// Creates an executor for an synchronous method that returns an <c>int</c>.
+        /// Creates an executor for a method that: is synchronous, and returns an exit code.
         ///
         /// <para>The return value is directly taken as exit code.</para>
         /// </summary>
@@ -61,10 +69,9 @@ namespace AppMotor.CliApp.CommandLine
         }
 
         /// <summary>
-        /// Creates an executor for an synchronous method that returns a <c>bool</c>.
+        /// Creates an executor for a method that: is synchronous, and returns a success <c>bool</c>.
         ///
-        /// <para>The return value of <c>true</c> is translated into the exit code 0; <c>false</c>
-        /// is translated into 1.</para>
+        /// <para>The return value of <c>true</c> is translated into the exit code 0; <c>false</c> is translated into 1.</para>
         /// </summary>
         [PublicAPI]
         public CliCommandExecutor(Func<bool> action)
@@ -77,9 +84,9 @@ namespace AppMotor.CliApp.CommandLine
         }
 
         /// <summary>
-        /// Creates an executor for an async method that returns nothing (<c>Task</c>/<c>void</c>).
+        /// Creates an executor for a method that: is asynchronous, and returns no exit code (<c>Task</c>/<c>void</c>).
         ///
-        /// <para>The return value is always 0.</para>
+        /// <para>The exit code is always 0.</para>
         /// </summary>
         [PublicAPI]
         public CliCommandExecutor(Func<Task> action)
@@ -92,7 +99,7 @@ namespace AppMotor.CliApp.CommandLine
         }
 
         /// <summary>
-        /// Creates an executor for an async method that returns an <c>int</c>.
+        /// Creates an executor for a method that: is asynchronous, and returns an exit code.
         ///
         /// <para>The return value is directly taken as exit code.</para>
         /// </summary>
@@ -103,10 +110,9 @@ namespace AppMotor.CliApp.CommandLine
         }
 
         /// <summary>
-        /// Creates an executor for an async method that returns a <c>bool</c>.
+        /// Creates an executor for a method that: is asynchronous, and returns a success <c>bool</c>.
         ///
-        /// <para>The return value of <c>true</c> is translated into the exit code 0; <c>false</c>
-        /// is translated into 1.</para>
+        /// <para>The return value of <c>true</c> is translated into the exit code 0; <c>false</c> is translated into 1.</para>
         /// </summary>
         [PublicAPI]
         public CliCommandExecutor(Func<Task<bool>> action)
@@ -125,5 +131,7 @@ namespace AppMotor.CliApp.CommandLine
         {
             return await this._action().ConfigureAwait(continueOnCapturedContext: false);
         }
+
+        // END MARKER: Generated code
     }
 }
