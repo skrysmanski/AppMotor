@@ -17,11 +17,11 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 using AppMotor.CliApp.CommandLine;
-using AppMotor.Core.Certificates;
-using AppMotor.Core.Collections;
+using AppMotor.Core.Extensions;
 using AppMotor.Core.Net;
 using AppMotor.HttpServer;
 
@@ -29,7 +29,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 using Shouldly;
 
@@ -42,21 +41,27 @@ namespace AppMotor.CliApp.HttpServer.Tests
         [Fact]
         public async Task TestApiCall()
         {
+            using var cts = new CancellationTokenSource();
+
             var app = new CliApplicationWithCommand(new TestServerCommand());
-            Task appTask = app.RunAsync();
+            Task appTask = app.RunAsync(cts.Token);
 
             using (var httpClient = new HttpClient())
             {
+                // ReSharper disable once MethodSupportsCancellation
                 var response = await httpClient.GetAsync("http://localhost:1234/api/ping");
 
                 response.EnsureSuccessStatusCode();
 
+                // ReSharper disable once MethodSupportsCancellation
                 var responseString = await response.Content.ReadAsStringAsync();
 
                 responseString.ShouldBe("Hello World!");
             }
 
-
+            cts.Cancel();
+            // ReSharper disable once MethodSupportsCancellation
+            await appTask.WithTimeout(TimeSpan.FromSeconds(10));
         }
 
         private sealed class TestServerCommand : HttpServerCommandBase
