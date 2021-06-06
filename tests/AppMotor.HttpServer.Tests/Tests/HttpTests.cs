@@ -15,12 +15,12 @@
 #endregion
 
 using System;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
 using AppMotor.Core.Extensions;
 using AppMotor.Core.Net;
+using AppMotor.Core.Net.Http;
 using AppMotor.HttpServer;
 
 using Microsoft.AspNetCore.Builder;
@@ -32,12 +32,12 @@ using Xunit;
 
 namespace AppMotor.CliApp.HttpServer.Tests
 {
-    public class HttpTests
+    public sealed class HttpTests
     {
         private const int TEST_PORT = 1234;
 
         [Fact]
-        public async Task TestApiCall()
+        public async Task TestHttpApiCall()
         {
             using var cts = new CancellationTokenSource();
 
@@ -47,7 +47,7 @@ namespace AppMotor.CliApp.HttpServer.Tests
             );
             Task appTask = app.RunAsync(cts.Token);
 
-            using (var httpClient = new HttpClient())
+            using (var httpClient = HttpClientFactory.CreateHttpClient())
             {
                 // ReSharper disable once MethodSupportsCancellation
                 var response = await httpClient.GetAsync($"http://localhost:{TEST_PORT}/api/ping");

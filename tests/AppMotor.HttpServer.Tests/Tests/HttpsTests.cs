@@ -16,19 +16,19 @@
 
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
 using AppMotor.CliApp.CommandLine;
+using AppMotor.Core.Certificates;
 using AppMotor.Core.Extensions;
 using AppMotor.Core.Net;
+using AppMotor.Core.Net.Http;
 using AppMotor.HttpServer;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 
 using Shouldly;
 
@@ -38,18 +38,24 @@ namespace AppMotor.CliApp.HttpServer.Tests
 {
     public sealed class HttpsTests
     {
+        private const string SERVER_HOSTNAME = "localhost";
+
+        private const int TEST_PORT = 1234;
+
         [Fact]
-        public async Task TestApiCall()
+        public async Task TestHttpsApiCall()
         {
+            using var testCertificate = TlsCertificate.CreateSelfSigned(SERVER_HOSTNAME, TimeSpan.FromDays(1));
+
             using var cts = new CancellationTokenSource();
 
-            var app = new CliApplicationWithCommand(new TestServerCommand());
+            var app = new CliApplicationWithCommand(new TestServerCommand(testCertificate));
             Task appTask = app.RunAsync(cts.Token);
 
-            using (var httpClient = new HttpClient())
+            using (var httpClient = HttpClientFactory.CreateHttpClient(serverCertificate: testCertificate))
             {
                 // ReSharper disable once MethodSupportsCancellation
-                var response = await httpClient.GetAsync("http://localhost:1234/api/ping");
+                var response = await httpClient.GetAsync($"https://{SERVER_HOSTNAME}:{TEST_PORT}/api/ping");
 
                 response.EnsureSuccessStatusCode();
 
@@ -66,60 +72,35 @@ namespace AppMotor.CliApp.HttpServer.Tests
 
         private sealed class TestServerCommand : HttpServerCommandBase
         {
+            private readonly TlsCertificate _testCertificate;
+
+            /// <inheritdoc />
+            public TestServerCommand(TlsCertificate testCertificate)
+            {
+                this._testCertificate = testCertificate;
+            }
+
+            /// <inheritdoc />
+            protected override IEnumerable<HttpServerPort> GetServerPorts(IServiceProvider serviceProvider)
+            {
+                yield return new HttpsServerPort(
+                    SocketListenAddresses.Loopback,
+                    port: TEST_PORT,
+                    () => this._testCertificate,
+                    certificateProviderCallerOwnsCertificates: false
+                );
+            }
+
             /// <inheritdoc />
             protected override object CreateStartupClass(WebHostBuilderContext context)
             {
                 return new Startup();
             }
 
-            /// <inheritdoc />
-            protected override IEnumerable<HttpServerPort> GetServerPorts(IServiceProvider serviceProvider)
-            {
-                //var cert = TlsCertificate.CreateSelfSigned(Environment.MachineName, TimeSpan.FromDays(90));
-                //yield return new HttpsServerPort(SocketListenAddresses.Loopback, port: 1234, () => cert);
-
-                yield return new HttpServerPort(SocketListenAddresses.Loopback, port: 1234);
-            }
-
             private sealed class Startup
             {
-                /// <summary>
-                /// This method gets called by the ASP.NET Core runtime. It registers services in the dependency injection
-                /// system exposed via <paramref name="services"/>.
-                /// </summary>
-                /// <remarks>
-                /// The name of this method is pre-defined and must not be changed.
-                /// </remarks>
-                public void ConfigureServices(IServiceCollection services)
+                public void Configure(IApplicationBuilder app)
                 {
-                }
-
-                /// <summary>
-                /// This method gets called by the ASP.NET Core runtime. It creates the ASP.NET Core Middleware
-                /// pipeline.
-                /// </summary>
-                /// <remarks>
-                /// You can request any registered service as parameter in this method. Parameters are provided
-                /// by the dependency injection framework.
-                ///
-                /// <para>The name of this method is pre-defined and must not be changed.</para>
-                /// </remarks>
-                public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-                {
-                    //
-                    // Each "Use...()" method registers a middleware in the pipeline.
-                    //
-                    // Calls to "Map...()" methods create branches in the middleware pipeline; see:
-                    // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/#branch-the-middleware-pipeline
-                    //
-                    // For a full overview, see: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/
-                    //
-                    // IMPORTANT: The order of the "Use...()" method calls is important as it defines
-                    //   the order of the middleware components in the pipeline!
-                    //
-
-                    app.UseDeveloperExceptionPage();
-
                     // Enable routing feature; required for defining endpoints below.
                     // See: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing#routing-basics
                     app.UseRouting();

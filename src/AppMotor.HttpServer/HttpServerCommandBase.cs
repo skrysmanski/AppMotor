@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 
 using AppMotor.CliApp.CommandLine;
 using AppMotor.CliApp.Hosting;
+using AppMotor.Core.Certificates;
 using AppMotor.Core.Exceptions;
 using AppMotor.Core.Net;
 
@@ -26,6 +28,12 @@ namespace AppMotor.HttpServer
     public abstract class HttpServerCommandBase : CliCommandWithGenericHost
     {
         /// <summary>
+        /// Returns the server port definitions this HTTP service should listen on.
+        /// </summary>
+        /// <param name="serviceProvider">The dependency injection service provider.</param>
+        protected abstract IEnumerable<HttpServerPort> GetServerPorts(IServiceProvider serviceProvider);
+
+        /// <summary>
         /// Creates the <c>Startup</c> class instance to use. See https://docs.microsoft.com/en-us/aspnet/core/fundamentals/startup
         /// for more details.
         ///
@@ -35,12 +43,6 @@ namespace AppMotor.HttpServer
         {
             return new MvcStartup(GetType().Assembly);
         }
-
-        /// <summary>
-        /// Returns the server port definitions this HTTP service should listen on.
-        /// </summary>
-        /// <param name="serviceProvider">The dependency injection service provider.</param>
-        protected abstract IEnumerable<HttpServerPort> GetServerPorts(IServiceProvider serviceProvider);
 
         /// <inheritdoc />
         protected sealed override void SetupApplication(IHostBuilder hostBuilder)
@@ -70,6 +72,34 @@ namespace AppMotor.HttpServer
                 if (serverPort is HttpsServerPort httpsServerPort)
                 {
                     var certificate = httpsServerPort.CertificateProvider();
+
+                    if (OperatingSystem.IsWindows())
+                    {
+                        //
+                        // Workaround for error "No credentials are available in the security package".
+                        //
+                        // Basically, the problem is that on Windows TLS is handled out-of-process. But
+                        // if the private key for certificate only in-memory of the current process,
+                        // the out-of-process TLS handler is unable to get the private key (see
+                        // https://github.com/dotnet/runtime/issues/23749#issuecomment-485947319 )
+                        //
+                        // Full discussion: https://github.com/dotnet/runtime/issues/23749
+                        //
+                        // Workaround: https://github.com/dotnet/runtime/issues/23749#issuecomment-739895373
+                        //
+                        var originalCertificate = certificate;
+
+                        byte[] exportedCertificateBytes = ((X509Certificate2)originalCertificate).Export(X509ContentType.Pkcs12);
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                        var reimportedCertificate = new X509Certificate2(exportedCertificateBytes, password: (string?)null, X509KeyStorageFlags.Exportable);
+                        certificate = new TlsCertificate(reimportedCertificate, allowPrivateKeyExport: true);
+#pragma warning restore CA2000 // Dispose objects before losing scope
+
+                        if (httpsServerPort.CertificateProviderCallerOwnsCertificates)
+                        {
+                            originalCertificate.Dispose();
+                        }
+                    }
 
                     logger.LogInformation("Using certificate '{thumbprint}' for server port {port}.", certificate.Thumbprint, httpsServerPort.Port);
 
