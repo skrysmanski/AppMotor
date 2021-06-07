@@ -43,6 +43,13 @@ namespace AppMotor.Core.Tests.IO
         }
 
         [Fact]
+        public void Test_ConstructionWithParentDirectory()
+        {
+            new FilePath("/abc/def", "ghi").Value.ShouldBe(Path.Combine("/abc/def", "ghi"));
+            new FilePath(@"c:\abc\def", "ghi").Value.ShouldBe(Path.Combine(@"c:\abc\def", "ghi"));
+        }
+
+        [Fact]
         public void Test_ImplicitConversionFromString()
         {
             FilePath filePathNonNullable = "abc/def";
@@ -63,6 +70,20 @@ namespace AppMotor.Core.Tests.IO
             FileInfo? nullFileInfo = null;
             FilePath? filePathNullable = nullFileInfo;
             filePathNullable.HasValue.ShouldBe(false);
+        }
+
+        [Fact]
+        public void Test_InvalidTrailingSlash()
+        {
+            Should.Throw<ArgumentException>(() => new FilePath("/abc/def/"));
+            Should.Throw<ArgumentException>(() => new FilePath(@"c:\abc\def\"));
+        }
+
+        [Fact]
+        public void Test_Name()
+        {
+            new FilePath("/abc/def").Name.ShouldBe("def");
+            new FilePath(@"c:\abc\def").Name.ShouldBe("def");
         }
 
         [Fact]

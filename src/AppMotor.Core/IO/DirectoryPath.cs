@@ -43,18 +43,34 @@ namespace AppMotor.Core.IO
         private readonly string? _value;
 
         /// <summary>
-        /// The string value of this directory path.
+        /// The string value of this directory path. Note that this value will never end with '/' or '\'.
         /// </summary>
         public string Value => this._value ?? throw new InvalidOperationException("Uninitialized instance.");
 
         /// <summary>
-        /// Constructor.
+        /// The name of the directory.
+        /// </summary>
+        public string Name => Path.GetFileName(this.Value);
+
+        /// <summary>
+        /// Constructs a directory path from a string.
         /// </summary>
         public DirectoryPath(string value)
         {
             Validate.ArgumentWithName(nameof(value)).IsNotNullOrWhiteSpace(value);
 
-            this._value = value;
+            // NOTE: We trim '/' or '\' from the end so that the "Name" property works correctly.
+            this._value = value.TrimEnd('/', '\\');
+        }
+
+        /// <summary>
+        /// Constructs a directory path from a parent directory and a directory name.
+        /// </summary>
+        /// <param name="directoryPath">The parent directory of the new directory path</param>
+        /// <param name="fileName">The name of the directory.</param>
+        public DirectoryPath(DirectoryPath directoryPath, string fileName)
+            : this(Path.Combine(directoryPath.Value, fileName))
+        {
         }
 
         /// <summary>

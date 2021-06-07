@@ -43,6 +43,13 @@ namespace AppMotor.Core.Tests.IO
         }
 
         [Fact]
+        public void Test_ConstructionWithParentDirectory()
+        {
+            new DirectoryPath("/abc/def", "ghi").Value.ShouldBe(Path.Combine("/abc/def", "ghi"));
+            new DirectoryPath(@"c:\abc\def", "ghi").Value.ShouldBe(Path.Combine(@"c:\abc\def", "ghi"));
+        }
+
+        [Fact]
         public void Test_ImplicitConversionFromString()
         {
             DirectoryPath filePathNonNullable = "abc/def";
@@ -63,6 +70,26 @@ namespace AppMotor.Core.Tests.IO
             DirectoryInfo? nullDirectoryInfo = null;
             DirectoryPath? filePathNullable = nullDirectoryInfo;
             filePathNullable.HasValue.ShouldBe(false);
+        }
+
+        [Fact]
+        public void Test_RemovalOfTrailingSlash()
+        {
+            new DirectoryPath("/abc/def/").Value.ShouldBe("/abc/def");
+            new DirectoryPath("/abc/def//").Value.ShouldBe("/abc/def");
+            new DirectoryPath(@"c:\abc\def\").Value.ShouldBe(@"c:\abc\def");
+            new DirectoryPath(@"c:\abc\def\\").Value.ShouldBe(@"c:\abc\def");
+
+            new DirectoryPath(@"c:\abc\def\/\").Value.ShouldBe(@"c:\abc\def");
+        }
+
+        [Fact]
+        public void Test_Name()
+        {
+            new DirectoryPath("/abc/def").Name.ShouldBe("def");
+            new DirectoryPath("/abc/def/").Name.ShouldBe("def");
+            new DirectoryPath(@"c:\abc\def").Name.ShouldBe("def");
+            new DirectoryPath(@"c:\abc\def\").Name.ShouldBe("def");
         }
 
         [Fact]

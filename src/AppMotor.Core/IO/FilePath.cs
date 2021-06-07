@@ -47,7 +47,12 @@ namespace AppMotor.Core.IO
         public string Value => this._value ?? throw new InvalidOperationException("Uninitialized instance.");
 
         /// <summary>
-        /// Constructor.
+        /// The name of the file.
+        /// </summary>
+        public string Name => Path.GetFileName(this.Value);
+
+        /// <summary>
+        /// Constructs a file path from a string.
         /// </summary>
         /// <param name="value">The value; must not be null, empty or just whitespace and must
         /// not end with <c>/</c> or <c>\</c>.</param>
@@ -64,6 +69,16 @@ namespace AppMotor.Core.IO
             }
 
             this._value = value;
+        }
+
+        /// <summary>
+        /// Constructs a file path from a parent directory and a file name.
+        /// </summary>
+        /// <param name="directoryPath">The directory of the file path</param>
+        /// <param name="fileName">The name of the file.</param>
+        public FilePath(DirectoryPath directoryPath, string fileName)
+            : this(Path.Combine(directoryPath.Value, fileName))
+        {
         }
 
         /// <summary>
