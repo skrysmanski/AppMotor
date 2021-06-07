@@ -18,9 +18,9 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using AppMotor.Core.Extensions;
 using AppMotor.Core.Net;
 using AppMotor.Core.Net.Http;
+using AppMotor.Core.TestUtils;
 using AppMotor.HttpServer;
 
 using Microsoft.AspNetCore.Builder;
@@ -61,8 +61,8 @@ namespace AppMotor.CliApp.HttpServer.Tests
             }
 
             cts.Cancel();
-            // ReSharper disable once MethodSupportsCancellation
-            await appTask.WithTimeout(TimeSpan.FromSeconds(10));
+
+            await appTask.ShouldFinishWithin(TimeSpan.FromSeconds(10));
         }
 
         private sealed class Startup
