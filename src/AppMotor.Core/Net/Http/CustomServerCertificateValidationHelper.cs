@@ -28,11 +28,16 @@ namespace AppMotor.Core.Net.Http
     /// <summary>
     /// Convenience class to support custom TLS certificates in <see cref="HttpClient"/> (or <see cref="HttpClientHandler"/>
     /// to be more precise). See documentation of <see cref="ValidationCallback"/>.
+    ///
+    /// <para>You can use this class either directly or via <see cref="HttpClientFactory"/>.</para>
     /// </summary>
     public sealed class CustomServerCertificateValidationHelper
     {
         private readonly X509Certificate2Collection _customCertificates;
 
+        /// <summary>
+        /// Constructs this helper with a single certificate.
+        /// </summary>
         public CustomServerCertificateValidationHelper(X509Certificate2 customCertificate)
         {
             Validate.ArgumentWithName(nameof(customCertificate)).IsNotNull(customCertificate);
@@ -40,6 +45,9 @@ namespace AppMotor.Core.Net.Http
             this._customCertificates = new X509Certificate2Collection(customCertificate);
         }
 
+        /// <summary>
+        /// Constructs this helper with multiple certificates.
+        /// </summary>
         public CustomServerCertificateValidationHelper(IEnumerable<X509Certificate2> customCertificates)
         {
             Validate.ArgumentWithName(nameof(customCertificates)).IsNotNull(customCertificates);
