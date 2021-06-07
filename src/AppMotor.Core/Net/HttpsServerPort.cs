@@ -46,12 +46,20 @@ namespace AppMotor.Core.Net
         public Func<TlsCertificate> CertificateProvider { get; }
 
         /// <summary>
+        /// Whether callers of <see cref="CertificateProvider"/> own the certificates created/returned by
+        /// the method. The owner is responsible for disposing the certificate.
+        /// </summary>
+        public bool CertificateProviderCallerOwnsCertificates { get; }
+
+        /// <summary>
         /// Constructor. Uses <see cref="DEFAULT_PORT"/> as port.
         /// </summary>
         /// <param name="listenAddress">From where to accept connections.</param>
         /// <param name="certificateProvider">Provides the certificate to be used; see <see cref="CertificateProvider"/> for more details.</param>
+        /// <param name="certificateProviderCallerOwnsCertificates">See <see cref="CertificateProviderCallerOwnsCertificates"/> for details</param>
         [PublicAPI]
-        public HttpsServerPort(SocketListenAddresses listenAddress, Func<TlsCertificate> certificateProvider) : this(listenAddress, port: DEFAULT_PORT, certificateProvider)
+        public HttpsServerPort(SocketListenAddresses listenAddress, Func<TlsCertificate> certificateProvider, bool certificateProviderCallerOwnsCertificates = true)
+            : this(listenAddress, port: DEFAULT_PORT, certificateProvider, certificateProviderCallerOwnsCertificates)
         {
         }
 
@@ -61,12 +69,15 @@ namespace AppMotor.Core.Net
         /// <param name="listenAddress">From where to accept connections.</param>
         /// <param name="port">The port to use</param>
         /// <param name="certificateProvider">Provides the certificate to be used; see <see cref="CertificateProvider"/> for more details.</param>
+        /// /// <param name="certificateProviderCallerOwnsCertificates">See <see cref="CertificateProviderCallerOwnsCertificates"/> for details</param>
         [PublicAPI]
-        public HttpsServerPort(SocketListenAddresses listenAddress, int port, Func<TlsCertificate> certificateProvider) : base(listenAddress, port)
+        public HttpsServerPort(SocketListenAddresses listenAddress, int port, Func<TlsCertificate> certificateProvider, bool certificateProviderCallerOwnsCertificates = true)
+            : base(listenAddress, port)
         {
             Validate.ArgumentWithName(nameof(certificateProvider)).IsNotNull(certificateProvider);
 
             this.CertificateProvider = certificateProvider;
+            this.CertificateProviderCallerOwnsCertificates = certificateProviderCallerOwnsCertificates;
         }
     }
 }

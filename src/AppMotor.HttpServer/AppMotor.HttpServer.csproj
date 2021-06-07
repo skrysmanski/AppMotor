@@ -10,13 +10,20 @@
     <OutputType>Library</OutputType>
 
     <!-- See also: https://docs.microsoft.com/en-us/nuget/create-packages/prerelease-packages -->
-    <Version>$(AppMotorCliAppVersion)</Version>
+    <Version>$(AppMotorServerVersion)</Version>
 
-    <Description>APIs for running a HTTP(S) server (Kestrel) commandline application.</Description>
+    <Description>APIs for running a HTTP(S) server (Kestrel).</Description>
+
+    <!-- Must be "false" because some ASP.NET Core APIs are non-compliant. -->
+    <ClsCompliant>false</ClsCompliant>
   </PropertyGroup>
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.6" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="$(ProjectCommonsDirectory)Project.Tests.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+
+    <RootNamespace>AppMotor.CliApp.HttpServer</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\AppMotor.HttpServer\AppMotor.HttpServer.csproj" />
+    <ProjectReference Include="..\AppMotor.Core.Tests\AppMotor.Core.Tests.csproj" />
+  </ItemGroup>
+
+</Project>

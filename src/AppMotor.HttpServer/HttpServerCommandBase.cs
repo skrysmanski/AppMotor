@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 
 using AppMotor.CliApp.CommandLine;
 using AppMotor.CliApp.Hosting;
+using AppMotor.Core.Certificates;
 using AppMotor.Core.Exceptions;
 using AppMotor.Core.Net;
 
@@ -15,7 +17,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace AppMotor.CliApp.HttpServer
+namespace AppMotor.HttpServer
 {
     /// <summary>
     /// A <see cref="CliCommand"/> for running an HTTP(S) server (Kestrel). You can use it as root
@@ -23,21 +25,24 @@ namespace AppMotor.CliApp.HttpServer
     /// See <see cref="CliCommand"/> for more details.
     /// </summary>
     [PublicAPI]
-    public abstract class HttpServerCommand : CliCommandWithGenericHost
+    public abstract class HttpServerCommandBase : CliCommandWithGenericHost
     {
-        /// <summary>
-        /// The <c>Startup</c> class to use. See https://docs.microsoft.com/en-us/aspnet/core/fundamentals/startup
-        /// for more details.
-        ///
-        /// <para>Note: This type must be a class.</para>
-        /// </summary>
-        protected abstract Type StartupClass { get; }
-
         /// <summary>
         /// Returns the server port definitions this HTTP service should listen on.
         /// </summary>
         /// <param name="serviceProvider">The dependency injection service provider.</param>
         protected abstract IEnumerable<HttpServerPort> GetServerPorts(IServiceProvider serviceProvider);
+
+        /// <summary>
+        /// Creates the <c>Startup</c> class instance to use. See https://docs.microsoft.com/en-us/aspnet/core/fundamentals/startup
+        /// for more details.
+        ///
+        /// <para>The default implementation creates an instance of <see cref="MvcStartup"/>.</para>
+        /// </summary>
+        protected virtual object CreateStartupClass(WebHostBuilderContext context)
+        {
+            return new MvcStartup(GetType().Assembly);
+        }
 
         /// <inheritdoc />
         protected sealed override void SetupApplication(IHostBuilder hostBuilder)
@@ -52,13 +57,13 @@ namespace AppMotor.CliApp.HttpServer
                 webBuilder.UseKestrel(ConfigureKestrel);
 
                 // Use our "Startup" class for any further configuration.
-                webBuilder.UseStartup(this.StartupClass);
+                webBuilder.UseStartup(CreateStartupClass);
             });
         }
 
         private void ConfigureKestrel(KestrelServerOptions options)
         {
-            var logger = options.ApplicationServices.GetRequiredService<ILogger<HttpServerCommand>>();
+            var logger = options.ApplicationServices.GetRequiredService<ILogger<HttpServerCommandBase>>();
 
             foreach (var serverPort in GetServerPorts(options.ApplicationServices))
             {
@@ -67,6 +72,34 @@ namespace AppMotor.CliApp.HttpServer
                 if (serverPort is HttpsServerPort httpsServerPort)
                 {
                     var certificate = httpsServerPort.CertificateProvider();
+
+                    if (OperatingSystem.IsWindows())
+                    {
+                        //
+                        // Workaround for error "No credentials are available in the security package".
+                        //
+                        // Basically, the problem is that on Windows TLS is handled out-of-process. But
+                        // if the private key for certificate only in-memory of the current process,
+                        // the out-of-process TLS handler is unable to get the private key (see
+                        // https://github.com/dotnet/runtime/issues/23749#issuecomment-485947319 )
+                        //
+                        // Full discussion: https://github.com/dotnet/runtime/issues/23749
+                        //
+                        // Workaround: https://github.com/dotnet/runtime/issues/23749#issuecomment-739895373
+                        //
+                        var originalCertificate = certificate;
+
+                        byte[] exportedCertificateBytes = ((X509Certificate2)originalCertificate).Export(X509ContentType.Pkcs12);
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                        var reimportedCertificate = new X509Certificate2(exportedCertificateBytes, password: (string?)null, X509KeyStorageFlags.Exportable);
+                        certificate = new TlsCertificate(reimportedCertificate, allowPrivateKeyExport: true);
+#pragma warning restore CA2000 // Dispose objects before losing scope
+
+                        if (httpsServerPort.CertificateProviderCallerOwnsCertificates)
+                        {
+                            originalCertificate.Dispose();
+                        }
+                    }
 
                     logger.LogInformation("Using certificate '{thumbprint}' for server port {port}.", certificate.Thumbprint, httpsServerPort.Port);
 
