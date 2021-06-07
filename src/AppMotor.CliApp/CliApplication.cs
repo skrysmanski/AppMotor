@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 using AppMotor.CliApp.CommandLine;
@@ -125,15 +126,65 @@ namespace AppMotor.CliApp
         /// <summary>
         /// Runs this application.
         /// </summary>
+        /// <param name="cancellationToken">A cancellation token to be used to cancel/stop long running
+        /// applications (e.g. server applications).</param>
         /// <returns>The exit code to use.</returns>
         [PublicAPI, MustUseReturnValue]
-        public async Task<int> RunAsync(params string[] args)
+        public int Run(CancellationToken cancellationToken)
+        {
+            return Task.Run(() => RunAsync(cancellationToken), cancellationToken).Result;
+        }
+
+        /// <summary>
+        /// Runs this application.
+        /// </summary>
+        /// <param name="args">The args arrays from the main method</param>
+        /// <param name="cancellationToken">A cancellation token to be used to cancel/stop long running
+        /// applications (e.g. server applications).</param>
+        /// <returns>The exit code to use.</returns>
+        [PublicAPI, MustUseReturnValue]
+        public int Run(string[] args, CancellationToken cancellationToken)
+        {
+            return Task.Run(() => RunAsync(args, cancellationToken), cancellationToken).Result;
+        }
+
+        /// <summary>
+        /// Runs this application.
+        /// </summary>
+        /// <returns>The exit code to use.</returns>
+        [PublicAPI, MustUseReturnValue]
+        public Task<int> RunAsync(params string[] args)
+        {
+            return RunAsync(args, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Runs this application.
+        /// </summary>
+        /// <param name="cancellationToken">A cancellation token to be used to cancel/stop long running
+        /// applications (e.g. server applications).</param>
+        /// <returns>The exit code to use.</returns>
+        [PublicAPI, MustUseReturnValue]
+        public Task<int> RunAsync(CancellationToken cancellationToken)
+        {
+            return RunAsync(Array.Empty<string>(), cancellationToken);
+        }
+
+        /// <summary>
+        /// Runs this application.
+        /// </summary>
+        /// <param name="args">The args arrays from the main method</param>
+        /// <param name="cancellationToken">A cancellation token to be used to cancel/stop long running
+        /// applications (e.g. server applications).</param>
+        /// <returns>The exit code to use.</returns>
+        [PublicAPI, MustUseReturnValue]
+        public async Task<int> RunAsync(string[] args, CancellationToken cancellationToken)
         {
             int exitCode;
 
             try
             {
-                exitCode = await this.MainExecutor.Execute(args).ConfigureAwait(continueOnCapturedContext: false);
+                exitCode = await this.MainExecutor.Execute(args, cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
             }
             catch (Exception exception) when (!DebuggerUtils.IsDebuggerAttached)
             {

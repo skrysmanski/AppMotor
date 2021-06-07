@@ -17,6 +17,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.CommandLine.Invocation;
+using System.Threading;
 using System.Threading.Tasks;
 
 using AppMotor.CliApp.CommandLine.Utils;
@@ -56,9 +57,9 @@ namespace AppMotor.CliApp.CommandLine
         /// Runs this command.
         /// </summary>
         /// <returns>The exit code for the running program.</returns>
-        private async Task<int> Execute()
+        private async Task<int> Execute(CancellationToken cancellationToken)
         {
-            return await this.Executor.Execute().ConfigureAwait(continueOnCapturedContext: false);
+            return await this.Executor.Execute(cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
         }
 
         /// <summary>
@@ -78,14 +79,17 @@ namespace AppMotor.CliApp.CommandLine
 
             private readonly IOutputTerminal _terminal;
 
+            private readonly CancellationToken _cancellationToken;
+
             public ImmutableArray<CliParamBase> AllParams { get; }
 
             private CliParam<bool>? DebugParam { get; }
 
-            public CliCommandHandler(CliCommand command, bool enableDebugParam, IOutputTerminal terminal)
+            public CliCommandHandler(CliCommand command, bool enableDebugParam, IOutputTerminal terminal, CancellationToken cancellationToken)
             {
                 this._command = command;
                 this._terminal = terminal;
+                this._cancellationToken = cancellationToken;
 
                 var paramsCollectionBuilder = new ParamsCollectionBuilder();
 
@@ -135,7 +139,7 @@ namespace AppMotor.CliApp.CommandLine
                     DebuggerUtils.LaunchDebugger(this._terminal);
                 }
 
-                return await this._command.Execute().ConfigureAwait(continueOnCapturedContext: false);
+                return await this._command.Execute(this._cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
             }
         }
     }

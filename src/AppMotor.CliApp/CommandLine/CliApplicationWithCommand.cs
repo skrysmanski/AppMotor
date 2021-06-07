@@ -16,6 +16,7 @@
 
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 using AppMotor.CliApp.CommandLine.Utils;
@@ -82,9 +83,9 @@ namespace AppMotor.CliApp.CommandLine
             this.Command = command;
         }
 
-        private async Task<int> Execute(string[] args)
+        private async Task<int> Execute(string[] args, CancellationToken cancellationToken)
         {
-            var commandHandler = new CliCommand.CliCommandHandler(this.Command, this.EnableGlobalDebugParam, this.Terminal);
+            var commandHandler = new CliCommand.CliCommandHandler(this.Command, this.EnableGlobalDebugParam, this.Terminal, cancellationToken);
 
             return await RootCommandInvoker.InvokeRootCommand(
                     this.AppDescription,
