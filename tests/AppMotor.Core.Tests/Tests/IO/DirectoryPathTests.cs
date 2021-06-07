@@ -88,8 +88,12 @@ namespace AppMotor.Core.Tests.IO
         {
             new DirectoryPath("/abc/def").Name.ShouldBe("def");
             new DirectoryPath("/abc/def/").Name.ShouldBe("def");
-            new DirectoryPath(@"c:\abc\def").Name.ShouldBe("def");
-            new DirectoryPath(@"c:\abc\def\").Name.ShouldBe("def");
+
+            if (OperatingSystem.IsWindows())
+            {
+                new DirectoryPath(@"c:\abc\def").Name.ShouldBe("def");
+                new DirectoryPath(@"c:\abc\def\").Name.ShouldBe("def");
+            }
         }
 
         [Fact]

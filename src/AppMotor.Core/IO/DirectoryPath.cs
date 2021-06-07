@@ -49,6 +49,11 @@ namespace AppMotor.Core.IO
 
         /// <summary>
         /// The name of the directory.
+        ///
+        /// <para>Note: Only supports paths that are natively supported on the current operating system. I.e.,
+        /// if this path is in Windows path syntax (e.g. "c:\abc\def") and this code executes on
+        /// a non-Windows system (e.g. Linux), the name will not be detected correctly. This is a limitation
+        /// of <seealso cref="Path.GetFileName(string)"/>.</para>
         /// </summary>
         public string Name => Path.GetFileName(this.Value);
 

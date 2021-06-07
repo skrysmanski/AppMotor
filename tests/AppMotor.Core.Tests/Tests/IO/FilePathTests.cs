@@ -83,7 +83,11 @@ namespace AppMotor.Core.Tests.IO
         public void Test_Name()
         {
             new FilePath("/abc/def").Name.ShouldBe("def");
-            new FilePath(@"c:\abc\def").Name.ShouldBe("def");
+
+            if (OperatingSystem.IsWindows())
+            {
+                new FilePath(@"c:\abc\def").Name.ShouldBe("def");
+            }
         }
 
         [Fact]
