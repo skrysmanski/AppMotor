@@ -20,6 +20,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using AppMotor.CliApp.CommandLine;
+using AppMotor.CliApp.HttpServer.TestUtils;
 using AppMotor.Core.Certificates;
 using AppMotor.Core.Net;
 using AppMotor.Core.Net.Http;
@@ -40,22 +41,22 @@ namespace AppMotor.CliApp.HttpServer.Tests
     {
         private const string SERVER_HOSTNAME = "localhost";
 
-        private const int TEST_PORT = 1234;
-
         [Fact]
         public async Task TestHttpsApiCall()
         {
+            int testPort = ServerPortProvider.GetTestPort();
+
             using var testCertificate = TlsCertificate.CreateSelfSigned(SERVER_HOSTNAME, TimeSpan.FromDays(1));
 
             using var cts = new CancellationTokenSource();
 
-            var app = new CliApplicationWithCommand(new TestServerCommand(testCertificate));
+            var app = new CliApplicationWithCommand(new TestServerCommand(testPort, testCertificate));
             Task appTask = app.RunAsync(cts.Token);
 
             using (var httpClient = HttpClientFactory.CreateHttpClient(serverCertificate: testCertificate))
             {
                 // ReSharper disable once MethodSupportsCancellation
-                var response = await httpClient.GetAsync($"https://{SERVER_HOSTNAME}:{TEST_PORT}/api/ping");
+                var response = await httpClient.GetAsync($"https://{SERVER_HOSTNAME}:{testPort}/api/ping");
 
                 response.EnsureSuccessStatusCode();
 
@@ -72,11 +73,14 @@ namespace AppMotor.CliApp.HttpServer.Tests
 
         private sealed class TestServerCommand : HttpServerCommandBase
         {
+            private readonly int _port;
+
             private readonly TlsCertificate _testCertificate;
 
             /// <inheritdoc />
-            public TestServerCommand(TlsCertificate testCertificate)
+            public TestServerCommand(int port, TlsCertificate testCertificate)
             {
+                this._port = port;
                 this._testCertificate = testCertificate;
             }
 
@@ -85,7 +89,7 @@ namespace AppMotor.CliApp.HttpServer.Tests
             {
                 yield return new HttpsServerPort(
                     SocketListenAddresses.Loopback,
-                    port: TEST_PORT,
+                    port: this._port,
                     () => this._testCertificate,
                     certificateProviderCallerOwnsCertificates: false
                 );

@@ -18,6 +18,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+using AppMotor.CliApp.HttpServer.TestUtils;
 using AppMotor.Core.Net;
 using AppMotor.Core.Net.Http;
 using AppMotor.Core.TestUtils;
@@ -34,15 +35,15 @@ namespace AppMotor.CliApp.HttpServer.Tests
 {
     public sealed class HttpTests
     {
-        private const int TEST_PORT = 1234;
-
         [Fact]
         public async Task TestHttpApiCall()
         {
+            int testPort = ServerPortProvider.GetTestPort();
+
             using var cts = new CancellationTokenSource();
 
             var app = new HttpServerApplication(
-                new HttpServerPort(SocketListenAddresses.Loopback, TEST_PORT),
+                new HttpServerPort(SocketListenAddresses.Loopback, testPort),
                 new Startup()
             );
             Task appTask = app.RunAsync(cts.Token);
@@ -50,7 +51,7 @@ namespace AppMotor.CliApp.HttpServer.Tests
             using (var httpClient = HttpClientFactory.CreateHttpClient())
             {
                 // ReSharper disable once MethodSupportsCancellation
-                var response = await httpClient.GetAsync($"http://localhost:{TEST_PORT}/api/ping");
+                var response = await httpClient.GetAsync($"http://localhost:{testPort}/api/ping");
 
                 response.EnsureSuccessStatusCode();
 
