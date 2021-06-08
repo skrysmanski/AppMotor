@@ -13,7 +13,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <CommonlyUsedTypes Include="AppMotor.CliApp.HttpServer.HttpServerCommand" />
+    <CommonlyUsedTypes Include="AppMotor.HttpServer.HttpServerApplication" />
+    <CommonlyUsedTypes Include="AppMotor.HttpServer.HttpServerCommand" />
+    <CommonlyUsedTypes Include="AppMotor.HttpServer.MvcStartup" />
   </ItemGroup>
 
 </Project>

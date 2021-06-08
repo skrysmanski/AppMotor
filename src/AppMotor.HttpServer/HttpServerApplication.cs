@@ -47,9 +47,20 @@ namespace AppMotor.HttpServer
         /// <see cref="MvcStartup"/> will be used.</param>
         [PublicAPI]
         public HttpServerApplication(HttpServerPort httpPort, object? startupClass = null)
-            // NOTE: For security reasons we only bind to localhost. If the user wants to bind
-            //   to all IP addresses they simply need to use the other constructor.
-            : base(new HttpServerCommand(httpPort, startupClass))
+            : this(new HttpServerCommand(httpPort, startupClass))
+        {
+        }
+
+        /// <summary>
+        /// Creates an HTTP server application with the specified <see cref="HttpServerCommandBase"/> instance.
+        /// </summary>
+        /// <param name="httpServerCommand">The server command implementation</param>
+        /// <remarks>
+        /// This constructor exists to make <see cref="HttpServerCommandBase"/> easier to discover. It's identical
+        /// to using <c>new CliApplicationWithCommand(httpServerCommand)</c>.
+        /// </remarks>
+        public HttpServerApplication(HttpServerCommandBase httpServerCommand)
+            : base(httpServerCommand)
         {
         }
 
@@ -59,6 +70,7 @@ namespace AppMotor.HttpServer
         /// <param name="port">The HTTP port to use (will be bound to <see cref="SocketListenAddresses.Loopback"/>)</param>
         /// <param name="cancellationToken">A cancellation token to stop the HTTP server application.</param>
         /// <returns>The exit code to use.</returns>
+        [PublicAPI]
         public static int Run(int port, CancellationToken cancellationToken = default)
         {
             return Run(port, bindToLoopbackOnly: true, cancellationToken);
@@ -72,7 +84,7 @@ namespace AppMotor.HttpServer
         /// (i.e. reachable only from this machine itself).</param>
         /// <param name="cancellationToken">A cancellation token to stop the HTTP server application.</param>
         /// <returns>The exit code to use.</returns>
-        /// <returns>The exit code to use.</returns>
+        [PublicAPI]
         public static int Run(int port, bool bindToLoopbackOnly, CancellationToken cancellationToken = default)
         {
             return Task.Run(() => RunAsync(port, bindToLoopbackOnly, cancellationToken), cancellationToken).Result;
@@ -84,6 +96,7 @@ namespace AppMotor.HttpServer
         /// <param name="port">The HTTP port to use (will be bound to <see cref="SocketListenAddresses.Loopback"/>)</param>
         /// <param name="cancellationToken">A cancellation token to stop the HTTP server application.</param>
         /// <returns>The exit code to use.</returns>
+        [PublicAPI]
         public static Task<int> RunAsync(int port, CancellationToken cancellationToken = default)
         {
             return RunAsync(port, bindToLoopbackOnly: true, cancellationToken);
@@ -97,7 +110,7 @@ namespace AppMotor.HttpServer
         /// (i.e. reachable only from this machine itself).</param>
         /// <param name="cancellationToken">A cancellation token to stop the HTTP server application.</param>
         /// <returns>The exit code to use.</returns>
-        /// <returns>The exit code to use.</returns>
+        [PublicAPI]
         public static Task<int> RunAsync(int port, bool bindToLoopbackOnly, CancellationToken cancellationToken = default)
         {
             var serverPort = new HttpServerPort(bindToLoopbackOnly ? SocketListenAddresses.Loopback : SocketListenAddresses.Any, port);
