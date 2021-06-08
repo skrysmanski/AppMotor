@@ -66,3 +66,15 @@ internal static class Program
 ```
 
 Note: You can extend `MyServerCommand` with `CliParam`s. See the [CommandLine parsing documentation](../AppMotor.CliApp/CommandLine/README.md).
+
+This will use the class `AppMotor.HttpServer.MvcStartup` as [ASP.NET Startup class](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/startup). If you want to use your own Startup class, simply override `CreateStartupClass`:
+
+```c#
+private sealed class MyServerCommand : HttpServerCommandBase
+{
+    protected override object CreateStartupClass(WebHostBuilderContext context)
+    {
+        return new MyOwnStartup();
+    }
+}
+```
