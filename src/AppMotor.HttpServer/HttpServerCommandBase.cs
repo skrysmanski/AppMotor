@@ -8,6 +8,7 @@ using AppMotor.CliApp.Hosting;
 using AppMotor.Core.Certificates;
 using AppMotor.Core.Exceptions;
 using AppMotor.Core.Net;
+using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
@@ -64,6 +65,11 @@ namespace AppMotor.HttpServer
         private void ConfigureKestrel(KestrelServerOptions options)
         {
             var logger = options.ApplicationServices.GetRequiredService<ILogger<HttpServerCommandBase>>();
+
+            options.ConfigureHttpsDefaults(configureOptions =>
+            {
+                configureOptions.SslProtocols = TlsSettings.EnabledTlsProtocols;
+            });
 
             foreach (var serverPort in GetServerPorts(options.ApplicationServices))
             {
