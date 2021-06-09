@@ -127,7 +127,7 @@ namespace AppMotor.HttpServer
         /// <para>The name of this method is pre-defined and must not be changed.</para>
         /// </remarks>
         [UsedImplicitly]
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             //
             // Each "Use...()" method registers a middleware in the pipeline.
