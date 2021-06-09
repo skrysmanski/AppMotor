@@ -15,8 +15,9 @@
 #endregion
 
 using System.Net;
-using System.Net.Http;
 using System.Security.Authentication;
+
+using AppMotor.Core.Net.Http;
 
 using JetBrains.Annotations;
 
@@ -30,10 +31,10 @@ namespace AppMotor.Core.Utils
     public static class TlsSettings
     {
         /// <summary>
-        /// The default (secure) TLS protocol versions that should be used. The default value of this list
-        /// only contains protocol versions that are considered secure (as of 2020).
+        /// The default (secure) TLS protocol versions that should be used for the current process. The default
+        /// value of this list only contains protocol versions that are considered secure (as of 2021).
         ///
-        /// <para>You may use this list for <see cref="HttpClientHandler.SslProtocols"/>.</para>
+        /// <para>This list is automatically used by <see cref="HttpClientFactory"/>.</para>
         /// </summary>
         /// <remarks>
         /// This list can be changed via <see cref="EnableProtocol"/> and <see cref="DisableProtocol"/>. However,
@@ -42,13 +43,12 @@ namespace AppMotor.Core.Utils
         /// <para>Also note that Microsoft recommends using <see cref="SslProtocols.None"/> - in which case
         /// the operating system selects the protocol versions (although all documentation only talks about
         /// the .NET Framework - and not about .NET Core). However, as of 2020, even Windows 10 still
-        /// selects TLS 1.0 and TLS 1.1 (which are now considered no longer secure). So we do NOT do this
+        /// selects TLS 1.0 and TLS 1.1 (which are no longer considered secure). So we do NOT do this
         /// but specify the protocol versions ourselves.</para>
         /// </remarks>
         [PublicAPI]
-        public static SslProtocols EnabledTlsProtocols { get; private set; }
 #pragma warning disable CA5398 // Avoid hardcoded SslProtocols values
-            = SslProtocols.Tls12 | SslProtocols.Tls13;
+        public static SslProtocols EnabledTlsProtocols { get; private set; } = SslProtocols.Tls12 | SslProtocols.Tls13;
 #pragma warning restore CA5398 // Avoid hardcoded SslProtocols values
 
         /// <summary>
