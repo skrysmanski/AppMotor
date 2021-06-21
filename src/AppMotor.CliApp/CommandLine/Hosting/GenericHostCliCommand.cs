@@ -70,8 +70,22 @@ namespace AppMotor.CliApp.CommandLine.Hosting
         /// is terminated (and all hosted services are shut down). If this is <c>null</c> (the default), this command
         /// runs indefinitely - until the <see cref="CancellationToken"/> provided to the <c>application.Run()</c> call
         /// (if any) is canceled or <see cref="IHostApplicationLifetime.StopApplication"/> is called.
+        ///
+        /// <para>Note: The executor can get access to the registered services via the <see cref="ServiceProvider"/>
+        /// property.</para>
         /// </summary>
         protected virtual CliCommandExecutor? ExplicitExecutor => null;
+
+        /// <summary>
+        /// The service provider (i.e. dependency injection).
+        /// </summary>
+        /// <remarks>
+        /// This property is only available after the application has been created. Basically it's only available
+        /// in <see cref="ExplicitExecutor"/> (its primary use case).
+        /// </remarks>
+        protected IServiceProvider ServiceProvider => this._serviceProvider ?? throw new InvalidOperationException("The ServiceProvide is not yet initialized.");
+
+        private IServiceProvider? _serviceProvider;
 
         private async Task<int> Execute(CancellationToken cancellationToken)
         {
@@ -82,6 +96,8 @@ namespace AppMotor.CliApp.CommandLine.Hosting
             ConfigureApplication(hostBuilder);
 
             IHost host = hostBuilder.Build();
+
+            this._serviceProvider = host.Services;
 
             try
             {
