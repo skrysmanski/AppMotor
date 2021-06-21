@@ -36,9 +36,9 @@ namespace AppMotor.CliApp.CommandLine.Hosting
     ///
     /// <para>To register your own services with the dependency injection system, override <see cref="ConfigureServices"/>.</para>
     ///
-    /// <para>By default, this command runs indefinitely by default. It can be stopped with the <see cref="CancellationToken"/> provided
-    /// to the <c>application.Run()</c> call (if any) or via <see cref="IHostApplicationLifetime.StopApplication"/>. Alternatively,
-    /// you can set <see cref="ExplicitExecutor"/> and explicitly control the lifetime of this command.</para>
+    /// <para>By default, this command runs indefinitely until it's stopped manually (see <see cref="ExplicitExecutor"/> for details on
+    /// how to stop the command). Alternatively, you can set <see cref="ExplicitExecutor"/> which automatically stops this command
+    /// once it has finished.</para>
     ///
     /// <para>You can use this class as root command with <see cref="CliApplicationWithCommand"/> or as a verb with
     /// <see cref="CliApplicationWithVerbs"/>.</para>
@@ -63,29 +63,43 @@ namespace AppMotor.CliApp.CommandLine.Hosting
         /// <para>If you want all the features provided by <c>CreateDefaultBuilder()</c>, simply wrap
         /// <see cref="Host.CreateDefaultBuilder()"/> in an instance of <see cref="MethodHostBuilderFactory"/>.</para>
         /// </remarks>
-        protected virtual IHostBuilderFactory HostBuilderFactory { get; } = new DefaultHostBuilderFactory();
+        protected virtual IHostBuilderFactory HostBuilderFactory => DefaultHostBuilderFactory.Instance;
 
         /// <summary>
-        /// If set, this executor determines the lifetime of this command; i.e. once it has finished, the command
-        /// is terminated (and all hosted services are shut down). If this is <c>null</c> (the default), this command
-        /// runs indefinitely - until the <see cref="CancellationToken"/> provided to the <c>application.Run()</c> call
-        /// (if any) is canceled or <see cref="IHostApplicationLifetime.StopApplication"/> is called.
+        /// If set, this executor automatically stops this command once the executor has finished.
         ///
-        /// <para>Note: The executor can get access to the registered services via the <see cref="ServiceProvider"/>
+        /// <para>If this property is <c>null</c> (the default), this command runs indefinitely until it's stopped
+        /// manually. This can be done by canceling the <see cref="CancellationToken"/> provided to the <c>application.Run()</c>
+        /// call (if one was provided), or by calling either <see cref="Stop"/> or <see cref="IHostApplicationLifetime.StopApplication"/>.</para>
+        ///
+        /// <para>Note: The executor can get access to the registered services via the <see cref="Services"/>
         /// property.</para>
         /// </summary>
         protected virtual CliCommandExecutor? ExplicitExecutor => null;
 
         /// <summary>
-        /// The service provider (i.e. dependency injection).
+        /// The registered services (i.e. dependency injection).
         /// </summary>
         /// <remarks>
         /// This property is only available after the application has been created. Basically it's only available
         /// in <see cref="ExplicitExecutor"/> (its primary use case).
         /// </remarks>
-        protected IServiceProvider ServiceProvider => this._serviceProvider ?? throw new InvalidOperationException("The ServiceProvide is not yet initialized.");
+        protected IServiceProvider Services => this._serviceProvider ?? throw new InvalidOperationException("The ServiceProvide is not yet initialized.");
 
         private IServiceProvider? _serviceProvider;
+
+        /// <summary>
+        /// The lifetime events for this command.
+        /// </summary>
+        public GenericHostCliCommandLifetimeEvents LifetimeEvents { get; }
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        protected GenericHostCliCommand()
+        {
+            this.LifetimeEvents = new(this);
+        }
 
         private async Task<int> Execute(CancellationToken cancellationToken)
         {
@@ -103,27 +117,43 @@ namespace AppMotor.CliApp.CommandLine.Hosting
             {
                 await host.StartAsync(cancellationToken).ConfigureAwait(false);
 
+                this.LifetimeEvents.TriggerStarted();
+
+                var applicationLifetime = host.Services.GetRequiredService<IHostApplicationLifetime>();
+                applicationLifetime.ApplicationStopping.Register(
+                    state =>
+                    {
+                        var lifetimeEvents = (GenericHostCliCommandLifetimeEvents)state!;
+                        lifetimeEvents.TriggerStopping();
+                    },
+                    state: this.LifetimeEvents
+                );
+
+                int exitCode;
+
                 if (this.ExplicitExecutor is null)
                 {
                     await host.WaitForShutdownAsync(cancellationToken).ConfigureAwait(false);
-                    return 0;
+
+                    exitCode = 0;
                 }
                 else
                 {
-                    var exitCode = await this.ExplicitExecutor.Execute(cancellationToken).ConfigureAwait(false);
+                    exitCode = await this.ExplicitExecutor.Execute(cancellationToken).ConfigureAwait(false);
 
                     //
                     // Shut down host. For details, see implementation of "WaitForShutdownAsync()".
                     //
-                    IHostApplicationLifetime? applicationLifetime = host.Services.GetService<IHostApplicationLifetime>();
-                    applicationLifetime?.StopApplication();
+                    applicationLifetime.StopApplication();
 
                     // IMPORTANT: Don't pass "cancellationToken" here because it may have already been canceled and we don't
                     //   want to cancel "StopAsync" in this case.
                     await host.StopAsync(CancellationToken.None).ConfigureAwait(false);
-
-                    return exitCode;
                 }
+
+                this.LifetimeEvents.TriggerStopped();
+
+                return exitCode;
             }
             finally
             {
@@ -136,6 +166,17 @@ namespace AppMotor.CliApp.CommandLine.Hosting
                     host.Dispose();
                 }
             }
+        }
+
+        /// <summary>
+        /// Stops this command.
+        ///
+        /// <para>Note: If <see cref="ExplicitExecutor"/> is set, this call may not have any effect.</para>
+        /// </summary>
+        public void Stop()
+        {
+            var applicationLifetime = this.Services.GetRequiredService<IHostApplicationLifetime>();
+            applicationLifetime.StopApplication();
         }
 
         /// <summary>

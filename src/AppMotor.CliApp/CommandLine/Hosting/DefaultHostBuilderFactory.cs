@@ -32,6 +32,11 @@ namespace AppMotor.CliApp.CommandLine.Hosting
     /// <seealso cref="MethodHostBuilderFactory"/>
     public class DefaultHostBuilderFactory : IHostBuilderFactory
     {
+        /// <summary>
+        /// An instance of this class.
+        /// </summary>
+        public static DefaultHostBuilderFactory Instance { get; } = new();
+
         /// <inheritdoc />
         public virtual IHostBuilder CreateHostBuilder()
         {
