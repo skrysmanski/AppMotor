@@ -34,8 +34,9 @@ namespace AppMotor.CliApp.Hosting
     ///
     /// <para>To register your own services with the dependency injection system, override <see cref="ConfigureServices"/>.</para>
     ///
-    /// <para>This command runs indefinitely by default. It can be stopped with a <see cref="CancellationToken"/> provided
-    /// to the <c>Run()</c> method of the main application or via <see cref="IHostApplicationLifetime.StopApplication"/>.</para>
+    /// <para>By default, this command runs indefinitely by default. It can be stopped with a <see cref="CancellationToken"/> provided
+    /// to the <c>Run()</c> method of the main application or via <see cref="IHostApplicationLifetime.StopApplication"/>. Alternatively,
+    /// you can set <see cref="ExplicitExecutor"/> and explicitly control the lifetime of this command.</para>
     ///
     /// <para>You can use it as root command with <see cref="CliApplicationWithCommand"/> or as a verb with
     /// <see cref="CliApplicationWithVerbs"/>.</para>
@@ -48,7 +49,15 @@ namespace AppMotor.CliApp.Hosting
         /// <inheritdoc />
         protected sealed override CliCommandExecutor Executor => new(Execute);
 
-        private async Task Execute(CancellationToken cancellationToken)
+        /// <summary>
+        /// If set, this executor determines the lifetime of this command; i.e. once it has finished, the command
+        /// is terminated (and all hosted services are shut down). If this is <c>null</c> (the default), this command
+        /// runs indefinitely - until the <see cref="CancellationToken"/> provided to the <c>application.Run()</c> call
+        /// is canceled or <see cref="IHostApplicationLifetime.StopApplication"/> is called.
+        /// </summary>
+        protected virtual CliCommandExecutor? ExplicitExecutor => null;
+
+        private async Task<int> Execute(CancellationToken cancellationToken)
         {
             IHostBuilder hostBuilder = CreateHostBuilder();
 
@@ -60,7 +69,43 @@ namespace AppMotor.CliApp.Hosting
 
             IHost host = hostBuilder.Build();
 
-            await host.RunAsync(cancellationToken).ConfigureAwait(false);
+            try
+            {
+                await host.StartAsync(cancellationToken).ConfigureAwait(false);
+
+                if (this.ExplicitExecutor is null)
+                {
+                    await host.WaitForShutdownAsync(cancellationToken).ConfigureAwait(false);
+                    return 0;
+                }
+                else
+                {
+                    var exitCode = await this.ExplicitExecutor.Execute(cancellationToken).ConfigureAwait(false);
+
+                    //
+                    // Shut down host. For details, see implementation of "WaitForShutdownAsync()".
+                    //
+                    IHostApplicationLifetime? applicationLifetime = host.Services.GetService<IHostApplicationLifetime>();
+                    applicationLifetime?.StopApplication();
+
+                    // IMPORTANT: Don't pass "cancellationToken" here because it may have already been canceled and we don't
+                    //   want to cancel "StopAsync" in this case.
+                    await host.StopAsync(CancellationToken.None).ConfigureAwait(false);
+
+                    return exitCode;
+                }
+            }
+            finally
+            {
+                if (host is IAsyncDisposable asyncDisposable)
+                {
+                    await asyncDisposable.DisposeAsync().ConfigureAwait(false);
+                }
+                else
+                {
+                    host.Dispose();
+                }
+            }
         }
 
         /// <summary>
