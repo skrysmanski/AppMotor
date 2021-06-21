@@ -18,14 +18,12 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using AppMotor.CliApp.CommandLine;
-
 using JetBrains.Annotations;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace AppMotor.CliApp.Hosting
+namespace AppMotor.CliApp.CommandLine
 {
     /// <summary>
     /// A <see cref="CliCommand"/> that integrates .NET's Generic Host functionality - i.e. <see cref="IHost"/> and its builder
