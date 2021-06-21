@@ -4,6 +4,7 @@ using System.Net;
 using System.Security.Cryptography.X509Certificates;
 
 using AppMotor.CliApp.CommandLine;
+using AppMotor.CliApp.CommandLine.Hosting;
 using AppMotor.Core.Certificates;
 using AppMotor.Core.Exceptions;
 using AppMotor.Core.Net;

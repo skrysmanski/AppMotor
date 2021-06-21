@@ -23,7 +23,7 @@ using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace AppMotor.CliApp.CommandLine
+namespace AppMotor.CliApp.CommandLine.Hosting
 {
     /// <summary>
     /// A <see cref="CliCommand"/> that integrates .NET's Generic Host functionality - i.e. <see cref="IHost"/> and its builder
@@ -52,6 +52,20 @@ namespace AppMotor.CliApp.CommandLine
         protected sealed override CliCommandExecutor Executor => new(Execute);
 
         /// <summary>
+        /// Returns the <see cref="IHostBuilderFactory"/> to be used for this command. The
+        /// default implementation uses <see cref="DefaultHostBuilderFactory"/>.
+        /// </summary>
+        /// <remarks>
+        /// The default implementation does not use <see cref="Host.CreateDefaultBuilder()"/>. This is
+        /// because <c>CreateDefaultBuilder()</c> adds lots of services to the host builder - services
+        /// that the user did not request. We want the user to explicitly choose services and dependencies.
+        ///
+        /// <para>If you want all the features provided by <c>CreateDefaultBuilder()</c>, simply wrap
+        /// <see cref="Host.CreateDefaultBuilder()"/> in an instance of <see cref="MethodHostBuilderFactory"/>.</para>
+        /// </remarks>
+        protected virtual IHostBuilderFactory HostBuilderFactory { get; } = new DefaultHostBuilderFactory();
+
+        /// <summary>
         /// If set, this executor determines the lifetime of this command; i.e. once it has finished, the command
         /// is terminated (and all hosted services are shut down). If this is <c>null</c> (the default), this command
         /// runs indefinitely - until the <see cref="CancellationToken"/> provided to the <c>application.Run()</c> call
@@ -61,11 +75,9 @@ namespace AppMotor.CliApp.CommandLine
 
         private async Task<int> Execute(CancellationToken cancellationToken)
         {
-            IHostBuilder hostBuilder = CreateHostBuilder();
+            IHostBuilder hostBuilder = this.HostBuilderFactory.CreateHostBuilder();
 
-            hostBuilder.UseServiceProviderFactory(CreateServiceProviderFactory);
-
-            hostBuilder.ConfigureServices(ConfigureServices);
+           hostBuilder.ConfigureServices(ConfigureServices);
 
             ConfigureApplication(hostBuilder);
 
@@ -111,46 +123,7 @@ namespace AppMotor.CliApp.CommandLine
         }
 
         /// <summary>
-        /// Creates the <see cref="IHostBuilder"/> to be used to setup the application. The
-        /// default implementation simply creates a new instance of <see cref="HostBuilder"/>.
-        /// </summary>
-        /// <remarks>
-        /// The default implementation simply calls <c>new HostBuilder()</c> instead of using
-        /// <see cref="Host.CreateDefaultBuilder()"/>. This is because <c>CreateDefaultBuilder()</c>
-        /// adds lots of services to the host builder - services that the user did not request. We
-        /// want the user to explicitly choose services and dependencies.
-        ///
-        /// <para>If you want all the features provided by <c>CreateDefaultBuilder()</c>, simply
-        /// override this method and use <see cref="Host.CreateDefaultBuilder()"/> instead.</para>
-        /// </remarks>
-        [PublicAPI, MustUseReturnValue]
-        protected virtual IHostBuilder CreateHostBuilder()
-        {
-            return new HostBuilder();
-        }
-
-        /// <summary>
-        /// Create the <see cref="IServiceProvider"/> factory (i.e. the dependency injection framework) to be used by
-        /// the application.
-        ///
-        /// <para>The default implementation uses the built-in service provider (via <see cref="DefaultServiceProviderFactory"/>)
-        /// with scope validation enabled (see <see cref="ServiceProviderOptions.ValidateScopes"/>).</para>
-        /// </summary>
-        [PublicAPI]
-        protected virtual IServiceProviderFactory<IServiceCollection> CreateServiceProviderFactory(HostBuilderContext context)
-        {
-            var options = new ServiceProviderOptions()
-            {
-                // Enable all validations (by default, they're only enabled in the development environment)
-                ValidateScopes = true,
-                ValidateOnBuild = true,
-            };
-
-            return new DefaultServiceProviderFactory(options);
-        }
-
-        /// <summary>
-        /// Registers all services with the dependency injection framework (as created by <see cref="CreateServiceProviderFactory"/>).
+        /// Registers all services with the dependency injection framework.
         ///
         /// <para>Note: <see cref="IHostedService"/> (registered via <see cref="ServiceCollectionHostedServiceExtensions.AddHostedService{THostedService}(IServiceCollection)"/>)
         /// are the primary way to run workloads in this application type (unless it's an ASP.NET Core application).</para>
@@ -159,7 +132,7 @@ namespace AppMotor.CliApp.CommandLine
         /// If you need to configure the application itself, you can use <see cref="ConfigureApplication"/>.
         /// </remarks>
         [PublicAPI]
-        protected virtual void ConfigureServices(IServiceCollection services)
+        protected virtual void ConfigureServices(HostBuilderContext context, IServiceCollection services)
         {
             // Does nothing by default.
         }
