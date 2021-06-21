@@ -28,17 +28,21 @@ using Microsoft.Extensions.Hosting;
 namespace AppMotor.CliApp.Hosting
 {
     /// <summary>
-    /// A <see cref="CliCommand"/> that integrates .NET's Generic Host functionality (https://docs.microsoft.com/en-us/dotnet/core/extensions/generic-host).
-    /// This basically gives you access to .NET's dependency injection system (i.e. <see cref="IServiceProvider"/>) and its
-    /// associated services (like logging and configuration).
+    /// A <see cref="CliCommand"/> that integrates .NET's Generic Host functionality - i.e. <see cref="IHost"/> and its builder
+    /// <see cref="IHostBuilder"/>. This is .NET's new standard way of configuring applications (see
+    /// https://docs.microsoft.com/en-us/dotnet/core/extensions/generic-host for more details).
+    ///
+    /// <para>The main benefit here is that you get access to .NET's dependency injection system (i.e. <see cref="IServiceProvider"/>)
+    /// and its associated services (like logging and configuration). You also get support for running services via
+    /// <see cref="IHostedService"/>.</para>
     ///
     /// <para>To register your own services with the dependency injection system, override <see cref="ConfigureServices"/>.</para>
     ///
-    /// <para>By default, this command runs indefinitely by default. It can be stopped with a <see cref="CancellationToken"/> provided
-    /// to the <c>Run()</c> method of the main application or via <see cref="IHostApplicationLifetime.StopApplication"/>. Alternatively,
+    /// <para>By default, this command runs indefinitely by default. It can be stopped with the <see cref="CancellationToken"/> provided
+    /// to the <c>application.Run()</c> call (if any) or via <see cref="IHostApplicationLifetime.StopApplication"/>. Alternatively,
     /// you can set <see cref="ExplicitExecutor"/> and explicitly control the lifetime of this command.</para>
     ///
-    /// <para>You can use it as root command with <see cref="CliApplicationWithCommand"/> or as a verb with
+    /// <para>You can use this class as root command with <see cref="CliApplicationWithCommand"/> or as a verb with
     /// <see cref="CliApplicationWithVerbs"/>.</para>
     ///
     /// <para>This class provides access to the Generic Host functionality for non ASP.NET Core (console) application. For ASP.NET
@@ -53,7 +57,7 @@ namespace AppMotor.CliApp.Hosting
         /// If set, this executor determines the lifetime of this command; i.e. once it has finished, the command
         /// is terminated (and all hosted services are shut down). If this is <c>null</c> (the default), this command
         /// runs indefinitely - until the <see cref="CancellationToken"/> provided to the <c>application.Run()</c> call
-        /// is canceled or <see cref="IHostApplicationLifetime.StopApplication"/> is called.
+        /// (if any) is canceled or <see cref="IHostApplicationLifetime.StopApplication"/> is called.
         /// </summary>
         protected virtual CliCommandExecutor? ExplicitExecutor => null;
 
