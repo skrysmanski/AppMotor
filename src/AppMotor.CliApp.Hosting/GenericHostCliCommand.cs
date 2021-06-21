@@ -114,12 +114,21 @@ namespace AppMotor.CliApp.Hosting
 
         /// <summary>
         /// Creates the <see cref="IHostBuilder"/> to be used to setup the application. The
-        /// default implementation uses <see cref="Host.CreateDefaultBuilder()"/>.
+        /// default implementation simply creates a new instance of <see cref="HostBuilder"/>.
         /// </summary>
+        /// <remarks>
+        /// The default implementation simply calls <c>new HostBuilder()</c> instead of using
+        /// <see cref="Host.CreateDefaultBuilder()"/>. This is because <c>CreateDefaultBuilder()</c>
+        /// adds lots of services to the host builder - services that the user did not request. We
+        /// want the user to explicitly choose services and dependencies.
+        ///
+        /// <para>If you want all the features provided by <c>CreateDefaultBuilder()</c>, simply
+        /// override this method and use <see cref="Host.CreateDefaultBuilder()"/> instead.</para>
+        /// </remarks>
         [PublicAPI, MustUseReturnValue]
         protected virtual IHostBuilder CreateHostBuilder()
         {
-            return Host.CreateDefaultBuilder();
+            return new HostBuilder();
         }
 
         /// <summary>
