@@ -2,7 +2,18 @@
 name: CI
 
 # Run this workflow every time a new commit pushed to your repository
-on: push
+# See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows
+# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
+on:
+  # Trigger the workflow on push or pull request, but only for the main branch.
+  # Reason: Until a feature branch is converted into a pull request, there's no (real) need
+  #   to have this workflow waste resources and trigger 'workflow did not work' emails.
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   # Set the job key. The key is displayed as the job name
