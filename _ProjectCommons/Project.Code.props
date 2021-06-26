@@ -142,7 +142,7 @@
 
   <ItemGroup Label="Code Analysis">
     <!-- This file specifies the severities of all CA rules. -->
-    <GlobalAnalyzerConfigFiles Include="$(ProjectsRootDirectory)_StyleGuide/ca.globalconfig" />
+    <GlobalAnalyzerConfigFiles Include="$(ProjectsRootDirectory)_StyleGuide/CA.globalconfig" />
   </ItemGroup>
 
 </Project>

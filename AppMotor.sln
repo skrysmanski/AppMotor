@@ -46,7 +46,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.CliApp.Samples.App
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_StyleGuide", "_StyleGuide", "{515E0138-C1FA-48D0-A43D-AD50971E421A}"
 	ProjectSection(SolutionItems) = preProject
-		_StyleGuide\ca.globalconfig = _StyleGuide\ca.globalconfig
+		_StyleGuide\CA.globalconfig = _StyleGuide\CA.globalconfig
+		_StyleGuide\StyleGuide.globalconfig = _StyleGuide\StyleGuide.globalconfig
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "utils", "utils", "{C835EA81-9921-4245-8020-9F65AB4D2175}"
