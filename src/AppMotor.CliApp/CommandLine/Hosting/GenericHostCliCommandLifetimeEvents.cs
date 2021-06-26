@@ -18,6 +18,9 @@ using System;
 
 namespace AppMotor.CliApp.CommandLine.Hosting
 {
+    /// <summary>
+    /// The lifetime events for a <see cref="GenericHostCliCommand"/>.
+    /// </summary>
     public sealed class GenericHostCliCommandLifetimeEvents
     {
         /// <summary>
