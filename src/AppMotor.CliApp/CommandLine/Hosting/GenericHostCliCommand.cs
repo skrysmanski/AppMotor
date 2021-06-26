@@ -18,6 +18,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+using AppMotor.Core.Utils;
+
 using JetBrains.Annotations;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -105,7 +107,7 @@ namespace AppMotor.CliApp.CommandLine.Hosting
         {
             IHostBuilder hostBuilder = this.HostBuilderFactory.CreateHostBuilder();
 
-           hostBuilder.ConfigureServices(ConfigureServices);
+            hostBuilder.ConfigureServices(ConfigureServices);
 
             ConfigureApplication(hostBuilder);
 
@@ -157,14 +159,7 @@ namespace AppMotor.CliApp.CommandLine.Hosting
             }
             finally
             {
-                if (host is IAsyncDisposable asyncDisposable)
-                {
-                    await asyncDisposable.DisposeAsync().ConfigureAwait(false);
-                }
-                else
-                {
-                    host.Dispose();
-                }
+                await DisposeHelper.DisposeWithAsyncSupport(host).ConfigureAwait(false);
             }
         }
 
