@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AppMotor.CliApp.Hosting\AppMotor.CliApp.Hosting.csproj" />
+    <ProjectReference Include="..\AppMotor.CliApp\AppMotor.CliApp.csproj" />
     <ProjectReference Include="..\AppMotor.Core\AppMotor.Core.csproj" />
   </ItemGroup>
 

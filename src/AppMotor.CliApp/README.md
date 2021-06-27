@@ -11,7 +11,11 @@ The `Terminals` namespace provides access to:
 
 ## Command Line Parsing
 
-For details, [README.md](AppMotor.CliApp/CommandLine/README.md).
+For details, [README.md](CommandLine/README.md).
+
+## Generic Host
+
+If you want to use .NET's Generic Host, see [AppMotor.CliApp.Hosting](CommandLine/Hosting/README.md).
 
 ## Code Documentation
 

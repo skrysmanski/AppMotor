@@ -4,7 +4,7 @@ using System.Net;
 using System.Security.Cryptography.X509Certificates;
 
 using AppMotor.CliApp.CommandLine;
-using AppMotor.CliApp.Hosting;
+using AppMotor.CliApp.CommandLine.Hosting;
 using AppMotor.Core.Certificates;
 using AppMotor.Core.Exceptions;
 using AppMotor.Core.Net;
@@ -23,10 +23,17 @@ namespace AppMotor.HttpServer
     /// <summary>
     /// A <see cref="CliCommand"/> for running an HTTP(S) server (Kestrel). You can use it as root
     /// command with <see cref="CliApplicationWithCommand"/> or as a verb with <see cref="CliApplicationWithVerbs"/>.
-    /// See <see cref="CliCommand"/> for more details.
+    /// See <see cref="CliCommand"/> and <see cref="GenericHostCliCommand"/> for more details.
+    ///
+    /// <para>You may want to override <see cref="GenericHostCliCommand.ConfigureServices"/> to register
+    /// your own services with the dependency injection system. You can also override <see cref="CreateStartupClass"/>
+    /// to use another startup class than the default <see cref="MvcStartup"/> class.</para>
     /// </summary>
+    /// <remarks>
+    /// See also: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/generic-host
+    /// </remarks>
     [PublicAPI]
-    public abstract class HttpServerCommandBase : CliCommandWithGenericHost
+    public abstract class HttpServerCommandBase : GenericHostCliCommand
     {
         /// <summary>
         /// Returns the server port definitions this HTTP service should listen on.
@@ -46,7 +53,7 @@ namespace AppMotor.HttpServer
         }
 
         /// <inheritdoc />
-        protected sealed override void SetupApplication(IHostBuilder hostBuilder)
+        protected sealed override void ConfigureApplication(IHostBuilder hostBuilder)
         {
             hostBuilder.ConfigureWebHostDefaults(webBuilder => // Create the HTTP host
             {
