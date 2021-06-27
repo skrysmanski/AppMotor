@@ -72,7 +72,8 @@ namespace AppMotor.CliApp.CommandLine.Hosting
         ///
         /// <para>If this property is <c>null</c> (the default), this command runs indefinitely until it's stopped
         /// manually. This can be done by canceling the <see cref="CancellationToken"/> provided to the <c>application.Run()</c>
-        /// call (if one was provided), or by calling either <see cref="Stop"/> or <see cref="IHostApplicationLifetime.StopApplication"/>.</para>
+        /// call (if one was provided), or by calling either <see cref="Stop"/> or <see cref="IHostApplicationLifetime.StopApplication"/>.
+        /// If this commands runs "interactively", the user can also hit "Ctrl+C".</para>
         ///
         /// <para>Note: The executor can get access to the registered services via the <see cref="Services"/>
         /// property.</para>
@@ -84,9 +85,10 @@ namespace AppMotor.CliApp.CommandLine.Hosting
         /// </summary>
         /// <remarks>
         /// This property is only available after the application has been created. Basically it's only available
-        /// in <see cref="ExplicitExecutor"/> (its primary use case).
+        /// in <see cref="ExplicitExecutor"/> (its primary use case). This is also why this property is <c>protected</c>
+        /// rather than <c>public</c>.
         /// </remarks>
-        protected IServiceProvider Services => this._serviceProvider ?? throw new InvalidOperationException("The ServiceProvide is not yet initialized.");
+        protected IServiceProvider Services => this._serviceProvider ?? throw new InvalidOperationException("This ServiceProvider is not yet available.");
 
         private IServiceProvider? _serviceProvider;
 
@@ -164,10 +166,13 @@ namespace AppMotor.CliApp.CommandLine.Hosting
         }
 
         /// <summary>
-        /// Stops this command.
+        /// Stops this command. This initiates a graceful shutdown.
         ///
         /// <para>Note: If <see cref="ExplicitExecutor"/> is set, this call may not have any effect.</para>
         /// </summary>
+        /// <remarks>
+        /// This method is just convenience wrapper around <see cref="IHostApplicationLifetime.StopApplication"/>.
+        /// </remarks>
         public void Stop()
         {
             var applicationLifetime = this.Services.GetRequiredService<IHostApplicationLifetime>();

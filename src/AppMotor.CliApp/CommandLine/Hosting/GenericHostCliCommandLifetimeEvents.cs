@@ -30,13 +30,13 @@ namespace AppMotor.CliApp.CommandLine.Hosting
 
         /// <summary>
         /// Triggered when the <see cref="GenericHostCliCommand"/> is starting a graceful shutdown.
-        /// Shutdown will block until all callbacks registered on this token have completed.
+        /// Shutdown will block until all event handlers registered on this event have completed.
         /// </summary>
         public event EventHandler? Stopping;
 
         /// <summary>
         /// Triggered when the <see cref="GenericHostCliCommand"/> has completed a graceful shutdown.
-        /// The application will not exit until all callbacks registered on this token have completed.
+        /// The application will not exit until all event handlers registered on this event have completed.
         /// </summary>
         public event EventHandler? Stopped;
 
