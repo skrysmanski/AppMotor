@@ -36,26 +36,22 @@ namespace AppMotor.CliApp.ExecutorGenerator
         {
             if (args.Length == 0)
             {
-                Console.WriteLine("Path to CliApp project directory is not specified.");
+                Console.WriteLine("Directory of AppMotor.sln is not specified.");
                 return 1;
             }
 
-            DirectoryPath cliAppProjectDirectoryPath = args[0];
+            DirectoryPath rootDirPath = args[0];
 
-            if (cliAppProjectDirectoryPath.Name != "AppMotor.CliApp")
+            var srcDirPath = new DirectoryPath(rootDirPath, "src/AppMotor.CliApp");
+
+            if (!srcDirPath.Exists())
             {
-                Console.WriteLine($"The path '{cliAppProjectDirectoryPath}' does not point to the correct folder.");
+                Console.WriteLine($"The path '{srcDirPath}' does not exist (resolves to: {srcDirPath.AsAbsolutePath()}).");
                 return 1;
             }
 
-            if (!cliAppProjectDirectoryPath.Exists())
-            {
-                Console.WriteLine($"The path '{cliAppProjectDirectoryPath}' does not exist (resolves to: {cliAppProjectDirectoryPath.AsAbsolutePath()}).");
-                return 1;
-            }
-
-            ProcessCliApplicationExecutor(cliAppProjectDirectoryPath);
-            ProcessCliCommandExecutor(cliAppProjectDirectoryPath);
+            ProcessCliApplicationExecutor(srcDirPath);
+            ProcessCliCommandExecutor(srcDirPath);
 
             return 0;
         }
