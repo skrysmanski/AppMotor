@@ -72,9 +72,9 @@ namespace AppMotor.Core.IO
         /// Constructs a directory path from a parent directory and a directory name.
         /// </summary>
         /// <param name="directoryPath">The parent directory of the new directory path</param>
-        /// <param name="fileName">The name of the directory.</param>
-        public DirectoryPath(DirectoryPath directoryPath, string fileName)
-            : this(Path.Combine(directoryPath.Value, fileName))
+        /// <param name="directoryName">The name of the directory. Can be multiple levels (e.g. <c>sub1/sub2/sub3</c>)</param>
+        public DirectoryPath(DirectoryPath directoryPath, string directoryName)
+            : this(Path.Combine(directoryPath.Value, directoryName))
         {
         }
 
