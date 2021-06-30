@@ -2,7 +2,7 @@
   "profiles": {
     "AppMotor.CliApp.ExecutorGenerator": {
       "commandName": "Project",
-      "commandLineArgs": "../../../../../src/AppMotor.CliApp"
+      "commandLineArgs": "../../../../../"
     }
   }
 }

@@ -31,6 +31,14 @@ namespace AppMotor.CliApp.Tests
     {
         private static readonly string[] TEST_ARGS = { "abc", "def" };
 
+        // START MARKER: Generated code
+
+        //
+        // NOTE: The code of this class has been generated with the 'ExecutorGenerator' tool. Do
+        //   not make manual changes to this class or they may get lost (by accident) when the code
+        //   for this class is generated the next time!!!
+        //
+
         [Fact]
         public void Test_Sync_Void_NoArgs()
         {
@@ -85,14 +93,13 @@ namespace AppMotor.CliApp.Tests
             bool Execute()
             {
                 called = true;
-
                 return retVal;
             }
 
             var testApplication = new TestApplication(new CliApplicationExecutor(Execute));
 
             // Test
-            testApplication.RunWithExpectedExitCode(retVal ? 0 : 1, TEST_ARGS);
+            testApplication.RunWithExpectedExitCode(expectedExitCode: retVal ? 0 : 1, TEST_ARGS);
 
             // Verify
             called.ShouldBe(true);
@@ -110,16 +117,14 @@ namespace AppMotor.CliApp.Tests
             bool Execute(string[] args)
             {
                 called = true;
-
                 args.ShouldBe(TEST_ARGS);
-
                 return retVal;
             }
 
             var testApplication = new TestApplication(new CliApplicationExecutor(Execute));
 
             // Test
-            testApplication.RunWithExpectedExitCode(retVal ? 0 : 1, TEST_ARGS);
+            testApplication.RunWithExpectedExitCode(expectedExitCode: retVal ? 0 : 1, TEST_ARGS);
 
             // Verify
             called.ShouldBe(true);
@@ -138,14 +143,13 @@ namespace AppMotor.CliApp.Tests
             int Execute()
             {
                 called = true;
-
                 return retVal;
             }
 
             var testApplication = new TestApplication(new CliApplicationExecutor(Execute));
 
             // Test
-            testApplication.RunWithExpectedExitCode(retVal, TEST_ARGS);
+            testApplication.RunWithExpectedExitCode(expectedExitCode: retVal, TEST_ARGS);
 
             // Verify
             called.ShouldBe(true);
@@ -164,16 +168,14 @@ namespace AppMotor.CliApp.Tests
             int Execute(string[] args)
             {
                 called = true;
-
                 args.ShouldBe(TEST_ARGS);
-
                 return retVal;
             }
 
             var testApplication = new TestApplication(new CliApplicationExecutor(Execute));
 
             // Test
-            testApplication.RunWithExpectedExitCode(retVal, TEST_ARGS);
+            testApplication.RunWithExpectedExitCode(expectedExitCode: retVal, TEST_ARGS);
 
             // Verify
             called.ShouldBe(true);
@@ -181,7 +183,7 @@ namespace AppMotor.CliApp.Tests
         }
 
         [Fact]
-        public async Task Test_Async_Void_NoArgs()
+        public void Test_Async_Void_NoArgs()
         {
             // Setup
             bool called = false;
@@ -195,16 +197,15 @@ namespace AppMotor.CliApp.Tests
             var testApplication = new TestApplication(new CliApplicationExecutor(Execute));
 
             // Test
-            var exitCode = await testApplication.RunAsync(TEST_ARGS);
+            testApplication.Run(TEST_ARGS);
 
             // Verify
             called.ShouldBe(true);
-            exitCode.ShouldBe(0);
             testApplication.ShouldHaveNoOutput();
         }
 
         [Fact]
-        public async Task Test_Async_Void_WithArgs()
+        public void Test_Async_Void_WithArgs()
         {
             // Setup
             bool called = false;
@@ -213,25 +214,23 @@ namespace AppMotor.CliApp.Tests
             {
                 await Task.Delay(1);
                 called = true;
-
                 args.ShouldBe(TEST_ARGS);
             }
 
             var testApplication = new TestApplication(new CliApplicationExecutor(Execute));
 
             // Test
-            var exitCode = await testApplication.RunAsync(TEST_ARGS);
+            testApplication.Run(TEST_ARGS);
 
             // Verify
             called.ShouldBe(true);
-            exitCode.ShouldBe(0);
             testApplication.ShouldHaveNoOutput();
         }
 
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public async Task Test_Async_Bool_NoArgs(bool retVal)
+        public void Test_Async_Bool_NoArgs(bool retVal)
         {
             // Setup
             bool called = false;
@@ -239,34 +238,24 @@ namespace AppMotor.CliApp.Tests
             async Task<bool> Execute()
             {
                 await Task.Delay(1);
-
                 called = true;
-
                 return retVal;
             }
 
             var testApplication = new TestApplication(new CliApplicationExecutor(Execute));
 
             // Test
-            var exitCode = await testApplication.RunAsync(TEST_ARGS);
+            testApplication.RunWithExpectedExitCode(expectedExitCode: retVal ? 0 : 1, TEST_ARGS);
 
             // Verify
             called.ShouldBe(true);
-            if (retVal)
-            {
-                exitCode.ShouldBe(0);
-            }
-            else
-            {
-                exitCode.ShouldBe(1);
-            }
             testApplication.ShouldHaveNoOutput();
         }
 
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public async Task Test_Async_Bool_WithArgs(bool retVal)
+        public void Test_Async_Bool_WithArgs(bool retVal)
         {
             // Setup
             bool called = false;
@@ -274,29 +263,18 @@ namespace AppMotor.CliApp.Tests
             async Task<bool> Execute(string[] args)
             {
                 await Task.Delay(1);
-
                 called = true;
-
                 args.ShouldBe(TEST_ARGS);
-
                 return retVal;
             }
 
             var testApplication = new TestApplication(new CliApplicationExecutor(Execute));
 
             // Test
-            var exitCode = await testApplication.RunAsync(TEST_ARGS);
+            testApplication.RunWithExpectedExitCode(expectedExitCode: retVal ? 0 : 1, TEST_ARGS);
 
             // Verify
             called.ShouldBe(true);
-            if (retVal)
-            {
-                exitCode.ShouldBe(0);
-            }
-            else
-            {
-                exitCode.ShouldBe(1);
-            }
             testApplication.ShouldHaveNoOutput();
         }
 
@@ -304,7 +282,7 @@ namespace AppMotor.CliApp.Tests
         [InlineData(0)]
         [InlineData(1)]
         [InlineData(42)]
-        public async Task Test_Async_Int_NoArgs(int retVal)
+        public void Test_Async_Int_NoArgs(int retVal)
         {
             // Setup
             bool called = false;
@@ -312,20 +290,17 @@ namespace AppMotor.CliApp.Tests
             async Task<int> Execute()
             {
                 await Task.Delay(1);
-
                 called = true;
-
                 return retVal;
             }
 
             var testApplication = new TestApplication(new CliApplicationExecutor(Execute));
 
             // Test
-            var exitCode = await testApplication.RunAsync(TEST_ARGS);
+            testApplication.RunWithExpectedExitCode(expectedExitCode: retVal, TEST_ARGS);
 
             // Verify
             called.ShouldBe(true);
-            exitCode.ShouldBe(retVal);
             testApplication.ShouldHaveNoOutput();
         }
 
@@ -333,7 +308,7 @@ namespace AppMotor.CliApp.Tests
         [InlineData(0)]
         [InlineData(1)]
         [InlineData(42)]
-        public async Task Test_Async_Int_WithArgs(int retVal)
+        public void Test_Async_Int_WithArgs(int retVal)
         {
             // Setup
             bool called = false;
@@ -341,24 +316,23 @@ namespace AppMotor.CliApp.Tests
             async Task<int> Execute(string[] args)
             {
                 await Task.Delay(1);
-
                 called = true;
-
                 args.ShouldBe(TEST_ARGS);
-
                 return retVal;
             }
 
             var testApplication = new TestApplication(new CliApplicationExecutor(Execute));
 
             // Test
-            var exitCode = await testApplication.RunAsync(TEST_ARGS);
+            testApplication.RunWithExpectedExitCode(expectedExitCode: retVal, TEST_ARGS);
 
             // Verify
             called.ShouldBe(true);
-            exitCode.ShouldBe(retVal);
             testApplication.ShouldHaveNoOutput();
         }
+
+
+        // END MARKER: Generated code
 
         private sealed class TestApplication : TestCliApplicationBase
         {

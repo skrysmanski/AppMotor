@@ -36,26 +36,31 @@ namespace AppMotor.CliApp.ExecutorGenerator
         {
             if (args.Length == 0)
             {
-                Console.WriteLine("Path to CliApp project directory is not specified.");
+                Console.WriteLine("Directory of AppMotor.sln is not specified.");
                 return 1;
             }
 
-            DirectoryPath cliAppProjectDirectoryPath = args[0];
+            DirectoryPath rootDirPath = args[0];
 
-            if (cliAppProjectDirectoryPath.Name != "AppMotor.CliApp")
+            var srcDirPath = new DirectoryPath(rootDirPath, "src/AppMotor.CliApp");
+            if (!srcDirPath.Exists())
             {
-                Console.WriteLine($"The path '{cliAppProjectDirectoryPath}' does not point to the correct folder.");
+                Console.WriteLine($"The path '{srcDirPath}' does not exist (resolves to: {srcDirPath.AsAbsolutePath()}).");
                 return 1;
             }
 
-            if (!cliAppProjectDirectoryPath.Exists())
+            var testsDirPath = new DirectoryPath(rootDirPath, "tests/AppMotor.CliApp.Tests");
+            if (!testsDirPath.Exists())
             {
-                Console.WriteLine($"The path '{cliAppProjectDirectoryPath}' does not exist (resolves to: {cliAppProjectDirectoryPath.AsAbsolutePath()}).");
+                Console.WriteLine($"The path '{testsDirPath}' does not exist (resolves to: {testsDirPath.AsAbsolutePath()}).");
                 return 1;
             }
 
-            ProcessCliApplicationExecutor(cliAppProjectDirectoryPath);
-            ProcessCliCommandExecutor(cliAppProjectDirectoryPath);
+            ProcessCliApplicationExecutor(srcDirPath);
+            ProcessCliCommandExecutor(srcDirPath);
+
+            ProcessCliApplicationExecutorTests(testsDirPath);
+            ProcessCliCommandExecutorTests(testsDirPath);
 
             return 0;
         }
@@ -85,7 +90,25 @@ namespace AppMotor.CliApp.ExecutorGenerator
             ProcessExecutorCodeFile(path, generator);
         }
 
-        private static void ProcessExecutorCodeFile(FilePath filePath, CliAppExecutorGenerator codeGenerator)
+        private static void ProcessCliApplicationExecutorTests(DirectoryPath testsDirectoryPath)
+        {
+            var path = new FilePath(testsDirectoryPath, "Tests/CliApplicationExecutorTests.cs");
+
+            var generator = new CliApplicationExecutorTestsGenerator();
+
+            ProcessExecutorCodeFile(path, generator);
+        }
+
+        private static void ProcessCliCommandExecutorTests(DirectoryPath testsDirectoryPath)
+        {
+            var path = new FilePath(testsDirectoryPath, "Tests/CommandLine/CliCommandExecutorTests.cs");
+
+            var generator = new CliCommandExecutorTestsGenerator();
+
+            ProcessExecutorCodeFile(path, generator);
+        }
+
+        private static void ProcessExecutorCodeFile(FilePath filePath, SourceCodeGeneratorBase codeGenerator)
         {
             var codeText = filePath.ReadAllText(Encoding.UTF8);
 
@@ -152,15 +175,15 @@ namespace AppMotor.CliApp.ExecutorGenerator
                     throw new InvalidOperationException($"Code does not contain the end marker: {START_MARKER}");
                 }
 
-                this._codeAboveGeneratedCode = string.Join(CliAppExecutorGenerator.LINE_BREAK, codeLinesAboveGeneratedCode).TrimEnd() + CliAppExecutorGenerator.LINE_BREAK;
-                this._codeBelowGeneratedCode = string.Join(CliAppExecutorGenerator.LINE_BREAK, codeLinesBelowGeneratedCode).TrimEnd() + CliAppExecutorGenerator.LINE_BREAK;
+                this._codeAboveGeneratedCode = string.Join(SourceCodeGeneratorBase.LINE_BREAK, codeLinesAboveGeneratedCode).TrimEnd() + SourceCodeGeneratorBase.LINE_BREAK;
+                this._codeBelowGeneratedCode = string.Join(SourceCodeGeneratorBase.LINE_BREAK, codeLinesBelowGeneratedCode).TrimEnd() + SourceCodeGeneratorBase.LINE_BREAK;
             }
 
             [MustUseReturnValue]
             public string InsertNewGeneratedCode(string generatedCode)
             {
                 return this._codeAboveGeneratedCode
-                     + generatedCode + CliAppExecutorGenerator.LINE_BREAK
+                     + generatedCode + SourceCodeGeneratorBase.LINE_BREAK
                      + this._codeBelowGeneratedCode;
             }
         }
