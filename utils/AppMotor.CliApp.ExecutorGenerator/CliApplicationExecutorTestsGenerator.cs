@@ -23,15 +23,8 @@ using JetBrains.Annotations;
 
 namespace AppMotor.CliApp.ExecutorGenerator
 {
-    internal sealed class CliApplicationExecutorTestsGenerator : SourceCodeGeneratorBase
+    internal sealed class CliApplicationExecutorTestsGenerator : ExecutorTestsGeneratorBase
     {
-        private enum ReturnTypes
-        {
-            Void,
-            Bool,
-            Int,
-        }
-
         /// <inheritdoc />
         protected override void GenerateClassContentCore()
         {
