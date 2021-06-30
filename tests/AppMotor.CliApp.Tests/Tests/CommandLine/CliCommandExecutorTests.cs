@@ -32,6 +32,14 @@ namespace AppMotor.CliApp.Tests.CommandLine
     {
         private const string COMMAND_NAME = "test";
 
+        // START MARKER: Generated code
+
+        //
+        // NOTE: The code of this class has been generated with the 'ExecutorGenerator' tool. Do
+        //   not make manual changes to this class or they may get lost (by accident) when the code
+        //   for this class is generated the next time!!!
+        //
+
         [Fact]
         public void Test_Sync_Void()
         {
@@ -64,7 +72,6 @@ namespace AppMotor.CliApp.Tests.CommandLine
             bool Execute()
             {
                 called = true;
-
                 return retVal;
             }
 
@@ -90,14 +97,13 @@ namespace AppMotor.CliApp.Tests.CommandLine
             int Execute()
             {
                 called = true;
-
                 return retVal;
             }
 
             var testApplication = new TestApplication(new CliCommandExecutor(Execute));
 
             // Test
-            testApplication.RunWithExpectedExitCode(retVal, COMMAND_NAME);
+            testApplication.RunWithExpectedExitCode(expectedExitCode: retVal, COMMAND_NAME);
 
             // Verify
             called.ShouldBe(true);
@@ -105,7 +111,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
         }
 
         [Fact]
-        public async Task Test_Async_Void()
+        public void Test_Async_Void()
         {
             // Setup
             bool called = false;
@@ -119,18 +125,17 @@ namespace AppMotor.CliApp.Tests.CommandLine
             var testApplication = new TestApplication(new CliCommandExecutor(Execute));
 
             // Test
-            var exitCode = await testApplication.RunAsync(COMMAND_NAME);
+            testApplication.Run(COMMAND_NAME);
 
             // Verify
             called.ShouldBe(true);
-            exitCode.ShouldBe(0);
             testApplication.ShouldHaveNoOutput();
         }
 
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public async Task Test_Async_Bool(bool retVal)
+        public void Test_Async_Bool(bool retVal)
         {
             // Setup
             bool called = false;
@@ -138,27 +143,17 @@ namespace AppMotor.CliApp.Tests.CommandLine
             async Task<bool> Execute()
             {
                 await Task.Delay(1);
-
                 called = true;
-
                 return retVal;
             }
 
             var testApplication = new TestApplication(new CliCommandExecutor(Execute));
 
             // Test
-            var exitCode = await testApplication.RunAsync(COMMAND_NAME);
+            testApplication.RunWithExpectedExitCode(expectedExitCode: retVal ? 0 : 1, COMMAND_NAME);
 
             // Verify
             called.ShouldBe(true);
-            if (retVal)
-            {
-                exitCode.ShouldBe(0);
-            }
-            else
-            {
-                exitCode.ShouldBe(1);
-            }
             testApplication.ShouldHaveNoOutput();
         }
 
@@ -166,7 +161,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
         [InlineData(0)]
         [InlineData(1)]
         [InlineData(42)]
-        public async Task Test_Async_Int(int retVal)
+        public void Test_Async_Int(int retVal)
         {
             // Setup
             bool called = false;
@@ -174,22 +169,22 @@ namespace AppMotor.CliApp.Tests.CommandLine
             async Task<int> Execute()
             {
                 await Task.Delay(1);
-
                 called = true;
-
                 return retVal;
             }
 
             var testApplication = new TestApplication(new CliCommandExecutor(Execute));
 
             // Test
-            var exitCode = await testApplication.RunAsync(COMMAND_NAME);
+            testApplication.RunWithExpectedExitCode(expectedExitCode: retVal, COMMAND_NAME);
 
             // Verify
             called.ShouldBe(true);
-            exitCode.ShouldBe(retVal);
             testApplication.ShouldHaveNoOutput();
         }
+
+
+        // END MARKER: Generated code
 
         private sealed class TestApplication : TestApplicationWithVerbsBase
         {

@@ -99,7 +99,7 @@ namespace AppMotor.CliApp.Tests
             var testApplication = new TestApplication(new CliApplicationExecutor(Execute));
 
             // Test
-            testApplication.RunWithExpectedExitCode(retVal ? 0 : 1, TEST_ARGS);
+            testApplication.RunWithExpectedExitCode(expectedExitCode: retVal ? 0 : 1, TEST_ARGS);
 
             // Verify
             called.ShouldBe(true);
@@ -124,7 +124,7 @@ namespace AppMotor.CliApp.Tests
             var testApplication = new TestApplication(new CliApplicationExecutor(Execute));
 
             // Test
-            testApplication.RunWithExpectedExitCode(retVal ? 0 : 1, TEST_ARGS);
+            testApplication.RunWithExpectedExitCode(expectedExitCode: retVal ? 0 : 1, TEST_ARGS);
 
             // Verify
             called.ShouldBe(true);
@@ -149,7 +149,7 @@ namespace AppMotor.CliApp.Tests
             var testApplication = new TestApplication(new CliApplicationExecutor(Execute));
 
             // Test
-            testApplication.RunWithExpectedExitCode(retVal, TEST_ARGS);
+            testApplication.RunWithExpectedExitCode(expectedExitCode: retVal, TEST_ARGS);
 
             // Verify
             called.ShouldBe(true);
@@ -175,7 +175,7 @@ namespace AppMotor.CliApp.Tests
             var testApplication = new TestApplication(new CliApplicationExecutor(Execute));
 
             // Test
-            testApplication.RunWithExpectedExitCode(retVal, TEST_ARGS);
+            testApplication.RunWithExpectedExitCode(expectedExitCode: retVal, TEST_ARGS);
 
             // Verify
             called.ShouldBe(true);
@@ -245,7 +245,7 @@ namespace AppMotor.CliApp.Tests
             var testApplication = new TestApplication(new CliApplicationExecutor(Execute));
 
             // Test
-            testApplication.RunWithExpectedExitCode(retVal ? 0 : 1, TEST_ARGS);
+            testApplication.RunWithExpectedExitCode(expectedExitCode: retVal ? 0 : 1, TEST_ARGS);
 
             // Verify
             called.ShouldBe(true);
@@ -271,7 +271,7 @@ namespace AppMotor.CliApp.Tests
             var testApplication = new TestApplication(new CliApplicationExecutor(Execute));
 
             // Test
-            testApplication.RunWithExpectedExitCode(retVal ? 0 : 1, TEST_ARGS);
+            testApplication.RunWithExpectedExitCode(expectedExitCode: retVal ? 0 : 1, TEST_ARGS);
 
             // Verify
             called.ShouldBe(true);
@@ -297,7 +297,7 @@ namespace AppMotor.CliApp.Tests
             var testApplication = new TestApplication(new CliApplicationExecutor(Execute));
 
             // Test
-            testApplication.RunWithExpectedExitCode(retVal, TEST_ARGS);
+            testApplication.RunWithExpectedExitCode(expectedExitCode: retVal, TEST_ARGS);
 
             // Verify
             called.ShouldBe(true);
@@ -324,7 +324,7 @@ namespace AppMotor.CliApp.Tests
             var testApplication = new TestApplication(new CliApplicationExecutor(Execute));
 
             // Test
-            testApplication.RunWithExpectedExitCode(retVal, TEST_ARGS);
+            testApplication.RunWithExpectedExitCode(expectedExitCode: retVal, TEST_ARGS);
 
             // Verify
             called.ShouldBe(true);

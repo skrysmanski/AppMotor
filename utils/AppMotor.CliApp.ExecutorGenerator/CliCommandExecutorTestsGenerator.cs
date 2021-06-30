@@ -23,7 +23,7 @@ using JetBrains.Annotations;
 
 namespace AppMotor.CliApp.ExecutorGenerator
 {
-    internal sealed class ExecutorTestsGenerator : SourceCodeGeneratorBase
+    internal sealed class CliCommandExecutorTestsGenerator : SourceCodeGeneratorBase
     {
         private enum ReturnTypes
         {
@@ -43,10 +43,7 @@ namespace AppMotor.CliApp.ExecutorGenerator
         {
             foreach (var returnType in EnumUtils.GetValues<ReturnTypes>())
             {
-                AppendLines(CreateTestMethod(new TestMethodDescriptor(returnType, async: async, withArgs: false)));
-                AppendLine();
-
-                AppendLines(CreateTestMethod(new TestMethodDescriptor(returnType, async: async, withArgs: true)));
+                AppendLines(CreateTestMethod(new TestMethodDescriptor(returnType, async: async)));
                 AppendLine();
             }
         }
@@ -65,7 +62,7 @@ public void {testMethodName}({CreateTestMethodParameterList(descriptor)})
 
 {CreateExecuteMethod(descriptor)}
 
-    var testApplication = new TestApplication(new CliApplicationExecutor(Execute));
+    var testApplication = new TestApplication(new CliCommandExecutor(Execute));
 
     // Test
     testApplication.{CreateRunMethodCall(descriptor)};
@@ -134,16 +131,7 @@ public void {testMethodName}({CreateTestMethodParameterList(descriptor)})
                 nameBuilder.Append("Sync_");
             }
 
-            nameBuilder.Append($"{descriptor.ReturnType}_");
-
-            if (descriptor.WithArgs)
-            {
-                nameBuilder.Append("WithArgs");
-            }
-            else
-            {
-                nameBuilder.Append("NoArgs");
-            }
+            nameBuilder.Append($"{descriptor.ReturnType}");
 
             return nameBuilder.ToString();
         }
@@ -154,13 +142,13 @@ public void {testMethodName}({CreateTestMethodParameterList(descriptor)})
             switch (descriptor.ReturnType)
             {
                 case ReturnTypes.Void:
-                    return "Run(TEST_ARGS)";
+                    return "Run(COMMAND_NAME)";
 
                 case ReturnTypes.Bool:
-                    return "RunWithExpectedExitCode(retVal ? 0 : 1, TEST_ARGS)";
+                    return "RunWithExpectedExitCode(expectedExitCode: retVal ? 0 : 1, COMMAND_NAME)";
 
                 case ReturnTypes.Int:
-                    return "RunWithExpectedExitCode(retVal, TEST_ARGS)";
+                    return "RunWithExpectedExitCode(expectedExitCode: retVal, COMMAND_NAME)";
 
                 default:
                     throw new UnexpectedSwitchValueException(nameof(descriptor.ReturnType), descriptor.ReturnType);
@@ -198,9 +186,7 @@ public void {testMethodName}({CreateTestMethodParameterList(descriptor)})
                 returnTypeForSignature = descriptor.ReturnType.ToString().ToLowerInvariant();
             }
 
-            string parameterList = descriptor.WithArgs ? "string[] args" : "";
-
-            return $"{returnTypeForSignature} Execute({parameterList})";
+            return $"{returnTypeForSignature} Execute()";
         }
 
         private static string CreateExecuteMethodBody(TestMethodDescriptor descriptor)
@@ -213,11 +199,6 @@ public void {testMethodName}({CreateTestMethodParameterList(descriptor)})
             }
 
             bodyBuilder.AppendLine($"{INDENTATION_LEVEL}{INDENTATION_LEVEL}called = true;");
-
-            if (descriptor.WithArgs)
-            {
-                bodyBuilder.AppendLine($"{INDENTATION_LEVEL}{INDENTATION_LEVEL}args.ShouldBe(TEST_ARGS);");
-            }
 
             if (descriptor.ReturnType != ReturnTypes.Void)
             {
@@ -233,13 +214,10 @@ public void {testMethodName}({CreateTestMethodParameterList(descriptor)})
 
             public bool Async { get; }
 
-            public bool WithArgs { get; }
-
-            public TestMethodDescriptor(ReturnTypes returnType, bool async, bool withArgs)
+            public TestMethodDescriptor(ReturnTypes returnType, bool async)
             {
                 this.ReturnType = returnType;
                 this.Async = async;
-                this.WithArgs = withArgs;
             }
         }
     }

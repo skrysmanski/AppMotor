@@ -60,6 +60,7 @@ namespace AppMotor.CliApp.ExecutorGenerator
             ProcessCliCommandExecutor(srcDirPath);
 
             ProcessCliApplicationExecutorTests(testsDirPath);
+            ProcessCliCommandExecutorTests(testsDirPath);
 
             return 0;
         }
@@ -93,11 +94,16 @@ namespace AppMotor.CliApp.ExecutorGenerator
         {
             var path = new FilePath(testsDirectoryPath, "Tests/CliApplicationExecutorTests.cs");
 
-            var generator = new ExecutorTestsGenerator(
-                // "CliApplicationExecutor",
-                // new ExecutorParameterDescriptor("string[]", "args", "the command line params"),
-                // new ExecutorParameterDescriptor("CancellationToken", "cancellationToken", "the application cancellation token")
-            );
+            var generator = new CliApplicationExecutorTestsGenerator();
+
+            ProcessExecutorCodeFile(path, generator);
+        }
+
+        private static void ProcessCliCommandExecutorTests(DirectoryPath testsDirectoryPath)
+        {
+            var path = new FilePath(testsDirectoryPath, "Tests/CommandLine/CliCommandExecutorTests.cs");
+
+            var generator = new CliCommandExecutorTestsGenerator();
 
             ProcessExecutorCodeFile(path, generator);
         }
