@@ -35,16 +35,6 @@
     <DebugType>embedded</DebugType>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <!--
-      Assume git by default.
-
-      NOTE: This property controls various things and thus you should make sure it's correct.
-      NOTE 2: The name of this property is pre-defined. See: https://docs.microsoft.com/en-us/dotnet/core/tools/csproj#nuget-metadata-properties
-    -->
-    <RepositoryType>git</RepositoryType>
-  </PropertyGroup>
-
   <!--
     Make copyright based on assembly name (a best pratice for open source projects).
 

@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="$(ProjectCommonsDirectory)Project.Code.props" />
+  <Import Project="$(ProjectCommonsDirectory)Project.Tool.props" />
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>

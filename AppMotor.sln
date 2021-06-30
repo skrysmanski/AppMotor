@@ -24,6 +24,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_ProjectCommons", "_Project
 		_ProjectCommons\Project.Shared_Packages.props = _ProjectCommons\Project.Shared_Packages.props
 		_ProjectCommons\Project.Tests.props = _ProjectCommons\Project.Tests.props
 		_ProjectCommons\Project.Tests_Packages.props = _ProjectCommons\Project.Tests_Packages.props
+		_ProjectCommons\Project.Tool.props = _ProjectCommons\Project.Tool.props
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{684A5508-0B72-421D-9335-DC5286E76D40}"
