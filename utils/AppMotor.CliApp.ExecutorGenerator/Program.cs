@@ -43,15 +43,23 @@ namespace AppMotor.CliApp.ExecutorGenerator
             DirectoryPath rootDirPath = args[0];
 
             var srcDirPath = new DirectoryPath(rootDirPath, "src/AppMotor.CliApp");
-
             if (!srcDirPath.Exists())
             {
                 Console.WriteLine($"The path '{srcDirPath}' does not exist (resolves to: {srcDirPath.AsAbsolutePath()}).");
                 return 1;
             }
 
+            var testsDirPath = new DirectoryPath(rootDirPath, "tests/AppMotor.CliApp.Tests");
+            if (!testsDirPath.Exists())
+            {
+                Console.WriteLine($"The path '{testsDirPath}' does not exist (resolves to: {testsDirPath.AsAbsolutePath()}).");
+                return 1;
+            }
+
             ProcessCliApplicationExecutor(srcDirPath);
             ProcessCliCommandExecutor(srcDirPath);
+
+            ProcessCliApplicationExecutorTests(testsDirPath);
 
             return 0;
         }
@@ -81,7 +89,20 @@ namespace AppMotor.CliApp.ExecutorGenerator
             ProcessExecutorCodeFile(path, generator);
         }
 
-        private static void ProcessExecutorCodeFile(FilePath filePath, CliAppExecutorGenerator codeGenerator)
+        private static void ProcessCliApplicationExecutorTests(DirectoryPath testsDirectoryPath)
+        {
+            var path = new FilePath(testsDirectoryPath, "Tests/CliApplicationExecutorTests.cs");
+
+            var generator = new ExecutorTestsGenerator(
+                // "CliApplicationExecutor",
+                // new ExecutorParameterDescriptor("string[]", "args", "the command line params"),
+                // new ExecutorParameterDescriptor("CancellationToken", "cancellationToken", "the application cancellation token")
+            );
+
+            ProcessExecutorCodeFile(path, generator);
+        }
+
+        private static void ProcessExecutorCodeFile(FilePath filePath, SourceCodeGeneratorBase codeGenerator)
         {
             var codeText = filePath.ReadAllText(Encoding.UTF8);
 
@@ -148,15 +169,15 @@ namespace AppMotor.CliApp.ExecutorGenerator
                     throw new InvalidOperationException($"Code does not contain the end marker: {START_MARKER}");
                 }
 
-                this._codeAboveGeneratedCode = string.Join(CliAppExecutorGenerator.LINE_BREAK, codeLinesAboveGeneratedCode).TrimEnd() + CliAppExecutorGenerator.LINE_BREAK;
-                this._codeBelowGeneratedCode = string.Join(CliAppExecutorGenerator.LINE_BREAK, codeLinesBelowGeneratedCode).TrimEnd() + CliAppExecutorGenerator.LINE_BREAK;
+                this._codeAboveGeneratedCode = string.Join(SourceCodeGeneratorBase.LINE_BREAK, codeLinesAboveGeneratedCode).TrimEnd() + SourceCodeGeneratorBase.LINE_BREAK;
+                this._codeBelowGeneratedCode = string.Join(SourceCodeGeneratorBase.LINE_BREAK, codeLinesBelowGeneratedCode).TrimEnd() + SourceCodeGeneratorBase.LINE_BREAK;
             }
 
             [MustUseReturnValue]
             public string InsertNewGeneratedCode(string generatedCode)
             {
                 return this._codeAboveGeneratedCode
-                     + generatedCode + CliAppExecutorGenerator.LINE_BREAK
+                     + generatedCode + SourceCodeGeneratorBase.LINE_BREAK
                      + this._codeBelowGeneratedCode;
             }
         }

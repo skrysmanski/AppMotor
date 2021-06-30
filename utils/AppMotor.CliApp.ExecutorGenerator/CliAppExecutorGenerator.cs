@@ -18,30 +18,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Text;
-
-using AppMotor.Core.Extensions;
 
 using JetBrains.Annotations;
 
 namespace AppMotor.CliApp.ExecutorGenerator
 {
-    internal sealed class CliAppExecutorGenerator
+    internal sealed class CliAppExecutorGenerator : SourceCodeGeneratorBase
     {
-        private static readonly string INDENTATION_LEVEL = new(' ', 4);
-
-        private static readonly string BASE_INDENTATION = INDENTATION_LEVEL + INDENTATION_LEVEL;
-
-        public const string LINE_BREAK = "\r\n";
-
-        private const string GENERATED_CODE_NOTE = @"
-//
-// NOTE: The code of this class has been generated with the 'ExecutorGenerator' tool. Do
-//   not make manual changes to this class or they may get lost (by accident) when the code
-//   for this class is generated the next time!!!
-//
-";
-
         private readonly string _className;
 
         private readonly ImmutableArray<string> _optionalInParamTypes;
@@ -49,8 +32,6 @@ namespace AppMotor.CliApp.ExecutorGenerator
         private readonly Dictionary<string, string> _optionalInParamType2DescriptionMap = new();
 
         private readonly Dictionary<string, string> _optionalInParamType2NameMap = new();
-
-        private readonly StringBuilder _contentBuilder = new();
 
         public CliAppExecutorGenerator(string className, params ExecutorParameterDescriptor[] optionInParameters)
         {
@@ -74,42 +55,35 @@ namespace AppMotor.CliApp.ExecutorGenerator
             }
         }
 
-        public string GenerateClassContent()
+        /// <inheritdoc />
+        protected override void GenerateClassContentCore()
         {
-            if (this._contentBuilder.Length == 0)
+            if (this._optionalInParamTypes.Length != 0)
             {
-                AppendLines(GENERATED_CODE_NOTE);
-                AppendLine();
-
-                if (this._optionalInParamTypes.Length != 0)
-                {
-                    AppendLine($"private readonly Func<{string.Join(", ", this._optionalInParamTypes)}, Task<int>> _action;");
-                }
-                else
-                {
-                    AppendLine("private readonly Func<Task<int>> _action;");
-                }
-
-                AppendLine();
-
-                foreach (var isAsync in new[] { false, true })
-                {
-                    foreach (var returnType in new[] { null, "int", "bool" })
-                    {
-                        foreach (var inParameters in GetInParameterPermutations())
-                        {
-                            var constructorCode = GenerateConstructor(inParameters, returnType, isAsync);
-                            AppendLines(constructorCode);
-                            AppendLine();
-                        }
-                    }
-                }
-
-                var executeMethodCode = GenerateExecuteMethod();
-                AppendLines(executeMethodCode);
+                AppendLine($"private readonly Func<{string.Join(", ", this._optionalInParamTypes)}, Task<int>> _action;");
+            }
+            else
+            {
+                AppendLine("private readonly Func<Task<int>> _action;");
             }
 
-            return this._contentBuilder.ToString();
+            AppendLine();
+
+            foreach (var isAsync in new[] { false, true })
+            {
+                foreach (var returnType in new[] { null, "int", "bool" })
+                {
+                    foreach (var inParameters in GetInParameterPermutations())
+                    {
+                        var constructorCode = GenerateConstructor(inParameters, returnType, isAsync);
+                        AppendLines(constructorCode);
+                        AppendLine();
+                    }
+                }
+            }
+
+            var executeMethodCode = GenerateExecuteMethod();
+            AppendLines(executeMethodCode);
         }
 
         private IEnumerable<IReadOnlyList<string>> GetInParameterPermutations()
@@ -368,37 +342,6 @@ public async Task<int> Execute({parameters})
     return await this._action({actionArgs}).ConfigureAwait(continueOnCapturedContext: false);
 }}
 ");
-        }
-
-        private void AppendLine(string line = "")
-        {
-            if (string.IsNullOrWhiteSpace(line))
-            {
-                this._contentBuilder.Append(LINE_BREAK);
-            }
-            else
-            {
-                this._contentBuilder.Append($"{BASE_INDENTATION}{line}{LINE_BREAK}");
-            }
-        }
-
-        private void AppendLines(string lines)
-        {
-            AppendLines(lines.SplitLines());
-        }
-
-        private void AppendLines(IEnumerable<string> lines)
-        {
-            foreach (var line in lines)
-            {
-                AppendLine(line);
-            }
-        }
-
-        [MustUseReturnValue]
-        private static string FixMultiLineText(string text)
-        {
-            return text.Trim('\r', '\n');
         }
     }
 }
