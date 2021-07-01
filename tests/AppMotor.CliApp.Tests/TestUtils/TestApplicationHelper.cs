@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using System.Threading;
 
 using AppMotor.CliApp.CommandLine.Utils;
 
@@ -45,12 +46,12 @@ namespace AppMotor.CliApp.TestUtils
             this._application = application;
         }
 
-        public void Run(string[] args, int expectedExitCode)
+        public void Run(string[] args, int expectedExitCode, CancellationToken cancellationToken = default)
         {
             this._testTerminal.ResetOutput();
             this._caughtException = null;
 
-            int exitCode = this._application.Run(args);
+            int exitCode = this._application.Run(args, cancellationToken);
 
             var caughtException = this._caughtException;
             if (caughtException is not null)
@@ -62,12 +63,12 @@ namespace AppMotor.CliApp.TestUtils
         }
 
         [MustUseReturnValue]
-        public Exception RunWithExpectedException(string[] args, int expectedExitCode)
+        public Exception RunWithExpectedException(string[] args, int expectedExitCode, CancellationToken cancellationToken = default)
         {
             this._testTerminal.ResetOutput();
             this._caughtException = null;
 
-            int exitCode = this._application.Run(args);
+            int exitCode = this._application.Run(args, cancellationToken);
 
             var caughtException = this._caughtException;
             caughtException.ShouldNotBeNull("Expected exception but got none.");

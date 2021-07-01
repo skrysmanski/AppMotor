@@ -14,6 +14,7 @@
 // limitations under the License.
 #endregion
 
+using System.Collections.Generic;
 using System.Text;
 
 using AppMotor.Core.Exceptions;
@@ -36,10 +37,16 @@ namespace AppMotor.CliApp.ExecutorGenerator
         {
             foreach (var returnType in EnumUtils.GetValues<ReturnTypes>())
             {
-                AppendLines(CreateTestMethod(new TestMethodDescriptor(returnType, async: async, withArgs: false)));
+                AppendLines(CreateTestMethod(new TestMethodDescriptor(returnType, async: async, withArgs: false, withCancellationToken: false)));
                 AppendLine();
 
-                AppendLines(CreateTestMethod(new TestMethodDescriptor(returnType, async: async, withArgs: true)));
+                AppendLines(CreateTestMethod(new TestMethodDescriptor(returnType, async: async, withArgs: true, withCancellationToken: false)));
+                AppendLine();
+
+                AppendLines(CreateTestMethod(new TestMethodDescriptor(returnType, async: async, withArgs: false, withCancellationToken: true)));
+                AppendLine();
+
+                AppendLines(CreateTestMethod(new TestMethodDescriptor(returnType, async: async, withArgs: true, withCancellationToken: true)));
                 AppendLine();
             }
         }
@@ -54,14 +61,14 @@ namespace AppMotor.CliApp.ExecutorGenerator
 public void {testMethodName}({CreateTestMethodParameterList(descriptor)})
 {{
     // Setup
-    bool called = false;
+{CreateSetupCode(descriptor)}
 
 {CreateExecuteMethod(descriptor)}
 
     var testApplication = new TestApplication(new CliApplicationExecutor(Execute));
 
     // Test
-    testApplication.{CreateRunMethodCall(descriptor)};
+    testApplication.AppHelper.{CreateRunMethodCall(descriptor)};
 
     // Verify
     called.ShouldBe(true);
@@ -116,48 +123,89 @@ public void {testMethodName}({CreateTestMethodParameterList(descriptor)})
         {
             var nameBuilder = new StringBuilder();
 
-            nameBuilder.Append("Test_");
+            nameBuilder.Append("Test");
 
             if (descriptor.Async)
             {
-                nameBuilder.Append("Async_");
+                nameBuilder.Append("_Async");
             }
             else
             {
-                nameBuilder.Append("Sync_");
+                nameBuilder.Append("_Sync");
             }
 
-            nameBuilder.Append($"{descriptor.ReturnType}_");
+            nameBuilder.Append($"_{descriptor.ReturnType}");
 
             if (descriptor.WithArgs)
             {
-                nameBuilder.Append("WithArgs");
+                nameBuilder.Append("_WithArgs");
             }
             else
             {
-                nameBuilder.Append("NoArgs");
+                nameBuilder.Append("_NoArgs");
+            }
+
+            if (descriptor.WithCancellationToken)
+            {
+                nameBuilder.Append("_WithCancellationToken");
+            }
+            else
+            {
+                nameBuilder.Append("_NoCancellationToken");
             }
 
             return nameBuilder.ToString();
         }
 
         [MustUseReturnValue]
+        private static string CreateSetupCode(TestMethodDescriptor descriptor)
+        {
+            var builder = new StringBuilder();
+
+            builder.AppendLine($"{INDENTATION_LEVEL}bool called = false;");
+
+            if (descriptor.WithCancellationToken)
+            {
+                builder.AppendLine();
+                builder.AppendLine($"{INDENTATION_LEVEL}using var cts = new CancellationTokenSource();");
+            }
+
+            return builder.ToString().TrimEnd();
+        }
+
+        [MustUseReturnValue]
         private static string CreateRunMethodCall(TestMethodDescriptor descriptor)
         {
+            var builder = new StringBuilder();
+
+            builder.Append("Run(TEST_ARGS, expectedExitCode: ");
+
             switch (descriptor.ReturnType)
             {
                 case ReturnTypes.Void:
-                    return "Run(TEST_ARGS)";
+                    builder.Append("0");
+                    break;
 
                 case ReturnTypes.Bool:
-                    return "RunWithExpectedExitCode(expectedExitCode: retVal ? 0 : 1, TEST_ARGS)";
+                    builder.Append("retVal ? 0 : 1");
+                    break;
 
                 case ReturnTypes.Int:
-                    return "RunWithExpectedExitCode(expectedExitCode: retVal, TEST_ARGS)";
+                    builder.Append("retVal");
+                    break;
 
                 default:
                     throw new UnexpectedSwitchValueException(nameof(descriptor.ReturnType), descriptor.ReturnType);
             }
+
+            if (descriptor.WithCancellationToken)
+            {
+                builder.Append(", cts.Token");
+            }
+
+            builder.Append(")");
+
+            return builder.ToString();
         }
 
         [MustUseReturnValue]
@@ -191,9 +239,17 @@ public void {testMethodName}({CreateTestMethodParameterList(descriptor)})
                 returnTypeForSignature = descriptor.ReturnType.ToString().ToLowerInvariant();
             }
 
-            string parameterList = descriptor.WithArgs ? "string[] args" : "";
+            var parameterList = new List<string>();
+            if (descriptor.WithArgs)
+            {
+                parameterList.Add("string[] args");
+            }
+            if (descriptor.WithCancellationToken)
+            {
+                parameterList.Add("CancellationToken cancellationToken");
+            }
 
-            return $"{returnTypeForSignature} Execute({parameterList})";
+            return $"{returnTypeForSignature} Execute({string.Join(", ", parameterList)})";
         }
 
         private static string CreateExecuteMethodBody(TestMethodDescriptor descriptor)
@@ -202,6 +258,11 @@ public void {testMethodName}({CreateTestMethodParameterList(descriptor)})
 
             if (descriptor.Async)
             {
+                if (descriptor.WithCancellationToken)
+                {
+                    bodyBuilder.AppendLine($"{INDENTATION_LEVEL}{INDENTATION_LEVEL}// ReSharper disable once MethodSupportsCancellation");
+                }
+
                 bodyBuilder.AppendLine($"{INDENTATION_LEVEL}{INDENTATION_LEVEL}await Task.Delay(1);");
             }
 
@@ -210,6 +271,13 @@ public void {testMethodName}({CreateTestMethodParameterList(descriptor)})
             if (descriptor.WithArgs)
             {
                 bodyBuilder.AppendLine($"{INDENTATION_LEVEL}{INDENTATION_LEVEL}args.ShouldBe(TEST_ARGS);");
+            }
+
+            if (descriptor.WithCancellationToken)
+            {
+                bodyBuilder.AppendLine($"{INDENTATION_LEVEL}{INDENTATION_LEVEL}cancellationToken.IsCancellationRequested.ShouldBe(false);");
+                bodyBuilder.AppendLine($"{INDENTATION_LEVEL}{INDENTATION_LEVEL}cts.Cancel();");
+                bodyBuilder.AppendLine($"{INDENTATION_LEVEL}{INDENTATION_LEVEL}cancellationToken.IsCancellationRequested.ShouldBe(true); // Validates we actually got the token from \"cts\"");
             }
 
             if (descriptor.ReturnType != ReturnTypes.Void)
@@ -228,11 +296,14 @@ public void {testMethodName}({CreateTestMethodParameterList(descriptor)})
 
             public bool WithArgs { get; }
 
-            public TestMethodDescriptor(ReturnTypes returnType, bool async, bool withArgs)
+            public bool WithCancellationToken { get; }
+
+            public TestMethodDescriptor(ReturnTypes returnType, bool async, bool withArgs, bool withCancellationToken)
             {
                 this.ReturnType = returnType;
                 this.Async = async;
                 this.WithArgs = withArgs;
+                this.WithCancellationToken = withCancellationToken;
             }
         }
     }

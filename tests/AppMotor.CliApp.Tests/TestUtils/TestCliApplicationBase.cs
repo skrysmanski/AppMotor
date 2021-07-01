@@ -22,42 +22,42 @@ namespace AppMotor.CliApp.TestUtils
 {
     internal abstract class TestCliApplicationBase : CliApplication, ITestApplication
     {
-        private readonly TestApplicationHelper _appHelper;
+        public readonly TestApplicationHelper AppHelper;
 
         /// <inheritdoc />
-        public string TerminalOutput => this._appHelper.TerminalOutput;
+        public string TerminalOutput => this.AppHelper.TerminalOutput;
 
         protected TestCliApplicationBase()
         {
-            this._appHelper = new TestApplicationHelper(this);
+            this.AppHelper = new TestApplicationHelper(this);
         }
 
         public new void Run(params string[] args)
         {
-            this._appHelper.Run(args, expectedExitCode: 0);
+            this.AppHelper.Run(args, expectedExitCode: 0);
         }
 
         public void RunWithExpectedExitCode(int expectedExitCode, params string[] args)
         {
-            this._appHelper.Run(args, expectedExitCode: expectedExitCode);
+            this.AppHelper.Run(args, expectedExitCode: expectedExitCode);
         }
 
         [MustUseReturnValue]
         public Exception RunWithExpectedException(params string[] args)
         {
-            return this._appHelper.RunWithExpectedException(args, expectedExitCode: this.ExitCodeOnException);
+            return this.AppHelper.RunWithExpectedException(args, expectedExitCode: this.ExitCodeOnException);
         }
 
         [MustUseReturnValue]
         public Exception RunWithExpectedException(int expectedExitCode, params string[] args)
         {
-            return this._appHelper.RunWithExpectedException(args, expectedExitCode: expectedExitCode);
+            return this.AppHelper.RunWithExpectedException(args, expectedExitCode: expectedExitCode);
         }
 
         /// <inheritdoc />
         protected override void OnUnhandledException(Exception exception, ref int exitCode)
         {
-            this._appHelper.OnUnhandledException(exception);
+            this.AppHelper.OnUnhandledException(exception);
 
             base.OnUnhandledException(exception, ref exitCode);
         }
