@@ -14,204 +14,60 @@
 // limitations under the License.
 #endregion
 
+using System.Collections.Generic;
 using System.Text;
-
-using AppMotor.Core.Exceptions;
-using AppMotor.Core.Utils;
-
-using JetBrains.Annotations;
 
 namespace AppMotor.CliApp.ExecutorGenerator
 {
     internal sealed class CliCommandExecutorTestsGenerator : ExecutorTestsGeneratorBase
     {
         /// <inheritdoc />
-        protected override void GenerateClassContentCore()
+        protected override IEnumerable<string> CreateTestMethods(bool async, ReturnTypes returnType)
         {
-            AppendTestMethods(async: false);
-            AppendTestMethods(async: true);
+            yield return CreateTestMethod(new TestMethodDescriptor(returnType, async: async, withCancellationToken: false, withArgs: false));
+
+            yield return CreateTestMethod(new TestMethodDescriptor(returnType, async: async, withCancellationToken: true, withArgs: false));
         }
 
-        private void AppendTestMethods(bool async)
-        {
-            foreach (var returnType in EnumUtils.GetValues<ReturnTypes>())
-            {
-                AppendLines(CreateTestMethod(new TestMethodDescriptor(returnType, async: async)));
-                AppendLine();
-            }
-        }
-
-        [MustUseReturnValue]
-        private static string CreateTestMethod(TestMethodDescriptor descriptor)
-        {
-            string testMethodName = CreateTestMethodName(descriptor);
-
-            return FixMultiLineText($@"
-{CreateTestAttributes(descriptor)}
-public void {testMethodName}({CreateTestMethodParameterList(descriptor)})
-{{
-    // Setup
-    bool called = false;
-
-{CreateExecuteMethod(descriptor)}
-
-    var testApplication = new TestApplication(new CliCommandExecutor(Execute));
-
-    // Test
-    testApplication.{CreateRunMethodCall(descriptor)};
-
-    // Verify
-    called.ShouldBe(true);
-    testApplication.ShouldHaveNoOutput();
-}}
-");
-        }
-
-        [MustUseReturnValue]
-        private static string CreateTestAttributes(TestMethodDescriptor descriptor)
-        {
-            switch (descriptor.ReturnType)
-            {
-                case ReturnTypes.Void:
-                    return "[Fact]";
-
-                case ReturnTypes.Bool:
-                    return FixMultiLineText(@"
-[Theory]
-[InlineData(true)]
-[InlineData(false)]
-");
-
-                case ReturnTypes.Int:
-                    return FixMultiLineText(@"
-[Theory]
-[InlineData(0)]
-[InlineData(1)]
-[InlineData(42)]
-");
-
-                default:
-                    throw new UnexpectedSwitchValueException(nameof(descriptor.ReturnType), descriptor.ReturnType);
-            }
-        }
-
-        [MustUseReturnValue]
-        private static string CreateTestMethodParameterList(TestMethodDescriptor descriptor)
-        {
-            if (descriptor.ReturnType == ReturnTypes.Void)
-            {
-                return "";
-            }
-            else
-            {
-                return $"{descriptor.ReturnType.ToString().ToLowerInvariant()} retVal";
-            }
-        }
-
-        [MustUseReturnValue]
-        private static string CreateTestMethodName(TestMethodDescriptor descriptor)
+        protected override string CreateTestMethodName(TestMethodDescriptor descriptor)
         {
             var nameBuilder = new StringBuilder();
 
-            nameBuilder.Append("Test_");
+            nameBuilder.Append("Test");
 
             if (descriptor.Async)
             {
-                nameBuilder.Append("Async_");
+                nameBuilder.Append("_Async");
             }
             else
             {
-                nameBuilder.Append("Sync_");
+                nameBuilder.Append("_Sync");
             }
 
-            nameBuilder.Append($"{descriptor.ReturnType}");
+            nameBuilder.Append($"_{descriptor.ReturnType}");
+
+            if (descriptor.WithCancellationToken)
+            {
+                nameBuilder.Append("_WithCancellationToken");
+            }
+            else
+            {
+                nameBuilder.Append("_NoCancellationToken");
+            }
 
             return nameBuilder.ToString();
         }
 
-        [MustUseReturnValue]
-        private static string CreateRunMethodCall(TestMethodDescriptor descriptor)
+        /// <inheritdoc />
+        protected override string CreateTestApplicationParam(TestMethodDescriptor descriptor)
         {
-            switch (descriptor.ReturnType)
-            {
-                case ReturnTypes.Void:
-                    return "Run(COMMAND_NAME)";
-
-                case ReturnTypes.Bool:
-                    return "RunWithExpectedExitCode(expectedExitCode: retVal ? 0 : 1, COMMAND_NAME)";
-
-                case ReturnTypes.Int:
-                    return "RunWithExpectedExitCode(expectedExitCode: retVal, COMMAND_NAME)";
-
-                default:
-                    throw new UnexpectedSwitchValueException(nameof(descriptor.ReturnType), descriptor.ReturnType);
-            }
+            return "new CliCommandExecutor(Execute)";
         }
 
-        [MustUseReturnValue]
-        private static string CreateExecuteMethod(TestMethodDescriptor descriptor)
+        /// <inheritdoc />
+        protected override string CreateAppRunArgsArgument()
         {
-            return FixMultiLineText($@"
-    {CreateExecuteMethodSignature(descriptor)}
-    {{
-{CreateExecuteMethodBody(descriptor)}
-    }}
-");
-        }
-
-        private static string CreateExecuteMethodSignature(TestMethodDescriptor descriptor)
-        {
-            string returnTypeForSignature;
-
-            if (descriptor.Async)
-            {
-                if (descriptor.ReturnType == ReturnTypes.Void)
-                {
-                    returnTypeForSignature = "async Task";
-                }
-                else
-                {
-                    returnTypeForSignature = $"async Task<{descriptor.ReturnType.ToString().ToLowerInvariant()}>";
-                }
-            }
-            else
-            {
-                returnTypeForSignature = descriptor.ReturnType.ToString().ToLowerInvariant();
-            }
-
-            return $"{returnTypeForSignature} Execute()";
-        }
-
-        private static string CreateExecuteMethodBody(TestMethodDescriptor descriptor)
-        {
-            var bodyBuilder = new StringBuilder();
-
-            if (descriptor.Async)
-            {
-                bodyBuilder.AppendLine($"{INDENTATION_LEVEL}{INDENTATION_LEVEL}await Task.Delay(1);");
-            }
-
-            bodyBuilder.AppendLine($"{INDENTATION_LEVEL}{INDENTATION_LEVEL}called = true;");
-
-            if (descriptor.ReturnType != ReturnTypes.Void)
-            {
-                bodyBuilder.AppendLine($"{INDENTATION_LEVEL}{INDENTATION_LEVEL}return retVal;");
-            }
-
-            return bodyBuilder.ToString().TrimEnd();
-        }
-
-        private sealed class TestMethodDescriptor
-        {
-            public ReturnTypes ReturnType { get; }
-
-            public bool Async { get; }
-
-            public TestMethodDescriptor(ReturnTypes returnType, bool async)
-            {
-                this.ReturnType = returnType;
-                this.Async = async;
-            }
+            return "new[] { COMMAND_NAME }";
         }
     }
 }

@@ -14,6 +14,7 @@
 // limitations under the License.
 #endregion
 
+using System.Threading;
 using System.Threading.Tasks;
 
 using AppMotor.CliApp.CommandLine;
@@ -41,7 +42,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
         //
 
         [Fact]
-        public void Test_Sync_Void()
+        public void Test_Sync_Void_NoCancellationToken()
         {
             // Setup
             bool called = false;
@@ -54,7 +55,33 @@ namespace AppMotor.CliApp.Tests.CommandLine
             var testApplication = new TestApplication(new CliCommandExecutor(Execute));
 
             // Test
-            testApplication.Run(COMMAND_NAME);
+            testApplication.AppHelper.Run(new[] { COMMAND_NAME }, expectedExitCode: 0);
+
+            // Verify
+            called.ShouldBe(true);
+            testApplication.ShouldHaveNoOutput();
+        }
+
+        [Fact]
+        public void Test_Sync_Void_WithCancellationToken()
+        {
+            // Setup
+            bool called = false;
+
+            using var cts = new CancellationTokenSource();
+
+            void Execute(CancellationToken cancellationToken)
+            {
+                called = true;
+                cancellationToken.IsCancellationRequested.ShouldBe(false);
+                cts.Cancel();
+                cancellationToken.IsCancellationRequested.ShouldBe(true); // Validates we actually got the token from "cts"
+            }
+
+            var testApplication = new TestApplication(new CliCommandExecutor(Execute));
+
+            // Test
+            testApplication.AppHelper.Run(new[] { COMMAND_NAME }, expectedExitCode: 0, cts.Token);
 
             // Verify
             called.ShouldBe(true);
@@ -64,7 +91,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public void Test_Sync_Bool(bool retVal)
+        public void Test_Sync_Bool_NoCancellationToken(bool retVal)
         {
             // Setup
             bool called = false;
@@ -78,7 +105,36 @@ namespace AppMotor.CliApp.Tests.CommandLine
             var testApplication = new TestApplication(new CliCommandExecutor(Execute));
 
             // Test
-            testApplication.RunWithExpectedExitCode(expectedExitCode: retVal ? 0 : 1, COMMAND_NAME);
+            testApplication.AppHelper.Run(new[] { COMMAND_NAME }, expectedExitCode: retVal ? 0 : 1);
+
+            // Verify
+            called.ShouldBe(true);
+            testApplication.ShouldHaveNoOutput();
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void Test_Sync_Bool_WithCancellationToken(bool retVal)
+        {
+            // Setup
+            bool called = false;
+
+            using var cts = new CancellationTokenSource();
+
+            bool Execute(CancellationToken cancellationToken)
+            {
+                called = true;
+                cancellationToken.IsCancellationRequested.ShouldBe(false);
+                cts.Cancel();
+                cancellationToken.IsCancellationRequested.ShouldBe(true); // Validates we actually got the token from "cts"
+                return retVal;
+            }
+
+            var testApplication = new TestApplication(new CliCommandExecutor(Execute));
+
+            // Test
+            testApplication.AppHelper.Run(new[] { COMMAND_NAME }, expectedExitCode: retVal ? 0 : 1, cts.Token);
 
             // Verify
             called.ShouldBe(true);
@@ -89,7 +145,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
         [InlineData(0)]
         [InlineData(1)]
         [InlineData(42)]
-        public void Test_Sync_Int(int retVal)
+        public void Test_Sync_Int_NoCancellationToken(int retVal)
         {
             // Setup
             bool called = false;
@@ -103,7 +159,37 @@ namespace AppMotor.CliApp.Tests.CommandLine
             var testApplication = new TestApplication(new CliCommandExecutor(Execute));
 
             // Test
-            testApplication.RunWithExpectedExitCode(expectedExitCode: retVal, COMMAND_NAME);
+            testApplication.AppHelper.Run(new[] { COMMAND_NAME }, expectedExitCode: retVal);
+
+            // Verify
+            called.ShouldBe(true);
+            testApplication.ShouldHaveNoOutput();
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(42)]
+        public void Test_Sync_Int_WithCancellationToken(int retVal)
+        {
+            // Setup
+            bool called = false;
+
+            using var cts = new CancellationTokenSource();
+
+            int Execute(CancellationToken cancellationToken)
+            {
+                called = true;
+                cancellationToken.IsCancellationRequested.ShouldBe(false);
+                cts.Cancel();
+                cancellationToken.IsCancellationRequested.ShouldBe(true); // Validates we actually got the token from "cts"
+                return retVal;
+            }
+
+            var testApplication = new TestApplication(new CliCommandExecutor(Execute));
+
+            // Test
+            testApplication.AppHelper.Run(new[] { COMMAND_NAME }, expectedExitCode: retVal, cts.Token);
 
             // Verify
             called.ShouldBe(true);
@@ -111,7 +197,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
         }
 
         [Fact]
-        public void Test_Async_Void()
+        public void Test_Async_Void_NoCancellationToken()
         {
             // Setup
             bool called = false;
@@ -125,7 +211,35 @@ namespace AppMotor.CliApp.Tests.CommandLine
             var testApplication = new TestApplication(new CliCommandExecutor(Execute));
 
             // Test
-            testApplication.Run(COMMAND_NAME);
+            testApplication.AppHelper.Run(new[] { COMMAND_NAME }, expectedExitCode: 0);
+
+            // Verify
+            called.ShouldBe(true);
+            testApplication.ShouldHaveNoOutput();
+        }
+
+        [Fact]
+        public void Test_Async_Void_WithCancellationToken()
+        {
+            // Setup
+            bool called = false;
+
+            using var cts = new CancellationTokenSource();
+
+            async Task Execute(CancellationToken cancellationToken)
+            {
+                // ReSharper disable once MethodSupportsCancellation
+                await Task.Delay(1);
+                called = true;
+                cancellationToken.IsCancellationRequested.ShouldBe(false);
+                cts.Cancel();
+                cancellationToken.IsCancellationRequested.ShouldBe(true); // Validates we actually got the token from "cts"
+            }
+
+            var testApplication = new TestApplication(new CliCommandExecutor(Execute));
+
+            // Test
+            testApplication.AppHelper.Run(new[] { COMMAND_NAME }, expectedExitCode: 0, cts.Token);
 
             // Verify
             called.ShouldBe(true);
@@ -135,7 +249,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public void Test_Async_Bool(bool retVal)
+        public void Test_Async_Bool_NoCancellationToken(bool retVal)
         {
             // Setup
             bool called = false;
@@ -150,7 +264,38 @@ namespace AppMotor.CliApp.Tests.CommandLine
             var testApplication = new TestApplication(new CliCommandExecutor(Execute));
 
             // Test
-            testApplication.RunWithExpectedExitCode(expectedExitCode: retVal ? 0 : 1, COMMAND_NAME);
+            testApplication.AppHelper.Run(new[] { COMMAND_NAME }, expectedExitCode: retVal ? 0 : 1);
+
+            // Verify
+            called.ShouldBe(true);
+            testApplication.ShouldHaveNoOutput();
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void Test_Async_Bool_WithCancellationToken(bool retVal)
+        {
+            // Setup
+            bool called = false;
+
+            using var cts = new CancellationTokenSource();
+
+            async Task<bool> Execute(CancellationToken cancellationToken)
+            {
+                // ReSharper disable once MethodSupportsCancellation
+                await Task.Delay(1);
+                called = true;
+                cancellationToken.IsCancellationRequested.ShouldBe(false);
+                cts.Cancel();
+                cancellationToken.IsCancellationRequested.ShouldBe(true); // Validates we actually got the token from "cts"
+                return retVal;
+            }
+
+            var testApplication = new TestApplication(new CliCommandExecutor(Execute));
+
+            // Test
+            testApplication.AppHelper.Run(new[] { COMMAND_NAME }, expectedExitCode: retVal ? 0 : 1, cts.Token);
 
             // Verify
             called.ShouldBe(true);
@@ -161,7 +306,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
         [InlineData(0)]
         [InlineData(1)]
         [InlineData(42)]
-        public void Test_Async_Int(int retVal)
+        public void Test_Async_Int_NoCancellationToken(int retVal)
         {
             // Setup
             bool called = false;
@@ -176,7 +321,39 @@ namespace AppMotor.CliApp.Tests.CommandLine
             var testApplication = new TestApplication(new CliCommandExecutor(Execute));
 
             // Test
-            testApplication.RunWithExpectedExitCode(expectedExitCode: retVal, COMMAND_NAME);
+            testApplication.AppHelper.Run(new[] { COMMAND_NAME }, expectedExitCode: retVal);
+
+            // Verify
+            called.ShouldBe(true);
+            testApplication.ShouldHaveNoOutput();
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(42)]
+        public void Test_Async_Int_WithCancellationToken(int retVal)
+        {
+            // Setup
+            bool called = false;
+
+            using var cts = new CancellationTokenSource();
+
+            async Task<int> Execute(CancellationToken cancellationToken)
+            {
+                // ReSharper disable once MethodSupportsCancellation
+                await Task.Delay(1);
+                called = true;
+                cancellationToken.IsCancellationRequested.ShouldBe(false);
+                cts.Cancel();
+                cancellationToken.IsCancellationRequested.ShouldBe(true); // Validates we actually got the token from "cts"
+                return retVal;
+            }
+
+            var testApplication = new TestApplication(new CliCommandExecutor(Execute));
+
+            // Test
+            testApplication.AppHelper.Run(new[] { COMMAND_NAME }, expectedExitCode: retVal, cts.Token);
 
             // Verify
             called.ShouldBe(true);
