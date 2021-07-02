@@ -1,5 +1,5 @@
 ﻿#region License
-// Copyright 2020 AppMotor Framework (https://github.com/skrysmanski/AppMotor)
+// Copyright 2021 AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,24 +15,26 @@
 #endregion
 
 using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace AppMotor.Core.Utils
 {
     /// <summary>
-    /// The default implementation of <see cref="IDateTimeProvider"/>. All properties
-    /// are "redirected" to <see cref="DateTime"/>.
+    /// JSON converter for <see cref="DateTimeUtc"/>.
     /// </summary>
-    public sealed class DefaultDateTimeProvider : IDateTimeProvider
+    public class DateTimeUtcJsonConverter : JsonConverter<DateTimeUtc>
     {
-        /// <summary>
-        /// The instance of this class.
-        /// </summary>
-        public static DefaultDateTimeProvider Instance { get; } = new();
+        /// <inheritdoc />
+        public override DateTimeUtc Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            return new(reader.GetDateTimeOffset());
+        }
 
         /// <inheritdoc />
-        public DateTime LocalNow => DateTime.Now;
-
-        /// <inheritdoc />
-        public DateTimeUtc UtcNow => DateTimeUtc.Now;
+        public override void Write(Utf8JsonWriter writer, DateTimeUtc value, JsonSerializerOptions options)
+        {
+            writer.WriteStringValue(value.ToDateTime());
+        }
     }
 }

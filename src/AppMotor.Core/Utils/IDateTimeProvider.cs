@@ -35,10 +35,10 @@ namespace AppMotor.Core.Utils
         DateTime LocalNow { get; }
 
         /// <summary>
-        /// The current date and time the UTC timezone (i.e. <see cref="DateTimeKind.Utc"/>).
+        /// The current date and time in the UTC timezone (i.e. <see cref="DateTimeKind.Utc"/>).
         /// </summary>
         /// <seealso cref="LocalNow"/>
         [PublicAPI]
-        DateTime UtcNow { get; }
+        DateTimeUtc UtcNow { get; }
     }
 }
