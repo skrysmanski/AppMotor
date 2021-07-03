@@ -202,6 +202,15 @@ namespace AppMotor.Core.Tests.Utils
         }
 
         [Fact]
+        public void Test_ToLocalTime()
+        {
+            var now = DateTime.Now;
+            var dateTimeUtc = new DateTimeUtc(now);
+
+            dateTimeUtc.ToLocalTime().ShouldBe(now);
+        }
+
+        [Fact]
         public void Test_ToDateTimeOffset()
         {
             var now = DateTime.UtcNow;

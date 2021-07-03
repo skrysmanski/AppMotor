@@ -311,6 +311,8 @@ namespace AppMotor.Core.Utils
         /// <summary>
         /// Converts this instance into a <see cref="DateTime"/>.
         /// </summary>
+        /// <seealso cref="ToDateTimeOffset"/>
+        /// <seealso cref="ToLocalTime"/>
         [Pure]
         public DateTime ToDateTime()
         {
@@ -318,8 +320,20 @@ namespace AppMotor.Core.Utils
         }
 
         /// <summary>
+        /// Converts this instance into a <see cref="DateTime"/> in the local timezone.
+        /// </summary>
+        /// <seealso cref="ToDateTime"/>
+        [Pure]
+        public DateTime ToLocalTime()
+        {
+            return this._underlyingDateTime.ToLocalTime();
+        }
+
+        /// <summary>
         /// Converts this instance into a <see cref="DateTimeOffset"/>.
         /// </summary>
+        /// <seealso cref="ToDateTime"/>
+        /// <seealso cref="ToLocalTime"/>
         [Pure]
         public DateTimeOffset ToDateTimeOffset()
         {
