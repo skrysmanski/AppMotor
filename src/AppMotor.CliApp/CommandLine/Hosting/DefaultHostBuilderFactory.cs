@@ -89,8 +89,9 @@ namespace AppMotor.CliApp.CommandLine.Hosting
         public Action<HostBuilderContext, ILoggingBuilder>? LoggingConfiguration { get; init; } = ApplyDefaultLoggingConfiguration;
 
         /// <summary>
-        /// The content root to use. Defaults to <see cref="DirectoryPath.GetCurrentDirectory"/>.
-        /// Can <c>null</c> in which case no content root will be set (explicitly).
+        /// The content root to use. Defaults to <see cref="DirectoryPath.GetCurrentDirectory"/>. Can later be accessed
+        /// via <see cref="IHostEnvironment.ContentRootFileProvider"/>. Can be <c>null</c> in which case no content root
+        /// will be set (explicitly).
         /// </summary>
         /// <remarks>
         /// For more details on the content root, see: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/#content-root
