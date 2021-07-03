@@ -25,10 +25,20 @@ using Microsoft.Extensions.Logging;
 namespace AppMotor.CliApp.CommandLine.Hosting
 {
     /// <summary>
-    /// The default <see cref="IHostBuilderFactory"/>. Lets you customize the <see cref="IServiceProvider"/>
+    /// <para>The default <see cref="IHostBuilderFactory"/>. Lets you customize the <see cref="IServiceProvider"/>
     /// (by overriding <see cref="CreateServiceProviderFactory"/>), the logging settings (by overriding
-    /// <see cref="ConfigureLogging"/>) and everything else (by overriding <see cref="CreateHostBuilder"/>).
+    /// <see cref="ConfigureLogging"/>) and everything else (by overriding <see cref="CreateHostBuilder"/>).</para>
+    ///
+    /// <para>By default, this factory creates hosts with the following features enabled:</para>
+    ///
+    /// <list type="bullet">
+    ///     <item><description>Dependency injection (via <see cref="DefaultServiceProviderFactory"/>)</description></item>
+    ///     <item><description>Logging to the Console</description></item>
+    /// </list>
     /// </summary>
+    /// <remarks>
+    /// For more possibilities, see <see cref="Host.CreateDefaultBuilder(string[])"/>.
+    /// </remarks>
     /// <seealso cref="MethodHostBuilderFactory"/>
     public class DefaultHostBuilderFactory : IHostBuilderFactory
     {
