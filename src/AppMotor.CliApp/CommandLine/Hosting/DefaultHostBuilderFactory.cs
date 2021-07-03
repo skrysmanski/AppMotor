@@ -20,6 +20,8 @@ using AppMotor.Core.IO;
 
 using JetBrains.Annotations;
 
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -33,7 +35,8 @@ namespace AppMotor.CliApp.CommandLine.Hosting
     /// <para>By default, this factory creates hosts with the following features enabled:</para>
     ///
     /// <list type="bullet">
-    ///     <item><description>Dependency injection (via <see cref="ServiceProviderFactory"/>)</description></item>
+    ///     <item><description>Dependency injection (via <see cref="ServiceProviderConfiguration"/>)</description></item>
+    ///     <item><description>Configuration values loaded from "appsettings.json", "appsettings.{Env}.json" and the environment variables (via <see cref="AppConfiguration"/>)</description></item>
     ///     <item><description>Logging to the Console (via <see cref="LoggingConfiguration"/>)</description></item>
     ///     <item><description>The content root is set to the current directory (via <see cref="ContentRoot"/>)</description></item>
     /// </list>
@@ -50,18 +53,40 @@ namespace AppMotor.CliApp.CommandLine.Hosting
         public static DefaultHostBuilderFactory Instance { get; } = new();
 
         /// <summary>
-        /// The function that creates the <see cref="IServiceProviderFactory{TContainerBuilder}"/> (i.e. the dependency
-        /// injection system). Defaults to <see cref="CreateDefaultServiceProviderFactory"/>.
+        /// The configures the <see cref="IServiceProviderFactory{TContainerBuilder}"/> (i.e. the dependency injection system) by
+        /// calling one of the <c>UseServiceProviderFactory()</c> methods on the provided <see cref="IHostBuilder"/> instance.
+        /// Defaults to <see cref="ApplyDefaultServiceProviderConfiguration"/>.
         /// </summary>
+        /// <remarks>
+        /// <para>For more details, see: https://docs.microsoft.com/en-us/dotnet/core/extensions/dependency-injection </para>
+        ///
+        /// <para>This is an action (rather than a function that returns the service provider) because <see cref="IServiceProviderFactory{TContainerBuilder}"/>
+        /// is generic and its type parameter may not always be <see cref="IServiceCollection"/> for all service providers - and we could
+        /// not provide this flexibility with a function (because then we would need to hard code the type of <c>TContainerBuilder</c>).</para>
+        /// </remarks>
         [PublicAPI]
-        public Func<HostBuilderContext, IServiceProviderFactory<IServiceCollection>> ServiceProviderFactory { get; init; } = CreateDefaultServiceProviderFactory;
+        public Action<IHostBuilder> ServiceProviderConfiguration { get; init; } = ApplyDefaultServiceProviderConfiguration;
+
+        /// <summary>
+        /// Configures the configuration providers (e.g. settings files) that provide configuration values for the application. Defaults to
+        /// <see cref="ApplyDefaultAppConfiguration"/>.
+        /// </summary>
+        /// <remarks>
+        /// For more details, see: https://docs.microsoft.com/en-us/dotnet/core/extensions/configuration
+        /// </remarks>
+        [PublicAPI]
+        public Action<HostBuilderContext, IConfigurationBuilder>? AppConfiguration { get; init; } = ApplyDefaultAppConfiguration;
 
         /// <summary>
         /// Configures the logging for the application. You can use the various <c>loggingBuilder.Add...()</c>
-        /// methods to configure the desired logging. Defaults to <see cref="ConfigureDefaultLogging"/>.
+        /// methods to configure the desired logging. Defaults to <see cref="ApplyDefaultLoggingConfiguration"/>.
         /// </summary>
+        /// <remarks>
+        /// For more details, see https://docs.microsoft.com/en-us/dotnet/core/extensions/logging-providers and
+        /// https://docs.microsoft.com/en-us/dotnet/core/extensions/console-log-formatter
+        /// </remarks>
         [PublicAPI]
-        public Action<HostBuilderContext, ILoggingBuilder> LoggingConfiguration { get; init; } = ConfigureDefaultLogging;
+        public Action<HostBuilderContext, ILoggingBuilder>? LoggingConfiguration { get; init; } = ApplyDefaultLoggingConfiguration;
 
         /// <summary>
         /// The content root to use. Defaults to <see cref="DirectoryPath.GetCurrentDirectory"/>.
@@ -85,18 +110,28 @@ namespace AppMotor.CliApp.CommandLine.Hosting
                 hostBuilder.UseContentRoot(contentRoot.Value.Value);
             }
 
-            hostBuilder.UseServiceProviderFactory(this.ServiceProviderFactory);
-            hostBuilder.ConfigureLogging(this.LoggingConfiguration);
+            this.ServiceProviderConfiguration(hostBuilder);
+
+            if (this.AppConfiguration is not null)
+            {
+                hostBuilder.ConfigureAppConfiguration(this.AppConfiguration);
+            }
+
+            if (this.LoggingConfiguration is not null)
+            {
+                hostBuilder.ConfigureLogging(this.LoggingConfiguration);
+            }
 
             return hostBuilder;
         }
 
         /// <summary>
-        /// Creates a <see cref="IServiceProvider"/> factory (i.e. the dependency injection framework) from .NET's built-in service provider
-        /// (via <see cref="DefaultServiceProviderFactory"/>) with all scope validations enabled (see <see cref="ServiceProviderOptions.ValidateScopes"/>).
+        /// Creates a <see cref="DefaultServiceProviderFactory"/> with all scope validations enabled (see <see cref="ServiceProviderOptions.ValidateScopes"/>)
+        /// and sets it as service provider.
         /// </summary>
+        /// <seealso cref="ServiceProviderConfiguration"/>
         [PublicAPI]
-        public static IServiceProviderFactory<IServiceCollection> CreateDefaultServiceProviderFactory(HostBuilderContext context)
+        public static void ApplyDefaultServiceProviderConfiguration(IHostBuilder hostBuilder)
         {
             var options = new ServiceProviderOptions()
             {
@@ -105,14 +140,37 @@ namespace AppMotor.CliApp.CommandLine.Hosting
                 ValidateOnBuild = true,
             };
 
-            return new DefaultServiceProviderFactory(options);
+            hostBuilder.UseServiceProviderFactory(new DefaultServiceProviderFactory(options));
+        }
+
+        /// <summary>
+        /// Enables the configuration files "appsettings.json" and "appsettings.{<see cref="HostBuilderContext.HostingEnvironment"/>}.json".
+        /// Also enables loading configuration values from the environment variables (via <see cref="EnvironmentVariablesConfigurationSource"/>).
+        /// </summary>
+        /// <remarks>
+        /// Whether the .json configuration files are reloaded when changed is configured via the "hostBuilder:reloadConfigOnChange" configuration
+        /// value. The default is <c>true</c>.
+        /// </remarks>
+        /// <seealso cref="AppConfiguration"/>
+        [PublicAPI]
+        public static void ApplyDefaultAppConfiguration(HostBuilderContext context, IConfigurationBuilder configurationBuilder)
+        {
+            IHostEnvironment env = context.HostingEnvironment;
+
+            bool reloadOnChange = context.Configuration.GetValue("hostBuilder:reloadConfigOnChange", defaultValue: true);
+
+            configurationBuilder.AddJsonFile("appsettings.json", optional: true, reloadOnChange: reloadOnChange);
+            configurationBuilder.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: reloadOnChange);
+
+            configurationBuilder.Add(new EnvironmentVariablesConfigurationSource());
         }
 
         /// <summary>
         /// Enables Console logging.
         /// </summary>
+        /// <seealso cref="LoggingConfiguration"/>
         [PublicAPI]
-        public static void ConfigureDefaultLogging(HostBuilderContext context, ILoggingBuilder loggingBuilder)
+        public static void ApplyDefaultLoggingConfiguration(HostBuilderContext context, ILoggingBuilder loggingBuilder)
         {
             loggingBuilder.AddConsole();
         }
