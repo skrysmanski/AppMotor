@@ -27,15 +27,14 @@ using Microsoft.Extensions.Logging;
 namespace AppMotor.CliApp.CommandLine.Hosting
 {
     /// <summary>
-    /// <para>The default <see cref="IHostBuilderFactory"/>. Lets you customize the <see cref="IServiceProvider"/>
-    /// (by overriding <see cref="CreateServiceProviderFactory"/>), the logging settings (by overriding
-    /// <see cref="ConfigureLogging"/>) and everything else (by overriding <see cref="CreateHostBuilder"/>).</para>
+    /// <para>The default <see cref="IHostBuilderFactory"/> implementation. Lets you customize the host by
+    /// setting the various properties in this class (or even by overriding <see cref="CreateHostBuilder"/>).</para>
     ///
     /// <para>By default, this factory creates hosts with the following features enabled:</para>
     ///
     /// <list type="bullet">
-    ///     <item><description>Dependency injection (via <see cref="CreateServiceProviderFactory"/>)</description></item>
-    ///     <item><description>Logging to the Console (via <see cref="ConfigureLogging"/>)</description></item>
+    ///     <item><description>Dependency injection (via <see cref="ServiceProviderFactory"/>)</description></item>
+    ///     <item><description>Logging to the Console (via <see cref="LoggingConfiguration"/>)</description></item>
     ///     <item><description>The content root is set to the current directory (via <see cref="ContentRoot"/>)</description></item>
     /// </list>
     /// </summary>
@@ -49,6 +48,20 @@ namespace AppMotor.CliApp.CommandLine.Hosting
         /// An instance of this class.
         /// </summary>
         public static DefaultHostBuilderFactory Instance { get; } = new();
+
+        /// <summary>
+        /// The function that creates the <see cref="IServiceProviderFactory{TContainerBuilder}"/> (i.e. the dependency
+        /// injection system). Defaults to <see cref="CreateDefaultServiceProviderFactory"/>.
+        /// </summary>
+        [PublicAPI]
+        public Func<HostBuilderContext, IServiceProviderFactory<IServiceCollection>> ServiceProviderFactory { get; init; } = CreateDefaultServiceProviderFactory;
+
+        /// <summary>
+        /// Configures the logging for the application. You can use the various <c>loggingBuilder.Add...()</c>
+        /// methods to configure the desired logging. Defaults to <see cref="ConfigureDefaultLogging"/>.
+        /// </summary>
+        [PublicAPI]
+        public Action<HostBuilderContext, ILoggingBuilder> LoggingConfiguration { get; init; } = ConfigureDefaultLogging;
 
         /// <summary>
         /// The content root to use. Defaults to <see cref="DirectoryPath.GetCurrentDirectory"/>.
@@ -72,21 +85,18 @@ namespace AppMotor.CliApp.CommandLine.Hosting
                 hostBuilder.UseContentRoot(contentRoot.Value.Value);
             }
 
-            hostBuilder.UseServiceProviderFactory(CreateServiceProviderFactory);
-            hostBuilder.ConfigureLogging(ConfigureLogging);
+            hostBuilder.UseServiceProviderFactory(this.ServiceProviderFactory);
+            hostBuilder.ConfigureLogging(this.LoggingConfiguration);
 
             return hostBuilder;
         }
 
         /// <summary>
-        /// Create the <see cref="IServiceProvider"/> factory (i.e. the dependency injection framework) to be used by
-        /// the application.
-        ///
-        /// <para>The default implementation uses the built-in service provider (via <see cref="DefaultServiceProviderFactory"/>)
-        /// with scope validation enabled (see <see cref="ServiceProviderOptions.ValidateScopes"/>).</para>
+        /// Creates a <see cref="IServiceProvider"/> factory (i.e. the dependency injection framework) from .NET's built-in service provider
+        /// (via <see cref="DefaultServiceProviderFactory"/>) with all scope validations enabled (see <see cref="ServiceProviderOptions.ValidateScopes"/>).
         /// </summary>
         [PublicAPI]
-        protected virtual IServiceProviderFactory<IServiceCollection> CreateServiceProviderFactory(HostBuilderContext context)
+        public static IServiceProviderFactory<IServiceCollection> CreateDefaultServiceProviderFactory(HostBuilderContext context)
         {
             var options = new ServiceProviderOptions()
             {
@@ -99,12 +109,10 @@ namespace AppMotor.CliApp.CommandLine.Hosting
         }
 
         /// <summary>
-        /// Configures the logging for the application. You can use the various <c>loggingBuilder.Add...()</c>
-        /// methods to configure the desired logging.
-        ///
-        /// <para>The default implementation only enables console logging.</para>
+        /// Enables Console logging.
         /// </summary>
-        protected virtual void ConfigureLogging(HostBuilderContext context, ILoggingBuilder loggingBuilder)
+        [PublicAPI]
+        public static void ConfigureDefaultLogging(HostBuilderContext context, ILoggingBuilder loggingBuilder)
         {
             loggingBuilder.AddConsole();
         }
