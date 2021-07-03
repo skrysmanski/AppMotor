@@ -16,7 +16,7 @@
 
   <PropertyGroup Label="Versions">
     <AppMotorCoreVersion>0.13.1</AppMotorCoreVersion>
-    <AppMotorCliAppVersion>0.5.0</AppMotorCliAppVersion>
+    <AppMotorCliAppVersion>0.5.1</AppMotorCliAppVersion>
     <AppMotorHttpServerVersion>0.2.0</AppMotorHttpServerVersion>
   </PropertyGroup>
 
