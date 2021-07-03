@@ -68,6 +68,15 @@ namespace AppMotor.CliApp.CommandLine.Hosting
         protected virtual IHostBuilderFactory HostBuilderFactory => DefaultHostBuilderFactory.Instance;
 
         /// <summary>
+        /// Action that configures <see cref="Microsoft.Extensions.Hosting.Internal.ConsoleLifetime"/> (via
+        /// <see cref="ConsoleLifetimeOptions"/>). Primarily useful if you want to suppress status messages
+        /// like "Press Ctrl+C to shut down.". If <c>null</c> and <see cref="ExplicitExecutor"/> is set,
+        /// the status messages are suppressed automatically.
+        /// </summary>
+        [PublicAPI]
+        protected virtual Action<ConsoleLifetimeOptions>? ConsoleLifetimeConfiguration => null;
+
+        /// <summary>
         /// If set, this executor automatically stops this command once the executor has finished.
         ///
         /// <para>If this property is <c>null</c> (the default), this command runs indefinitely until it's stopped
@@ -113,6 +122,25 @@ namespace AppMotor.CliApp.CommandLine.Hosting
 
             ConfigureApplication(hostBuilder);
 
+            var explicitExecutor = this.ExplicitExecutor;
+
+            //
+            // Configure ConsoleLifetime.
+            //
+            if (this.ConsoleLifetimeConfiguration is not null)
+            {
+                hostBuilder.UseConsoleLifetime(this.ConsoleLifetimeConfiguration);
+            }
+            else if (explicitExecutor is not null)
+            {
+                // Suppress ConsoleLifetime status message (e.g. "Press Ctrl+C to shut down.") if we
+                // have an explicit executor (that controls the lifetime of the process).
+                hostBuilder.UseConsoleLifetime(options =>
+                {
+                    options.SuppressStatusMessages = true;
+                });
+            }
+
             IHost host = hostBuilder.Build();
 
             this._serviceProvider = host.Services;
@@ -135,7 +163,7 @@ namespace AppMotor.CliApp.CommandLine.Hosting
 
                 int exitCode;
 
-                if (this.ExplicitExecutor is null)
+                if (explicitExecutor is null)
                 {
                     await host.WaitForShutdownAsync(cancellationToken).ConfigureAwait(false);
 
@@ -143,7 +171,7 @@ namespace AppMotor.CliApp.CommandLine.Hosting
                 }
                 else
                 {
-                    exitCode = await this.ExplicitExecutor.Execute(cancellationToken).ConfigureAwait(false);
+                    exitCode = await explicitExecutor.Execute(cancellationToken).ConfigureAwait(false);
 
                     //
                     // Shut down host. For details, see implementation of "WaitForShutdownAsync()".
