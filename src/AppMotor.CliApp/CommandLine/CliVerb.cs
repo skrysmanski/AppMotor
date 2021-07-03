@@ -118,7 +118,7 @@ namespace AppMotor.CliApp.CommandLine
         /// <summary>
         /// Creates the underlying implementation.
         /// </summary>
-        internal Command ToUnderlyingImplementation(bool enableDebugParam, IOutputTerminal terminal, CancellationToken cancellationToken)
+        internal Command ToUnderlyingImplementation(bool enableDebugParam, ITerminal terminal, CancellationToken cancellationToken)
         {
             if (this._underlyingImplementation is null)
             {

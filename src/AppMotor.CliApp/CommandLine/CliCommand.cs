@@ -14,6 +14,7 @@
 // limitations under the License.
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.CommandLine.Invocation;
@@ -54,11 +55,25 @@ namespace AppMotor.CliApp.CommandLine
         protected abstract CliCommandExecutor Executor { get; }
 
         /// <summary>
+        /// The terminal to use within this application. Inherited from the <see cref="CliApplication"/> this
+        /// command runs in.
+        /// </summary>
+        /// <remarks>
+        /// This property mainly exists for unit testing purposes where you need to obtain
+        /// everything written to the terminal.
+        /// </remarks>
+        [PublicAPI]
+        public ITerminal Terminal => this._terminal ?? throw new InvalidOperationException("The terminal is not available in this command state.");
+
+        private ITerminal? _terminal;
+
+        /// <summary>
         /// Runs this command.
         /// </summary>
         /// <returns>The exit code for the running program.</returns>
-        private async Task<int> Execute(CancellationToken cancellationToken)
+        private async Task<int> Execute(ITerminal terminal, CancellationToken cancellationToken)
         {
+            this._terminal = terminal;
             return await this.Executor.Execute(cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
         }
 
@@ -77,7 +92,7 @@ namespace AppMotor.CliApp.CommandLine
         {
             private readonly CliCommand _command;
 
-            private readonly IOutputTerminal _terminal;
+            private readonly ITerminal _terminal;
 
             private readonly CancellationToken _cancellationToken;
 
@@ -85,7 +100,7 @@ namespace AppMotor.CliApp.CommandLine
 
             private CliParam<bool>? DebugParam { get; }
 
-            public CliCommandHandler(CliCommand command, bool enableDebugParam, IOutputTerminal terminal, CancellationToken cancellationToken)
+            public CliCommandHandler(CliCommand command, bool enableDebugParam, ITerminal terminal, CancellationToken cancellationToken)
             {
                 this._command = command;
                 this._terminal = terminal;
@@ -139,7 +154,7 @@ namespace AppMotor.CliApp.CommandLine
                     DebuggerUtils.LaunchDebugger(this._terminal);
                 }
 
-                return await this._command.Execute(this._cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+                return await this._command.Execute(this._terminal, this._cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
             }
         }
     }

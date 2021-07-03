@@ -58,8 +58,8 @@ namespace AppMotor.CliApp
         /// The terminal to use within this application. Defaults to <see cref="Terminals.Terminal"/>.
         /// </summary>
         /// <remarks>
-        /// This property is mainly for unit testing where you need to obtain everything written to
-        /// the terminal.
+        /// This property mainly exists for unit testing purposes where you need to obtain
+        /// everything written to the terminal.
         /// </remarks>
         [PublicAPI]
         public ITerminal Terminal { get; set; } = Terminals.Terminal.Instance;
