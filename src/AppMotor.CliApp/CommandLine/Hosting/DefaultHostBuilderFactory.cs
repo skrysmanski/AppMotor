@@ -16,6 +16,8 @@
 
 using System;
 
+using AppMotor.Core.IO;
+
 using JetBrains.Annotations;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -32,8 +34,9 @@ namespace AppMotor.CliApp.CommandLine.Hosting
     /// <para>By default, this factory creates hosts with the following features enabled:</para>
     ///
     /// <list type="bullet">
-    ///     <item><description>Dependency injection (via <see cref="DefaultServiceProviderFactory"/>)</description></item>
-    ///     <item><description>Logging to the Console</description></item>
+    ///     <item><description>Dependency injection (via <see cref="CreateServiceProviderFactory"/>)</description></item>
+    ///     <item><description>Logging to the Console (via <see cref="ConfigureLogging"/>)</description></item>
+    ///     <item><description>The content root is set to the current directory (via <see cref="ContentRoot"/>)</description></item>
     /// </list>
     /// </summary>
     /// <remarks>
@@ -47,10 +50,27 @@ namespace AppMotor.CliApp.CommandLine.Hosting
         /// </summary>
         public static DefaultHostBuilderFactory Instance { get; } = new();
 
+        /// <summary>
+        /// The content root to use. Defaults to <see cref="DirectoryPath.GetCurrentDirectory"/>.
+        /// Can <c>null</c> in which case no content root will be set (explicitly).
+        /// </summary>
+        /// <remarks>
+        /// For more details on the content root, see: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/#content-root
+        /// </remarks>
+        /// <seealso cref="HostingHostBuilderExtensions.UseContentRoot"/>
+        [PublicAPI]
+        public DirectoryPath? ContentRoot { get; init; } = DirectoryPath.GetCurrentDirectory();
+
         /// <inheritdoc />
         public virtual IHostBuilder CreateHostBuilder()
         {
             var hostBuilder = new HostBuilder();
+
+            var contentRoot = this.ContentRoot;
+            if (contentRoot is not null)
+            {
+                hostBuilder.UseContentRoot(contentRoot.Value.Value);
+            }
 
             hostBuilder.UseServiceProviderFactory(CreateServiceProviderFactory);
             hostBuilder.ConfigureLogging(ConfigureLogging);

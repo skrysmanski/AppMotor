@@ -123,6 +123,15 @@ namespace AppMotor.Core.IO
         }
 
         /// <summary>
+        /// Returns the current working directory of the application.
+        /// </summary>
+        [MustUseReturnValue]
+        public static DirectoryPath GetCurrentDirectory(IFileSystem? fileSystem = null)
+        {
+            return (fileSystem ?? RealFileSystem.Instance).Directory.GetCurrentDirectory();
+        }
+
+        /// <summary>
         /// Returns the absolute path of this directory path.
         /// </summary>
         /// <param name="fileSystem">The file system to use; if <c>null</c>, <see cref="RealFileSystem.Instance"/> will be used.</param>
@@ -388,7 +397,9 @@ namespace AppMotor.Core.IO
             return !left.Equals(right);
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Returns <see cref="Value"/>.
+        /// </summary>
         public override string ToString()
         {
             return this._value ?? "";

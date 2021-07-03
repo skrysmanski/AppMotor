@@ -429,7 +429,9 @@ namespace AppMotor.Core.IO
             return !left.Equals(right);
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Returns <see cref="Value"/>.
+        /// </summary>
         public override string ToString()
         {
             return this._value ?? "";
