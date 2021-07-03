@@ -311,7 +311,7 @@ namespace AppMotor.Core.Utils
         /// <summary>
         /// Converts this instance into a <see cref="DateTime"/>.
         /// </summary>
-        [MustUseReturnValue]
+        [Pure]
         public DateTime ToDateTime()
         {
             return this._underlyingDateTime;
@@ -320,7 +320,7 @@ namespace AppMotor.Core.Utils
         /// <summary>
         /// Converts this instance into a <see cref="DateTimeOffset"/>.
         /// </summary>
-        [MustUseReturnValue]
+        [Pure]
         public DateTimeOffset ToDateTimeOffset()
         {
             return new(this._underlyingDateTime);
@@ -334,6 +334,7 @@ namespace AppMotor.Core.Utils
 
         /// <inheritdoc cref="DateTime.ToString(string)"/>
         [SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "Same as DateTime.ToString()")]
+        [Pure]
         public string ToString(string? format)
         {
             return this._underlyingDateTime.ToString(format);
