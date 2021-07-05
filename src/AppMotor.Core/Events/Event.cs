@@ -16,7 +16,6 @@
 
 using System;
 using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 using AppMotor.Core.Utils;
@@ -26,22 +25,10 @@ using JetBrains.Annotations;
 namespace AppMotor.Core.Events
 {
     /// <summary>
-    /// <para>This class represents a different approach the events and is meant as replacement for C#'s built-in <c>event</c>s. The differences to
-    /// regular C# events are as follows:</para>
-    ///
-    /// <para>Registering an event handler happens through a method (see <see cref="RegisterEventHandler(Action{TEventArgs})"/> and
-    /// <see cref="RegisterEventHandler(Func{TEventArgs,Task})"/>) - while unregistering the event handler happens through disposing the
-    /// <see cref="IEventHandlerRegistration"/> instance returned by the methods mentioned before.</para>
-    ///
-    /// <para>This class natively supports async events (without the need to resorting to <c>async void</c>).</para>
-    ///
-    /// <para>This class breaks with the tradition of having a <c>sender</c> parameter. If you need a sender in your event, add it to the
-    /// event args. If you don't need or want a sender, you don't need to specify one. (Experience showed that, if the sender was not immediately
-    /// useful/required in the current scenario, having a sender parameter created additional cognitive load for the event owner because they
-    /// then needed to decide whether to provide this parameter or not and what implications it would have when providing one. Thus, it's
-    /// easier not to require such a parameter.)</para>
+    /// The public API surface of an <see cref="EventSource{TEventArgs}"/> (accessible via <see cref="EventSource{TEventArgs}.Event"/>).
+    /// Contains the methods to register new event handlers.
     /// </summary>
-    public class Event<TEventArgs>
+    public sealed class Event<TEventArgs>
     {
         private readonly object _eventHandlersLock = new();
 
@@ -50,21 +37,8 @@ namespace AppMotor.Core.Events
         /// <summary>
         /// Constructor.
         /// </summary>
-        [PublicAPI]
-        protected Event()
+        internal Event()
         {
-        }
-
-        /// <summary>
-        /// Creates an event and its event raiser.
-        /// </summary>
-        [MustUseReturnValue]
-        [SuppressMessage("Design", "CA1000:Do not declare static members on generic types", Justification = "By design")]
-        public static (Event<TEventArgs>, EventRaiser<TEventArgs>) Create()
-        {
-            var @event = new Event<TEventArgs>();
-
-            return (@event, @event.CreateEventRaiser());
         }
 
         /// <summary>
@@ -120,16 +94,7 @@ namespace AppMotor.Core.Events
             }
         }
 
-        /// <summary>
-        /// Creates the <see cref="EventRaiser{TEventArgs}"/> instance for this event.
-        /// </summary>
-        [PublicAPI, MustUseReturnValue]
-        protected EventRaiser<TEventArgs> CreateEventRaiser()
-        {
-            return new(RaiseEvent);
-        }
-
-        private async Task RaiseEvent(TEventArgs eventArgs)
+        internal async Task RaiseEvent(TEventArgs eventArgs)
         {
             // ReSharper disable once InconsistentlySynchronizedField
             ImmutableArray<EventHandlerRegistration> eventHandlers = this._eventHandlers;

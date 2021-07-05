@@ -25,7 +25,7 @@ using Xunit;
 
 namespace AppMotor.Core.Tests.Events
 {
-    public sealed class OneTimeEventTests
+    public sealed class OneTimeEventSourceTests
     {
         private readonly Guid _testGuid = Guid.NewGuid();
 
@@ -36,57 +36,57 @@ namespace AppMotor.Core.Tests.Events
         [Fact]
         public void Test_BasicUsage()
         {
-            var (@event, eventRaiser) = OneTimeEvent<TestEventArgs>.Create();
+            var eventSource = new OneTimeEventSource<TestEventArgs>();
 
-            @event.HasBeenRaised.ShouldBe(false);
+            eventSource.Event.HasBeenRaised.ShouldBe(false);
 
-            var syncRegistration = @event.RegisterEventHandler(OnTestEvent);
+            var syncRegistration = eventSource.Event.RegisterEventHandler(OnTestEvent);
             syncRegistration.ShouldNotBeNull();
-            var asyncRegistration = @event.RegisterEventHandler(OnTestEventAsync);
+            var asyncRegistration = eventSource.Event.RegisterEventHandler(OnTestEventAsync);
             asyncRegistration.ShouldNotBeNull();
 
-            eventRaiser.RaiseEvent(new TestEventArgs(this._testGuid));
+            eventSource.RaiseEvent(new TestEventArgs(this._testGuid));
 
             this._syncHandlerCallCount.ShouldBe(1);
             this._asyncHandlerCallCount.ShouldBe(1);
-            @event.HasBeenRaised.ShouldBe(true);
+            eventSource.Event.HasBeenRaised.ShouldBe(true);
 
-            eventRaiser.RaiseEvent(new TestEventArgs(this._testGuid));
+            eventSource.RaiseEvent(new TestEventArgs(this._testGuid));
 
             this._syncHandlerCallCount.ShouldBe(1);
             this._asyncHandlerCallCount.ShouldBe(1);
-            @event.HasBeenRaised.ShouldBe(true);
+            eventSource.Event.HasBeenRaised.ShouldBe(true);
 
-            @event.RegisterEventHandler(OnTestEvent).ShouldBeNull();
-            @event.RegisterEventHandler(OnTestEventAsync).ShouldBeNull();
+            eventSource.Event.RegisterEventHandler(OnTestEvent).ShouldBeNull();
+            eventSource.Event.RegisterEventHandler(OnTestEventAsync).ShouldBeNull();
         }
 
         [Fact]
         public async Task Test_BasicUsage_Async()
         {
-            var (@event, eventRaiser) = OneTimeEvent<TestEventArgs>.Create();
+            var eventSource = new OneTimeEventSource<TestEventArgs>();
 
-            @event.HasBeenRaised.ShouldBe(false);
+            eventSource.Event.HasBeenRaised.ShouldBe(false);
 
-            var syncRegistration = @event.RegisterEventHandler(OnTestEvent);
+            var syncRegistration = eventSource.Event.RegisterEventHandler(OnTestEvent);
             syncRegistration.ShouldNotBeNull();
-            var asyncRegistration = @event.RegisterEventHandler(OnTestEventAsync);
+            var asyncRegistration = eventSource.Event.RegisterEventHandler(OnTestEventAsync);
             asyncRegistration.ShouldNotBeNull();
 
-            await eventRaiser.RaiseEventAsync(new TestEventArgs(this._testGuid));
+            await eventSource.RaiseEventAsync(new TestEventArgs(this._testGuid));
 
             this._syncHandlerCallCount.ShouldBe(1);
             this._asyncHandlerCallCount.ShouldBe(1);
-            @event.HasBeenRaised.ShouldBe(true);
+            eventSource.Event.HasBeenRaised.ShouldBe(true);
 
-            await eventRaiser.RaiseEventAsync(new TestEventArgs(this._testGuid));
+            await eventSource.RaiseEventAsync(new TestEventArgs(this._testGuid));
 
             this._syncHandlerCallCount.ShouldBe(1);
             this._asyncHandlerCallCount.ShouldBe(1);
-            @event.HasBeenRaised.ShouldBe(true);
+            eventSource.Event.HasBeenRaised.ShouldBe(true);
 
-            @event.RegisterEventHandler(OnTestEvent).ShouldBeNull();
-            @event.RegisterEventHandler(OnTestEventAsync).ShouldBeNull();
+            eventSource.Event.RegisterEventHandler(OnTestEvent).ShouldBeNull();
+            eventSource.Event.RegisterEventHandler(OnTestEventAsync).ShouldBeNull();
         }
 
         private void OnTestEvent(TestEventArgs eventArgs)

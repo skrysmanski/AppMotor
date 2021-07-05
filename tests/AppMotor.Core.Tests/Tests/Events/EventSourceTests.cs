@@ -25,7 +25,7 @@ using Xunit;
 
 namespace AppMotor.Core.Tests.Events
 {
-    public sealed class EventTests
+    public sealed class EventSourceTests
     {
         private readonly Guid _testGuid = Guid.NewGuid();
 
@@ -36,31 +36,31 @@ namespace AppMotor.Core.Tests.Events
         [Fact]
         public void Test_BasicUsage()
         {
-            var (@event, eventRaiser) = Event<TestEventArgs>.Create();
+            var eventSource = new EventSource<TestEventArgs>();
 
-            var syncRegistration = @event.RegisterEventHandler(OnTestEvent);
-            var asyncRegistration = @event.RegisterEventHandler(OnTestEventAsync);
+            var syncRegistration = eventSource.Event.RegisterEventHandler(OnTestEvent);
+            var asyncRegistration = eventSource.Event.RegisterEventHandler(OnTestEventAsync);
 
-            eventRaiser.RaiseEvent(new TestEventArgs(this._testGuid));
+            eventSource.RaiseEvent(new TestEventArgs(this._testGuid));
 
             this._syncHandlerCallCount.ShouldBe(1);
             this._asyncHandlerCallCount.ShouldBe(1);
 
-            eventRaiser.RaiseEvent(new TestEventArgs(this._testGuid));
+            eventSource.RaiseEvent(new TestEventArgs(this._testGuid));
 
             this._syncHandlerCallCount.ShouldBe(2);
             this._asyncHandlerCallCount.ShouldBe(2);
 
             syncRegistration.Dispose();
 
-            eventRaiser.RaiseEvent(new TestEventArgs(this._testGuid));
+            eventSource.RaiseEvent(new TestEventArgs(this._testGuid));
 
             this._syncHandlerCallCount.ShouldBe(2);
             this._asyncHandlerCallCount.ShouldBe(3);
 
             asyncRegistration.Dispose();
 
-            eventRaiser.RaiseEvent(new TestEventArgs(this._testGuid));
+            eventSource.RaiseEvent(new TestEventArgs(this._testGuid));
 
             this._syncHandlerCallCount.ShouldBe(2);
             this._asyncHandlerCallCount.ShouldBe(3);
@@ -69,31 +69,31 @@ namespace AppMotor.Core.Tests.Events
         [Fact]
         public async Task Test_BasicUsage_Async()
         {
-            var (@event, eventRaiser) = Event<TestEventArgs>.Create();
+            var eventSource = new EventSource<TestEventArgs>();
 
-            var syncRegistration = @event.RegisterEventHandler(OnTestEvent);
-            var asyncRegistration = @event.RegisterEventHandler(OnTestEventAsync);
+            var syncRegistration = eventSource.Event.RegisterEventHandler(OnTestEvent);
+            var asyncRegistration = eventSource.Event.RegisterEventHandler(OnTestEventAsync);
 
-            await eventRaiser.RaiseEventAsync(new TestEventArgs(this._testGuid));
+            await eventSource.RaiseEventAsync(new TestEventArgs(this._testGuid));
 
             this._syncHandlerCallCount.ShouldBe(1);
             this._asyncHandlerCallCount.ShouldBe(1);
 
-            await eventRaiser.RaiseEventAsync(new TestEventArgs(this._testGuid));
+            await eventSource.RaiseEventAsync(new TestEventArgs(this._testGuid));
 
             this._syncHandlerCallCount.ShouldBe(2);
             this._asyncHandlerCallCount.ShouldBe(2);
 
             syncRegistration.Dispose();
 
-            await eventRaiser.RaiseEventAsync(new TestEventArgs(this._testGuid));
+            await eventSource.RaiseEventAsync(new TestEventArgs(this._testGuid));
 
             this._syncHandlerCallCount.ShouldBe(2);
             this._asyncHandlerCallCount.ShouldBe(3);
 
             asyncRegistration.Dispose();
 
-            await eventRaiser.RaiseEventAsync(new TestEventArgs(this._testGuid));
+            await eventSource.RaiseEventAsync(new TestEventArgs(this._testGuid));
 
             this._syncHandlerCallCount.ShouldBe(2);
             this._asyncHandlerCallCount.ShouldBe(3);

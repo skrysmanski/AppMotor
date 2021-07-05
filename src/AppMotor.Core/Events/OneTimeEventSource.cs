@@ -14,35 +14,21 @@
 // limitations under the License.
 #endregion
 
-using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace AppMotor.Core.Events
 {
     /// <summary>
-    /// This class gives you the ability to raise a <see cref="Event{TEventArgs}"/>. You get an instance of this class
-    /// during creation of the associated event (i.e. via <see cref="Event{TEventArgs}.Create"/>).
+    /// An event that will only happen one time (and then never again). Primary examples of such an event
+    /// are lifetime event (e.g. application started, application stopped).
     /// </summary>
-    /// <remarks>
-    /// This class is separate from <see cref="Event{TEventArgs}"/> to give the event owner control over who can raise
-    /// the event. This is similar to regular C# events where only the containing class can raise the event (but everyone
-    /// can register to it).
-    /// </remarks>
-    public sealed class EventRaiser<TEventArgs>
+    public class OneTimeEventSource<TEventArgs>
     {
-        private readonly Func<TEventArgs, Task> _eventRaiser;
-
         /// <summary>
-        /// Constructor. Note that this constructor primarily exists for subclasses of <see cref="Event{TEventArgs}"/> so that
-        /// they can override <see cref="Event{TEventArgs}.CreateEventRaiser"/>. Regular users of <see cref="Event{TEventArgs}"/>
-        /// should not call this constructor but use <see cref="Event{TEventArgs}.Create"/> instead.
+        /// The public API surface of this event.
         /// </summary>
-        /// <param name="eventRaiser">The method used to raise this event.</param>
-        public EventRaiser(Func<TEventArgs, Task> eventRaiser)
-        {
-            this._eventRaiser = eventRaiser;
-        }
+        public OneTimeEvent<TEventArgs> Event { get; } = new();
 
         /// <summary>
         /// Raises/Fires the associated event by invoking all event handlers. Use this method if you're in a synchronous method.
@@ -52,7 +38,7 @@ namespace AppMotor.Core.Events
         [SuppressMessage("Design", "CA1030:Use events where appropriate")]
         public void RaiseEvent(TEventArgs eventArgs)
         {
-            Task.Run(() => this._eventRaiser(eventArgs)).Wait();
+            Task.Run(() => this.Event.RaiseEvent(eventArgs)).Wait();
         }
 
         /// <summary>
@@ -62,7 +48,7 @@ namespace AppMotor.Core.Events
         [SuppressMessage("Design", "CA1030:Use events where appropriate")]
         public async Task RaiseEventAsync(TEventArgs eventArgs)
         {
-            await this._eventRaiser(eventArgs).ConfigureAwait(false);
+            await this.Event.RaiseEvent(eventArgs).ConfigureAwait(false);
         }
     }
 }

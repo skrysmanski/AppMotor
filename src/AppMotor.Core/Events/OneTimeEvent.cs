@@ -15,52 +15,27 @@
 #endregion
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-
-using JetBrains.Annotations;
 
 namespace AppMotor.Core.Events
 {
     /// <summary>
-    /// An event that will only happen one time (and then never again). Primary examples of such an event
-    /// are lifetime event (e.g. application started, application stopped).
+    /// The public API surface of an <see cref="OneTimeEventSource{TEventArgs}"/> (accessible via <see cref="OneTimeEventSource{TEventArgs}.Event"/>).
+    /// Contains the methods to register new event handlers.
     /// </summary>
-    public class OneTimeEvent<TEventArgs>
+    public sealed class OneTimeEvent<TEventArgs>
     {
         private readonly object _eventRaiseLock = new();
 
-        private bool _hasBeenRaised;
-
-        private readonly Event<TEventArgs> _event;
-
-        private readonly EventRaiser<TEventArgs> _eventRaiser;
+        private readonly EventSource<TEventArgs> _eventSource = new();
 
         /// <summary>
         /// Whether this event has been raised or not.
         /// </summary>
-        // ReSharper disable once InconsistentlySynchronizedField
-        public bool HasBeenRaised => this._hasBeenRaised;
+        public bool HasBeenRaised { get; private set; }
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        [PublicAPI]
-        protected OneTimeEvent()
+        internal OneTimeEvent()
         {
-            (this._event, this._eventRaiser) = Event<TEventArgs>.Create();
-        }
-
-        /// <summary>
-        /// Creates an event and its event raiser.
-        /// </summary>
-        [MustUseReturnValue]
-        [SuppressMessage("Design", "CA1000:Do not declare static members on generic types", Justification = "By design")]
-        public static (OneTimeEvent<TEventArgs>, EventRaiser<TEventArgs>) Create()
-        {
-            var oneTimeEvent = new OneTimeEvent<TEventArgs>();
-
-            return (oneTimeEvent, new EventRaiser<TEventArgs>(oneTimeEvent.RaiseEvent));
         }
 
         /// <summary>
@@ -74,14 +49,14 @@ namespace AppMotor.Core.Events
         {
             lock (this._eventRaiseLock)
             {
-                if (this._hasBeenRaised)
+                if (this.HasBeenRaised)
                 {
                     // Event has been raised
                     return null;
                 }
                 else
                 {
-                    return this._event.RegisterEventHandler(eventHandler);
+                    return this._eventSource.Event.RegisterEventHandler(eventHandler);
                 }
             }
         }
@@ -97,31 +72,32 @@ namespace AppMotor.Core.Events
         {
             lock (this._eventRaiseLock)
             {
-                if (this._hasBeenRaised)
+                if (this.HasBeenRaised)
                 {
                     // Event has been raised
                     return null;
                 }
                 else
                 {
-                    return this._event.RegisterEventHandler(eventHandler);
+                    return this._eventSource.Event.RegisterEventHandler(eventHandler);
                 }
             }
         }
 
-        private async Task RaiseEvent(TEventArgs eventArgs)
+        internal async Task RaiseEvent(TEventArgs eventArgs)
         {
             lock (this._eventRaiseLock)
             {
-                if (this._hasBeenRaised)
+                if (this.HasBeenRaised)
                 {
                     return;
                 }
 
-                this._hasBeenRaised = true;
+                this.HasBeenRaised = true;
             }
 
-            await this._eventRaiser.RaiseEventAsync(eventArgs).ConfigureAwait(false);
+            // ReSharper disable once InconsistentlySynchronizedField
+            await this._eventSource.RaiseEventAsync(eventArgs).ConfigureAwait(false);
         }
     }
 }
