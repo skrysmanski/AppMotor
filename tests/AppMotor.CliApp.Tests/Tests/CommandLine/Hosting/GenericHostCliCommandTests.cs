@@ -50,11 +50,11 @@ namespace AppMotor.CliApp.Tests.CommandLine.Hosting
             using var stoppedEvent = new ManualResetEventSlim();
 
             // ReSharper disable once AccessToDisposedClosure
-            command.LifetimeEvents.Started += (_, _) => startedEvent.Set();
+            command.LifetimeEvents.Started.RegisterEventHandler(() => startedEvent.Set()).ShouldNotBeNull();
             // ReSharper disable once AccessToDisposedClosure
-            command.LifetimeEvents.Stopping += (_, _) => stoppingEvent.Set();
+            command.LifetimeEvents.Stopping.RegisterEventHandler(() => stoppingEvent.Set()).ShouldNotBeNull();
             // ReSharper disable once AccessToDisposedClosure
-            command.LifetimeEvents.Stopped += (_, _) => stoppedEvent.Set();
+            command.LifetimeEvents.Stopped.RegisterEventHandler(() => stoppedEvent.Set()).ShouldNotBeNull();
 
             var appTask = testApp.RunAsync();
 
@@ -94,7 +94,7 @@ namespace AppMotor.CliApp.Tests.CommandLine.Hosting
             using var startedEvent = new ManualResetEventSlim();
 
             // ReSharper disable once AccessToDisposedClosure
-            command.LifetimeEvents.Started += (_, _) => startedEvent.Set();
+            command.LifetimeEvents.Started.RegisterEventHandler(() => startedEvent.Set()).ShouldNotBeNull();
 
             var appTask = testApp.RunAsync();
 
@@ -153,11 +153,11 @@ namespace AppMotor.CliApp.Tests.CommandLine.Hosting
             using var stoppedEvent = new ManualResetEventSlim();
 
             // ReSharper disable once AccessToDisposedClosure
-            command.LifetimeEvents.Started += (_, _) => startedEvent.Set();
+            command.LifetimeEvents.Started.RegisterEventHandler(() => startedEvent.Set()).ShouldNotBeNull();
             // ReSharper disable once AccessToDisposedClosure
-            command.LifetimeEvents.Stopping += (_, _) => stoppingEvent.Set();
+            command.LifetimeEvents.Stopping.RegisterEventHandler(() => stoppingEvent.Set()).ShouldNotBeNull();
             // ReSharper disable once AccessToDisposedClosure
-            command.LifetimeEvents.Stopped += (_, _) => stoppedEvent.Set();
+            command.LifetimeEvents.Stopped.RegisterEventHandler(() => stoppedEvent.Set()).ShouldNotBeNull();
 
             var appTask = testApp.RunAsync();
 
@@ -197,7 +197,7 @@ namespace AppMotor.CliApp.Tests.CommandLine.Hosting
             var command = new CommandWithCustomHostBuilderFactory();
             var testApp = new TestApplicationWithCommand(command);
 
-            command.LifetimeEvents.Started += (_, _) => command.Stop();
+            command.LifetimeEvents.Started.RegisterEventHandler(() => command.Stop()).ShouldNotBeNull();
 
             // Test
             testApp.Run();

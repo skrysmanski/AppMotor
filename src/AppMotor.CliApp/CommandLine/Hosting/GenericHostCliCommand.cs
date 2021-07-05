@@ -104,15 +104,7 @@ namespace AppMotor.CliApp.CommandLine.Hosting
         /// <summary>
         /// The lifetime events for this command.
         /// </summary>
-        public GenericHostCliCommandLifetimeEvents LifetimeEvents { get; }
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        protected GenericHostCliCommand()
-        {
-            this.LifetimeEvents = new(this);
-        }
+        public GenericHostCliCommandLifetimeEvents LifetimeEvents { get; } = new();
 
         private async Task<int> Execute(CancellationToken cancellationToken)
         {
@@ -149,14 +141,14 @@ namespace AppMotor.CliApp.CommandLine.Hosting
             {
                 await host.StartAsync(cancellationToken).ConfigureAwait(false);
 
-                this.LifetimeEvents.TriggerStarted();
+                await this.LifetimeEvents.StartedEventSource.RaiseEventAsync().ConfigureAwait(false);
 
                 var applicationLifetime = host.Services.GetRequiredService<IHostApplicationLifetime>();
                 applicationLifetime.ApplicationStopping.Register(
                     state =>
                     {
                         var lifetimeEvents = (GenericHostCliCommandLifetimeEvents)state!;
-                        lifetimeEvents.TriggerStopping();
+                        lifetimeEvents.StoppingEventSource.RaiseEvent();
                     },
                     state: this.LifetimeEvents
                 );
@@ -183,7 +175,7 @@ namespace AppMotor.CliApp.CommandLine.Hosting
                     await host.StopAsync(CancellationToken.None).ConfigureAwait(false);
                 }
 
-                this.LifetimeEvents.TriggerStopped();
+                await this.LifetimeEvents.StoppedEventSource.RaiseEventAsync().ConfigureAwait(false);
 
                 return exitCode;
             }

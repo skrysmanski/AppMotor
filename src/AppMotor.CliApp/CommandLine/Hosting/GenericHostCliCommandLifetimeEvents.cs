@@ -1,4 +1,5 @@
 ﻿#region License
+
 // Copyright 2021 AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,9 +13,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
-using System;
+using AppMotor.Core.Events;
 
 namespace AppMotor.CliApp.CommandLine.Hosting
 {
@@ -26,40 +28,28 @@ namespace AppMotor.CliApp.CommandLine.Hosting
         /// <summary>
         /// Triggered when the <see cref="GenericHostCliCommand"/> has fully started.
         /// </summary>
-        public event EventHandler? Started;
+        public OneTimeEvent Started => this.StartedEventSource.Event;
+
+        internal readonly OneTimeEventSource StartedEventSource = new();
 
         /// <summary>
         /// Triggered when the <see cref="GenericHostCliCommand"/> is starting a graceful shutdown.
         /// Shutdown will block until all event handlers registered on this event have completed.
         /// </summary>
-        public event EventHandler? Stopping;
+        public OneTimeEvent Stopping => this.StoppingEventSource.Event;
+
+        internal readonly OneTimeEventSource StoppingEventSource = new();
 
         /// <summary>
         /// Triggered when the <see cref="GenericHostCliCommand"/> has completed a graceful shutdown.
         /// The application will not exit until all event handlers registered on this event have completed.
         /// </summary>
-        public event EventHandler? Stopped;
+        public OneTimeEvent Stopped => this.StoppedEventSource.Event;
 
-        private readonly GenericHostCliCommand _command;
+        internal readonly OneTimeEventSource StoppedEventSource = new();
 
-        internal GenericHostCliCommandLifetimeEvents(GenericHostCliCommand command)
+        internal GenericHostCliCommandLifetimeEvents()
         {
-            this._command = command;
-        }
-
-        internal void TriggerStarted()
-        {
-            this.Started?.Invoke(this._command, EventArgs.Empty);
-        }
-
-        internal void TriggerStopping()
-        {
-            this.Stopping?.Invoke(this._command, EventArgs.Empty);
-        }
-
-        internal void TriggerStopped()
-        {
-            this.Stopped?.Invoke(this._command, EventArgs.Empty);
         }
     }
 }
