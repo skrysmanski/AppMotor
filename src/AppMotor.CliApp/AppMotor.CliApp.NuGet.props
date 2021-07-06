@@ -20,6 +20,7 @@
     <CommonlyUsedTypes Include="AppMotor.CliApp.CommandLine.CliCommand" />
     <CommonlyUsedTypes Include="AppMotor.CliApp.CommandLine.CliParam" />
     <CommonlyUsedTypes Include="AppMotor.CliApp.CommandLine.Hosting.GenericHostCliCommand" />
+    <CommonlyUsedTypes Include="AppMotor.CliApp.CommandLine.Hosting.DefaultHostBuilderFactory" />
 
     <CommonlyUsedTypes Include="AppMotor.CliApp.Terminals.Terminal" />
     <CommonlyUsedTypes Include="AppMotor.CliApp.Terminals.ColoredString" />
