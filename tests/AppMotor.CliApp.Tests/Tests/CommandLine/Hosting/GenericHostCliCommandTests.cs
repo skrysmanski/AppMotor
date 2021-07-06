@@ -60,6 +60,8 @@ namespace AppMotor.CliApp.Tests.CommandLine.Hosting
 
             try
             {
+                command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(false);
+
                 startedEvent.Wait(TimeSpan.FromSeconds(10)).ShouldBe(true);
 
                 // Test
@@ -72,6 +74,7 @@ namespace AppMotor.CliApp.Tests.CommandLine.Hosting
 
                 // Verify
                 stoppingEvent.IsSet.ShouldBe(true);
+                command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(true);
 
                 appTask.Wait(TimeSpan.FromSeconds(30)).ShouldBe(true);
 
@@ -98,6 +101,8 @@ namespace AppMotor.CliApp.Tests.CommandLine.Hosting
 
             var appTask = testApp.RunAsync();
 
+            command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(false);
+
             startedEvent.Wait(TimeSpan.FromSeconds(10)).ShouldBe(true);
 
             // Test
@@ -107,8 +112,11 @@ namespace AppMotor.CliApp.Tests.CommandLine.Hosting
             var logger = command.ServiceProvider.GetRequiredService<ILogger<GenericHostCommandWithServiceProvider>>();
             logger.LogInformation("abc");
 
+            command.ServiceProvider.GetRequiredService<IGenericHostCliCommandLifetimeEvents>().ShouldBeSameAs(command.LifetimeEvents);
+
             // Shutdown
             command.Stop();
+            command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(true);
             appTask.Wait(TimeSpan.FromSeconds(30)).ShouldBe(true);
         }
 
@@ -159,6 +167,8 @@ namespace AppMotor.CliApp.Tests.CommandLine.Hosting
             // ReSharper disable once AccessToDisposedClosure
             command.LifetimeEvents.Stopped.RegisterEventHandler(() => stoppedEvent.Set()).ShouldNotBeNull();
 
+            command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(false);
+
             var appTask = testApp.RunAsync();
 
             startedEvent.Wait(TimeSpan.FromSeconds(10)).ShouldBe(true);
@@ -168,6 +178,7 @@ namespace AppMotor.CliApp.Tests.CommandLine.Hosting
 
             // Verify
             stoppingEvent.IsSet.ShouldBe(true);
+            command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(true);
             stoppedEvent.IsSet.ShouldBe(true);
         }
 
