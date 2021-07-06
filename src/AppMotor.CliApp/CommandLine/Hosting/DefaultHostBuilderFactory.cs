@@ -78,8 +78,21 @@ namespace AppMotor.CliApp.CommandLine.Hosting
         public Action<HostBuilderContext, IConfigurationBuilder>? AppConfiguration { get; init; } = ApplyDefaultAppConfiguration;
 
         /// <summary>
+        /// The name of the configuration section (<see cref="IConfiguration.GetSection"/>) used to configure log levels, etc. for
+        /// all loggers that are enabled via <see cref="LoggingConfiguration"/>. Defaults to "Logging" (the .NET default).
+        /// Can be set to <c>null</c> to disable setting the section.
+        /// </summary>
+        /// <remarks>
+        /// For more details, see: https://docs.microsoft.com/en-us/dotnet/core/extensions/logging#configure-logging
+        /// </remarks>
+        [PublicAPI]
+        public string? LoggingConfigurationSectionName { get; init; } = "Logging";
+
+        /// <summary>
         /// Configures the logging for the application. You can use the various <c>loggingBuilder.Add...()</c>
         /// methods to configure the desired logging. Defaults to <see cref="ApplyDefaultLoggingConfiguration"/>.
+        /// Note that the configuration section for configuring the log levels etc. is specified via
+        /// <see cref="LoggingConfigurationSectionName"/>.
         /// </summary>
         /// <remarks>
         /// For more details, see https://docs.microsoft.com/en-us/dotnet/core/extensions/logging-providers and
@@ -116,6 +129,15 @@ namespace AppMotor.CliApp.CommandLine.Hosting
             if (this.AppConfiguration is not null)
             {
                 hostBuilder.ConfigureAppConfiguration(this.AppConfiguration);
+            }
+
+            if (this.LoggingConfigurationSectionName is not null)
+            {
+                hostBuilder.ConfigureLogging((context, loggingBuilder) =>
+                {
+                    // Load the logging configuration from the specified configuration section.
+                    loggingBuilder.AddConfiguration(context.Configuration.GetSection(this.LoggingConfigurationSectionName));
+                });
             }
 
             if (this.LoggingConfiguration is not null)
@@ -170,6 +192,7 @@ namespace AppMotor.CliApp.CommandLine.Hosting
         /// Enables Console logging.
         /// </summary>
         /// <seealso cref="LoggingConfiguration"/>
+        /// <seealso cref="LoggingConfigurationSectionName"/>
         [PublicAPI]
         public static void ApplyDefaultLoggingConfiguration(HostBuilderContext context, ILoggingBuilder loggingBuilder)
         {
