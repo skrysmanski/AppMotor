@@ -19,9 +19,21 @@ namespace AppMotor.CliApp.Hosting.Sample
 
         private void Execute()
         {
-            this.Terminal.Write("Enter something: ");
-            var text = this.Terminal.ReadLine();
-            this.Terminal.WriteLine($"You wrote: {text}");
+            while (!this.LifetimeEvents.Stopping.HasBeenRaised)
+            {
+                this.Terminal.Write("Enter something: ");
+                var text = this.Terminal.ReadLine();
+
+                if (text is null)
+                {
+                    break;
+                }
+                else if (!string.IsNullOrWhiteSpace(text))
+                {
+                    this.Terminal.WriteLine($"You wrote: {text}");
+                    break;
+                }
+            }
         }
     }
 }
