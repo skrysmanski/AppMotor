@@ -77,7 +77,7 @@ namespace AppMotor.CliApp.Terminals
         /// <returns>
         /// The read line (without the end-of-line characters). Returns <c>null</c>
         /// if the input stream has been redirected (<see cref="IsInputRedirected"/>)
-        /// and no more lines are available.
+        /// and no more lines are available - or if the user hits <c>Ctrl+C</c>.
         /// </returns>
         [PublicAPI]
         string? ReadLine();
