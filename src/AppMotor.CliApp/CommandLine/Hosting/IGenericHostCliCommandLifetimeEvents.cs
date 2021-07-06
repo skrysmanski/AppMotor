@@ -44,6 +44,10 @@ namespace AppMotor.CliApp.CommandLine.Hosting
 
         /// <summary>
         /// This token is canceled when the <see cref="Stopping"/> event is triggered.
+        ///
+        /// <para>Note: This token can no longer be obtained once <see cref="Stopped"/> has been
+        /// triggered (because the underlying <see cref="CancellationTokenSource"/> will be disposed
+        /// at this time).</para>
         /// </summary>
         public CancellationToken CancellationToken { get; }
     }

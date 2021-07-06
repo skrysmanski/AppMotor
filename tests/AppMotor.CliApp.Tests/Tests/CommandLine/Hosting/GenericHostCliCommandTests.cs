@@ -163,7 +163,12 @@ namespace AppMotor.CliApp.Tests.CommandLine.Hosting
             // ReSharper disable once AccessToDisposedClosure
             command.LifetimeEvents.Started.RegisterEventHandler(() => startedEvent.Set()).ShouldNotBeNull();
             // ReSharper disable once AccessToDisposedClosure
-            command.LifetimeEvents.Stopping.RegisterEventHandler(() => stoppingEvent.Set()).ShouldNotBeNull();
+            command.LifetimeEvents.Stopping.RegisterEventHandler(() =>
+                {
+                    command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(true);
+                    stoppingEvent.Set();
+                }
+            ).ShouldNotBeNull();
             // ReSharper disable once AccessToDisposedClosure
             command.LifetimeEvents.Stopped.RegisterEventHandler(() => stoppedEvent.Set()).ShouldNotBeNull();
 
@@ -178,7 +183,6 @@ namespace AppMotor.CliApp.Tests.CommandLine.Hosting
 
             // Verify
             stoppingEvent.IsSet.ShouldBe(true);
-            command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(true);
             stoppedEvent.IsSet.ShouldBe(true);
         }
 

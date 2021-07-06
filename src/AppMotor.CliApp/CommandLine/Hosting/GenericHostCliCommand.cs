@@ -114,6 +114,7 @@ namespace AppMotor.CliApp.CommandLine.Hosting
 
             hostBuilder.ConfigureServices(services =>
             {
+                // ReSharper disable once AccessToDisposedClosure
                 services.AddSingleton<IGenericHostCliCommandLifetimeEvents>(this._lifetimeEvents);
             });
 
@@ -189,6 +190,7 @@ namespace AppMotor.CliApp.CommandLine.Hosting
             finally
             {
                 await DisposeHelper.DisposeWithAsyncSupport(host).ConfigureAwait(false);
+                this._lifetimeEvents.Dispose();
             }
         }
 
