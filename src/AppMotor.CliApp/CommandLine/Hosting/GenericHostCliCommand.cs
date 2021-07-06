@@ -104,11 +104,18 @@ namespace AppMotor.CliApp.CommandLine.Hosting
         /// <summary>
         /// The lifetime events for this command.
         /// </summary>
-        public GenericHostCliCommandLifetimeEvents LifetimeEvents { get; } = new();
+        public IGenericHostCliCommandLifetimeEvents LifetimeEvents => this._lifetimeEvents;
+
+        private readonly GenericHostCliCommandLifetimeEvents _lifetimeEvents = new();
 
         private async Task<int> Execute(CancellationToken cancellationToken)
         {
             IHostBuilder hostBuilder = this.HostBuilderFactory.CreateHostBuilder();
+
+            hostBuilder.ConfigureServices(services =>
+            {
+                services.AddSingleton<IGenericHostCliCommandLifetimeEvents>(this._lifetimeEvents);
+            });
 
             hostBuilder.ConfigureServices(ConfigureServices);
 
@@ -141,16 +148,16 @@ namespace AppMotor.CliApp.CommandLine.Hosting
             {
                 await host.StartAsync(cancellationToken).ConfigureAwait(false);
 
-                await this.LifetimeEvents.StartedEventSource.RaiseEventAsync().ConfigureAwait(false);
+                await this._lifetimeEvents.StartedEventSource.RaiseEventAsync().ConfigureAwait(false);
 
                 var applicationLifetime = host.Services.GetRequiredService<IHostApplicationLifetime>();
                 applicationLifetime.ApplicationStopping.Register(
                     state =>
                     {
                         var lifetimeEvents = (GenericHostCliCommandLifetimeEvents)state!;
-                        lifetimeEvents.StoppingEventSource.RaiseEvent();
+                        lifetimeEvents.RaiseStoppingEvent();
                     },
-                    state: this.LifetimeEvents
+                    state: this._lifetimeEvents
                 );
 
                 int exitCode;
@@ -175,7 +182,7 @@ namespace AppMotor.CliApp.CommandLine.Hosting
                     await host.StopAsync(CancellationToken.None).ConfigureAwait(false);
                 }
 
-                await this.LifetimeEvents.StoppedEventSource.RaiseEventAsync().ConfigureAwait(false);
+                await this._lifetimeEvents.StoppedEventSource.RaiseEventAsync().ConfigureAwait(false);
 
                 return exitCode;
             }

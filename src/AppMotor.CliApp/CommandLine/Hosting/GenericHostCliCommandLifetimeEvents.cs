@@ -16,40 +16,49 @@
 
 #endregion
 
+using System.Threading;
+
 using AppMotor.Core.Events;
+using AppMotor.Core.Utils;
 
 namespace AppMotor.CliApp.CommandLine.Hosting
 {
     /// <summary>
-    /// The lifetime events for a <see cref="GenericHostCliCommand"/>.
+    /// Implementation of <see cref="IGenericHostCliCommandLifetimeEvents"/>.
     /// </summary>
-    public sealed class GenericHostCliCommandLifetimeEvents
+    internal sealed class GenericHostCliCommandLifetimeEvents : Disposable, IGenericHostCliCommandLifetimeEvents
     {
-        /// <summary>
-        /// Triggered when the <see cref="GenericHostCliCommand"/> has fully started.
-        /// </summary>
         public OneTimeEvent Started => this.StartedEventSource.Event;
 
         internal readonly OneTimeEventSource StartedEventSource = new();
 
-        /// <summary>
-        /// Triggered when the <see cref="GenericHostCliCommand"/> is starting a graceful shutdown.
-        /// Shutdown will block until all event handlers registered on this event have completed.
-        /// </summary>
-        public OneTimeEvent Stopping => this.StoppingEventSource.Event;
+        public OneTimeEvent Stopping => this._stoppingEventSource.Event;
 
-        internal readonly OneTimeEventSource StoppingEventSource = new();
+        private readonly OneTimeEventSource _stoppingEventSource = new();
 
-        /// <summary>
-        /// Triggered when the <see cref="GenericHostCliCommand"/> has completed a graceful shutdown.
-        /// The application will not exit until all event handlers registered on this event have completed.
-        /// </summary>
         public OneTimeEvent Stopped => this.StoppedEventSource.Event;
 
         internal readonly OneTimeEventSource StoppedEventSource = new();
 
-        internal GenericHostCliCommandLifetimeEvents()
+        /// <summary>
+        /// This token is canceled when the <see cref="Stopping"/> event is triggered.
+        /// </summary>
+        public CancellationToken CancellationToken => this._cts.Token;
+
+        private readonly CancellationTokenSource _cts = new();
+
+        /// <inheritdoc />
+        protected override void DisposeManagedResources()
         {
+            base.DisposeManagedResources();
+
+            this._cts.Dispose();
+        }
+
+        internal void RaiseStoppingEvent()
+        {
+            this._cts.Cancel();
+            this._stoppingEventSource.RaiseEvent();
         }
     }
 }
