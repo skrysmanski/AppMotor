@@ -35,9 +35,10 @@ namespace AppMotor.CliApp.CommandLine.Hosting
     /// <para>By default, this factory creates hosts with the following features enabled:</para>
     ///
     /// <list type="bullet">
-    ///     <item><description>Dependency injection (via <see cref="ServiceProviderConfiguration"/>)</description></item>
-    ///     <item><description>Configuration values loaded from "appsettings.json", "appsettings.{Env}.json" and the environment variables (via <see cref="AppConfiguration"/>)</description></item>
-    ///     <item><description>Logging to the Console (via <see cref="LoggingConfiguration"/>)</description></item>
+    ///     <item><description>Dependency injection (via <see cref="ServiceProviderConfigurationProvider"/>)</description></item>
+    ///     <item><description>Configuration values loaded from "appsettings.json", "appsettings.{Env}.json" and the environment variables (via <see cref="AppConfigurationProvider"/>)</description></item>
+    ///     <item><description>Logging to the Console (via <see cref="LoggingConfigurationProvider"/>)</description></item>
+    ///     <item><description>Logging configuration via the "Logging" section (via <see cref="LoggingConfigurationSectionName"/>)</description></item>
     ///     <item><description>The content root is set to the current directory (via <see cref="ContentRoot"/>)</description></item>
     /// </list>
     /// </summary>
@@ -65,7 +66,7 @@ namespace AppMotor.CliApp.CommandLine.Hosting
         /// not provide this flexibility with a function (because then we would need to hard code the type of <c>TContainerBuilder</c>).</para>
         /// </remarks>
         [PublicAPI]
-        public Action<IHostBuilder> ServiceProviderConfiguration { get; init; } = ApplyDefaultServiceProviderConfiguration;
+        public Action<IHostBuilder> ServiceProviderConfigurationProvider { get; init; } = ApplyDefaultServiceProviderConfiguration;
 
         /// <summary>
         /// Configures the configuration providers (e.g. settings files) that provide configuration values for the application. Defaults to
@@ -75,11 +76,11 @@ namespace AppMotor.CliApp.CommandLine.Hosting
         /// For more details, see: https://docs.microsoft.com/en-us/dotnet/core/extensions/configuration
         /// </remarks>
         [PublicAPI]
-        public Action<HostBuilderContext, IConfigurationBuilder>? AppConfiguration { get; init; } = ApplyDefaultAppConfiguration;
+        public Action<HostBuilderContext, IConfigurationBuilder>? AppConfigurationProvider { get; init; } = ApplyDefaultAppConfiguration;
 
         /// <summary>
         /// The name of the configuration section (<see cref="IConfiguration.GetSection"/>) used to configure log levels, etc. for
-        /// all loggers that are enabled via <see cref="LoggingConfiguration"/>. Defaults to "Logging" (the .NET default).
+        /// all loggers that are enabled via <see cref="LoggingConfigurationProvider"/>. Defaults to "Logging" (the .NET default).
         /// Can be set to <c>null</c> to disable setting the section.
         /// </summary>
         /// <remarks>
@@ -99,7 +100,7 @@ namespace AppMotor.CliApp.CommandLine.Hosting
         /// https://docs.microsoft.com/en-us/dotnet/core/extensions/console-log-formatter
         /// </remarks>
         [PublicAPI]
-        public Action<HostBuilderContext, ILoggingBuilder>? LoggingConfiguration { get; init; } = ApplyDefaultLoggingConfiguration;
+        public Action<HostBuilderContext, ILoggingBuilder>? LoggingConfigurationProvider { get; init; } = ApplyDefaultLoggingConfiguration;
 
         /// <summary>
         /// The content root to use. Defaults to <see cref="DirectoryPath.GetCurrentDirectory"/>. Can later be accessed
@@ -124,11 +125,11 @@ namespace AppMotor.CliApp.CommandLine.Hosting
                 hostBuilder.UseContentRoot(contentRoot.Value.Value);
             }
 
-            this.ServiceProviderConfiguration(hostBuilder);
+            this.ServiceProviderConfigurationProvider(hostBuilder);
 
-            if (this.AppConfiguration is not null)
+            if (this.AppConfigurationProvider is not null)
             {
-                hostBuilder.ConfigureAppConfiguration(this.AppConfiguration);
+                hostBuilder.ConfigureAppConfiguration(this.AppConfigurationProvider);
             }
 
             if (this.LoggingConfigurationSectionName is not null)
@@ -140,9 +141,9 @@ namespace AppMotor.CliApp.CommandLine.Hosting
                 });
             }
 
-            if (this.LoggingConfiguration is not null)
+            if (this.LoggingConfigurationProvider is not null)
             {
-                hostBuilder.ConfigureLogging(this.LoggingConfiguration);
+                hostBuilder.ConfigureLogging(this.LoggingConfigurationProvider);
             }
 
             return hostBuilder;
@@ -152,7 +153,7 @@ namespace AppMotor.CliApp.CommandLine.Hosting
         /// Creates a <see cref="DefaultServiceProviderFactory"/> with all scope validations enabled (see <see cref="ServiceProviderOptions.ValidateScopes"/>)
         /// and sets it as service provider.
         /// </summary>
-        /// <seealso cref="ServiceProviderConfiguration"/>
+        /// <seealso cref="ServiceProviderConfigurationProvider"/>
         [PublicAPI]
         public static void ApplyDefaultServiceProviderConfiguration(IHostBuilder hostBuilder)
         {
@@ -174,7 +175,7 @@ namespace AppMotor.CliApp.CommandLine.Hosting
         /// Whether the .json configuration files are reloaded when changed is configured via the "hostBuilder:reloadConfigOnChange" configuration
         /// value. The default is <c>true</c>.
         /// </remarks>
-        /// <seealso cref="AppConfiguration"/>
+        /// <seealso cref="AppConfigurationProvider"/>
         [PublicAPI]
         public static void ApplyDefaultAppConfiguration(HostBuilderContext context, IConfigurationBuilder configurationBuilder)
         {
@@ -191,7 +192,7 @@ namespace AppMotor.CliApp.CommandLine.Hosting
         /// <summary>
         /// Enables Console logging.
         /// </summary>
-        /// <seealso cref="LoggingConfiguration"/>
+        /// <seealso cref="LoggingConfigurationProvider"/>
         /// <seealso cref="LoggingConfigurationSectionName"/>
         [PublicAPI]
         public static void ApplyDefaultLoggingConfiguration(HostBuilderContext context, ILoggingBuilder loggingBuilder)
