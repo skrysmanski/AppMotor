@@ -116,6 +116,10 @@ namespace AppMotor.CliApp.CommandLine.Hosting
             {
                 // ReSharper disable once AccessToDisposedClosure
                 services.AddSingleton<IGenericHostCliCommandLifetimeEvents>(this._lifetimeEvents);
+
+                // NOTE: Don't add "Terminal" to the services here. Giving access to the terminal
+                //   to all services may not be what the user wants and it's easy enough for them
+                //   to add them theirselves.
             });
 
             hostBuilder.ConfigureServices(ConfigureServices);
