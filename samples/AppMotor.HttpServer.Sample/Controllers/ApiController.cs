@@ -32,7 +32,6 @@ namespace AppMotor.HttpServer.Sample.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult Ping()
         {
-            // TODO: Only allow this via HTTPS
             return Ok(
                 new
                 {
