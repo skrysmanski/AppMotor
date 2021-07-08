@@ -27,7 +27,7 @@ namespace AppMotor.Core.Net.Http
 {
     /// <summary>
     /// Convenience class to support custom TLS certificates in <see cref="HttpClient"/> (or <see cref="HttpClientHandler"/>
-    /// to be more precise). See documentation of <see cref="ValidationCallback"/>.
+    /// to be more precise).
     ///
     /// <para>You can use this class either directly or via <see cref="HttpClientFactory"/>.</para>
     /// </summary>
@@ -70,6 +70,20 @@ namespace AppMotor.Core.Net.Http
 #pragma warning disable CA1801 // Review unused parameters -> required for signature
                 HttpRequestMessage request,
 #pragma warning restore CA1801 // Review unused parameters
+                X509Certificate2? serverCert,
+                X509Chain? certChain,
+                SslPolicyErrors errors
+            )
+        {
+            return ValidationCallback(serverCert, certChain, errors);
+        }
+
+        /// <summary>
+        /// Validation callback for <see cref="HttpClientHandler.ServerCertificateCustomValidationCallback"/>. Use this
+        /// method if you want to use this class in your own callback.
+        /// </summary>
+        [PublicAPI]
+        public bool ValidationCallback(
                 X509Certificate2? serverCert,
                 X509Chain? certChain,
                 SslPolicyErrors errors
