@@ -16,8 +16,6 @@
 
 using System;
 
-using JetBrains.Annotations;
-
 namespace AppMotor.Core.Certificates.Pem
 {
     /// <summary>
@@ -28,8 +26,7 @@ namespace AppMotor.Core.Certificates.Pem
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="message"></param>
-        public PemFormatException([CanBeNull] string? message) : base(message)
+        public PemFormatException(string? message) : base(message)
         {
         }
     }

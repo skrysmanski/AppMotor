@@ -389,7 +389,7 @@ namespace AppMotor.Core.Utils
         /// <see cref="CollectionIsReadOnlyValueException"/> is thrown (depending on the value type).
         /// </summary>
         [PublicAPI]
-        public void IsNotReadOnly<T>([NotNullOnExit] ICollection<T> value)
+        public void IsNotReadOnly<T>(ICollection<T> value)
         {
             if (value.IsReadOnly)
             {

@@ -227,10 +227,10 @@ namespace AppMotor.Core.Tests.Collections
             );
             underlyingListField.ShouldNotBeNull();
 
-            var underlyingList = (List<T>?)underlyingListField!.GetValue(appendOnlyList);
+            var underlyingList = (List<T>?)underlyingListField.GetValue(appendOnlyList);
             underlyingList.ShouldNotBeNull();
 
-            return underlyingList!;
+            return underlyingList;
         }
     }
 }

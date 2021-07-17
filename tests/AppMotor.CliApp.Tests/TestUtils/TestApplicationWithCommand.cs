@@ -34,7 +34,7 @@ namespace AppMotor.CliApp.TestUtils
             this._appHelper = new TestApplicationHelper(this);
         }
 
-        public TestApplicationWithCommand([NotNull] CliCommand command) : base(command)
+        public TestApplicationWithCommand(CliCommand command) : base(command)
         {
             this._appHelper = new TestApplicationHelper(this);
         }

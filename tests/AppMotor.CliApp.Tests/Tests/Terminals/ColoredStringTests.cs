@@ -82,10 +82,10 @@ namespace AppMotor.CliApp.Tests.Terminals
             textInType.ShouldNotBeNull();
 
             // See: https://stackoverflow.com/a/11113450/614177
-            var createOperator = textInType!.GetMethod("op_Explicit", BindingFlags.Static | BindingFlags.Public);
+            var createOperator = textInType.GetMethod("op_Explicit", BindingFlags.Static | BindingFlags.Public);
             createOperator.ShouldNotBeNull();
 
-            var textInValue = (ColoredSubstring)createOperator!.Invoke(null, new object[] { value! })!;
+            var textInValue = (ColoredSubstring)createOperator.Invoke(null, new object[] { value! })!;
             textInValue.ShouldNotBeNull();
 
             return textInValue;
@@ -175,7 +175,7 @@ namespace AppMotor.CliApp.Tests.Terminals
             }
 
             result.ShouldNotBeNull();
-            result!.Count.ShouldBe(2);
+            result.Count.ShouldBe(2);
 
             var expectedSubstring1 = CreateExpectedSubstring(operand1);
             var expectedSubstring2 = CreateExpectedSubstring(operand2);
