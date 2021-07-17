@@ -14,15 +14,16 @@
 // limitations under the License.
 #endregion
 
-using System;
 using System.Globalization;
+using System.Threading;
 
 using JetBrains.Annotations;
 
 namespace AppMotor.Core.Globalization
 {
     /// <summary>
-    /// Provides access to information about the UI culture for the application.
+    /// Provides access to information about the UI culture for the application - or for the current thread, to
+    /// be more precise - via <see cref="FormatsAndSorting"/> and <see cref="Language"/>.
     /// </summary>
     /// <remarks>
     /// This class' primary purpose is to make it easier to differentiate between
@@ -32,21 +33,37 @@ namespace AppMotor.Core.Globalization
     public static class UICulture
     {
         /// <summary>
-        /// The format provider for formatting numbers, dates, and the like.
+        /// This property defines (for the current thread) the default format for dates, times, numbers, currency values,
+        /// the sorting order of text, casing conventions, and string comparisons.
         ///
-        /// <para>This may not be the user's display language. For this, use
-        /// <see cref="CurrentLanguageCulture"/> instead.</para>
+        /// <para>This may not(!) be the user's display language. For this, use <see cref="Language"/> instead.</para>
         /// </summary>
+        /// <remarks>
+        /// Setting this property changes the value for the current thread - or for an <see cref="AsyncLocal{T}"/>
+        /// to be precise.
+        /// </remarks>
         [PublicAPI]
-        public static IFormatProvider CurrentFormatProvider => CultureInfo.CurrentCulture;
+        public static CultureInfo FormatsAndSorting
+        {
+            get => CultureInfo.CurrentCulture;
+            set => CultureInfo.CurrentCulture = value;
+        }
 
         /// <summary>
-        /// The display language used for translating texts in applications.
+        /// The display language (of the current thread) used for translating texts in applications.
         ///
-        /// <para>When formatting numbers, data, and the like, use <see cref="CurrentFormatProvider"/>
-        /// instead.</para>
+        /// <para>When formatting numbers, data, currency, sorting and the like, use
+        /// <see cref="FormatsAndSorting"/> instead.</para>
         /// </summary>
+        /// <remarks>
+        /// Setting this property changes the value for the current thread - or for an <see cref="AsyncLocal{T}"/>
+        /// to be precise.
+        /// </remarks>
         [PublicAPI]
-        public static CultureInfo CurrentLanguageCulture => CultureInfo.CurrentUICulture;
+        public static CultureInfo Language
+        {
+            get => CultureInfo.CurrentUICulture;
+            set => CultureInfo.CurrentUICulture = value;
+        }
     }
 }

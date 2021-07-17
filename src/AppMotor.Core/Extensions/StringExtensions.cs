@@ -32,14 +32,14 @@ namespace AppMotor.Core.Extensions
     {
         /// <summary>
         /// Convenience method for calling <c>string.Format()</c> with the current UI culture
-        /// (<see cref="UICulture.CurrentFormatProvider"/>) as format provider.
+        /// (<see cref="UICulture.FormatsAndSorting"/>) as format provider.
         /// </summary>
         /// <seealso cref="WithIC"/>
         [StringFormatMethod("message")]
         [PublicAPI]
         public static string With([Localizable(true)] this string message, params object[] args)
         {
-            return string.Format(UICulture.CurrentFormatProvider, message, args);
+            return string.Format(UICulture.FormatsAndSorting, message, args);
         }
 
         /// <summary>
