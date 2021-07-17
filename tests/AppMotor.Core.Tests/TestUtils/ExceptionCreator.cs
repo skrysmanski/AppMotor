@@ -24,14 +24,14 @@ namespace AppMotor.Core.TestUtils
 {
     internal sealed class ExceptionCreator<TException> where TException : Exception
     {
-        private readonly string m_exceptionMessage;
+        private readonly string _exceptionMessage;
 
-        private readonly Exception? m_innerException;
+        private readonly Exception? _innerException;
 
         private ExceptionCreator(string exceptionMessage, Exception? innerException)
         {
-            this.m_exceptionMessage = exceptionMessage;
-            this.m_innerException = innerException;
+            this._exceptionMessage = exceptionMessage;
+            this._innerException = innerException;
         }
 
         public static void CreateAndThrow(
@@ -139,13 +139,13 @@ namespace AppMotor.Core.TestUtils
 
             TException newException;
 
-            if (this.m_innerException != null)
+            if (this._innerException != null)
             {
-                newException = (TException)Activator.CreateInstance(typeof(TException), this.m_exceptionMessage, this.m_innerException)!;
+                newException = (TException)Activator.CreateInstance(typeof(TException), this._exceptionMessage, this._innerException)!;
             }
             else
             {
-                newException = (TException)Activator.CreateInstance(typeof(TException), this.m_exceptionMessage)!;
+                newException = (TException)Activator.CreateInstance(typeof(TException), this._exceptionMessage)!;
             }
 
             newException.ShouldNotBeNull();
