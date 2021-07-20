@@ -88,7 +88,7 @@ namespace AppMotor.Core.Logging
                 {
                     AppendSectionHeader(indentation, EXCEPTION_SECTION_HEADER, "StackTrace");
 
-                    foreach (var line in exception.StackTrace.SplitLines())
+                    foreach (var line in StackTraceCleaner.CleanupStackTraceLines(exception.StackTrace.SplitLines()))
                     {
                         AppendLine(indentation, line.Trim());
                     }
