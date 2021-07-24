@@ -222,6 +222,30 @@ namespace AppMotor.Core.Tests.Utils
         }
 
         [Fact]
+        public void Test_ImplicitConversion_DateTime()
+        {
+            var now = DateTime.UtcNow;
+
+            DateTimeUtc nowAsUtc = now;
+            nowAsUtc.Ticks.ShouldBe(now.Ticks);
+
+            DateTime now2 = nowAsUtc;
+            now2.Ticks.ShouldBe(now.Ticks);
+        }
+
+        [Fact]
+        public void Test_ImplicitConversion_DateTimeOffset()
+        {
+            var now = DateTimeOffset.UtcNow;
+
+            DateTimeUtc nowAsUtc = now;
+            nowAsUtc.Ticks.ShouldBe(now.Ticks);
+
+            DateTimeOffset now2 = nowAsUtc;
+            now2.Ticks.ShouldBe(now.Ticks);
+        }
+
+        [Fact]
         public void Test_Add_TimeSpan()
         {
             var now = new DateTimeUtc(2020, 2, 3, 4, 5, 6, 7);

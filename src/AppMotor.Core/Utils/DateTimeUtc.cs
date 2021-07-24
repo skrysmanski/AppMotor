@@ -308,6 +308,8 @@ namespace AppMotor.Core.Utils
 
         #endregion Comparison Members
 
+        #region Conversion to and from other types
+
         /// <summary>
         /// Converts this instance into a <see cref="DateTime"/>.
         /// </summary>
@@ -317,6 +319,23 @@ namespace AppMotor.Core.Utils
         public DateTime ToDateTime()
         {
             return this._underlyingDateTime;
+        }
+
+        /// <summary>
+        /// Implicit conversion to <see cref="DateTime"/>.
+        /// </summary>
+        /// <seealso cref="ToDateTime"/>
+        public static implicit operator DateTime(DateTimeUtc dateTime)
+        {
+            return dateTime.ToDateTime();
+        }
+
+        /// <summary>
+        /// Implicit conversion from <see cref="DateTime"/>.
+        /// </summary>
+        public static implicit operator DateTimeUtc(DateTime dateTime)
+        {
+            return new DateTimeUtc(dateTime);
         }
 
         /// <summary>
@@ -340,6 +359,23 @@ namespace AppMotor.Core.Utils
             return new(this._underlyingDateTime);
         }
 
+        /// <summary>
+        /// Implicit conversion to <see cref="DateTimeOffset"/>.
+        /// </summary>
+        /// <seealso cref="ToDateTimeOffset"/>
+        public static implicit operator DateTimeOffset(DateTimeUtc dateTime)
+        {
+            return dateTime.ToDateTimeOffset();
+        }
+
+        /// <summary>
+        /// Implicit conversion from <see cref="DateTimeOffset"/>.
+        /// </summary>
+        public static implicit operator DateTimeUtc(DateTimeOffset dateTime)
+        {
+            return new DateTimeUtc(dateTime);
+        }
+
         /// <inheritdoc />
         public string ToString(string? format, IFormatProvider? formatProvider)
         {
@@ -361,5 +397,7 @@ namespace AppMotor.Core.Utils
             // ReSharper disable once SpecifyACultureInStringConversionExplicitly
             return this._underlyingDateTime.ToString();
         }
+
+        #endregion Conversion to and from other types
     }
 }
