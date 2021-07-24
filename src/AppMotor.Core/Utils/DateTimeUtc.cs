@@ -143,15 +143,7 @@ namespace AppMotor.Core.Utils
         /// <summary>
         /// Constructs a <see cref="DateTimeUtc"/> instance for the specified date and time.
         /// </summary>
-        public DateTimeUtc(int year, int month, int day, int hour, int minute, int second)
-            : this(year, month, day, hour, minute, second, 0)
-        {
-        }
-
-        /// <summary>
-        /// Constructs a <see cref="DateTimeUtc"/> instance for the specified date and time.
-        /// </summary>
-        public DateTimeUtc(int year, int month, int day, int hour, int minute, int second, int millisecond)
+        public DateTimeUtc(int year, int month, int day, int hour, int minute, int second, int millisecond = 0)
             : this(new DateTime(year, month, day, hour, minute, second, millisecond, DateTimeKind.Utc))
         {
         }
