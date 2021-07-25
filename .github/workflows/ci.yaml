@@ -51,4 +51,4 @@ jobs:
       - name: Run tests
         # See: https://docs.microsoft.com/de-de/dotnet/core/tools/dotnet-test
         # NOTE: Without specifying a solution file, "dotnet test" searches for a .sln file in the current directory.
-        run: dotnet test --configuration Release --no-restore --no-build --nologo
+        run: RUNS_IN_CI=true dotnet test --configuration Release --no-restore --no-build --nologo
