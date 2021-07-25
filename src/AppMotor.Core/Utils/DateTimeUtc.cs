@@ -16,7 +16,10 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Text.Json.Serialization;
+
+using AppMotor.Core.Extensions;
 
 using JetBrains.Annotations;
 
@@ -149,6 +152,193 @@ namespace AppMotor.Core.Utils
         }
 
         #endregion Constructors
+
+        #region Parse Methods
+
+        /// <summary>
+        /// Parses <paramref name="dateTimeAsString"/> into an instance of <see cref="DateTimeUtc"/>.
+        /// </summary>
+        /// <param name="dateTimeAsString">The string to convert</param>
+        /// <param name="formatProvider">The format provider to use</param>
+        /// <param name="styles">The parse styles to use</param>
+        /// <exception cref="FormatException">Thrown if the string could not be parsed</exception>
+        [MustUseReturnValue]
+        public static DateTimeUtc Parse(ReadOnlySpan<char> dateTimeAsString, IFormatProvider formatProvider, DateTimeStyles styles = DateTimeStyles.None)
+        {
+            if (TryParse(dateTimeAsString, formatProvider, styles, out var result))
+            {
+                return result;
+            }
+
+            var exception = new FormatException("The string could not be parsed.");
+            exception.AddData("InputString", dateTimeAsString.ToString());
+            throw exception;
+        }
+
+        /// <summary>
+        /// Tries to parse <paramref name="dateTimeAsString"/> into an instance of <see cref="DateTimeUtc"/>. If successful, the
+        /// result will be stored in <paramref name="result"/> and <c>true</c> will be returned. If not successful, <c>false</c>
+        /// will be returned.
+        /// </summary>
+        /// <param name="dateTimeAsString">The string to convert</param>
+        /// <param name="formatProvider">The format provider to use</param>
+        /// <param name="result">The parse result</param>
+        /// <remarks>
+        /// This method uses <see cref="DateTimeStyles.None"/>.
+        /// </remarks>
+        [MustUseReturnValue]
+        public static bool TryParse(ReadOnlySpan<char> dateTimeAsString, IFormatProvider formatProvider, out DateTimeUtc result)
+        {
+            return TryParse(dateTimeAsString, formatProvider, DateTimeStyles.None, out result);
+        }
+
+        /// <summary>
+        /// Tries to parse <paramref name="dateTimeAsString"/> into an instance of <see cref="DateTimeUtc"/>. If successful, the
+        /// result will be stored in <paramref name="result"/> and <c>true</c> will be returned. If not successful, <c>false</c>
+        /// will be returned.
+        /// </summary>
+        /// <param name="dateTimeAsString">The string to convert</param>
+        /// <param name="formatProvider">The format provider to use</param>
+        /// <param name="styles">The parse styles to use</param>
+        /// <param name="result">The parse result</param>
+        [MustUseReturnValue]
+        public static bool TryParse(ReadOnlySpan<char> dateTimeAsString, IFormatProvider formatProvider, DateTimeStyles styles, out DateTimeUtc result)
+        {
+            if (!DateTimeOffset.TryParse(dateTimeAsString, formatProvider, styles, out var dateTimeOffset))
+            {
+                result = default;
+                return false;
+            }
+
+            result = new DateTimeUtc(dateTimeOffset);
+            return true;
+        }
+
+        /// <summary>
+        /// Parses <paramref name="dateTimeAsString"/> into an instance of <see cref="DateTimeUtc"/>.
+        /// </summary>
+        /// <param name="dateTimeAsString">The string to convert</param>
+        /// <param name="format">The format to use; can use any format supported by <see cref="DateTimeOffset"/>.</param>
+        /// <param name="formatProvider">The format provider to use</param>
+        /// <param name="styles">The parse styles to use</param>
+        /// <exception cref="FormatException">Thrown if the string could not be parsed</exception>
+        [MustUseReturnValue]
+        public static DateTimeUtc ParseExact(ReadOnlySpan<char> dateTimeAsString, ReadOnlySpan<char> format, IFormatProvider formatProvider, DateTimeStyles styles = DateTimeStyles.None)
+        {
+            if (TryParseExact(dateTimeAsString, format, formatProvider, styles, out var result))
+            {
+                return result;
+            }
+
+            var exception = new FormatException("The string could not be parsed.");
+            exception.AddData("InputString", dateTimeAsString.ToString());
+            throw exception;
+        }
+
+        /// <summary>
+        /// Parses <paramref name="dateTimeAsString"/> into an instance of <see cref="DateTimeUtc"/>.
+        /// </summary>
+        /// <param name="dateTimeAsString">The string to convert</param>
+        /// <param name="formats">The formats to use; can use any format supported by <see cref="DateTimeOffset"/>.</param>
+        /// <param name="formatProvider">The format provider to use</param>
+        /// <param name="styles">The parse styles to use</param>
+        /// <exception cref="FormatException">Thrown if the string could not be parsed</exception>
+        [MustUseReturnValue]
+        public static DateTimeUtc ParseExact(ReadOnlySpan<char> dateTimeAsString, string[] formats, IFormatProvider formatProvider, DateTimeStyles styles = DateTimeStyles.None)
+        {
+            if (TryParseExact(dateTimeAsString, formats, formatProvider, styles, out var result))
+            {
+                return result;
+            }
+
+            var exception = new FormatException("The string could not be parsed.");
+            exception.AddData("InputString", dateTimeAsString.ToString());
+            throw exception;
+        }
+
+        /// <summary>
+        /// Tries to parse <paramref name="dateTimeAsString"/> into an instance of <see cref="DateTimeUtc"/>. If successful, the
+        /// result will be stored in <paramref name="result"/> and <c>true</c> will be returned. If not successful, <c>false</c>
+        /// will be returned.
+        /// </summary>
+        /// <param name="dateTimeAsString">The string to convert</param>
+        /// <param name="format">The format to use; can use any format supported by <see cref="DateTimeOffset"/>.</param>
+        /// <param name="formatProvider">The format provider to use</param>
+        /// <param name="result">The parse result</param>
+        /// <remarks>
+        /// This method uses <see cref="DateTimeStyles.None"/>.
+        /// </remarks>
+        [MustUseReturnValue]
+        public static bool TryParseExact(ReadOnlySpan<char> dateTimeAsString, ReadOnlySpan<char> format, IFormatProvider formatProvider, out DateTimeUtc result)
+        {
+            return TryParseExact(dateTimeAsString, format, formatProvider, DateTimeStyles.None, out result);
+        }
+
+        /// <summary>
+        /// Tries to parse <paramref name="dateTimeAsString"/> into an instance of <see cref="DateTimeUtc"/>. If successful, the
+        /// result will be stored in <paramref name="result"/> and <c>true</c> will be returned. If not successful, <c>false</c>
+        /// will be returned.
+        /// </summary>
+        /// <param name="dateTimeAsString">The string to convert</param>
+        /// <param name="format">The format to use; can use any format supported by <see cref="DateTimeOffset"/>.</param>
+        /// <param name="formatProvider">The format provider to use</param>
+        /// <param name="styles">The parse styles to use</param>
+        /// <param name="result">The parse result</param>
+        [MustUseReturnValue]
+        public static bool TryParseExact(ReadOnlySpan<char> dateTimeAsString, ReadOnlySpan<char> format, IFormatProvider formatProvider, DateTimeStyles styles, out DateTimeUtc result)
+        {
+            if (!DateTimeOffset.TryParseExact(dateTimeAsString, format, formatProvider, styles, out var dateTimeOffset))
+            {
+                result = default;
+                return false;
+            }
+
+            result = new DateTimeUtc(dateTimeOffset);
+            return true;
+        }
+
+        /// <summary>
+        /// Tries to parse <paramref name="dateTimeAsString"/> into an instance of <see cref="DateTimeUtc"/>. If successful, the
+        /// result will be stored in <paramref name="result"/> and <c>true</c> will be returned. If not successful, <c>false</c>
+        /// will be returned.
+        /// </summary>
+        /// <param name="dateTimeAsString">The string to convert</param>
+        /// <param name="formats">The formats to use; can use any format supported by <see cref="DateTimeOffset"/>.</param>
+        /// <param name="formatProvider">The format provider to use</param>
+        /// <param name="result">The parse result</param>
+        /// <remarks>
+        /// This method uses <see cref="DateTimeStyles.None"/>.
+        /// </remarks>
+        [MustUseReturnValue]
+        public static bool TryParseExact(ReadOnlySpan<char> dateTimeAsString, [NotNullWhen(true)] string?[]? formats, IFormatProvider formatProvider, out DateTimeUtc result)
+        {
+            return TryParseExact(dateTimeAsString, formats, formatProvider, DateTimeStyles.None, out result);
+        }
+
+        /// <summary>
+        /// Tries to parse <paramref name="dateTimeAsString"/> into an instance of <see cref="DateTimeUtc"/>. If successful, the
+        /// result will be stored in <paramref name="result"/> and <c>true</c> will be returned. If not successful, <c>false</c>
+        /// will be returned.
+        /// </summary>
+        /// <param name="dateTimeAsString">The string to convert</param>
+        /// <param name="formats">The formats to use; can use any format supported by <see cref="DateTimeOffset"/>.</param>
+        /// <param name="formatProvider">The format provider to use</param>
+        /// <param name="styles">The parse styles to use</param>
+        /// <param name="result">The parse result</param>
+        [MustUseReturnValue]
+        public static bool TryParseExact(ReadOnlySpan<char> dateTimeAsString, [NotNullWhen(true)] string?[]? formats, IFormatProvider formatProvider, DateTimeStyles styles, out DateTimeUtc result)
+        {
+            if (!DateTimeOffset.TryParseExact(dateTimeAsString, formats, formatProvider, styles, out var dateTimeOffset))
+            {
+                result = default;
+                return false;
+            }
+
+            result = new DateTimeUtc(dateTimeOffset);
+            return true;
+        }
+
+        #endregion Parse Methods
 
         #region Calculation Members
 

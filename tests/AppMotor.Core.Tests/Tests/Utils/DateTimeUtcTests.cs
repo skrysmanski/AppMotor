@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using System.Globalization;
 using System.Text.Json;
 using System.Threading;
 
@@ -385,5 +386,114 @@ namespace AppMotor.Core.Tests.Utils
         }
 
         private record JsonTestDataNullable(DateTimeUtc? SomeTime);
+
+        [Theory]
+        [InlineData("09/15/07 08:45:00 +1:00", "2007-09-15T07:45:00")]
+        [InlineData("2007-09-15T07:45:00Z", "2007-09-15T07:45:00")]
+        [InlineData("abc", null)]
+        public void Test_Parse(string input, string? expectedIsoString)
+        {
+            if (expectedIsoString is not null)
+            {
+                DateTimeUtc.Parse(input, CultureInfo.InvariantCulture).ToString("s", CultureInfo.InvariantCulture).ShouldBe(expectedIsoString);
+            }
+            else
+            {
+                var formatException = Should.Throw<FormatException>(() => DateTimeUtc.Parse(input, CultureInfo.InvariantCulture));
+                formatException.Data["InputString"].ShouldBe(input);
+            }
+        }
+
+        [Theory]
+        [InlineData("09/15/07 08:45:00 +1:00", "2007-09-15T07:45:00")]
+        [InlineData("2007-09-15T07:45:00Z", "2007-09-15T07:45:00")]
+        [InlineData("abc", null)]
+        public void Test_TryParse(string input, string? expectedIsoString)
+        {
+            bool success = DateTimeUtc.TryParse(input, CultureInfo.InvariantCulture, out var result);
+
+            success.ShouldBe(expectedIsoString is not null);
+
+            if (expectedIsoString is not null)
+            {
+                result.ToString("s", CultureInfo.InvariantCulture).ShouldBe(expectedIsoString);
+            }
+        }
+
+        [Theory]
+        [InlineData("09/15/07 08:45:00 +1:00", null)]
+        [InlineData("2007-09-15T07:45:00Z", "2007-09-15T07:45:00")]
+        [InlineData("abc", null)]
+        public void Test_ParseExact_OneFormat(string input, string? expectedIsoString)
+        {
+            DateTimeUtc FunctionUnderTest()
+            {
+                return DateTimeUtc.ParseExact(input, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
+            }
+
+            if (expectedIsoString is not null)
+            {
+                FunctionUnderTest().ToString("s", CultureInfo.InvariantCulture).ShouldBe(expectedIsoString);
+            }
+            else
+            {
+                var formatException = Should.Throw<FormatException>(() => FunctionUnderTest());
+                formatException.Data["InputString"].ShouldBe(input);
+            }
+        }
+
+        [Theory]
+        [InlineData("09/15/07 08:45:00 +1:00", "2007-09-15T07:45:00")]
+        [InlineData("2007-09-15T07:45:00Z", "2007-09-15T07:45:00")]
+        [InlineData("abc", null)]
+        public void Test_ParseExact_MultipleFormats(string input, string? expectedIsoString)
+        {
+            DateTimeUtc FunctionUnderTest()
+            {
+                return DateTimeUtc.ParseExact(input, new[] { "yyyy-MM-ddTHH:mm:ssZ", "MM/dd/yy HH:mm:ss K" }, CultureInfo.InvariantCulture);
+            }
+
+            if (expectedIsoString is not null)
+            {
+                FunctionUnderTest().ToString("s", CultureInfo.InvariantCulture).ShouldBe(expectedIsoString);
+            }
+            else
+            {
+                var formatException = Should.Throw<FormatException>(() => FunctionUnderTest());
+                formatException.Data["InputString"].ShouldBe(input);
+            }
+        }
+
+        [Theory]
+        [InlineData("09/15/07 08:45:00 +1:00", null)]
+        [InlineData("2007-09-15T07:45:00Z", "2007-09-15T07:45:00")]
+        [InlineData("abc", null)]
+        public void Test_TryParseExact_OneFormat(string input, string? expectedIsoString)
+        {
+            bool success = DateTimeUtc.TryParseExact(input, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture, out var result);
+
+            success.ShouldBe(expectedIsoString is not null);
+
+            if (expectedIsoString is not null)
+            {
+                result.ToString("s", CultureInfo.InvariantCulture).ShouldBe(expectedIsoString);
+            }
+        }
+
+        [Theory]
+        [InlineData("09/15/07 08:45:00 +1:00", "2007-09-15T07:45:00")]
+        [InlineData("2007-09-15T07:45:00Z", "2007-09-15T07:45:00")]
+        [InlineData("abc", null)]
+        public void Test_TryParseExact_MultipleFormats(string input, string? expectedIsoString)
+        {
+            bool success = DateTimeUtc.TryParseExact(input, new[] { "yyyy-MM-ddTHH:mm:ssZ", "MM/dd/yy HH:mm:ss K" }, CultureInfo.InvariantCulture, out var result);
+
+            success.ShouldBe(expectedIsoString is not null);
+
+            if (expectedIsoString is not null)
+            {
+                result.ToString("s", CultureInfo.InvariantCulture).ShouldBe(expectedIsoString);
+            }
+        }
     }
 }
