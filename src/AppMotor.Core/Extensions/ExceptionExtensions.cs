@@ -92,9 +92,11 @@ namespace AppMotor.Core.Extensions
         /// <para>You should use this method like this: <c>throw exception.Rethrow();</c></para>
         /// </summary>
         [PublicAPI, ContractAnnotation("=>halt")]
+        // NOTE: The "Exception" return type here is necessary so that this call can be used
+        //   in a "throw" statement - see documentation.
         public static Exception Rethrow(this Exception exception)
         {
-            ExceptionDispatchInfo.Throw(exception);
+            exception.Capture().Throw();
             throw new UnexpectedBehaviorException("We should never get here.");
         }
 
