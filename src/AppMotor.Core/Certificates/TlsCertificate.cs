@@ -15,9 +15,11 @@
 #endregion
 
 using System;
+using System.IO.Abstractions;
 using System.Security.Cryptography.X509Certificates;
 
 using AppMotor.Core.Certificates.Exporting;
+using AppMotor.Core.IO;
 using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
@@ -184,6 +186,53 @@ namespace AppMotor.Core.Certificates
             using var certificateRequest = new TlsCertificateRequest(hostname);
 
             return certificateRequest.CreateSelfSignedCertificate(certificateLifetime);
+        }
+
+        /// <summary>
+        /// Creates a certificate from a PEM encoded string.
+        /// </summary>
+        /// <param name="pemEncodedCertificate">The certificate as PEM encoded string.</param>
+        /// <param name="separatePemEncodedPrivateKey">The private key of the certificate as PEM encoded string, if it's
+        /// separate from <paramref name="pemEncodedCertificate"/>.</param>
+        [PublicAPI, MustUseReturnValue]
+        public static TlsCertificate CreateFromPemString(string pemEncodedCertificate, string? separatePemEncodedPrivateKey = null)
+        {
+            return new TlsCertificate(TlsCertificateSource.FromPemString(pemEncodedCertificate, separatePemEncodedPrivateKey));
+        }
+
+        /// <summary>
+        /// Creates a certificate from the specified bytes.
+        /// </summary>
+        /// <param name="certificateBytes">The certificate</param>
+        /// <param name="separatePrivateKeyBytes">The private key of the certificate, if it's separate from <paramref name="certificateBytes"/>.</param>
+        [PublicAPI, MustUseReturnValue]
+        public static TlsCertificate CreateFromBytes(ReadOnlyMemory<byte> certificateBytes, ReadOnlyMemory<byte>? separatePrivateKeyBytes = null)
+        {
+            return new TlsCertificate(TlsCertificateSource.FromBytes(certificateBytes, separatePrivateKeyBytes));
+        }
+
+        /// <summary>
+        /// Creates a certificate from a file on disk.
+        /// </summary>
+        /// <param name="certificateFilePath">The path to the certificate file.</param>
+        /// <param name="fileSystem">The file system to use; if <c>null</c>, <see cref="RealFileSystem.Instance"/> will be used.</param>
+        [PublicAPI, MustUseReturnValue]
+        public static TlsCertificate CreateFromFile(FilePath certificateFilePath, IFileSystem? fileSystem = null)
+        {
+            return CreateFromFile(certificateFilePath, separatePrivateKeyFilePath: null, fileSystem);
+        }
+
+        /// <summary>
+        /// Creates a certificate from files on disk.
+        /// </summary>
+        /// <param name="certificateFilePath">The path to the certificate file.</param>
+        /// <param name="separatePrivateKeyFilePath">The path to the private key file of the certificate. May be <c>null</c>,
+        /// if not needed.</param>
+        /// <param name="fileSystem">The file system to use; if <c>null</c>, <see cref="RealFileSystem.Instance"/> will be used.</param>
+        [PublicAPI, MustUseReturnValue]
+        public static TlsCertificate CreateFromFile(FilePath certificateFilePath, FilePath? separatePrivateKeyFilePath, IFileSystem? fileSystem = null)
+        {
+            return new TlsCertificate(TlsCertificateSource.FromFile(certificateFilePath, separatePrivateKeyFilePath, fileSystem));
         }
 
         /// <summary>
