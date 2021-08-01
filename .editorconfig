@@ -65,6 +65,8 @@ end_of_line = crlf
 # C# files
 #
 [*.cs]
+# BOM is supported and files may contain non-English texts (think: author names, comments
+# and maybe even strings to show to the user).
 charset = utf-8-bom
 
 # For explanation why "crlf", see: https://github.com/skrysmanski/base-dotnet/blob/main/docs/cs-line-endings.md
@@ -75,6 +77,9 @@ end_of_line = crlf
 # VS project files
 #
 [*.csproj]
+# BOM is supported.
+charset = utf-8-bom
+
 # This is how Visual Studio creates project files.
 indent_size = 2
 
@@ -88,6 +93,7 @@ end_of_line = unset
 # Razor files
 #
 [*.cshtml]
+# BOM is supported and files may contain native (i.e. non-English) texts.
 charset = utf-8-bom
 
 
@@ -95,6 +101,9 @@ charset = utf-8-bom
 # .props files
 #
 [*.{props,targets}]
+# BOM is supported.
+charset = utf-8-bom
+
 # This mirrors the indent size for .csproj files.
 indent_size = 2
 
@@ -103,6 +112,7 @@ indent_size = 2
 # Visual Studio Solution files
 #
 [*.sln]
+# Visual Studio creates .sln files with BOM.
 charset = utf-8-bom
 
 # .sln files require tabs or the solution won't load
@@ -116,4 +126,6 @@ end_of_line = crlf
 # ReSharper settings files
 #
 [*.DotSettings]
+# ReSharper creates .DotSettings files with BOM.
+charset = utf-8-bom
 indent_style = tab

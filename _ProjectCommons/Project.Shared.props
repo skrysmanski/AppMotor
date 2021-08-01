@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 
   Shared settings for all projects.
 
@@ -22,6 +22,23 @@
       See also: https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1824
     -->
     <NeutralLanguage>en-US</NeutralLanguage>
+
+    <!--
+      Don't append "net5.0" (or the like) to the output path (i.e. keep it as "bin\Debug" or "bin\Release".
+      You may set this to "true" in your project if you're building against multiple target frameworks.
+    -->
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <!--
+      This appends the "runtime identified" (e.g. "win-x64") to the output path. This property only
+      has an effect, if the "RuntimeIdentifier" property is specified for a project. This is usually done
+      when publishing a .NET app (thereby specifying the target platform). When doing this, there's a
+      high chance that you don't just publish for one target platform - and in this case this property
+      must be "true".
+
+      NOTE: "true" is the default value but we leave the definition here so that the name of this property
+        is documentation (since it's so similar to "AppendTargetFrameworkToOutputPath").
+    -->
+    <AppendRuntimeIdentifierToOutputPath>true</AppendRuntimeIdentifierToOutputPath>
 
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors></WarningsAsErrors>

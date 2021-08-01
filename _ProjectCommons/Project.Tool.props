@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 
   Default settings for all tool projects. Has relaxed requirements compared to "Project.Code.props".
   If you want to distribute your tool, consider using "Project.Code.props" instead.
