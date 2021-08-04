@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using System.Collections.Immutable;
 using System.IO.Abstractions;
 using System.Security.Cryptography.X509Certificates;
 
@@ -52,10 +53,22 @@ namespace AppMotor.Core.Certificates
         public CertificateKeyAlgorithms KeyAlgorithm => this.PublicKey.KeyAlgorithm;
 
         /// <summary>
-        /// The subject name of this certificate.
+        /// The subject name of this certificate. Note that the <see cref="SubjectAlternativeNames"/> are a better
+        /// way of determining for which DNS names this certificate is valid.
         /// </summary>
         [PublicAPI]
         public X500DistinguishedName SubjectName => this.UnderlyingCertificate.SubjectName;
+
+        /// <summary>
+        /// The so called "subject alternative names" (SAN); these are basically the names for which the
+        /// certificate is valid. If this array is empty, then this certificate has no SANs specified.
+        /// </summary>
+        /// <remarks>
+        /// For more details on SANs, see: https://support.dnsimple.com/articles/what-is-ssl-san/
+        /// </remarks>
+        public ImmutableArray<string> SubjectAlternativeNames => this._subjectAlternativeNamesLazy.Value;
+
+        private readonly Lazy<ImmutableArray<string>> _subjectAlternativeNamesLazy;
 
         /// <summary>
         /// The public key of this certificate.
@@ -156,6 +169,10 @@ namespace AppMotor.Core.Certificates
             //   byte blob has a private key or not. Instead we just throw when the user tries
             //   to export the private key.
             this.IsPrivateKeyExportAllowed = allowPrivateKeyExport;
+
+            this._subjectAlternativeNamesLazy = new Lazy<ImmutableArray<string>>(
+                () => this._underlyingCertificate.GetSubjectAlternativeNames().ToImmutableArray()
+            );
         }
 
         /// <inheritdoc />

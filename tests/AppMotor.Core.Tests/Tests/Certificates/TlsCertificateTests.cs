@@ -27,6 +27,8 @@ namespace AppMotor.Core.Tests.Certificates
 {
     public sealed class TlsCertificateTests
     {
+        private const string TEST_CERT_FILES_BASE_PATH = "Tests/Certificates/cert-files";
+
         [Fact]
         public void Test_CreateSelfSigned()
         {
@@ -39,6 +41,34 @@ namespace AppMotor.Core.Tests.Certificates
             cert.NotBefore.Date.ShouldBe(DateTime.Today);
             cert.KeyAlgorithm.ShouldBe(CertificateKeyAlgorithms.RSA);
             cert.Thumbprint.ShouldMatch("[A-F0-9]{40}");
+        }
+
+        [Fact]
+        public void Test_SubjectAlternativeNames()
+        {
+            var cert = TlsCertificate.CreateFromFile($"{TEST_CERT_FILES_BASE_PATH}/www-microsoft-com.pem");
+
+            cert.SubjectAlternativeNames.Length.ShouldNotBe(0);
+            cert.SubjectAlternativeNames.ShouldBe(
+                new[]
+                {
+                    "wwwqa.microsoft.com",
+                    "www.microsoft.com",
+                    "staticview.microsoft.com",
+                    "i.s-microsoft.com",
+                    "microsoft.com",
+                    "c.s-microsoft.com",
+                    "privacy.microsoft.com",
+                }
+            );
+        }
+
+        [Fact]
+        public void Test_SubjectAlternativeNames_NotExisting()
+        {
+            var cert = TlsCertificate.CreateFromFile($"{TEST_CERT_FILES_BASE_PATH}/cert.pem");
+
+            cert.SubjectAlternativeNames.Length.ShouldBe(0);
         }
 
         [Fact]
