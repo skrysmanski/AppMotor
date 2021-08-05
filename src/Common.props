@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   Contains common properties and targets for all source projects in this repository.
 -->
 <Project>
@@ -15,9 +15,9 @@
   </PropertyGroup>
 
   <PropertyGroup Label="Versions">
-    <AppMotorCoreVersion>0.14.0</AppMotorCoreVersion>
-    <AppMotorCliAppVersion>0.7.0</AppMotorCliAppVersion>
-    <AppMotorHttpServerVersion>0.3.0</AppMotorHttpServerVersion>
+    <AppMotorCoreVersion>0.14.1</AppMotorCoreVersion>
+    <AppMotorCliAppVersion>0.7.1</AppMotorCliAppVersion>
+    <AppMotorHttpServerVersion>0.3.1</AppMotorHttpServerVersion>
   </PropertyGroup>
 
 </Project>
