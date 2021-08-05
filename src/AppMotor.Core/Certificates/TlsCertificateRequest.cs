@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
@@ -37,19 +38,31 @@ namespace AppMotor.Core.Certificates
         /// Constructor.
         /// </summary>
         /// <param name="hostname">The hostname for which to create the request (or certificate).</param>
-        public TlsCertificateRequest(string hostname)
+        /// <param name="additionalHostNames">Additional hostnames for which the generated certificate is to be valid for.</param>
+        public TlsCertificateRequest(string hostname, IEnumerable<string>? additionalHostNames = null)
         {
             Validate.ArgumentWithName(nameof(hostname)).IsNotNullOrWhiteSpace(hostname);
 
             this._rsaAlgorithm = RSA.Create();
 
-            // TODO: Add support multiple hostnames (SAN)
             this._underlyingCertificateRequest = new CertificateRequest(
                 $"cn={hostname}",
                 this._rsaAlgorithm,
                 HashAlgorithmName.SHA256,
                 RSASignaturePadding.Pkcs1
             );
+
+            var sanNames = new List<string>()
+            {
+                hostname,
+            };
+
+            if (additionalHostNames is not null)
+            {
+                sanNames.AddRange(additionalHostNames);
+            }
+
+            this._underlyingCertificateRequest.AddSanExtension(sanNames);
         }
 
         /// <inheritdoc />

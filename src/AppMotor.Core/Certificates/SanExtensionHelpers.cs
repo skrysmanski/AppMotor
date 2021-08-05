@@ -14,6 +14,7 @@
 // limitations under the License.
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Formats.Asn1;
 using System.Security.Cryptography.X509Certificates;
@@ -69,6 +70,29 @@ namespace AppMotor.Core.Certificates
                 var dnsName = sequenceReader.ReadCharacterString(UniversalTagNumber.IA5String, DNS_NAME_TAG);
                 yield return dnsName;
             }
+        }
+
+        public static void AddSanExtension(this CertificateRequest certificateRequest, IReadOnlyCollection<string> hostNames)
+        {
+            if (hostNames.Count == 0)
+            {
+                throw new InvalidOperationException("There must be at least one entry in the SAN extension.");
+            }
+
+            var asnWriter = new AsnWriter(AsnEncodingRules.CER);
+            asnWriter.PushSequence();
+
+            foreach (var hostName in hostNames)
+            {
+                asnWriter.WriteCharacterString(UniversalTagNumber.IA5String, hostName, DNS_NAME_TAG);
+            }
+
+            asnWriter.PopSequence();
+
+            var asnValue = asnWriter.Encode();
+
+            var extension = new X509Extension(SAN_OID, asnValue, critical: false);
+            certificateRequest.CertificateExtensions.Add(extension);
         }
     }
 }

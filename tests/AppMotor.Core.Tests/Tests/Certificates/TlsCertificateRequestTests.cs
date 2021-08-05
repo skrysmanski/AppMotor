@@ -54,6 +54,21 @@ namespace AppMotor.Core.Tests.Certificates
             // Validate
             cert.SubjectName.Name.ShouldBe("CN=example.com");
             cert.NotAfter.Date.ShouldBe(DateTime.Today + TimeSpan.FromDays(20));
+            cert.SubjectAlternativeNames.ShouldBe(new[] { "example.com" });
+        }
+
+        [Fact]
+        public void Test_MultipleHostNames()
+        {
+            // Test
+            using var certificateRequest = new TlsCertificateRequest("example.com", new[] { "example2.com", "www.example.com", "support.example.com" });
+            var cert = certificateRequest.CreateSelfSignedCertificate(TimeSpan.FromDays(20));
+
+            // Validate
+            cert.SubjectName.Name.ShouldBe("CN=example.com");
+            cert.NotAfter.Date.ShouldBe(DateTime.Today + TimeSpan.FromDays(20));
+            cert.SubjectAlternativeNames.ShouldBe(new[] { "example.com", "example2.com", "www.example.com", "support.example.com" });
+
         }
     }
 }
