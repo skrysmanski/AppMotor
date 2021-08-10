@@ -75,10 +75,7 @@ namespace AppMotor.Core.Logging
                 //
                 // Information about the specified exception itself.
                 //
-                AppendLine(indentation, $"Exception Type: {exception.GetType()}");
-                AppendLine();
-
-                AppendLine(indentation, $"Message: {exception.Message}");
+                AppendLine(indentation, $"[{exception.GetType()}] {exception.Message}");
                 AppendLine();
 
                 AppendAdditionalDataAndProperties(indentation, exception);
