@@ -40,8 +40,7 @@ namespace AppMotor.CliApp.Tests.CommandLine
             caughtException.Message.ShouldBe("This is a test");
 
             app.TerminalOutput.ShouldContain("This is a test");
-            // Indicate the full exception report has been printed
-            app.TerminalOutput.ShouldContain("Exception Type: ");
+            app.TerminalOutput.ShouldContain($"[{typeof(InvalidOperationException).FullName}] "); // <-- Indicates the full exception report has been printed
         }
 
         [Fact]
