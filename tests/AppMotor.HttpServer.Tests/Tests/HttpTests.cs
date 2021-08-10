@@ -24,9 +24,6 @@ using AppMotor.Core.Net.Http;
 using AppMotor.Core.TestUtils;
 using AppMotor.HttpServer;
 
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-
 using Shouldly;
 
 using Xunit;
@@ -44,7 +41,7 @@ namespace AppMotor.CliApp.HttpServer.Tests
 
             var app = new HttpServerApplication(
                 new HttpServerPort(SocketListenAddresses.Loopback, testPort),
-                new Startup()
+                new SimplePingStartup()
             );
             Task appTask = app.RunAsync(cts.Token);
 
@@ -64,26 +61,6 @@ namespace AppMotor.CliApp.HttpServer.Tests
             cts.Cancel();
 
             await appTask.ShouldFinishWithin(TimeSpan.FromSeconds(10));
-        }
-
-        private sealed class Startup
-        {
-            public void Configure(IApplicationBuilder app)
-            {
-                // Enable routing feature; required for defining endpoints below.
-                // See: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing#routing-basics
-                app.UseRouting();
-
-                // Define endpoints (invokable actions). Requires call to "UseRouting()" above.
-                // See: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing#endpoint
-                app.UseEndpoints(endpoints =>
-                {
-                    endpoints.MapGet("/api/ping", async context =>
-                    {
-                        await context.Response.WriteAsync("Hello World!");
-                    });
-                });
-            }
         }
     }
 }

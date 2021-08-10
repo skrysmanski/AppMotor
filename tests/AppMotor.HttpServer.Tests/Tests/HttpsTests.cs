@@ -27,9 +27,7 @@ using AppMotor.Core.Net.Http;
 using AppMotor.Core.TestUtils;
 using AppMotor.HttpServer;
 
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 
 using Shouldly;
 
@@ -98,27 +96,7 @@ namespace AppMotor.CliApp.HttpServer.Tests
             /// <inheritdoc />
             protected override object CreateStartupClass(WebHostBuilderContext context)
             {
-                return new Startup();
-            }
-
-            private sealed class Startup
-            {
-                public void Configure(IApplicationBuilder app)
-                {
-                    // Enable routing feature; required for defining endpoints below.
-                    // See: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing#routing-basics
-                    app.UseRouting();
-
-                    // Define endpoints (invokable actions). Requires call to "UseRouting()" above.
-                    // See: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing#endpoint
-                    app.UseEndpoints(endpoints =>
-                    {
-                        endpoints.MapGet("/api/ping", async context =>
-                        {
-                            await context.Response.WriteAsync("Hello World!");
-                        });
-                    });
-                }
+                return new SimplePingStartup();
             }
         }
     }
