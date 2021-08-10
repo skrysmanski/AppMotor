@@ -183,7 +183,10 @@ namespace AppMotor.CliApp.HttpServer.Tests
                     {
                         IPAddress? callerIpAddress = context.Request.HttpContext.Connection.RemoteIpAddress;
                         callerIpAddress.ShouldNotBeNull();
-                        await context.Response.WriteAsync($"Caller ip address family: {callerIpAddress.AddressFamily}");
+
+                        var addressFamily = callerIpAddress.IsIPv4MappedToIPv6 ? AddressFamily.InterNetwork : callerIpAddress.AddressFamily;
+
+                        await context.Response.WriteAsync($"Caller ip address family: {addressFamily}");
                     });
                 });
             }

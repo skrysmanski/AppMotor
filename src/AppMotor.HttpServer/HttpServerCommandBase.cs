@@ -126,33 +126,44 @@ namespace AppMotor.HttpServer
                     configure = _ => { };
                 }
 
-                if (serverPort.IPVersion == IPVersions.IPv4 || serverPort.IPVersion == IPVersions.DualStack)
+                switch (serverPort.ListenAddress)
                 {
-                    switch (serverPort.ListenAddress)
-                    {
-                        case SocketListenAddresses.Any:
-                            options.Listen(IPAddress.Any, serverPort.Port, configure);
-                            break;
-                        case SocketListenAddresses.Loopback:
-                            options.Listen(IPAddress.Loopback, serverPort.Port, configure);
-                            break;
-                        default:
-                            throw new UnexpectedSwitchValueException(nameof(serverPort.ListenAddress), serverPort.ListenAddress);
-                    }
-                }
-                if (serverPort.IPVersion == IPVersions.IPv6 || serverPort.IPVersion == IPVersions.DualStack)
-                {
-                    switch (serverPort.ListenAddress)
-                    {
-                        case SocketListenAddresses.Any:
-                            options.Listen(IPAddress.IPv6Any, serverPort.Port, configure);
-                            break;
-                        case SocketListenAddresses.Loopback:
-                            options.Listen(IPAddress.IPv6Loopback, serverPort.Port, configure);
-                            break;
-                        default:
-                            throw new UnexpectedSwitchValueException(nameof(serverPort.ListenAddress), serverPort.ListenAddress);
-                    }
+                    case SocketListenAddresses.Any:
+                        switch (serverPort.IPVersion)
+                        {
+                            case IPVersions.IPv4:
+                                options.Listen(IPAddress.Any, serverPort.Port, configure);
+                                break;
+                            case IPVersions.IPv6:
+                                options.Listen(IPAddress.IPv6Any, serverPort.Port, configure);
+                                break;
+                            case IPVersions.DualStack:
+                                options.ListenAnyIP(serverPort.Port, configure);
+                                break;
+                            default:
+                                throw new UnexpectedSwitchValueException(nameof(serverPort.IPVersion), serverPort.IPVersion);
+                        }
+                        break;
+
+                    case SocketListenAddresses.Loopback:
+                        switch (serverPort.IPVersion)
+                        {
+                            case IPVersions.IPv4:
+                                options.Listen(IPAddress.Loopback, serverPort.Port, configure);
+                                break;
+                            case IPVersions.IPv6:
+                                options.Listen(IPAddress.IPv6Loopback, serverPort.Port, configure);
+                                break;
+                            case IPVersions.DualStack:
+                                options.ListenLocalhost(serverPort.Port, configure);
+                                break;
+                            default:
+                                throw new UnexpectedSwitchValueException(nameof(serverPort.IPVersion), serverPort.IPVersion);
+                        }
+                        break;
+
+                    default:
+                        throw new UnexpectedSwitchValueException(nameof(serverPort.ListenAddress), serverPort.ListenAddress);
                 }
             }
         }
