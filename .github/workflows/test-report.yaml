@@ -1,0 +1,41 @@
+# Generates a test report (annotations and summary HTML) for a CI run.
+#
+# NOTE: We need this separate workflow because the test-reporter step below must run 'privileged'.
+#   The CI workflow only runs privileged for a pull request if the source branch is in the same
+#   repository (i.e. not in a fork).
+#
+# NOTE: For security reasons, GitHub always only executes the version from the main branch.
+#   This means trying to fix this file in a (feature) branch won't have any effect until
+#   the branch is merged back into the main branch.
+#   See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows#workflow_run
+name: 'Generate Test Report'
+
+on:
+  workflow_run:
+    # runs after CI workflow
+    workflows: ['CI']
+    types:
+      - completed
+
+jobs:
+  report:
+    # Name the job
+    name: Test Report
+    # Set the type of machine to run on
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Create test report
+      # See: https://github.com/marketplace/actions/test-reporter
+      uses: dorny/test-reporter@0d00bb14cb0cc2c9b8985df6e81dd333188224e1
+      with:
+        name: Test Report
+        # The name of the artifact (minus extension) created by the CI workflow.
+        artifact: /test-results-(.*)/
+        # Path to test results (inside artifact .zip)
+        path: '**/*.trx'
+        # Format of test results
+        reporter: dotnet-trx
+        # Don't mark the test report generated as failed if there's a failed test.
+        # Only mark it as failed if something with the workflow has actually gone wrong.
+        fail-on-error: false
