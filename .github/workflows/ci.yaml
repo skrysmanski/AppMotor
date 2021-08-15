@@ -14,6 +14,12 @@ on:
   pull_request:
     branches:
       - main
+  schedule:
+    # Run this workflow once per week (for the main branch) because:
+    # * The underlying tool chain can get updates.
+    # * GitHub retains logs and artifacts for up to 90 days. This way we always
+    #   have an up-to-date report.
+    - cron: 0 0 * * FRI # Run at 0:00 every friday
 
 jobs:
   # Set the job key. The key is displayed as the job name
