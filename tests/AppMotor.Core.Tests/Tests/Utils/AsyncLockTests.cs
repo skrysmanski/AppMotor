@@ -46,9 +46,8 @@ namespace AppMotor.Core.Tests.Utils
                     lock1Acquired.Set();
                     task2Started.Wait(10_000).ShouldBe(true);
                     await Task.Delay(200);
+                    lock1Released.Set();
                 }
-
-                lock1Released.Set();
             });
 
             lock1Acquired.Wait(10_000).ShouldBe(true);
