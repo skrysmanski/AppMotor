@@ -17,6 +17,7 @@
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -123,6 +124,14 @@ namespace AppMotor.CliApp.HttpServer.Tests
         {
             this._testOutputHelper.WriteLine($"Running query against: {hostIpAddress}");
 
+            if (hostIpAddress.StartsWith('['))
+            {
+                // IPv6 address
+                // Escape % (Scope ID)
+                // See: https://docs.microsoft.com/en-us/windows/win32/wininet/ip-version-6-support#scope-id
+                hostIpAddress = hostIpAddress.Replace("%", "%25");
+            }
+
             var response = await httpClient.GetAsync($"http://{hostIpAddress}:{testPort}/api/ping");
 
             response.EnsureSuccessStatusCode();
@@ -139,32 +148,64 @@ namespace AppMotor.CliApp.HttpServer.Tests
                 // IPv4
                 responseString.ShouldBe($"Caller ip address family: {AddressFamily.InterNetwork}");
             }
+
+            this._testOutputHelper.WriteLine("Done");
         }
 
         [MustUseReturnValue]
         private static string GetLocalIpAddress(IPVersions ipVersion)
         {
-            // Code via: https://stackoverflow.com/a/27376368/614177
-
-            using Socket socket = new(ipVersion == IPVersions.IPv4 ? AddressFamily.InterNetwork : AddressFamily.InterNetworkV6, SocketType.Dgram, 0);
-
             if (ipVersion == IPVersions.IPv4)
             {
+                // Code via: https://stackoverflow.com/a/27376368/614177
+                //
+                // NOTE: This code also works with IPv6 but there's no IPv6 network in
+                //   GitHub actions. So we'll have to use a different approach.
+                //   See: https://github.com/actions/virtual-environments/issues/668
+
+                using Socket socket = new(AddressFamily.InterNetwork, SocketType.Dgram, 0);
+
                 socket.Connect("8.8.8.8", 65530);
+
+                IPEndPoint endPoint = (IPEndPoint)socket.LocalEndPoint!;
+
+                IPAddress.IsLoopback(endPoint.Address).ShouldBe(false);
+
+                return endPoint.Address.ToString();
+            }
+            else if (ipVersion == IPVersions.IPv6)
+            {
+                foreach (var networkInterface in NetworkInterface.GetAllNetworkInterfaces())
+                {
+                    if (networkInterface.OperationalStatus != OperationalStatus.Up || !networkInterface.Supports(NetworkInterfaceComponent.IPv6))
+                    {
+                        continue;
+                    }
+
+                    var ipProperties = networkInterface.GetIPProperties();
+
+                    if (ipProperties.GatewayAddresses.Count == 0)
+                    {
+                        continue;
+                    }
+
+                    foreach (var ip in ipProperties.UnicastAddresses)
+                    {
+                        if (ip.Address.AddressFamily != AddressFamily.InterNetworkV6 || IPAddress.IsLoopback(ip.Address))
+                        {
+                            continue;
+                        }
+
+                        return ip.Address.ToString();
+                    }
+                }
+
+                throw new InvalidOperationException("No usable IPv6 network interface exists.");
             }
             else
             {
-                socket.Connect("2001:4860:4860::8888", 65530);
+                throw new NotSupportedException($"Unsupported ipVersion: {ipVersion}");
             }
-
-            IPEndPoint endPoint = (IPEndPoint)socket.LocalEndPoint!;
-
-            endPoint.Address.ShouldNotBe(IPAddress.IPv6Loopback);
-
-            var address = endPoint.Address.ToString();
-            address.ShouldNotStartWith("127.");
-
-            return address;
         }
 
         private sealed class Startup
