@@ -19,6 +19,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -127,9 +128,7 @@ namespace AppMotor.CliApp.HttpServer.Tests
             if (hostIpAddress.StartsWith('['))
             {
                 // IPv6 address
-                // Escape % (Scope ID)
-                // See: https://docs.microsoft.com/en-us/windows/win32/wininet/ip-version-6-support#scope-id
-                hostIpAddress = hostIpAddress.Replace("%", "%25");
+                hostIpAddress = Regex.Replace(hostIpAddress, @"^\[(.+)%\d+\]$", "[$1]");
             }
 
             var response = await httpClient.GetAsync($"http://{hostIpAddress}:{testPort}/api/ping");
