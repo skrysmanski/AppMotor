@@ -66,6 +66,8 @@ jobs:
         # run this step even if previous step failed
         if: success() || failure()
         with:
-          name: test-results-${{ github.run_id }}
+          # See: https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#github-context
+          # run_id is something like 1152888876
+          name: test-results-${{ github.run_number }}
           path: '**/*.trx'
           if-no-files-found: error
