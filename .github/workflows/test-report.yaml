@@ -19,6 +19,8 @@ name: 'Generate Test Report'
 on:
   workflow_run:
     # runs after CI workflow
+    # NOTE: The name here is the value of the 'name' property of the
+    #   workflow - NOT the name of the file.
     workflows: ['CI']
     types:
       - completed
