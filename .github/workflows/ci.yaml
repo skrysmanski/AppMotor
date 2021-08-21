@@ -66,8 +66,17 @@ jobs:
         # run this step even if previous step failed
         if: success() || failure()
         with:
-          # See: https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#github-context
-          # run_id is something like 1152888876
+          # NOTE: To make the downloads of the test results easier to use (i.e. when downloading test results
+          #   from different runs), we'll add an id to the name.
+          #
+          #   We don't use the sha because this workflow also runs on a schedule - which means that different
+          #   runs would again create files with the same name (e.g. two consecutive scheduled runs while the
+          #   repo hasn't changed in the meantime).
+          #
+          #   Instead we use 'github.run_number' because this gives us the same number that's also shown in the
+          #   ui - like 27 for run #27 ('github.run_id' on the other hand gives us some "random" big number like
+          #   1152888876 - which is less useful). For more details, see:
+          #   https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#github-context
           name: test-results-${{ github.run_number }}
           path: '**/*.trx'
           if-no-files-found: error
