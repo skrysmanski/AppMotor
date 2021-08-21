@@ -89,3 +89,21 @@ jobs:
           name: 'test-results-${{ steps.short-sha.outputs.sha }}-#${{ github.run_number }}'
           path: '**/*.trx'
           if-no-files-found: error
+
+      - name: Create test report
+        # See: https://github.com/marketplace/actions/test-reporter
+        uses: dorny/test-reporter@0d00bb14cb0cc2c9b8985df6e81dd333188224e1
+        with:
+          # NOTE: We add the 'github.run_number' to the name so that we can easier identify the
+          #   test report if they pile up due to bug https://github.com/dorny/test-reporter/issues/67.
+          #   See top of this file for more details.
+          name: 'Test Report #${{ github.run_number }}'
+          # The name of the artifact (minus extension) created by the CI workflow.
+          artifact: /test-results-(.*)/
+          # Path to test results (inside artifact .zip)
+          path: '**/*.trx'
+          # Format of test results
+          reporter: dotnet-trx
+          # Don't mark the test report generated as failed if there's a failed test.
+          # Only mark it as failed if something with the workflow has actually gone wrong.
+          fail-on-error: false
