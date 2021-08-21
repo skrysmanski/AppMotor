@@ -1,5 +1,11 @@
 # Generates a test report (annotations and summary HTML) for a CI run.
 #
+# IMPORTANT: Due to a GitHub limitation, test reports are associated with the commit sha rather than
+#   a workflow run. This means, if there are multiple runs for the same sha (e.g. from scheduled
+#   workflow when the repo has changed between two runs), the test result will end up in a "random"
+#   workflow run. At least you can see the report's URL in the output of the "Create test report"
+#   step. For more details, see: https://github.com/dorny/test-reporter/issues/67
+#
 # NOTE: We need this separate workflow because the test-reporter step below must run 'privileged'.
 #   The CI workflow only runs privileged for a pull request if the source branch is in the same
 #   repository (i.e. not in a fork).
@@ -29,7 +35,10 @@ jobs:
       # See: https://github.com/marketplace/actions/test-reporter
       uses: dorny/test-reporter@0d00bb14cb0cc2c9b8985df6e81dd333188224e1
       with:
-        name: Test Report
+        # NOTE: We add the 'github.run_number' to the name so that we can easier identify the
+        #   test report if they pile up due to bug https://github.com/dorny/test-reporter/issues/67.
+        #   See top of this file for more details.
+        name: 'Test Report #${{ github.run_number }}'
         # The name of the artifact (minus extension) created by the CI workflow.
         artifact: /test-results-(.*)/
         # Path to test results (inside artifact .zip)

@@ -19,6 +19,9 @@ on:
     # * The underlying tool chain can get updates.
     # * GitHub retains logs and artifacts for up to 90 days. This way we always
     #   have an up-to-date report.
+    # NOTE: The test reports for scheduled runs may not end up in the run themselves.
+    #   This is due to bug https://github.com/dorny/test-reporter/issues/67 ; see
+    #   test-report.yaml for more details.
     # See also: https://crontab.guru/
     - cron: '0 2 * * *' # Run at 2:00 every day
     #- cron: '*/5 * * * *' # Run every 5 minutes - just for testing purposes
@@ -85,6 +88,6 @@ jobs:
           #   ui - like 27 for run #27 ('github.run_id' on the other hand gives us some "random" big number like
           #   1152888876 - which is less useful). For more details, see:
           #   https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#github-context
-          name: test-results-${{ steps.short-sha.outputs.sha }}-#${{ github.run_number }}
+          name: 'test-results-${{ steps.short-sha.outputs.sha }}-#${{ github.run_number }}'
           path: '**/*.trx'
           if-no-files-found: error
