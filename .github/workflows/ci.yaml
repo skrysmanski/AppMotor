@@ -1,5 +1,5 @@
 # For reference, see: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
-name: CI
+name: CI-X
 
 # Run this workflow every time a new commit pushed to your repository
 # See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows
