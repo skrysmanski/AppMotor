@@ -1,7 +1,11 @@
-# For reference, see: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+#
+# GitHub Actions workflow: Builds and tests the code in this repository.
+#
+# For more details on workflows, see README.md.
+#
 name: CI
 
-# Run this workflow every time a new commit pushed to your repository
+# When to run this workflow
 # See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows
 # See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
 on:

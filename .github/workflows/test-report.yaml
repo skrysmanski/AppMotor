@@ -1,4 +1,15 @@
-# Generates a test report (annotations and summary HTML) for a CI run.
+#
+# GitHub Actions workflow: Generates a test report (annotations and summary HTML) for a CI run.
+#
+# NOTE: We need this separate workflow because the test-reporter step below requires the "checks: write"
+#   permission - which is, for security reasons, not available for pull requests from forks (for details,
+#   see link at the 'permissions' property below). Follow-up workflows (triggered by "on.workflow_run")
+#   have full permissions - and thus we can circumvent this problem.
+#
+#   However, to prevent attackers from simply using this trick in a pull request, GitHub Actions only
+#   uses the file contents from the default branch for follow-up workflows. This means, you can't experiment
+#   with this file in a pull request but have to do this on the main branch.
+#   See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows#workflow_run
 #
 # IMPORTANT: Due to a GitHub limitation, test reports are associated with the commit sha rather than
 #   a workflow run. This means, if there are multiple runs for the same sha (e.g. from scheduled
@@ -6,16 +17,13 @@
 #   workflow run. At least you can see the report's URL in the output of the "Create test report"
 #   step. For more details, see: https://github.com/dorny/test-reporter/issues/67
 #
-# NOTE: We need this separate workflow because the test-reporter step below must run 'privileged'.
-#   The CI workflow only runs privileged for a pull request if the source branch is in the same
-#   repository (i.e. not in a fork).
+# For more details on workflows, see README.md.
 #
-# NOTE: For security reasons, GitHub always only executes the version from the main branch.
-#   This means trying to fix this file in a (feature) branch won't have any effect until
-#   the branch is merged back into the main branch.
-#   See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows#workflow_run
 name: 'Generate Test Report'
 
+# When to run this workflow
+# See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows
+# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
 on:
   workflow_run:
     # runs after CI workflow
@@ -29,6 +37,7 @@ on:
 # See: https://docs.github.com/en/actions/reference/authentication-in-a-workflow#permissions-for-the-github_token
 permissions:
   contents: read
+  # The test report is uploaded as a "Check"
   checks: write
 
 jobs:
