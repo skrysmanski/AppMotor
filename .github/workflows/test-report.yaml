@@ -25,6 +25,12 @@ on:
     types:
       - completed
 
+# Permissions for GITHUB_TOKEN for this workflow.
+# See: https://docs.github.com/en/actions/reference/authentication-in-a-workflow#permissions-for-the-github_token
+permissions:
+  contents: read
+  checks: write
+
 jobs:
   report:
     # Name the job
