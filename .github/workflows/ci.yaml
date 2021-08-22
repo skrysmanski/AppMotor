@@ -3,6 +3,7 @@ name: CI-X
 
 permissions:
   contents: read
+  checks: write
 
 # Run this workflow every time a new commit pushed to your repository
 # See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows
