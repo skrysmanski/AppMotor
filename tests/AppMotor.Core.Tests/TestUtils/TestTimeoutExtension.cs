@@ -15,38 +15,60 @@
 #endregion
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 using JetBrains.Annotations;
 
+using Shouldly;
+
 namespace AppMotor.Core.TestUtils
 {
+    [ShouldlyMethods]
     public static class TestTimeoutExtension
     {
+        //
+        // NOTE: Shouldly assertion methods can't be "async" because in this case Shouldly's
+        //   expression code extractor won't be able to find the expression.
+        //
+
         [PublicAPI]
-        public static async Task ShouldFinishWithin(this Task task, TimeSpan timeout)
+        public static void ShouldFinishWithin(this Task task, TimeSpan timeout)
         {
-            await Task.WhenAny(task, Task.Delay(timeout)).ConfigureAwait(false);
+            Task.Run(() => Task.WhenAny(task, Task.Delay(timeout))).Wait();
 
             if (!task.IsCompleted)
             {
-                throw new TimeoutException();
+                var message = new CorrectedCompleteInShouldlyMessage(timeout, null).ToString();
+                throw new ShouldAssertException(message);
             }
-
-            await task;
         }
 
         [PublicAPI]
-        public static async Task<T> ShouldFinishWithin<T>(this Task<T> task, TimeSpan timeout)
+        public static T ShouldFinishWithin<T>(this Task<T> task, TimeSpan timeout)
         {
-            await Task.WhenAny(task, Task.Delay(timeout)).ConfigureAwait(false);
+            Task.Run(() => Task.WhenAny(task, Task.Delay(timeout))).Wait();
 
             if (!task.IsCompleted)
             {
-                throw new TimeoutException();
+                var message = new CorrectedCompleteInShouldlyMessage(timeout, null).ToString();
+                throw new ShouldAssertException(message);
             }
 
-            return await task;
+            return task.Result;
+        }
+
+        private class CorrectedCompleteInShouldlyMessage : CompleteInShouldlyMessage
+        {
+            public CorrectedCompleteInShouldlyMessage(TimeSpan timeout, string? customMessage, [CallerMemberName] string shouldlyMethod = null!)
+                : base(what: "", timeout, customMessage, shouldlyMethod)
+            {
+                // The "Expected" property (which is filled with the value of the base constructor's
+                // "what" parameter) is used by the string formatter as first line. Unfortunately,
+                // the string formatter does not use the "CodePart" at all. So have to "convince"
+                // it to use it.
+                this.ShouldlyAssertionContext.Expected = this.ShouldlyAssertionContext.CodePart;
+            }
         }
     }
 }

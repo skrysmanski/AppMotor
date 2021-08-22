@@ -60,7 +60,7 @@ namespace AppMotor.CliApp.HttpServer.Tests
 
             cts.Cancel();
 
-            await appTask.ShouldFinishWithin(TimeSpan.FromSeconds(10));
+            appTask.ShouldFinishWithin(TimeSpan.FromSeconds(10));
         }
     }
 }
