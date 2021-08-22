@@ -38,13 +38,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/build-and-test
       - name: Get code
         # See: https://github.com/actions/checkout
         uses: actions/checkout@v2
         with:
           lfs: true
           submodules: true
+
+      - name: Test Step
+        uses: actions/build-and-test
 
       # This creates ${{ steps.short-sha.outputs.sha }} to be used below.
       - name: Determine Git short commit hash
