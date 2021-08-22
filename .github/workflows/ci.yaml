@@ -98,8 +98,6 @@ jobs:
           #   test report if they pile up due to bug https://github.com/dorny/test-reporter/issues/67.
           #   See top of this file for more details.
           name: 'Test Report #${{ github.run_number }}'
-          # The name of the artifact (minus extension) created by the CI workflow.
-          artifact: /test-results-(.*)/
           # Path to test results (inside artifact .zip)
           path: '**/*.trx'
           # Format of test results
