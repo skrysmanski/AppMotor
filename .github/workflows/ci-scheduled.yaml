@@ -22,8 +22,8 @@ on:
     # * GitHub retains logs and artifacts for up to 90 days. This way we always
     #   have an up-to-date report.
     # See also: https://crontab.guru/
-    #- cron: '0 2 * * *' # Run at 2:00 every day
-    - cron: '*/5 * * * *' # Run every 5 minutes - just for testing purposes
+    - cron: '0 2 * * *' # Run at 2:00 every day
+    #- cron: '*/5 * * * *' # Run every 5 minutes - just for testing purposes
 
 # Permissions for GITHUB_TOKEN for this workflow.
 # See: https://docs.github.com/en/actions/reference/authentication-in-a-workflow#permissions-for-the-github_token
