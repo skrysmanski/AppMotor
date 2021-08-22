@@ -46,7 +46,7 @@ jobs:
           submodules: true
 
       - name: Test Step
-        uses: actions/build-and-test
+        uses: ./.github/actions/build-and-test
 
       # This creates ${{ steps.short-sha.outputs.sha }} to be used below.
       - name: Determine Git short commit hash
