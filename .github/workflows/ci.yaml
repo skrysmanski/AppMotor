@@ -85,6 +85,8 @@ jobs:
           #   ui - like 27 for run #27 ('github.run_id' on the other hand gives us some "random" big number like
           #   1152888876 - which is less useful). For more details, see:
           #   https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#github-context
-          name: 'test-results-${{ steps.short-sha.outputs.sha }}-#${{ github.run_number }}'
+          #
+          # NOTE: We put the "run_number" first so that the result zip file can be sorted by name.
+          name: 'test-results-#${{ github.run_number }}-${{ steps.short-sha.outputs.sha }}'
           path: '**/*.trx'
           if-no-files-found: error
