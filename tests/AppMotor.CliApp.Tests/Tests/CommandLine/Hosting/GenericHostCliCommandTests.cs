@@ -66,11 +66,16 @@ namespace AppMotor.CliApp.Tests.CommandLine.Hosting
 
             var appTask = testApp.RunAsync();
 
+            TestLoggerStatistics loggerStatistics;
             try
             {
                 command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(false);
 
                 startedEvent.Wait(TimeSpan.FromSeconds(10)).ShouldBe(true);
+
+                loggerStatistics = command.ServiceProvider.GetRequiredService<TestLoggerStatistics>();
+
+                command.LifetimeEvents.Stopping.RegisterEventHandler(() => command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(true)).ShouldNotBeNull();
 
                 // Test
                 stoppingEvent.Wait(TimeSpan.FromSeconds(MAX_WAIT_SECONDS_FOR_CONFIRMATION)).ShouldBe(false); // Stopping event was not triggered within 2 seconds
@@ -89,12 +94,16 @@ namespace AppMotor.CliApp.Tests.CommandLine.Hosting
                 // Verify
                 stoppedEvent.IsSet.ShouldBe(true);
             }
+
+            loggerStatistics.ShouldHaveNoErrors();
         }
 
         private class GenericHostTestCommand : GenericHostCliCommand
         {
             /// <inheritdoc />
             protected sealed override IHostBuilderFactory HostBuilderFactory { get; }
+
+            public IServiceProvider ServiceProvider => this.Services;
 
             /// <inheritdoc />
             public GenericHostTestCommand(ITestOutputHelper testOutputHelper)
@@ -127,6 +136,10 @@ namespace AppMotor.CliApp.Tests.CommandLine.Hosting
 
             startedEvent.Wait(TimeSpan.FromSeconds(10)).ShouldBe(true);
 
+            var loggerStatistics = command.ServiceProvider.GetRequiredService<TestLoggerStatistics>();
+
+            command.LifetimeEvents.Stopping.RegisterEventHandler(() => command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(true)).ShouldNotBeNull();
+
             // Test
             var testService = command.ServiceProvider.GetRequiredService<GenericHostCommandWithServiceProvider.ITestService>();
             testService.DoSomething(42).ShouldBe(42);
@@ -138,14 +151,13 @@ namespace AppMotor.CliApp.Tests.CommandLine.Hosting
 
             // Shutdown
             command.Stop();
-            command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(true);
             appTask.Wait(TimeSpan.FromSeconds(30)).ShouldBe(true);
+
+            loggerStatistics.ShouldHaveNoErrors();
         }
 
         private sealed class GenericHostCommandWithServiceProvider : GenericHostTestCommand
         {
-            public IServiceProvider ServiceProvider => this.Services;
-
             public GenericHostCommandWithServiceProvider(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
             {
             }
