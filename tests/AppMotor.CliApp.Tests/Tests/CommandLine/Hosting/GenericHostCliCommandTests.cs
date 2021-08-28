@@ -20,6 +20,8 @@ using System.Threading;
 using AppMotor.CliApp.CommandLine;
 using AppMotor.CliApp.CommandLine.Hosting;
 using AppMotor.CliApp.TestUtils;
+using AppMotor.TestCore;
+using AppMotor.TestCore.Logging;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -28,11 +30,17 @@ using Microsoft.Extensions.Logging;
 using Shouldly;
 
 using Xunit;
+using Xunit.Abstractions;
 
 namespace AppMotor.CliApp.Tests.CommandLine.Hosting
 {
-    public sealed class GenericHostCliCommandTests
+    public sealed class GenericHostCliCommandTests : TestBase
     {
+        public GenericHostCliCommandTests(ITestOutputHelper testOutputHelper)
+            : base(testOutputHelper)
+        {
+        }
+
         [Fact]
         public void Test_DefaultGenericHost_NotStoppingOnItsOwn()
         {
@@ -42,7 +50,7 @@ namespace AppMotor.CliApp.Tests.CommandLine.Hosting
             const int MAX_WAIT_SECONDS_FOR_CONFIRMATION = 2;
 
             // Setup
-            var command = new GenericHostTestCommand();
+            var command = new GenericHostTestCommand(this.TestConsole);
             var testApp = new TestApplicationWithCommand(command);
 
             using var startedEvent = new ManualResetEventSlim();
@@ -83,15 +91,29 @@ namespace AppMotor.CliApp.Tests.CommandLine.Hosting
             }
         }
 
-        private sealed class GenericHostTestCommand : GenericHostCliCommand
+        private class GenericHostTestCommand : GenericHostCliCommand
         {
+            /// <inheritdoc />
+            protected sealed override IHostBuilderFactory HostBuilderFactory { get; }
+
+            /// <inheritdoc />
+            public GenericHostTestCommand(ITestOutputHelper testOutputHelper)
+            {
+                this.HostBuilderFactory = new DefaultHostBuilderFactory()
+                {
+                    LoggingConfigurationProvider = (_, builder) =>
+                    {
+                        builder.AddXUnitLogger(testOutputHelper);
+                    },
+                };
+            }
         }
 
         [Fact]
         public void Test_ServiceProvider()
         {
             // Setup
-            var command = new GenericHostCommandWithServiceProvider();
+            var command = new GenericHostCommandWithServiceProvider(this.TestConsole);
             var testApp = new TestApplicationWithCommand(command);
 
             using var startedEvent = new ManualResetEventSlim();
@@ -120,9 +142,13 @@ namespace AppMotor.CliApp.Tests.CommandLine.Hosting
             appTask.Wait(TimeSpan.FromSeconds(30)).ShouldBe(true);
         }
 
-        private sealed class GenericHostCommandWithServiceProvider : GenericHostCliCommand
+        private sealed class GenericHostCommandWithServiceProvider : GenericHostTestCommand
         {
             public IServiceProvider ServiceProvider => this.Services;
+
+            public GenericHostCommandWithServiceProvider(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
+            {
+            }
 
             /// <inheritdoc />
             protected override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
@@ -153,7 +179,7 @@ namespace AppMotor.CliApp.Tests.CommandLine.Hosting
             const int WAIT_SECONDS_INSIDE_COMMAND = 1;
 
             // Setup
-            var command = new GenericHostCommandWithExplicitExecutor(waitInsideExecute: TimeSpan.FromSeconds(WAIT_SECONDS_INSIDE_COMMAND));
+            var command = new GenericHostCommandWithExplicitExecutor(waitInsideExecute: TimeSpan.FromSeconds(WAIT_SECONDS_INSIDE_COMMAND), this.TestConsole);
             var testApp = new TestApplicationWithCommand(command);
 
             using var startedEvent = new ManualResetEventSlim();
@@ -186,15 +212,15 @@ namespace AppMotor.CliApp.Tests.CommandLine.Hosting
             stoppedEvent.IsSet.ShouldBe(true);
         }
 
-        private sealed class GenericHostCommandWithExplicitExecutor : GenericHostCliCommand
+        private sealed class GenericHostCommandWithExplicitExecutor : GenericHostTestCommand
         {
             /// <inheritdoc />
             protected override CliCommandExecutor ExplicitExecutor => new(Execute);
 
             private readonly TimeSpan _waitInsideExecute;
 
-            /// <inheritdoc />
-            public GenericHostCommandWithExplicitExecutor(TimeSpan waitInsideExecute)
+            public GenericHostCommandWithExplicitExecutor(TimeSpan waitInsideExecute, ITestOutputHelper testOutputHelper)
+                : base(testOutputHelper)
             {
                 this._waitInsideExecute = waitInsideExecute;
             }

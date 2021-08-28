@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 using AppMotor.Core.Logging;
 using AppMotor.Core.TestUtils;
-using AppMotor.Core.Utils;
+using AppMotor.TestCore;
 
 using Shouldly;
 
@@ -28,15 +28,10 @@ using Xunit.Abstractions;
 
 namespace AppMotor.Core.Tests.Logging
 {
-    public sealed class ExtendedExceptionStringExtensionsTests
+    public sealed class ExtendedExceptionStringExtensionsTests : TestBase
     {
-        private readonly ITestOutputHelper _testOutputHelper;
-
-        public ExtendedExceptionStringExtensionsTests(ITestOutputHelper testOutputHelper)
+        public ExtendedExceptionStringExtensionsTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
         {
-            Validate.ArgumentWithName(nameof(testOutputHelper)).IsNotNull(testOutputHelper);
-
-            this._testOutputHelper = testOutputHelper;
         }
 
         [Fact]
@@ -50,7 +45,7 @@ namespace AppMotor.Core.Tests.Logging
             var extendedString = exception.ToStringExtended();
 
             // just for manual verification of the output
-            this._testOutputHelper.WriteLine(extendedString);
+            this.TestConsole.WriteLine(extendedString);
 
             // verify
             extendedString.ShouldContain(exceptionMessage);
@@ -71,7 +66,7 @@ namespace AppMotor.Core.Tests.Logging
             var extendedString = outerException.ToStringExtended();
 
             // just for manual verification of the output
-            this._testOutputHelper.WriteLine(extendedString);
+            this.TestConsole.WriteLine(extendedString);
 
             // verify
             extendedString.ShouldContain(innerExceptionMessage);
@@ -103,7 +98,7 @@ namespace AppMotor.Core.Tests.Logging
             var extendedString = exception.ToStringExtended();
 
             // just for manual verification of the output
-            this._testOutputHelper.WriteLine(extendedString);
+            this.TestConsole.WriteLine(extendedString);
 
             // verify
             extendedString.ShouldContain(messageGuid1.ToString());

@@ -15,23 +15,34 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
+using AppMotor.CliApp.CommandLine.Hosting;
 using AppMotor.CliApp.HttpServer.TestUtils;
 using AppMotor.Core.Net;
 using AppMotor.Core.Net.Http;
 using AppMotor.Core.TestUtils;
 using AppMotor.HttpServer;
+using AppMotor.TestCore;
+using AppMotor.TestCore.Logging;
+
+using Microsoft.AspNetCore.Hosting;
 
 using Shouldly;
 
 using Xunit;
+using Xunit.Abstractions;
 
 namespace AppMotor.CliApp.HttpServer.Tests
 {
-    public sealed class HttpTests
+    public sealed class HttpTests : TestBase
     {
+        public HttpTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
+        {
+        }
+
         [Fact]
         public async Task TestHttpApiCall()
         {
@@ -39,10 +50,7 @@ namespace AppMotor.CliApp.HttpServer.Tests
 
             using var cts = new CancellationTokenSource();
 
-            var app = new HttpServerApplication(
-                new HttpServerPort(SocketListenAddresses.Loopback, testPort),
-                new SimplePingStartup()
-            );
+            var app = new HttpServerApplication(new TestHttpServerCommand(testPort, this.TestConsole));
             Task appTask = app.RunAsync(cts.Token);
 
             using (var httpClient = HttpClientFactory.CreateHttpClient())
@@ -61,6 +69,39 @@ namespace AppMotor.CliApp.HttpServer.Tests
             cts.Cancel();
 
             appTask.ShouldFinishWithin(TimeSpan.FromSeconds(10));
+        }
+
+        private sealed class TestHttpServerCommand : HttpServerCommandBase
+        {
+            private readonly int _testPort;
+
+            /// <inheritdoc />
+            protected override IHostBuilderFactory HostBuilderFactory { get; }
+
+            public TestHttpServerCommand(int testPort, ITestOutputHelper testOutputHelper)
+            {
+                this._testPort = testPort;
+
+                this.HostBuilderFactory = new DefaultHostBuilderFactory()
+                {
+                    LoggingConfigurationProvider = (_, builder) =>
+                    {
+                        builder.AddXUnitLogger(testOutputHelper);
+                    },
+                };
+            }
+
+            /// <inheritdoc />
+            protected override IEnumerable<HttpServerPort> GetServerPorts(IServiceProvider serviceProvider)
+            {
+                yield return new HttpServerPort(SocketListenAddresses.Loopback, this._testPort);
+            }
+
+            /// <inheritdoc />
+            protected override object CreateStartupClass(WebHostBuilderContext context)
+            {
+                return new SimplePingStartup();
+            }
         }
     }
 }
