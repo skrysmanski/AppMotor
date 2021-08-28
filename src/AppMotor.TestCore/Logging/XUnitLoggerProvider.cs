@@ -27,9 +27,12 @@ namespace AppMotor.TestCore.Logging
     {
         private readonly ITestOutputHelper _testOutputHelper;
 
-        public XUnitLoggerProvider(ITestOutputHelper testOutputHelper)
+        private readonly TestLoggerStatistics _loggerStatistics;
+
+        public XUnitLoggerProvider(ITestOutputHelper testOutputHelper, TestLoggerStatistics loggerStatistics)
         {
             this._testOutputHelper = testOutputHelper;
+            this._loggerStatistics = loggerStatistics;
         }
 
         /// <inheritdoc />
@@ -40,7 +43,7 @@ namespace AppMotor.TestCore.Logging
         /// <inheritdoc />
         public ILogger CreateLogger(string categoryName)
         {
-            return new XUnitLogger(this._testOutputHelper, categoryName);
+            return new XUnitLogger(this._testOutputHelper, categoryName, this._loggerStatistics);
         }
     }
 }

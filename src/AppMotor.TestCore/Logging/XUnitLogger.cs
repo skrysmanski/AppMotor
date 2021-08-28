@@ -35,10 +35,13 @@ namespace AppMotor.TestCore.Logging
 
         private readonly string _categoryName;
 
-        public XUnitLogger(ITestOutputHelper testOutputHelper, string categoryName)
+        private readonly TestLoggerStatistics _loggerStatistics;
+
+        public XUnitLogger(ITestOutputHelper testOutputHelper, string categoryName, TestLoggerStatistics loggerStatistics)
         {
             this._testOutputHelper = testOutputHelper;
             this._categoryName = categoryName;
+            this._loggerStatistics = loggerStatistics;
         }
 
         /// <inheritdoc />
@@ -59,6 +62,8 @@ namespace AppMotor.TestCore.Logging
             var now = DateTime.Now;
             var message = formatter(state, exception);
             this._testOutputHelper.WriteLine($"[{now:HH:mm:ss.fff}] [{GetLogLevelString(logLevel)}] {this._categoryName}{Environment.NewLine}      {message}");
+
+            this._loggerStatistics.OnLogMessage(logLevel);
         }
 
         [MustUseReturnValue]
