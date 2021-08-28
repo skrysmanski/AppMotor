@@ -1,4 +1,5 @@
 ﻿#region License
+
 // Copyright 2021 AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using Microsoft.Extensions.DependencyInjection;
@@ -19,31 +21,16 @@ using Microsoft.Extensions.Logging;
 
 using Xunit.Abstractions;
 
-namespace AppMotor.CliApp.HttpServer.TestUtils
+namespace AppMotor.TestCore.Logging
 {
-    internal sealed class XUnitLoggerProvider : ILoggerProvider
-    {
-        private readonly ITestOutputHelper _testOutputHelper;
-
-        public XUnitLoggerProvider(ITestOutputHelper testOutputHelper)
-        {
-            this._testOutputHelper = testOutputHelper;
-        }
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-        }
-
-        /// <inheritdoc />
-        public ILogger CreateLogger(string categoryName)
-        {
-            return new XUnitLogger(this._testOutputHelper, categoryName);
-        }
-    }
-
+    /// <summary>
+    /// XUnit logging extension methods for .NET's host builder.
+    /// </summary>
     public static class XUnitLoggerProviderExtensions
     {
+        /// <summary>
+        /// Adds a logger that writes to <see cref="ITestOutputHelper"/>.
+        /// </summary>
         public static void AddXUnitLogger(this ILoggingBuilder builder, ITestOutputHelper testOutputHelper)
         {
             builder.Services.AddSingleton(testOutputHelper);

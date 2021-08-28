@@ -66,6 +66,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AC7F8FF0-BAB
 		src\Common.props = src\Common.props
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.TestCore", "src\AppMotor.TestCore\AppMotor.TestCore.csproj", "{AB89C96D-65A1-4753-A686-F6DB5B26423D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -116,6 +118,10 @@ Global
 		{3CE0C1D8-870B-49A9-86E9-FF61B82A99F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3CE0C1D8-870B-49A9-86E9-FF61B82A99F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3CE0C1D8-870B-49A9-86E9-FF61B82A99F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB89C96D-65A1-4753-A686-F6DB5B26423D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB89C96D-65A1-4753-A686-F6DB5B26423D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB89C96D-65A1-4753-A686-F6DB5B26423D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB89C96D-65A1-4753-A686-F6DB5B26423D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -134,6 +140,7 @@ Global
 		{C0EBEF12-DFB0-4078-BE78-7030F00756AA} = {684A5508-0B72-421D-9335-DC5286E76D40}
 		{DF00176B-0C36-4F74-826C-687236B1A7C6} = {6A287989-1384-4140-AFC8-8CA4B1F52D41}
 		{3CE0C1D8-870B-49A9-86E9-FF61B82A99F1} = {6A287989-1384-4140-AFC8-8CA4B1F52D41}
+		{AB89C96D-65A1-4753-A686-F6DB5B26423D} = {AC7F8FF0-BAB9-4F25-B51A-06EC1721643E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FF64C9CC-C599-47C6-892D-FB620795361C}

@@ -24,8 +24,11 @@ using Microsoft.Extensions.Logging;
 
 using Xunit.Abstractions;
 
-namespace AppMotor.CliApp.HttpServer.TestUtils
+namespace AppMotor.TestCore.Logging
 {
+    /// <summary>
+    /// Implements <see cref="ILogger"/> and writes output to XUnit's <see cref="ITestOutputHelper"/>.
+    /// </summary>
     internal sealed class XUnitLogger : ILogger
     {
         private readonly ITestOutputHelper _testOutputHelper;

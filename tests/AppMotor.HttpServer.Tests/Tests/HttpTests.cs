@@ -25,6 +25,7 @@ using AppMotor.Core.Net;
 using AppMotor.Core.Net.Http;
 using AppMotor.Core.TestUtils;
 using AppMotor.HttpServer;
+using AppMotor.TestCore.Logging;
 
 using Microsoft.AspNetCore.Hosting;
 
