@@ -25,6 +25,7 @@ using AppMotor.Core.Net;
 using AppMotor.Core.Net.Http;
 using AppMotor.Core.TestUtils;
 using AppMotor.HttpServer;
+using AppMotor.TestCore;
 using AppMotor.TestCore.Logging;
 
 using Microsoft.AspNetCore.Hosting;
@@ -36,13 +37,10 @@ using Xunit.Abstractions;
 
 namespace AppMotor.CliApp.HttpServer.Tests
 {
-    public sealed class HttpTests
+    public sealed class HttpTests : TestBase
     {
-        private readonly ITestOutputHelper _testOutputHelper;
-
-        public HttpTests(ITestOutputHelper testOutputHelper)
+        public HttpTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
         {
-            this._testOutputHelper = testOutputHelper;
         }
 
         [Fact]
@@ -52,7 +50,7 @@ namespace AppMotor.CliApp.HttpServer.Tests
 
             using var cts = new CancellationTokenSource();
 
-            var app = new HttpServerApplication(new TestHttpServerCommand(testPort, this._testOutputHelper));
+            var app = new HttpServerApplication(new TestHttpServerCommand(testPort, this.TestConsole));
             Task appTask = app.RunAsync(cts.Token);
 
             using (var httpClient = HttpClientFactory.CreateHttpClient())

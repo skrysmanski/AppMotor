@@ -27,6 +27,7 @@ using AppMotor.Core.Net;
 using AppMotor.Core.Net.Http;
 using AppMotor.Core.TestUtils;
 using AppMotor.HttpServer;
+using AppMotor.TestCore;
 using AppMotor.TestCore.Logging;
 
 using Microsoft.AspNetCore.Hosting;
@@ -38,15 +39,12 @@ using Xunit.Abstractions;
 
 namespace AppMotor.CliApp.HttpServer.Tests
 {
-    public sealed class HttpsTests
+    public sealed class HttpsTests : TestBase
     {
         private const string SERVER_HOSTNAME = "localhost";
 
-        private readonly ITestOutputHelper _testOutputHelper;
-
-        public HttpsTests(ITestOutputHelper testOutputHelper)
+        public HttpsTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
         {
-            this._testOutputHelper = testOutputHelper;
         }
 
         [Fact]
@@ -58,7 +56,7 @@ namespace AppMotor.CliApp.HttpServer.Tests
 
             using var cts = new CancellationTokenSource();
 
-            var app = new CliApplicationWithCommand(new TestServerCommand(testPort, testCertificate, this._testOutputHelper));
+            var app = new CliApplicationWithCommand(new TestServerCommand(testPort, testCertificate, this.TestConsole));
             Task appTask = app.RunAsync(cts.Token);
 
             using (var httpClient = HttpClientFactory.CreateHttpClient(serverCertificate: testCertificate))

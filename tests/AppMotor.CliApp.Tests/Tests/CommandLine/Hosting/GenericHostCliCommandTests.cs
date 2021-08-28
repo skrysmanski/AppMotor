@@ -20,6 +20,7 @@ using System.Threading;
 using AppMotor.CliApp.CommandLine;
 using AppMotor.CliApp.CommandLine.Hosting;
 using AppMotor.CliApp.TestUtils;
+using AppMotor.TestCore;
 using AppMotor.TestCore.Logging;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -33,13 +34,11 @@ using Xunit.Abstractions;
 
 namespace AppMotor.CliApp.Tests.CommandLine.Hosting
 {
-    public sealed class GenericHostCliCommandTests
+    public sealed class GenericHostCliCommandTests : TestBase
     {
-        private readonly ITestOutputHelper _testOutputHelper;
-
         public GenericHostCliCommandTests(ITestOutputHelper testOutputHelper)
+            : base(testOutputHelper)
         {
-            this._testOutputHelper = testOutputHelper;
         }
 
         [Fact]
@@ -51,7 +50,7 @@ namespace AppMotor.CliApp.Tests.CommandLine.Hosting
             const int MAX_WAIT_SECONDS_FOR_CONFIRMATION = 2;
 
             // Setup
-            var command = new GenericHostTestCommand(this._testOutputHelper);
+            var command = new GenericHostTestCommand(this.TestConsole);
             var testApp = new TestApplicationWithCommand(command);
 
             using var startedEvent = new ManualResetEventSlim();
@@ -114,7 +113,7 @@ namespace AppMotor.CliApp.Tests.CommandLine.Hosting
         public void Test_ServiceProvider()
         {
             // Setup
-            var command = new GenericHostCommandWithServiceProvider(this._testOutputHelper);
+            var command = new GenericHostCommandWithServiceProvider(this.TestConsole);
             var testApp = new TestApplicationWithCommand(command);
 
             using var startedEvent = new ManualResetEventSlim();
@@ -180,7 +179,7 @@ namespace AppMotor.CliApp.Tests.CommandLine.Hosting
             const int WAIT_SECONDS_INSIDE_COMMAND = 1;
 
             // Setup
-            var command = new GenericHostCommandWithExplicitExecutor(waitInsideExecute: TimeSpan.FromSeconds(WAIT_SECONDS_INSIDE_COMMAND), this._testOutputHelper);
+            var command = new GenericHostCommandWithExplicitExecutor(waitInsideExecute: TimeSpan.FromSeconds(WAIT_SECONDS_INSIDE_COMMAND), this.TestConsole);
             var testApp = new TestApplicationWithCommand(command);
 
             using var startedEvent = new ManualResetEventSlim();

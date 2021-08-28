@@ -21,7 +21,7 @@ using System.Collections.ObjectModel;
 
 using AppMotor.Core.Extensions;
 using AppMotor.Core.TestUtils;
-using AppMotor.Core.Utils;
+using AppMotor.TestCore;
 
 using JetBrains.Annotations;
 
@@ -37,15 +37,10 @@ namespace AppMotor.Core.Tests.Extensions
     /// <summary>
     /// Tests for <see cref="ExceptionExtensions"/>.
     /// </summary>
-    public sealed class ExceptionExtensionsTests
+    public sealed class ExceptionExtensionsTests : TestBase
     {
-        private readonly ITestOutputHelper _testOutputHelper;
-
-        public ExceptionExtensionsTests(ITestOutputHelper testOutputHelper)
+        public ExceptionExtensionsTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
         {
-            Validate.ArgumentWithName(nameof(testOutputHelper)).IsNotNull(testOutputHelper);
-
-            this._testOutputHelper = testOutputHelper;
         }
 
         #region AddData()
@@ -120,7 +115,7 @@ namespace AppMotor.Core.Tests.Extensions
             var rethrownException = Should.Throw<MySpecialException>(() => SomeOtherMethod(caughtException));
 
             // for manual verification
-            this._testOutputHelper.WriteLine(rethrownException.ToString());
+            this.TestConsole.WriteLine(rethrownException.ToString());
 
             // verify
             rethrownException.StackTrace!.ShouldContain(nameof(ExceptionCreator<MySpecialException>.CreateAndCatch));
