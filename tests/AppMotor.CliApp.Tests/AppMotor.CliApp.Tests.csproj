@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\AppMotor.CliApp\AppMotor.CliApp.csproj" />
+    <ProjectReference Include="..\..\src\AppMotor.TestCore\AppMotor.TestCore.csproj" />
   </ItemGroup>
 
 </Project>
