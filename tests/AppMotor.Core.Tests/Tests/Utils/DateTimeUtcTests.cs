@@ -19,8 +19,8 @@ using System.Globalization;
 using System.Text.Json;
 using System.Threading;
 
-using AppMotor.Core.TestUtils;
 using AppMotor.Core.Utils;
+using AppMotor.TestCore.Shouldly;
 
 using Shouldly;
 

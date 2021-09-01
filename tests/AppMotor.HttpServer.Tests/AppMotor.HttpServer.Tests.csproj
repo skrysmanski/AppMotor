@@ -11,7 +11,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\AppMotor.HttpServer\AppMotor.HttpServer.csproj" />
     <ProjectReference Include="..\..\src\AppMotor.TestCore\AppMotor.TestCore.csproj" />
-    <ProjectReference Include="..\AppMotor.Core.Tests\AppMotor.Core.Tests.csproj" />
   </ItemGroup>
 
 </Project>

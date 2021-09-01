@@ -16,7 +16,7 @@
 
 using System;
 
-namespace AppMotor.Core.TestUtils
+namespace AppMotor.TestCore
 {
     public static class TestEnvInfo
     {

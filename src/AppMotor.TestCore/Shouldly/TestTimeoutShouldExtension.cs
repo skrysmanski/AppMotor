@@ -22,10 +22,10 @@ using JetBrains.Annotations;
 
 using Shouldly;
 
-namespace AppMotor.Core.TestUtils
+namespace AppMotor.TestCore.Shouldly
 {
     [ShouldlyMethods]
-    public static class TestTimeoutExtension
+    public static class TestTimeoutShouldExtension
     {
         //
         // NOTE: Shouldly assertion methods can't be "async" because in this case Shouldly's

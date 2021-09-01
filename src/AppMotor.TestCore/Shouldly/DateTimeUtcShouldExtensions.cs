@@ -22,7 +22,7 @@ using JetBrains.Annotations;
 
 using Shouldly;
 
-namespace AppMotor.Core.TestUtils
+namespace AppMotor.TestCore.Shouldly
 {
     [ShouldlyMethods]
     public static class DateTimeUtcShouldExtensions

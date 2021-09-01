@@ -17,8 +17,8 @@
 using System;
 using System.Threading;
 
-using AppMotor.Core.TestUtils;
 using AppMotor.Core.Utils;
+using AppMotor.TestCore.Shouldly;
 
 using Xunit;
 

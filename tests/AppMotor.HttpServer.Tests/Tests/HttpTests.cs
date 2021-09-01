@@ -23,10 +23,10 @@ using AppMotor.CliApp.CommandLine.Hosting;
 using AppMotor.CliApp.HttpServer.TestUtils;
 using AppMotor.Core.Net;
 using AppMotor.Core.Net.Http;
-using AppMotor.Core.TestUtils;
 using AppMotor.HttpServer;
 using AppMotor.TestCore;
 using AppMotor.TestCore.Logging;
+using AppMotor.TestCore.Shouldly;
 
 using Microsoft.AspNetCore.Hosting;
 
