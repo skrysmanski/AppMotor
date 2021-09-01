@@ -34,6 +34,7 @@ namespace AppMotor.TestCore.Logging
         public static void AddXUnitLogger(this ILoggingBuilder builder, ITestOutputHelper testOutputHelper)
         {
             builder.Services.AddSingleton(testOutputHelper);
+            builder.Services.AddSingleton<TestLoggerStatistics>();
             builder.Services.AddSingleton<ILoggerProvider, XUnitLoggerProvider>();
         }
     }

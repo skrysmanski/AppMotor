@@ -14,6 +14,7 @@
 // limitations under the License.
 #endregion
 
+using System;
 using System.Threading;
 
 using AppMotor.Core.Events;
@@ -47,7 +48,7 @@ namespace AppMotor.CliApp.CommandLine.Hosting
         ///
         /// <para>Note: This token can no longer be obtained once <see cref="Stopped"/> has been
         /// triggered (because the underlying <see cref="CancellationTokenSource"/> will be disposed
-        /// at this time).</para>
+        /// at this time and you'll get an <see cref="ObjectDisposedException"/>).</para>
         /// </summary>
         public CancellationToken CancellationToken { get; }
     }
