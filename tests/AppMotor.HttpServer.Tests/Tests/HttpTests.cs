@@ -68,7 +68,7 @@ namespace AppMotor.CliApp.HttpServer.Tests
 
             cts.Cancel();
 
-            appTask.ShouldFinishWithin(TimeSpan.FromSeconds(10));
+            await appTask.ShouldFinishWithin(TimeSpan.FromSeconds(10));
         }
 
         private sealed class TestHttpServerCommand : HttpServerCommandBase
