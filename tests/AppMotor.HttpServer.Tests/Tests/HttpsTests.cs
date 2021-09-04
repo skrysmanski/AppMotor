@@ -39,6 +39,7 @@ using Xunit.Abstractions;
 
 namespace AppMotor.CliApp.HttpServer.Tests
 {
+    [CollectionDefinition("Abc2", DisableParallelization = true)]
     public sealed class HttpsTests : TestBase
     {
         private const string SERVER_HOSTNAME = "localhost";

@@ -37,6 +37,7 @@ using Xunit.Abstractions;
 
 namespace AppMotor.CliApp.HttpServer.Tests
 {
+    [CollectionDefinition("Abc", DisableParallelization = true)]
     public sealed class HttpTests : TestBase
     {
         public HttpTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
