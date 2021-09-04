@@ -39,9 +39,9 @@ namespace AppMotor.TestCore.Shouldly
         /// Should finish within the specified amount of time.
         /// </summary>
         [PublicAPI]
-        public static async Task ShouldFinishWithin(this Task task, TimeSpan timeout)
+        public static void ShouldFinishWithin(this Task task, TimeSpan timeout)
         {
-            await Task.WhenAny(task, Task.Delay(timeout)).ConfigureAwait(false);
+            Task.Run(async () => await Task.WhenAny(task, Task.Delay(timeout)).ConfigureAwait(false)).Wait();
 
             if (!task.IsCompleted)
             {
@@ -54,9 +54,9 @@ namespace AppMotor.TestCore.Shouldly
         /// Should finish within the specified amount of time.
         /// </summary>
         [PublicAPI]
-        public static async Task<T> ShouldFinishWithin<T>(this Task<T> task, TimeSpan timeout)
+        public static T ShouldFinishWithin<T>(this Task<T> task, TimeSpan timeout)
         {
-            await Task.WhenAny(task, Task.Delay(timeout)).ConfigureAwait(false);
+            Task.Run(async () => await Task.WhenAny(task, Task.Delay(timeout)).ConfigureAwait(false)).Wait();
 
             if (!task.IsCompleted)
             {
@@ -64,7 +64,7 @@ namespace AppMotor.TestCore.Shouldly
                 throw new ShouldAssertException(message);
             }
 
-            return await task.ConfigureAwait(false);
+            return task.Result;
         }
 
         private class CorrectedCompleteInShouldlyMessage : CompleteInShouldlyMessage
