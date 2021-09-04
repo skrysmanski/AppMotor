@@ -37,7 +37,6 @@ using Xunit.Abstractions;
 
 namespace AppMotor.CliApp.HttpServer.Tests
 {
-    [CollectionDefinition("Abc", DisableParallelization = true)]
     public sealed class HttpTests : TestBase
     {
         public HttpTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
@@ -47,9 +46,6 @@ namespace AppMotor.CliApp.HttpServer.Tests
         [Fact]
         public async Task TestHttpApiCall()
         {
-            //SynchronizationContext.Current.ShouldBe(null);
-            this.TestConsole.WriteLine($"CPU count: {Environment.ProcessorCount}");
-
             int testPort = ServerPortProvider.GetTestPort();
 
             using var cts = new CancellationTokenSource();
@@ -72,7 +68,7 @@ namespace AppMotor.CliApp.HttpServer.Tests
 
             cts.Cancel();
 
-            appTask.ShouldFinishWithin(TimeSpan.FromSeconds(10));
+            await appTask.ShouldFinishWithin(TimeSpan.FromSeconds(10));
         }
 
         private sealed class TestHttpServerCommand : HttpServerCommandBase

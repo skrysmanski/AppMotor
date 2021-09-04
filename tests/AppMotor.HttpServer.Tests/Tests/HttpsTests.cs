@@ -39,7 +39,6 @@ using Xunit.Abstractions;
 
 namespace AppMotor.CliApp.HttpServer.Tests
 {
-    [CollectionDefinition("Abc2", DisableParallelization = true)]
     public sealed class HttpsTests : TestBase
     {
         private const string SERVER_HOSTNAME = "localhost";
@@ -75,7 +74,7 @@ namespace AppMotor.CliApp.HttpServer.Tests
 
             cts.Cancel();
 
-            appTask.ShouldFinishWithin(TimeSpan.FromSeconds(10));
+            await appTask.ShouldFinishWithin(TimeSpan.FromSeconds(10));
         }
 
         private sealed class TestServerCommand : HttpServerCommandBase
