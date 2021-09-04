@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
@@ -22,16 +23,24 @@ using JetBrains.Annotations;
 
 using Shouldly;
 
+using Xunit.Abstractions;
+
 namespace AppMotor.TestCore.Shouldly
 {
     /// <summary>
     /// <see cref="Should"/>ly extensions for tasks that should finish within a certain amount of time.
+    /// Basically replaces <see cref="Should.CompleteIn(Action,TimeSpan,Func{string?}?)"/> so that
+    /// it works (reliably) with XUnit's parallelized test execution.
     /// </summary>
     [ShouldlyMethods]
     public static class TestTimeoutShouldlyExtension
     {
         //
-        // NOTE: Shouldly assertion methods can't be "async" because in this case Shouldly's
+        // NOTE: These methods do not create proper "... should finish within" messages because these
+        //   can't be produced for "async" method (because the stacktrace doesn't provide the necessary
+        //   information). Unfortunately, we can't actually use synchronous methods here because this
+        //   leads to deadlocks with XUnit's parallel test execution
+        // Shouldly assertion methods can't be "async" because in this case Shouldly's
         //   expression code extractor won't be able to find the expression.
         //
 
@@ -39,9 +48,9 @@ namespace AppMotor.TestCore.Shouldly
         /// Should finish within the specified amount of time.
         /// </summary>
         [PublicAPI]
-        public static async Task ShouldFinishWithin(this Task task, TimeSpan timeout)
+        public static void ShouldFinishWithin(this Task task, TimeSpan timeout)
         {
-            await Task.WhenAny(task, Task.Delay(timeout)).ConfigureAwait(false);
+            Task.Run(() => Task.WhenAny(task, Task.Delay(timeout))).Wait();
 
             if (!task.IsCompleted)
             {

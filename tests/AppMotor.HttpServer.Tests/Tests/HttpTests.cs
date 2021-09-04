@@ -35,6 +35,8 @@ using Shouldly;
 using Xunit;
 using Xunit.Abstractions;
 
+[assembly: CollectionBehavior(MaxParallelThreads = -1)]
+
 namespace AppMotor.CliApp.HttpServer.Tests
 {
     public sealed class HttpTests : TestBase
@@ -68,7 +70,7 @@ namespace AppMotor.CliApp.HttpServer.Tests
 
             cts.Cancel();
 
-            Should.CompleteIn(async () => await appTask, TimeSpan.FromSeconds(10));
+            appTask.ShouldFinishWithin(TimeSpan.FromSeconds(10));
         }
 
         private sealed class TestHttpServerCommand : HttpServerCommandBase
