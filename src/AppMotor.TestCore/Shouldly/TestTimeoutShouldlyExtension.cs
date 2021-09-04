@@ -24,14 +24,20 @@ using Shouldly;
 
 namespace AppMotor.TestCore.Shouldly
 {
+    /// <summary>
+    /// <see cref="Should"/>ly extensions for tasks that should finish within a certain amount of time.
+    /// </summary>
     [ShouldlyMethods]
-    public static class TestTimeoutShouldExtension
+    public static class TestTimeoutShouldlyExtension
     {
         //
         // NOTE: Shouldly assertion methods can't be "async" because in this case Shouldly's
         //   expression code extractor won't be able to find the expression.
         //
 
+        /// <summary>
+        /// Should finish within the specified amount of time.
+        /// </summary>
         [PublicAPI]
         public static void ShouldFinishWithin(this Task task, TimeSpan timeout)
         {
@@ -44,6 +50,9 @@ namespace AppMotor.TestCore.Shouldly
             }
         }
 
+        /// <summary>
+        /// Should finish within the specified amount of time.
+        /// </summary>
         [PublicAPI]
         public static T ShouldFinishWithin<T>(this Task<T> task, TimeSpan timeout)
         {

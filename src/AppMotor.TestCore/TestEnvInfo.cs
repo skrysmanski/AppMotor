@@ -18,6 +18,9 @@ using System;
 
 namespace AppMotor.TestCore
 {
+    /// <summary>
+    /// Information about the test environment a test runs in.
+    /// </summary>
     public static class TestEnvInfo
     {
         /// <summary>
