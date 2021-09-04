@@ -46,6 +46,9 @@ namespace AppMotor.CliApp.HttpServer.Tests
         [Fact]
         public async Task TestHttpApiCall()
         {
+            //SynchronizationContext.Current.ShouldBe(null);
+            this.TestConsole.WriteLine($"CPU count: {Environment.ProcessorCount}");
+
             int testPort = ServerPortProvider.GetTestPort();
 
             using var cts = new CancellationTokenSource();
