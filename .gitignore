@@ -31,6 +31,8 @@
 **/bin/Release/
 # Build intermediate directories
 **/obj/
+# Test results from dotnet test
+**/TestResults/*.trx
 
 # ReSharper cache
 _ReSharper.Caches/
