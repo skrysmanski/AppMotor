@@ -27,6 +27,7 @@ using AppMotor.HttpServer;
 using AppMotor.TestCore;
 using AppMotor.TestCore.Extensions;
 using AppMotor.TestCore.Logging;
+using AppMotor.TestCore.Networking;
 
 using Microsoft.AspNetCore.Hosting;
 
@@ -46,7 +47,7 @@ namespace AppMotor.CliApp.HttpServer.Tests
         [Fact]
         public async Task TestHttpApiCall()
         {
-            int testPort = ServerPortProvider.GetTestPort();
+            int testPort = ServerPortProvider.GetNextTestPort();
 
             using var cts = new CancellationTokenSource();
 

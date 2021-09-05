@@ -14,22 +14,28 @@
 // limitations under the License.
 #endregion
 
+using System.Diagnostics.CodeAnalysis;
+
 using JetBrains.Annotations;
 
-namespace AppMotor.CliApp.HttpServer.TestUtils
+namespace AppMotor.TestCore.Networking
 {
     /// <summary>
     /// Provides each test with its own port. This is necessary because tests
     /// run in parallel.
     /// </summary>
-    internal static class ServerPortProvider
+    public static class ServerPortProvider
     {
         private static readonly object s_lock = new();
 
         private static int s_nextPort = 1234;
 
+        /// <summary>
+        /// Provides a port to be used for testing.
+        /// </summary>
         [MustUseReturnValue]
-        public static int GetTestPort()
+        [SuppressMessage("Design", "CA1024:Use properties where appropriate")]
+        public static int GetNextTestPort()
         {
             lock (s_lock)
             {
