@@ -28,6 +28,7 @@ using AppMotor.Core.Exceptions;
 using AppMotor.Core.Net;
 using AppMotor.Core.Net.Http;
 using AppMotor.HttpServer;
+using AppMotor.TestCore;
 using AppMotor.TestCore.Extensions;
 
 using JetBrains.Annotations;
@@ -46,17 +47,15 @@ namespace AppMotor.CliApp.HttpServer.Tests
     /// These tests test that serving from and connecting to the various combinations of <see cref="SocketListenAddresses"/>
     /// and <see cref="IPVersions"/> works.
     /// </summary>
-    public sealed class IpVersionTests
+    public sealed class IpVersionTests : TestBase
     {
         private static readonly Lazy<string> s_ownIPv4Address = new(() => GetLocalIpAddress(IPVersions.IPv4));
 
         private static readonly Lazy<string> s_ownIPv6Address = new(() => GetLocalIpAddress(IPVersions.IPv6));
 
-        private readonly ITestOutputHelper _testOutputHelper;
-
         public IpVersionTests(ITestOutputHelper testOutputHelper)
+            : base(testOutputHelper)
         {
-            this._testOutputHelper = testOutputHelper;
         }
 
         [Theory]
@@ -123,7 +122,7 @@ namespace AppMotor.CliApp.HttpServer.Tests
 
         private async Task ExecuteRequest(HttpClient httpClient, string hostIpAddress, int testPort)
         {
-            this._testOutputHelper.WriteLine($"Running query against: {hostIpAddress}");
+            this.TestConsole.WriteLine($"Running query against: {hostIpAddress}");
 
             if (hostIpAddress.StartsWith('['))
             {
@@ -148,7 +147,7 @@ namespace AppMotor.CliApp.HttpServer.Tests
                 responseString.ShouldBe($"Caller ip address family: {AddressFamily.InterNetwork}");
             }
 
-            this._testOutputHelper.WriteLine("Done");
+            this.TestConsole.WriteLine("Done");
         }
 
         [MustUseReturnValue]
