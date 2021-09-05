@@ -27,8 +27,8 @@ using AppMotor.CliApp.HttpServer.TestUtils;
 using AppMotor.Core.Exceptions;
 using AppMotor.Core.Net;
 using AppMotor.Core.Net.Http;
-using AppMotor.Core.TestUtils;
 using AppMotor.HttpServer;
+using AppMotor.TestCore.Extensions;
 
 using JetBrains.Annotations;
 
@@ -118,7 +118,7 @@ namespace AppMotor.CliApp.HttpServer.Tests
 
             cts.Cancel();
 
-            await appTask.ShouldFinishWithin(TimeSpan.FromSeconds(10));
+            await appTask.OrTimeoutAfter(TimeSpan.FromSeconds(10));
         }
 
         private async Task ExecuteRequest(HttpClient httpClient, string hostIpAddress, int testPort)
