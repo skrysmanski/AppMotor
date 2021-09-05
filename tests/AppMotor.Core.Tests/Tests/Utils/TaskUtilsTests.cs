@@ -16,6 +16,7 @@
 
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 using AppMotor.Core.Utils;
 using AppMotor.TestCore.Shouldly;
@@ -27,12 +28,12 @@ namespace AppMotor.Core.Tests.Utils
     public sealed class TaskUtilsTests
     {
         [Fact]
-        public void Test_DelaySafe()
+        public async Task Test_DelaySafe()
         {
-            TaskUtils.DelaySafe(TimeSpan.FromSeconds(0.2), CancellationToken.None).ShouldFinishWithin(TimeSpan.FromSeconds(0.5));
+            await TaskUtils.DelaySafe(TimeSpan.FromSeconds(0.2), CancellationToken.None).OrTimeoutAfter(TimeSpan.FromSeconds(0.5));
 
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(0.2));
-            TaskUtils.DelaySafe(TimeSpan.FromSeconds(20), cts.Token).ShouldFinishWithin(TimeSpan.FromSeconds(0.5));
+            await TaskUtils.DelaySafe(TimeSpan.FromSeconds(20), cts.Token).OrTimeoutAfter(TimeSpan.FromSeconds(0.5));
         }
     }
 }
