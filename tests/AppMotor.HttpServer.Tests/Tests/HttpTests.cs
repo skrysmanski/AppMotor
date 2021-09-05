@@ -35,8 +35,6 @@ using Shouldly;
 using Xunit;
 using Xunit.Abstractions;
 
-[assembly: CollectionBehavior(MaxParallelThreads = -1)]
-
 namespace AppMotor.CliApp.HttpServer.Tests
 {
     public sealed class HttpTests : TestBase
