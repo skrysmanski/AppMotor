@@ -19,7 +19,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using AppMotor.Core.Utils;
-using AppMotor.TestCore.Shouldly;
+using AppMotor.TestCore.Extensions;
 
 using Xunit;
 
