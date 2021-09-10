@@ -127,11 +127,16 @@ namespace AppMotor.CliApp.HttpServer.Tests
             if (hostIpAddress.StartsWith('['))
             {
                 // IPv6 address
-                //hostIpAddress = Regex.Replace(hostIpAddress, @"^\[(.+)%\d+\]$", "[$1]");
+                hostIpAddress = Regex.Replace(hostIpAddress, @"^\[(.+)%\d+\]$", "[$1]");
                 //hostIpAddress = hostIpAddress.Replace("%", WebUtility.UrlEncode("%"));
             }
 
-            var response = await httpClient.GetAsync($"http://{hostIpAddress}:{testPort}/api/ping");
+            var requestUri = new Uri($"http://{hostIpAddress}:{testPort}/api/ping");
+
+            this.TestConsole.WriteLine($"IDN host: {requestUri.IdnHost}");
+
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, requestUri);
+            var response = await httpClient.SendAsync(requestMessage);
 
             response.EnsureSuccessStatusCode();
 
