@@ -149,7 +149,18 @@ namespace AppMotor.CliApp.HttpServer.Tests
                 throw;
             }
 
-            response.EnsureSuccessStatusCode();
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception)
+            {
+                var errorResponseString = await response.Content.ReadAsStringAsync();
+                this.TestConsole.WriteLine("[START ERROR RESPONSE]");
+                this.TestConsole.WriteLine(errorResponseString);
+                this.TestConsole.WriteLine("[END ERROR RESPONSE]");
+                throw;
+            }
 
             var responseString = await response.Content.ReadAsStringAsync();
 
