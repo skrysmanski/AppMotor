@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.NetworkInformation;
@@ -23,6 +24,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
+using AppMotor.CliApp.CommandLine.Hosting;
+using AppMotor.CliApp.HttpServer.TestUtils;
 using AppMotor.Core.Exceptions;
 using AppMotor.Core.Logging;
 using AppMotor.Core.Net;
@@ -30,11 +33,13 @@ using AppMotor.Core.Net.Http;
 using AppMotor.HttpServer;
 using AppMotor.TestCore;
 using AppMotor.TestCore.Extensions;
+using AppMotor.TestCore.Logging;
 using AppMotor.TestCore.Networking;
 
 using JetBrains.Annotations;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 
 using Shouldly;
@@ -72,13 +77,11 @@ namespace AppMotor.CliApp.HttpServer.Tests
 
             using var cts = new CancellationTokenSource();
 
-            var app = new HttpServerApplication(
-                new HttpServerPort(listenAddress, testPort)
-                {
-                    IPVersion = ipVersion,
-                },
-                new Startup()
-            );
+            var serverPort = new HttpServerPort(listenAddress, testPort)
+            {
+                IPVersion = ipVersion,
+            };
+            var app = new HttpServerApplication(new TestHttpServerCommand(serverPort, this.TestConsole));
             Task appTask = app.RunAsync(cts.Token);
 
             using (var httpClient = HttpClientFactory.CreateHttpClient())
@@ -231,6 +234,39 @@ namespace AppMotor.CliApp.HttpServer.Tests
             else
             {
                 throw new NotSupportedException($"Unsupported ipVersion: {ipVersion}");
+            }
+        }
+
+        private sealed class TestHttpServerCommand : HttpServerCommandBase
+        {
+            private readonly HttpServerPort _testPort;
+
+            /// <inheritdoc />
+            protected override IHostBuilderFactory HostBuilderFactory { get; }
+
+            public TestHttpServerCommand(HttpServerPort testPort, ITestOutputHelper testOutputHelper)
+            {
+                this._testPort = testPort;
+
+                this.HostBuilderFactory = new DefaultHostBuilderFactory()
+                {
+                    LoggingConfigurationProvider = (_, builder) =>
+                    {
+                        builder.AddXUnitLogger(testOutputHelper);
+                    },
+                };
+            }
+
+            /// <inheritdoc />
+            protected override IEnumerable<HttpServerPort> GetServerPorts(IServiceProvider serviceProvider)
+            {
+                yield return this._testPort;
+            }
+
+            /// <inheritdoc />
+            protected override object CreateStartupClass(WebHostBuilderContext context)
+            {
+                return new Startup();
             }
         }
 
