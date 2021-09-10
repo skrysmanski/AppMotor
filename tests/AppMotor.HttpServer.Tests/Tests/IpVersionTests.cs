@@ -128,7 +128,7 @@ namespace AppMotor.CliApp.HttpServer.Tests
             {
                 // IPv6 address
                 //hostIpAddress = Regex.Replace(hostIpAddress, @"^\[(.+)%\d+\]$", "[$1]");
-                hostIpAddress = hostIpAddress.Replace("%", WebUtility.UrlEncode("%"));
+                //hostIpAddress = hostIpAddress.Replace("%", WebUtility.UrlEncode("%"));
             }
 
             var response = await httpClient.GetAsync($"http://{hostIpAddress}:{testPort}/api/ping");
