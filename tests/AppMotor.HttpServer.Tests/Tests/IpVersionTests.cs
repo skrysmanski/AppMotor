@@ -84,8 +84,10 @@ namespace AppMotor.CliApp.HttpServer.Tests
             var app = new HttpServerApplication(new TestHttpServerCommand(serverPort, this.TestConsole));
             Task appTask = app.RunAsync(cts.Token);
 
-            using (var httpClient = HttpClientFactory.CreateHttpClient())
+            try
             {
+                using var httpClient = HttpClientFactory.CreateHttpClient();
+
                 switch (ipVersion)
                 {
                     case IPVersions.IPv4:
@@ -118,10 +120,12 @@ namespace AppMotor.CliApp.HttpServer.Tests
                         throw new UnexpectedSwitchValueException(nameof(ipVersion), ipVersion);
                 }
             }
+            finally
+            {
+                cts.Cancel();
 
-            cts.Cancel();
-
-            await appTask.OrTimeoutAfter(TimeSpan.FromSeconds(10));
+                await appTask.OrTimeoutAfter(TimeSpan.FromSeconds(10));
+            }
         }
 
         private async Task ExecuteRequest(HttpClient httpClient, string hostIpAddress, int testPort)
