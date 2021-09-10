@@ -24,6 +24,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using AppMotor.Core.Exceptions;
+using AppMotor.Core.Logging;
 using AppMotor.Core.Net;
 using AppMotor.Core.Net.Http;
 using AppMotor.HttpServer;
@@ -136,7 +137,17 @@ namespace AppMotor.CliApp.HttpServer.Tests
             this.TestConsole.WriteLine($"IDN host: {requestUri.IdnHost}");
 
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, requestUri);
-            var response = await httpClient.SendAsync(requestMessage);
+
+            HttpResponseMessage response;
+            try
+            {
+                response = await httpClient.SendAsync(requestMessage);
+            }
+            catch (Exception ex)
+            {
+                this.TestConsole.WriteLine(ex.ToStringExtended());
+                throw;
+            }
 
             response.EnsureSuccessStatusCode();
 
