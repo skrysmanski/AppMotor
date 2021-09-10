@@ -14,7 +14,9 @@
 // limitations under the License.
 #endregion
 
+using System.Collections.Generic;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -39,8 +41,40 @@ namespace AppMotor.CliApp.HttpServer.Tests
         {
         }
 
-        [Fact]
-        public async Task RunIpTest()
+        public static IEnumerable<object[]> TestData
+        {
+            get
+            {
+                foreach (var networkInterface in NetworkInterface.GetAllNetworkInterfaces())
+                {
+                    if (networkInterface.OperationalStatus != OperationalStatus.Up || !networkInterface.Supports(NetworkInterfaceComponent.IPv6))
+                    {
+                        continue;
+                    }
+
+                    var ipProperties = networkInterface.GetIPProperties();
+
+                    /*if (ipProperties.GatewayAddresses.Count == 0)
+                    {
+                        continue;
+                    }*/
+
+                    foreach (var ip in ipProperties.UnicastAddresses)
+                    {
+                        if (ip.Address.AddressFamily != AddressFamily.InterNetworkV6)
+                        {
+                            continue;
+                        }
+
+                        yield return new object[] { ip.Address.ToString() };
+                    }
+                }
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(TestData))]
+        public async Task RunIpTest(string ipv6AddressForClient)
         {
             using var startedEvent = new ManualResetEventSlim();
 
@@ -50,7 +84,7 @@ namespace AppMotor.CliApp.HttpServer.Tests
 
             startedEvent.Wait();
 
-            RunClient(port, "abc").ShouldBe("ABC");
+            RunClient(ipv6AddressForClient, port, "abc").ShouldBe("ABC");
 
             await serverTask;
         }
@@ -104,9 +138,9 @@ namespace AppMotor.CliApp.HttpServer.Tests
         }
 
         [MustUseReturnValue]
-        private string RunClient(int port, string message)
+        private string RunClient(string ipv6Address, int port, string message)
         {
-            using TcpClient client = new("::1", port);
+            using TcpClient client = new(ipv6Address, port);
 
             // Translate the passed message into ASCII and store it as a Byte array.
             byte[] data = Encoding.ASCII.GetBytes(message);
