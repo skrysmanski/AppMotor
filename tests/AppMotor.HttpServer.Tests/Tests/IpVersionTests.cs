@@ -257,8 +257,10 @@ namespace AppMotor.CliApp.HttpServer.Tests
 
                 this.HostBuilderFactory = new DefaultHostBuilderFactory()
                 {
-                    LoggingConfigurationProvider = (_, builder) =>
+                    LoggingConfigurationProvider = (ctx, builder) =>
                     {
+                        ctx.Configuration["Logging:LogLevel:Default"] = "Debug";
+                        //ctx.Configuration["Logging:LogLevel:Default"] = "Trace";
                         builder.AddXUnitLogger(testOutputHelper);
                     },
                 };
