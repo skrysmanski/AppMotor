@@ -122,6 +122,8 @@ namespace AppMotor.CliApp.HttpServer.Tests
             }
             finally
             {
+                this.TestConsole.WriteLine("");
+
                 cts.Cancel();
 
                 await appTask.OrTimeoutAfter(TimeSpan.FromSeconds(10));
@@ -130,6 +132,7 @@ namespace AppMotor.CliApp.HttpServer.Tests
 
         private async Task ExecuteRequest(HttpClient httpClient, string hostIpAddress, int testPort)
         {
+            this.TestConsole.WriteLine("");
             this.TestConsole.WriteLine($"Running query against: {hostIpAddress}");
 
             if (hostIpAddress.StartsWith('['))

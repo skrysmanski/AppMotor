@@ -123,7 +123,10 @@ namespace AppMotor.HttpServer
                 }
                 else
                 {
-                    configure = _ => { };
+                    configure = listenOptions =>
+                    {
+                        listenOptions.UseConnectionLogging();
+                    };
                 }
 
                 switch (serverPort.ListenAddress)
