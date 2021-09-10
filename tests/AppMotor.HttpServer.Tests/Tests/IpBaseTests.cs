@@ -21,6 +21,11 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using AppMotor.TestCore;
+using AppMotor.TestCore.Networking;
+
+using JetBrains.Annotations;
+
+using Shouldly;
 
 using Xunit;
 using Xunit.Abstractions;
@@ -37,69 +42,27 @@ namespace AppMotor.CliApp.HttpServer.Tests
         [Fact]
         public async Task RunIpTest()
         {
-            var startedEvent = new ManualResetEventSlim();
-            Task serverTask = RunServer(startedEvent);
+            using var startedEvent = new ManualResetEventSlim();
+
+            int port = ServerPortProvider.GetNextTestPort();
+
+            Task serverTask = RunServer(port, startedEvent);
 
             startedEvent.Wait();
 
-            RunClient("abc");
+            RunClient(port, "abc").ShouldBe("ABC");
 
             await serverTask;
         }
 
-        private void RunClient(string message)
+        private async Task RunServer(int port, ManualResetEventSlim startedEvent)
         {
-            // Create a TcpClient.
-            // Note, for this client to work you need to have a TcpServer
-            // connected to the same address as specified by the server, port
-            // combination.
-            const int PORT = 13000;
+            var server = new TcpListener(IPAddress.IPv6Any, port: port);
 
-            TcpClient client = new("::1", PORT);
-
-            // Translate the passed message into ASCII and store it as a Byte array.
-            byte[] data = Encoding.ASCII.GetBytes(message);
-
-            // Get a client stream for reading and writing.
-            //  Stream stream = client.GetStream();
-
-            NetworkStream stream = client.GetStream();
-
-            // Send the message to the connected TcpServer.
-            stream.Write(data, 0, data.Length);
-
-            this.TestConsole.WriteLine("Sent: {0}", message);
-
-            // Receive the TcpServer.response.
-
-            // Buffer to store the response bytes.
-            data = new byte[256];
-
-            // String to store the response ASCII representation.
-
-            // Read the first batch of the TcpServer response bytes.
-            int bytes = stream.Read(data, 0, data.Length);
-            string responseData = Encoding.ASCII.GetString(data, 0, bytes);
-            this.TestConsole.WriteLine("Received: {0}", responseData);
-
-            // Close everything.
-            stream.Close();
-            client.Close();
-        }
-
-        private async Task RunServer(ManualResetEventSlim startedEvent)
-        {
-            // Set the TcpListener on port 13000.
-            const int PORT = 13000;
-
-//var x = new IPEndPoint(IPAddress.IPv6Any, 15000);
-
-            var server = new TcpListener(IPAddress.IPv6Any, port: PORT);
-
-// Start listening for client requests.
+            // Start listening for client requests.
             server.Start();
 
-// Buffer for reading data
+            // Buffer for reading data
             byte[] bytes = new byte[256];
 
             this.TestConsole.WriteLine("Waiting for a connection... ");
@@ -138,6 +101,36 @@ namespace AppMotor.CliApp.HttpServer.Tests
 
             // Shutdown and end connection
             client.Close();
+        }
+
+        [MustUseReturnValue]
+        private string RunClient(int port, string message)
+        {
+            using TcpClient client = new("::1", port);
+
+            // Translate the passed message into ASCII and store it as a Byte array.
+            byte[] data = Encoding.ASCII.GetBytes(message);
+
+            // Get a client stream for reading and writing.
+            //  Stream stream = client.GetStream();
+
+            using NetworkStream stream = client.GetStream();
+
+            // Send the message to the connected TcpServer.
+            stream.Write(data, 0, data.Length);
+
+            this.TestConsole.WriteLine("Sent: {0}", message);
+
+            // Receive the TcpServer.response.
+
+            // Buffer to store the response bytes.
+            data = new byte[256];
+
+            // String to store the response ASCII representation.
+
+            // Read the first batch of the TcpServer response bytes.
+            int bytes = stream.Read(data, 0, data.Length);
+            return Encoding.ASCII.GetString(data, 0, bytes);
         }
     }
 }
