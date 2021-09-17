@@ -77,7 +77,7 @@ jobs:
       - name: Upload test results
         # See: https://github.com/actions/upload-artifact
         uses: actions/upload-artifact@v2
-        # run this step even if previous step failed
+        # Run this step even if any of the previous steps has failed
         if: success() || failure()
         with:
           # NOTE: To make the downloads of the test results easier to use (i.e. when downloading test results
