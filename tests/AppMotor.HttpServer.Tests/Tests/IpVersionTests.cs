@@ -20,12 +20,10 @@ using System.Net;
 using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
 using AppMotor.CliApp.CommandLine.Hosting;
-using AppMotor.CliApp.HttpServer.TestUtils;
 using AppMotor.Core.Exceptions;
 using AppMotor.Core.Logging;
 using AppMotor.Core.Net;
@@ -135,18 +133,16 @@ namespace AppMotor.CliApp.HttpServer.Tests
             this.TestConsole.WriteLine();
             this.TestConsole.WriteLine($"Running query against: {hostIpAddress}");
 
+            var requestUri = new Uri($"http://{hostIpAddress}:{testPort}/api/ping");
+
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, requestUri);
+
             if (hostIpAddress.StartsWith('['))
             {
                 // IPv6 address
-                //hostIpAddress = Regex.Replace(hostIpAddress, @"^\[(.+)%\d+\]$", "[$1]");
-                //hostIpAddress = hostIpAddress.Replace("%", WebUtility.UrlEncode("%"));
+                // Fix for bug in HttpClient: https://github.com/dotnet/runtime/issues/59341
+                requestMessage.Headers.Host = requestUri.Authority;
             }
-
-            var requestUri = new Uri($"http://{hostIpAddress}:{testPort}/api/ping");
-
-            this.TestConsole.WriteLine($"IDN host: {requestUri.IdnHost}");
-
-            var requestMessage = new HttpRequestMessage(HttpMethod.Get, requestUri);
 
             HttpResponseMessage response;
             try
