@@ -81,7 +81,7 @@ namespace AppMotor.CliApp.CommandLine.Hosting
         /// <summary>
         /// The name of the configuration section (<see cref="IConfiguration.GetSection"/>) used to configure log levels, etc. for
         /// all loggers that are enabled via <see cref="LoggingConfigurationProvider"/>. Defaults to "Logging" (the .NET default).
-        /// Can be set to <c>null</c> to disable setting the section.
+        /// Can be set to <c>null</c> to completely disable the ability to configure logging.
         /// </summary>
         /// <remarks>
         /// For more details, see: https://docs.microsoft.com/en-us/dotnet/core/extensions/logging#configure-logging
