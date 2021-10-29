@@ -29,7 +29,8 @@ namespace AppMotor.TestCore.Logging
     public static class XUnitLoggerProviderExtensions
     {
         /// <summary>
-        /// Adds a logger that writes to <see cref="ITestOutputHelper"/>.
+        /// Adds a logger that writes to <see cref="ITestOutputHelper"/>. Also adds the <paramref name="testOutputHelper"/>
+        /// instance and <see cref="TestLoggerStatistics"/> to the service collection.
         /// </summary>
         public static void AddXUnitLogger(this ILoggingBuilder builder, ITestOutputHelper testOutputHelper)
         {
