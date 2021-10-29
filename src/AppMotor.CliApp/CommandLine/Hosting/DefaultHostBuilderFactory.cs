@@ -100,6 +100,11 @@ namespace AppMotor.CliApp.CommandLine.Hosting
         /// Allows you to programatically set the log levels for the application. If <c>null</c>, the application's
         /// configuration (file) is used.
         /// </summary>
+        /// <remarks>
+        /// This configuration does not allow you to set different log levels for different log providers (e.g. console,
+        /// Windows event log, ...). The log levels apply to all log providers. If you need to configure different
+        /// log levels for different log providers, you'll need to use a config file (or other config source).
+        /// </remarks>
         public LogLevelConfiguration? LogLevelConfiguration { get; init; }
 
         /// <summary>
