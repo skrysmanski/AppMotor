@@ -29,8 +29,10 @@ using Microsoft.Extensions.Logging;
 namespace AppMotor.CliApp.CommandLine.Hosting
 {
     /// <summary>
-    /// <para>The default <see cref="IHostBuilderFactory"/> implementation. Lets you customize the host by
-    /// setting the various properties in this class (or even by overriding <see cref="CreateHostBuilder"/>).</para>
+    /// <para>The default <see cref="IHostBuilderFactory"/> implementation for AppMotor applications. Lets you customize the
+    /// host by setting the various properties in this class (or even by overriding <see cref="CreateHostBuilder"/>).</para>
+    ///
+    /// <para>Usually used for the <see cref="GenericHostCliCommand.HostBuilderFactory"/> property.</para>
     ///
     /// <para>By default, this factory creates hosts with the following features enabled:</para>
     ///
@@ -49,9 +51,9 @@ namespace AppMotor.CliApp.CommandLine.Hosting
     public class DefaultHostBuilderFactory : IHostBuilderFactory
     {
         /// <summary>
-        /// An instance of this class.
+        /// An instance of this class with all the default settings (can't be changed afterwards).
         /// </summary>
-        public static DefaultHostBuilderFactory Instance { get; } = new();
+        internal static DefaultHostBuilderFactory Instance { get; } = new();
 
         /// <summary>
         /// The configures the <see cref="IServiceProviderFactory{TContainerBuilder}"/> (i.e. the dependency injection system) by

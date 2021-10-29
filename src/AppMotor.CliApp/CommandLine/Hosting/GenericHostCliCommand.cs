@@ -28,9 +28,9 @@ using Microsoft.Extensions.Hosting;
 namespace AppMotor.CliApp.CommandLine.Hosting
 {
     /// <summary>
-    /// A <see cref="CliCommand"/> that integrates .NET's Generic Host functionality - i.e. <see cref="IHost"/> and its builder
+    /// <para>A <see cref="CliCommand"/> that integrates .NET's Generic Host functionality - i.e. <see cref="IHost"/> and its builder
     /// <see cref="IHostBuilder"/>. This is .NET's new standard way of configuring applications (see
-    /// https://docs.microsoft.com/en-us/dotnet/core/extensions/generic-host for more details).
+    /// https://docs.microsoft.com/en-us/dotnet/core/extensions/generic-host for more details).</para>
     ///
     /// <para>The main benefit here is that you get access to .NET's dependency injection system (i.e. <see cref="IServiceProvider"/>)
     /// and its associated services (like logging and configuration). You also get support for running services via
