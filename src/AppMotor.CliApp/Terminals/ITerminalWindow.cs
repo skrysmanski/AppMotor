@@ -39,7 +39,7 @@ namespace AppMotor.CliApp.Terminals
 
         /// <summary>
         /// The encoding used for the various <c>Write()</c> and <c>WriteLine()</c> methods
-        /// and for <see cref="IErrorOutputTerminal.Error"/>.
+        /// and for <see cref="IErrorOutTerminal.Error"/>.
         /// </summary>
         /// <remarks>
         /// For details and defaults, see <see cref="Console.OutputEncoding"/>.

@@ -25,10 +25,11 @@ using JetBrains.Annotations;
 namespace AppMotor.CliApp.Terminals
 {
     /// <summary>
-    /// Represents the standard output of a terminal.
+    /// Represents the standard output (i.e. analog to <see cref="Console.Out"/>) of a terminal.
     /// </summary>
     /// <seealso cref="ITerminal"/>
-    public interface IOutputTerminal
+    /// <seealso cref="IErrorOutTerminal"/>
+    public interface IStdOutTerminal
     {
         /// <summary>
         /// The standard out stream.

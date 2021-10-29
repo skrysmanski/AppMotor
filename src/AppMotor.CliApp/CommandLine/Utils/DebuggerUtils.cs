@@ -56,7 +56,7 @@ namespace AppMotor.CliApp.CommandLine.Utils
         /// <summary>
         /// Should be used instead of <see cref="Debugger.Launch"/>.
         /// </summary>
-        public static void LaunchDebugger(IOutputTerminal terminal)
+        public static void LaunchDebugger(IStdOutTerminal terminal)
         {
             if (IsDebuggerAttached)
             {

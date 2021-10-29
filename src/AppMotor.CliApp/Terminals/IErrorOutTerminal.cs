@@ -14,6 +14,7 @@
 // limitations under the License.
 #endregion
 
+using System;
 using System.IO;
 
 using JetBrains.Annotations;
@@ -21,10 +22,11 @@ using JetBrains.Annotations;
 namespace AppMotor.CliApp.Terminals
 {
     /// <summary>
-    /// Represents the error output of a terminal.
+    /// Represents the error output (i.e. analog to <see cref="Console.Error"/>) of a terminal.
     /// </summary>
     /// <seealso cref="ITerminal"/>
-    public interface IErrorOutputTerminal
+    /// <seealso cref="IStdOutTerminal"/>
+    public interface IErrorOutTerminal
     {
         /// <summary>
         /// The standard error output stream.
