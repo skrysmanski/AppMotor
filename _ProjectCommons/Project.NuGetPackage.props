@@ -49,7 +49,7 @@
     <!--
       Generate XML documentation (to be included in the NuGet package).
     -->
-    <GenerateDocumentationFile Condition="'$(Configuration)' == 'Release'">true</GenerateDocumentationFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <!--
