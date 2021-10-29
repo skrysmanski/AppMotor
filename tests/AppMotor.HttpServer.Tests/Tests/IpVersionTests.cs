@@ -39,6 +39,7 @@ using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 using Shouldly;
 
@@ -253,10 +254,10 @@ namespace AppMotor.CliApp.HttpServer.Tests
 
                 this.HostBuilderFactory = new DefaultHostBuilderFactory()
                 {
-                    LoggingConfigurationProvider = (ctx, builder) =>
+                    LogLevelConfiguration = new LogLevelConfiguration(defaultLogLevel: LogLevel.Debug),
+
+                    LoggingConfigurationProvider = (_, builder) =>
                     {
-                        ctx.Configuration["Logging:LogLevel:Default"] = "Debug";
-                        //ctx.Configuration["Logging:LogLevel:Default"] = "Trace";
                         builder.AddXUnitLogger(testOutputHelper);
                     },
                 };

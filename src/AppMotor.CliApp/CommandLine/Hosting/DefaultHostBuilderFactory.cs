@@ -81,6 +81,11 @@ namespace AppMotor.CliApp.CommandLine.Hosting
         public Action<HostBuilderContext, IConfigurationBuilder>? AppConfigurationProvider { get; init; } = ApplyDefaultAppConfiguration;
 
         /// <summary>
+        /// The default value for <see cref="LoggingConfigurationSectionName"/>.
+        /// </summary>
+        internal const string DEFAULT_LOGGING_CONFIGURATION_SECTION_NAME = "Logging";
+
+        /// <summary>
         /// The name of the configuration section (<see cref="IConfiguration.GetSection"/>) used to configure log levels, etc. for
         /// all loggers that are enabled via <see cref="LoggingConfigurationProvider"/>. Defaults to "Logging" (the .NET default).
         /// Can be set to <c>null</c> to completely disable the ability to configure logging.
@@ -89,7 +94,13 @@ namespace AppMotor.CliApp.CommandLine.Hosting
         /// For more details, see: https://docs.microsoft.com/en-us/dotnet/core/extensions/logging#configure-logging
         /// </remarks>
         [PublicAPI]
-        public string? LoggingConfigurationSectionName { get; init; } = "Logging";
+        public string? LoggingConfigurationSectionName { get; init; } = DEFAULT_LOGGING_CONFIGURATION_SECTION_NAME;
+
+        /// <summary>
+        /// Allows you to programatically set the log levels for the application. If <c>null</c>, the application's
+        /// configuration (file) is used.
+        /// </summary>
+        public LogLevelConfiguration? LogLevelConfiguration { get; init; }
 
         /// <summary>
         /// Configures the logging for the application. You can use the various <c>loggingBuilder.Add...()</c>
@@ -141,6 +152,18 @@ namespace AppMotor.CliApp.CommandLine.Hosting
                     // Load the logging configuration from the specified configuration section.
                     loggingBuilder.AddConfiguration(context.Configuration.GetSection(this.LoggingConfigurationSectionName));
                 });
+            }
+
+            if (this.LogLevelConfiguration is not null)
+            {
+                if (string.IsNullOrWhiteSpace(this.LoggingConfigurationSectionName))
+                {
+                    throw new InvalidOperationException($"Can't apply property '{nameof(this.LogLevelConfiguration)}' when property '{nameof(this.LoggingConfigurationSectionName)}' is empty.");
+                }
+
+                hostBuilder.ConfigureLogging(
+                    (ctx, _) => this.LogLevelConfiguration.ApplyToHostBuilder(ctx, loggingConfigurationSectionName: this.LoggingConfigurationSectionName)
+                );
             }
 
             if (this.LoggingConfigurationProvider is not null)
