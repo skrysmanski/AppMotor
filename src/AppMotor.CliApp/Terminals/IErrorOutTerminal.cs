@@ -25,6 +25,7 @@ namespace AppMotor.CliApp.Terminals
     /// Represents the error output (i.e. analog to <see cref="Console.Error"/>) of a terminal.
     /// </summary>
     /// <seealso cref="ITerminal"/>
+    /// <seealso cref="IOutputTerminal"/>
     /// <seealso cref="IStdOutTerminal"/>
     public interface IErrorOutTerminal
     {

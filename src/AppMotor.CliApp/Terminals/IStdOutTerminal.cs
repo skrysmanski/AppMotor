@@ -28,6 +28,7 @@ namespace AppMotor.CliApp.Terminals
     /// Represents the standard output (i.e. analog to <see cref="Console.Out"/>) of a terminal.
     /// </summary>
     /// <seealso cref="ITerminal"/>
+    /// <seealso cref="IOutputTerminal"/>
     /// <seealso cref="IErrorOutTerminal"/>
     public interface IStdOutTerminal
     {

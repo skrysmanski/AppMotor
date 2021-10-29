@@ -1,5 +1,5 @@
 ﻿#region License
-// Copyright 2020 AppMotor Framework (https://github.com/skrysmanski/AppMotor)
+// Copyright 2021 AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,11 +17,9 @@
 namespace AppMotor.CliApp.Terminals
 {
     /// <summary>
-    /// Represents a terminal/console without any "fancy" functionality; i.e. it supports reading and writing but
-    /// no interaction with the terminal window - like setting the terminal's title, cursor position or obtaining
-    /// the terminal's width. For advanced features, see <see cref="ITerminalWindow"/>.
+    /// Combination of <see cref="IStdOutTerminal"/> and <see cref="IErrorOutTerminal"/>.
     /// </summary>
-    public interface ITerminal : IOutputTerminal, IInputTerminal
+    public interface IOutputTerminal : IStdOutTerminal, IErrorOutTerminal
     {
     }
 }
