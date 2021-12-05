@@ -114,7 +114,7 @@ namespace AppMotor.HttpServer
                         }
                     }
 
-                    logger.LogInformation("Using certificate '{thumbprint}' for server port {port}.", certificate.Thumbprint, httpsServerPort.Port);
+                    logger.LogInformation("Using certificate '{Thumbprint}' for server port {Port}.", certificate.Thumbprint, httpsServerPort.Port);
 
                     configure = listenOptions =>
                     {

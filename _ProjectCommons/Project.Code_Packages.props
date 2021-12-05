@@ -22,7 +22,7 @@
         we can "ask" NuGet whether a newer version is available. This is not possible with <AnalysisLevel>.
         So we keep using the NuGet package.
     -->
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>
