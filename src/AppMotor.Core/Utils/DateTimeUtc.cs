@@ -45,14 +45,12 @@ namespace AppMotor.Core.Utils
         /// <summary>
         /// The date part of this date time.
         /// </summary>
-        // TODO #24: Switch type to "DateOnly" with .NET 6
-        public DateTime Date => this._underlyingDateTime.Date;
+        public DateOnly Date => DateOnly.FromDateTime(this._underlyingDateTime);
 
         /// <summary>
         /// The time part of this date time.
         /// </summary>
-        // TODO #24: Switch type to "TimeOnly" with .NET 6
-        public TimeSpan TimeOfDay => this._underlyingDateTime.TimeOfDay;
+        public TimeOnly TimeOfDay => TimeOnly.FromDateTime(this._underlyingDateTime);
 
         /// <summary>
         /// The year component of this instance.

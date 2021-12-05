@@ -39,7 +39,7 @@ namespace AppMotor.Core.Tests.Certificates.Exporting
         {
             // NOTE: We use a crypto random generate here so that the public and the private key
             //   bytes are not the same.
-            using var rng = new RNGCryptoServiceProvider();
+            using var rng = RandomNumberGenerator.Create();
 
             byte[] bytes = new byte[byteCount];
             rng.GetBytes(bytes);

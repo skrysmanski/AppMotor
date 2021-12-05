@@ -51,7 +51,7 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           # NOTE: Apparently only the 3rd component can be "x"; i.e. "5.x" is not supported.
-          dotnet-version: '5.0.x'
+          dotnet-version: '6.0.x'
 
       - name: Download NuGet dependencies
         run: dotnet restore
