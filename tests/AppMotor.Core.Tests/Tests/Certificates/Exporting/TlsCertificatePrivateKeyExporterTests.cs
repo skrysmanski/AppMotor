@@ -15,7 +15,7 @@
 #endregion
 
 using System;
-using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 
 using AppMotor.Core.Certificates;
 
@@ -32,7 +32,7 @@ namespace AppMotor.Core.Tests.Certificates.Exporting
         {
             // Setup
             using var originalCert = TlsCertificate.CreateSelfSigned("example.com", TimeSpan.FromDays(20));
-            var originalPrivateKey = ((RSA)originalCert.UnderlyingCertificate.PrivateKey!).ExportRSAPrivateKey();
+            var originalPrivateKey = originalCert.UnderlyingCertificate.GetRSAPrivateKey()!.ExportRSAPrivateKey();
 
             // Test our assumptions
             originalCert.HasPrivateKey.ShouldBe(true);
@@ -61,7 +61,7 @@ namespace AppMotor.Core.Tests.Certificates.Exporting
         {
             // Setup
             using var originalCert = TlsCertificate.CreateSelfSigned("example.com", TimeSpan.FromDays(20));
-            var originalPrivateKey = ((RSA)originalCert.UnderlyingCertificate.PrivateKey!).ExportRSAPrivateKey();
+            var originalPrivateKey = originalCert.UnderlyingCertificate.GetRSAPrivateKey()!.ExportRSAPrivateKey();
 
             // Test our assumptions
             originalCert.HasPrivateKey.ShouldBe(true);

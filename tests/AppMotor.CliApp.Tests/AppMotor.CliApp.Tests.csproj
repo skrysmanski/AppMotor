@@ -3,7 +3,7 @@
   <Import Project="$(ProjectCommonsDirectory)Project.Tests.props" />
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
 
     <RootNamespace>AppMotor.CliApp</RootNamespace>
   </PropertyGroup>
