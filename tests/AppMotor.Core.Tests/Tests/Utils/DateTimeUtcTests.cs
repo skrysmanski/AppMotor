@@ -143,10 +143,6 @@ namespace AppMotor.Core.Tests.Utils
             date.Year.ShouldBe(2020);
             date.Month.ShouldBe(2);
             date.Day.ShouldBe(3);
-            date.Hour.ShouldBe(0);
-            date.Minute.ShouldBe(0);
-            date.Second.ShouldBe(0);
-            date.Millisecond.ShouldBe(0);
         }
 
         [Fact]
@@ -155,11 +151,10 @@ namespace AppMotor.Core.Tests.Utils
             var dateTimeUtc = new DateTimeUtc(2020, 2, 3, 4, 5, 6, 7);
             var timeOfDay = dateTimeUtc.TimeOfDay;
 
-            timeOfDay.Days.ShouldBe(0);
-            timeOfDay.Hours.ShouldBe(4);
-            timeOfDay.Minutes.ShouldBe(5);
-            timeOfDay.Seconds.ShouldBe(6);
-            timeOfDay.Milliseconds.ShouldBe(7);
+            timeOfDay.Hour.ShouldBe(4);
+            timeOfDay.Minute.ShouldBe(5);
+            timeOfDay.Second.ShouldBe(6);
+            timeOfDay.Millisecond.ShouldBe(7);
         }
 
         [Fact]
