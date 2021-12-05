@@ -16,6 +16,7 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -75,9 +76,9 @@ namespace AppMotor.Core.Certificates.Exporting
         {
             var outputBuilder = new StringBuilder();
 
-            outputBuilder.Append($"-----BEGIN {type}-----\r\n");
+            outputBuilder.Append(CultureInfo.InvariantCulture, $"-----BEGIN {type}-----\r\n");
             outputBuilder.Append(Convert.ToBase64String(bytes, Base64FormattingOptions.InsertLineBreaks));
-            outputBuilder.Append($"\r\n-----END {type}-----");
+            outputBuilder.Append(CultureInfo.InvariantCulture, $"\r\n-----END {type}-----");
 
             return Encoding.ASCII.GetBytes(outputBuilder.ToString());
         }
@@ -86,20 +87,14 @@ namespace AppMotor.Core.Certificates.Exporting
         [ExcludeFromCodeCoverage]
         internal byte[] ExportPrivateKey()
         {
-            AsymmetricAlgorithm? privateKey = this._certificate.UnderlyingCertificate.PrivateKey;
-
-            if (privateKey is null)
+            if (this._certificate.KeyAlgorithm == CertificateKeyAlgorithms.RSA)
             {
-                throw new InvalidOperationException("This certificate has no private key.");
-            }
-
-            if (privateKey is RSA rsaPrivateKey)
-            {
-                return ExportRsaPrivateKey(rsaPrivateKey);
+                var rsaPrivateKey = this._certificate.UnderlyingCertificate.GetRSAPrivateKey();
+                return ExportRsaPrivateKey(rsaPrivateKey!);
             }
             else
             {
-                throw new NotSupportedException($"Exporting private keys of type '{privateKey.GetType().Name}' is not supported.");
+                throw new NotSupportedException($"Exporting private keys of type '{this._certificate.KeyAlgorithm}' is not supported.");
             }
         }
 

@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -199,7 +200,7 @@ namespace AppMotor.Core.Logging
 
             private void AppendLine(StringIndentation indentation, string text)
             {
-                this._builder.AppendLine($"{indentation}{text}");
+                this._builder.AppendLine(CultureInfo.InvariantCulture, $"{indentation}{text}");
             }
 
             private void AppendLine()
