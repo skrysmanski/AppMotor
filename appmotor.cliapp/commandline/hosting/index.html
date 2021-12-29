@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="turbo-cache-control" content="no-cache">
+
+    <!-- Primary Meta Tags -->
+    <title>GenericHost Integration</title>
+    <meta name="title" content="GenericHost Integration">
+    <meta name="description" content="The code in the AppMotor.CliApp.CommandLine.Hosting namespace integrates AppMotor.CliApp with .NET's Generic Host functionality." />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="/appmotor.cliapp/commandline/hosting/">
+    <meta property="og:title" content="GenericHost Integration">
+    <meta property="og:description" content="The code in the AppMotor.CliApp.CommandLine.Hosting namespace integrates AppMotor.CliApp with .NET's Generic Host functionality.">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="/appmotor.cliapp/commandline/hosting/">
+    <meta property="twitter:title" content="GenericHost Integration">
+    <meta property="twitter:description" content="The code in the AppMotor.CliApp.CommandLine.Hosting namespace integrates AppMotor.CliApp with .NET's Generic Host functionality.">
+    
+    <script>(function () { var el = document.documentElement, m = localStorage.getItem("doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
+
+    <link href="/resources/css/retype.css?v=1.11.2.694083371041" rel="stylesheet" data-turbo-track="reload" />
+
+    <script type="text/javascript" src="/resources/js/config.js?v=1.11.2.694083371041" defer data-turbo-track="reload"></script>
+    <script type="text/javascript" src="/resources/js/retype.js?v=1.11.2" defer data-turbo-track="reload"></script>
+    <script id="lunr-js" type="text/javascript" src="/resources/js/lunr.js?v=1.11.2.694083371041" defer></script>
+    <script id="prism-js" type="text/javascript" src="/resources/js/prism.js?v=1.11.2.694083371041" defer></script>
+</head>
+    <body>
+        <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
+    <div class="absolute bottom-0 left-0 bg-gray-100 dark:bg-dark-800" style="top: 5rem; right: 50%"></div>
+
+    <header id="docs-site-header" class="sticky top-0 z-30 flex w-full h-16 bg-white border-b border-gray-200 md:h-20 dark:bg-dark-850 dark:border-dark-650">
+    <div class="container relative flex items-center justify-between flex-grow pr-6 md:justify-start">
+        <!-- Mobile menu button skeleton -->
+        <button v-cloak class="skeleton docs-mobile-menu-button flex items-center justify-center flex-shrink-0 overflow-hidden dark:text-white focus:outline-none rounded-full w-10 h-10 ml-3.5 md:hidden"><svg xmlns="http://www.w3.org/2000/svg" class="mb-px flex-shrink-0" width="24" height="24" viewBox="0 0 24 24" role="presentation" style="margin-bottom: 0px;"><g fill="currentColor"><path d="M2 4h20v2H2zM2 11h20v2H2zM2 18h20v2H2z"></path></g></svg></button>
+        <div v-cloak id="docs-sidebar-toggle"></div>
+
+        <!-- Logo -->
+        <div class="flex items-center justify-between h-full py-2 md:w-75">
+            <div class="flex items-center px-2 md:px-6">
+                <a id="docs-site-logo" href="/" class="flex items-center leading-snug text-2xl">
+                    <span class="dark:text-white font-semibold line-clamp-1 md:line-clamp-2">AppMotor</span>
+                </a><span class="hidden px-2 py-1 ml-4 text-sm font-semibold leading-none text-root-logo-label-text bg-root-logo-label-bg rounded-sm md:inline-block">Docs</span>
+            </div>
+
+            <span class="hidden h-8 border-r md:inline-block dark:border-dark-650"></span>
+        </div>
+
+        <div class="flex justify-between md:flex-grow">
+            <!-- Top Nav -->
+            <nav class="hidden md:flex">
+    <ul class="flex flex-col mb-4 md:pl-16 md:mb-0 md:flex-row md:items-center">
+        <li class="md:mr-6">
+            <a class="inline-flex items-center py-2 md:mb-0 text-sm text-gray-400 whitespace-nowrap transition-colors duration-200 ease-linear md:text-blue-500 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200" href="/src/appmotor.cliapp">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mb-px mr-1" width="18" height="18" viewBox="0 0 24 24" role="presentation">
+                    <g fill="currentColor">
+                        <path d="M9.25 12a.75.75 0 01-.22.53l-2.75 2.75a.75.75 0 01-1.06-1.06L7.44 12 5.22 9.78a.75.75 0 111.06-1.06l2.75 2.75c.141.14.22.331.22.53zm2 2a.75.75 0 000 1.5h5a.75.75 0 000-1.5h-5z"/><path fill-rule="evenodd" d="M0 4.75C0 3.784.784 3 1.75 3h20.5c.966 0 1.75.784 1.75 1.75v14.5A1.75 1.75 0 0122.25 21H1.75A1.75 1.75 0 010 19.25V4.75zm1.75-.25a.25.25 0 00-.25.25v14.5c0 .138.112.25.25.25h20.5a.25.25 0 00.25-.25V4.75a.25.25 0 00-.25-.25H1.75z"/>
+                    </g>
+                </svg>
+                <span>AppMotor.CliApp</span>
+            </a>
+        </li>
+        <li class="md:mr-6">
+            <a class="inline-flex items-center py-2 md:mb-0 text-sm text-gray-400 whitespace-nowrap transition-colors duration-200 ease-linear md:text-blue-500 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200" href="/src/appmotor.httpserver">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mb-px mr-1" width="18" height="18" viewBox="0 0 24 24" role="presentation">
+                    <g fill="currentColor">
+                        <path d="M10.75 6.5a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5h-6.5zM6 7.25a.75.75 0 01.75-.75h.5a.75.75 0 010 1.5h-.5A.75.75 0 016 7.25zm4 9a.75.75 0 01.75-.75h6.5a.75.75 0 010 1.5h-6.5a.75.75 0 01-.75-.75zm-3.25-.75a.75.75 0 000 1.5h.5a.75.75 0 000-1.5h-.5z"/><path fill-rule="evenodd" d="M3.25 2A1.75 1.75 0 001.5 3.75v7c0 .372.116.716.314 1a1.742 1.742 0 00-.314 1v7c0 .966.784 1.75 1.75 1.75h17.5a1.75 1.75 0 001.75-1.75v-7c0-.372-.116-.716-.314-1 .198-.284.314-.628.314-1v-7A1.75 1.75 0 0020.75 2H3.25zm0 9h17.5a.25.25 0 00.25-.25v-7a.25.25 0 00-.25-.25H3.25a.25.25 0 00-.25.25v7c0 .138.112.25.25.25zm0 1.5a.25.25 0 00-.25.25v7c0 .138.112.25.25.25h17.5a.25.25 0 00.25-.25v-7a.25.25 0 00-.25-.25H3.25z"/>
+                    </g>
+                </svg>
+                <span>AppMotor.HttpServer</span>
+            </a>
+        </li>
+        <li class="md:mr-6">
+            <a class="inline-flex items-center py-2 md:mb-0 text-sm text-gray-400 whitespace-nowrap transition-colors duration-200 ease-linear md:text-blue-500 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200" href="https://github.com/skrysmanski/AppMotor/" target="_blank">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mb-px mr-1" width="18" height="18" viewBox="0 0 24 24" role="presentation">
+                    <g fill="currentColor">
+                        <symbol id="mark-github-icon-symbol" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></symbol><use xlink:href="#mark-github-icon-symbol" />
+                    </g>
+                </svg>
+                <span>GitHub</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+            <!-- Header Right Skeleton -->
+            <div v-cloak class="flex justify-end flex-grow skeleton">
+
+                <!-- Search input mock -->
+                <div class="relative hidden w-40 lg:block lg:max-w-sm lg:ml-auto">
+                    <div class="absolute flex items-center justify-center h-full pl-3 dark:text-dark-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon-base" width="16" height="16" viewBox="0 0 24 24" aria-labelledby="icon" role="presentation"  style="margin-bottom: 1px;"><g fill="currentColor" ><path d="M21.71 20.29l-3.68-3.68A8.963 8.963 0 0020 11c0-4.96-4.04-9-9-9s-9 4.04-9 9 4.04 9 9 9c2.12 0 4.07-.74 5.61-1.97l3.68 3.68c.2.19.45.29.71.29s.51-.1.71-.29c.39-.39.39-1.03 0-1.42zM4 11c0-3.86 3.14-7 7-7s7 3.14 7 7c0 1.92-.78 3.66-2.04 4.93-.01.01-.02.01-.02.01-.01.01-.01.01-.01.02A6.98 6.98 0 0111 18c-3.86 0-7-3.14-7-7z" ></path></g></svg>
+                    </div>
+
+                    <input class="w-full h-10 transition-colors duration-200 ease-in bg-gray-200 border border-transparent rounded md:text-sm hover:bg-white hover:border-gray-300 focus:outline-none focus:bg-white focus:border-gray-500 dark:bg-dark-600 dark:border-dark-600 placeholder-gray-400 dark:placeholder-dark-400"
+                    style="padding: 0.625rem 0.75rem 0.625rem 2rem" type="text" placeholder="Search" />
+                </div>
+
+                <!-- Mobile search button mock -->
+                <div class="flex items-center justify-center w-10 h-10 lg:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 icon-base" width="20" height="20" viewBox="0 0 24 24" aria-labelledby="icon" role="presentation"  style="margin-bottom: 0px;"><g fill="currentColor" ><path d="M21.71 20.29l-3.68-3.68A8.963 8.963 0 0020 11c0-4.96-4.04-9-9-9s-9 4.04-9 9 4.04 9 9 9c2.12 0 4.07-.74 5.61-1.97l3.68 3.68c.2.19.45.29.71.29s.51-.1.71-.29c.39-.39.39-1.03 0-1.42zM4 11c0-3.86 3.14-7 7-7s7 3.14 7 7c0 1.92-.78 3.66-2.04 4.93-.01.01-.02.01-.02.01-.01.01-.01.01-.01.02A6.98 6.98 0 0111 18c-3.86 0-7-3.14-7-7z" ></path></g></svg>
+                </div>
+
+                <!-- Dark mode switch placehokder -->
+                <div class="w-10 h-10 lg:ml-2"></div>
+
+                <!-- History button mock -->
+                <div class="flex items-center justify-center w-10 h-10" style="margin-right: -0.625rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 icon-base" width="22" height="22" viewBox="0 0 24 24" aria-labelledby="icon" role="presentation"  style="margin-bottom: 0px;"><g fill="currentColor" ><g ><path d="M12.01 6.01c-.55 0-1 .45-1 1V12a1 1 0 00.4.8l3 2.22a.985.985 0 001.39-.2.996.996 0 00-.21-1.4l-2.6-1.92V7.01c.02-.55-.43-1-.98-1z"></path><path d="M12.01 1.91c-5.33 0-9.69 4.16-10.05 9.4l-.29-.26a.997.997 0 10-1.34 1.48l1.97 1.79c.19.17.43.26.67.26s.48-.09.67-.26l1.97-1.79a.997.997 0 10-1.34-1.48l-.31.28c.34-4.14 3.82-7.41 8.05-7.41 4.46 0 8.08 3.63 8.08 8.09s-3.63 8.08-8.08 8.08c-2.18 0-4.22-.85-5.75-2.4a.996.996 0 10-1.42 1.4 10.02 10.02 0 007.17 2.99c5.56 0 10.08-4.52 10.08-10.08.01-5.56-4.52-10.09-10.08-10.09z"></path></g></g></svg>
+                </div>
+            </div>
+
+            <div v-cloak class="flex items-center justify-end flex-grow">
+                <div id="docs-mobile-search-button"></div>
+                <doc-search-desktop></doc-search-desktop>
+
+                <doc-theme-switch class="lg:ml-2"></doc-theme-switch>
+                <doc-history></doc-history>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <div class="container relative flex bg-white">
+        <!-- Sidebar Skeleton -->
+<div v-cloak class="fixed flex flex-col flex-shrink-0 duration-300 ease-in-out bg-gray-100 border-gray-200 sidebar top-20 w-75 border-r h-screen md:sticky transition-transform skeleton dark:bg-dark-800 dark:border-dark-650">
+
+    <!-- Render this div, if config.showSidebarFilter is `true` -->
+    <div class="flex items-center h-16 px-6">
+        <input class="w-full h-8 px-3 py-2 transition-colors duration-200 ease-linear bg-white border border-gray-200 rounded shadow-none text-sm focus:outline-none focus:border-gray-600 dark:bg-dark-600 dark:border-dark-600" type="text" placeholder="Filter" />
+    </div>
+
+    <div class="pl-6 mb-4 mt-1">
+        <div class="w-32 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+        <div class="w-48 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+        <div class="w-40 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+        <div class="w-32 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+        <div class="w-48 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+        <div class="w-40 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+    </div>
+
+
+    <div class="flex-shrink-0 mt-auto bg-transparent dark:border-dark-650">
+        <a
+    class="flex items-center justify-center flex-nowrap h-16 text-gray-400 dark:text-dark-400 hover:text-gray-700 dark:hover:text-dark-300 transition-colors duration-150 ease-in docs-powered-by"
+    target="_blank"
+    href="https://retype.com/"
+    rel="noopener"
+>
+    <span class="text-xs whitespace-nowrap">Powered by</span>
+    <svg xmlns="http://www.w3.org/2000/svg" class="ml-2" fill="currentColor" width="96" height="20" overflow="visible"><path d="M0 0v20h13.59V0H0zm11.15 17.54H2.44V2.46h8.71v15.08zM15.8 20h2.44V4.67L15.8 2.22zM20.45 6.89V20h2.44V9.34z"/><g><path d="M40.16 8.44c0 1.49-.59 2.45-1.75 2.88l2.34 3.32h-2.53l-2.04-2.96h-1.43v2.96h-2.06V5.36h3.5c1.43 0 2.46.24 3.07.73s.9 1.27.9 2.35zm-2.48 1.1c.26-.23.38-.59.38-1.09 0-.5-.13-.84-.4-1.03s-.73-.28-1.39-.28h-1.54v2.75h1.5c.72 0 1.2-.12 1.45-.35zM51.56 5.36V7.2h-4.59v1.91h4.13v1.76h-4.13v1.92h4.74v1.83h-6.79V5.36h6.64zM60.09 7.15v7.48h-2.06V7.15h-2.61V5.36h7.28v1.79h-2.61zM70.81 14.64h-2.06v-3.66l-3.19-5.61h2.23l1.99 3.45 1.99-3.45H74l-3.19 5.61v3.66zM83.99 6.19c.65.55.97 1.4.97 2.55s-.33 1.98-1 2.51-1.68.8-3.04.8h-1.23v2.59h-2.06V5.36h3.26c1.42 0 2.45.28 3.1.83zm-1.51 3.65c.25-.28.37-.69.37-1.22s-.16-.92-.48-1.14c-.32-.23-.82-.34-1.5-.34H79.7v3.12h1.38c.68 0 1.15-.14 1.4-.42zM95.85 5.36V7.2h-4.59v1.91h4.13v1.76h-4.13v1.92H96v1.83h-6.79V5.36h6.64z"/></g></svg>
+</a>
+
+    </div>
+</div>
+
+<!-- Sidebar component -->
+<doc-sidebar v-cloak>
+    <template #sidebar-footer>
+        <div
+            class="flex-shrink-0 mt-auto border-t md:bg-transparent md:border-none dark:border-dark-650"
+        >
+
+            <div class="py-3 px-6 md:hidden border-b dark:border-dark-650">
+                <nav>
+                    <ul class="flex flex-wrap justify-center items-center">
+                        <li class="mr-6">
+                            <a class="block py-1 text-sm whitespace-nowrap transition-colors duration-200 ease-linear text-blue-500 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200" href="/src/AppMotor.CliApp">AppMotor.CliApp</a>
+                        </li>
+                        <li class="mr-6">
+                            <a class="block py-1 text-sm whitespace-nowrap transition-colors duration-200 ease-linear text-blue-500 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200" href="/src/AppMotor.HttpServer">AppMotor.HttpServer</a>
+                        </li>
+                        <li class="mr-6">
+                            <a class="block py-1 text-sm whitespace-nowrap transition-colors duration-200 ease-linear text-blue-500 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200" href="https://github.com/skrysmanski/AppMotor/">GitHub</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+
+            <a
+    class="flex items-center justify-center flex-nowrap h-16 text-gray-400 dark:text-dark-400 hover:text-gray-700 dark:hover:text-dark-300 transition-colors duration-150 ease-in docs-powered-by"
+    target="_blank"
+    href="https://retype.com/"
+    rel="noopener"
+>
+    <span class="text-xs whitespace-nowrap">Powered by</span>
+    <svg xmlns="http://www.w3.org/2000/svg" class="ml-2" fill="currentColor" width="96" height="20" overflow="visible"><path d="M0 0v20h13.59V0H0zm11.15 17.54H2.44V2.46h8.71v15.08zM15.8 20h2.44V4.67L15.8 2.22zM20.45 6.89V20h2.44V9.34z"/><g><path d="M40.16 8.44c0 1.49-.59 2.45-1.75 2.88l2.34 3.32h-2.53l-2.04-2.96h-1.43v2.96h-2.06V5.36h3.5c1.43 0 2.46.24 3.07.73s.9 1.27.9 2.35zm-2.48 1.1c.26-.23.38-.59.38-1.09 0-.5-.13-.84-.4-1.03s-.73-.28-1.39-.28h-1.54v2.75h1.5c.72 0 1.2-.12 1.45-.35zM51.56 5.36V7.2h-4.59v1.91h4.13v1.76h-4.13v1.92h4.74v1.83h-6.79V5.36h6.64zM60.09 7.15v7.48h-2.06V7.15h-2.61V5.36h7.28v1.79h-2.61zM70.81 14.64h-2.06v-3.66l-3.19-5.61h2.23l1.99 3.45 1.99-3.45H74l-3.19 5.61v3.66zM83.99 6.19c.65.55.97 1.4.97 2.55s-.33 1.98-1 2.51-1.68.8-3.04.8h-1.23v2.59h-2.06V5.36h3.26c1.42 0 2.45.28 3.1.83zm-1.51 3.65c.25-.28.37-.69.37-1.22s-.16-.92-.48-1.14c-.32-.23-.82-.34-1.5-.34H79.7v3.12h1.38c.68 0 1.15-.14 1.4-.42zM95.85 5.36V7.2h-4.59v1.91h4.13v1.76h-4.13v1.92H96v1.83h-6.79V5.36h6.64z"/></g></svg>
+</a>
+
+        </div>
+    </template>
+</doc-sidebar>
+
+
+        <div class="flex-grow min-w-0 dark:bg-dark-850">
+            <!-- Render "toolbar" template here on api pages --><!-- Render page content -->
+            <div class="flex">
+    <div class="flex-grow min-w-0 px-6 md:px-16">
+        <main class="relative pt-6 pb-16">
+            <div class="docs-markdown" id="docs-content">
+                <!-- Rendered if sidebar right is enabled -->
+                <div id="docs-sidebar-right-toggle"></div>
+               
+                <!-- Page content  -->
+<doc-anchor-target id="generichost-integration" class="break-words">
+    <h1>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#generichost-integration">#</doc-anchor-trigger>
+        <span>GenericHost Integration</span>
+    </h1>
+</doc-anchor-target>
+<p>The code in the <code v-pre>AppMotor.CliApp.CommandLine.Hosting</code> namespace integrates <code v-pre>AppMotor.CliApp</code> with .NET&#x27;s Generic Host functionality.</p>
+<doc-anchor-target id="what-is-the-generic-host-and-why-would-i-use-it">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#what-is-the-generic-host-and-why-would-i-use-it">#</doc-anchor-trigger>
+        <span>What is the Generic Host and why would I use it?</span>
+    </h2>
+</doc-anchor-target>
+<p>You can think of the <a href="https://docs.microsoft.com/en-us/dotnet/core/extensions/generic-host">Generic Host</a> as .NET&#x27;s new way to define an application:</p>
+<ul>
+<li>It defines the Dependency Injection (DI) framework.</li>
+<li>It provides a <a href="https://docs.microsoft.com/en-us/dotnet/core/extensions/logging">logging framework</a> (via DI and <code v-pre>ILogger&lt;T&gt;</code>)</li>
+<li>It registers all necessary services with the DI framework.</li>
+<li>It manages the lifetime of &quot;hosted services&quot; - for example, an HTTP server.</li>
+</ul>
+<p>If you need any of these properties for your application, you may want to use the Generic Host.</p>
+<p><em>Side note:</em> Historically, a version of the Generic Host was used to run standalone ASP.NET Core applications (i.e. web applications). At one time, Microsoft extracted a non-ASP.NET-Core version, which now is the Generic Host.</p>
+<doc-anchor-target id="how-to-use-the-generichost">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#how-to-use-the-generichost">#</doc-anchor-trigger>
+        <span>How to use the GenericHost</span>
+    </h2>
+</doc-anchor-target>
+<p>In its simplest form, you create a child class of <code v-pre>GenericHostCliCommand</code>, create an instance of it and pass it to <code v-pre>CliApplicationWithCommand</code>:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-csharp"><code v-pre class="language-csharp">class MyGenericHostCliCommand : GenericHostCliCommand
+{
+    protected override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
+    {
+        // Register your services here; via &quot;services.Add...()
+        // See: https://docs.microsoft.com/en-us/dotnet/core/extensions/dependency-injection
+        //services.AddSingleton&lt;ITestService, TestService&gt;();
+    }
+}
+
+var command = new MyGenericHostCliCommand();
+var app = new CliApplicationWithCommand(command);
+app.Run();</code></pre>
+</doc-codeblock></div>
+<p>This will run an application that doesn&#x27;t do anything (and that will never stop) - so it&#x27;s <em>not very useful</em>.</p>
+<p>To make it useful, we need to explore the two ways of running a <code v-pre>GenericHostCliCommand</code>:</p>
+<ol>
+<li><strong>Server configuration:</strong> The command runs indefinitely (until explicitly stopped) and provides some hosted services (e.g. a web server).</li>
+<li><strong>Application configuration:</strong> The command executes a function and then terminates.</li>
+</ol>
+<p><em>Notes:</em></p>
+<ul>
+<li>Both ways configure their services by overriding <code v-pre>ConfigureServices</code> (like in the example above).</li>
+<li>Unlike <code v-pre>Host.CreateDefaultBuilder()</code> (<a href="https://docs.microsoft.com/en-us/dotnet/core/extensions/generic-host#default-builder-settings">details</a>), <code v-pre>GenericHostCliCommand</code> only gives you a minimum set of services (DI and a Console logger). Any additional service you need to register yourself.</li>
+</ul>
+<doc-anchor-target id="server-configuration">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#server-configuration">#</doc-anchor-trigger>
+        <span>Server configuration</span>
+    </h3>
+</doc-anchor-target>
+<p>This configuration is used if you need to run any kind of server (HTTP server, file server, ...). In this configuration, the <code v-pre>GenericHostCliCommand</code> runs indefinitely - until it&#x27;s stopped explicitly (see below).</p>
+<p>Each server must implemented <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.hosting.ihostedservice"><code v-pre>IHostedService</code></a> and then be registered via <code v-pre>AddHostedService()</code>:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-csharp"><code v-pre class="language-csharp">protected override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
+{
+    service.AddHostedService&lt;MyServer&gt;();
+}</code></pre>
+</doc-codeblock></div>
+<p>And that&#x27;s it.</p>
+<p><em>Note:</em> If you want to host an HTTP(S) server, it&#x27;s recommended to use the <code v-pre>AppMotor.HttpServer</code> package. See its <a href="../../../appmotor.httpserver/">README</a> for more details.</p>
+<doc-anchor-target id="application-configuration">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#application-configuration">#</doc-anchor-trigger>
+        <span>Application configuration</span>
+    </h3>
+</doc-anchor-target>
+<p>This configuration is used when you don&#x27;t really want to host a server but just make use of the DI functionality in a regular &quot;main method&quot; application. In this case, you specify an executor method and the <code v-pre>GenericHostCliCommand</code> only runs as long as this method runs:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-csharp"><code v-pre class="language-csharp">class MyGenericHostCliCommand : GenericHostCliCommand
+{
+    protected override CliCommandExecutor ExplicitExecutor =&gt; new(Execute);
+
+    private void Execute()
+    {
+        // Your code here.
+        // You have access to the DI system via &quot;this.Services.GetRequiredService&lt;T&gt;()&quot;.
+    }
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="how-to-stop-a-generichostclicommand">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#how-to-stop-a-generichostclicommand">#</doc-anchor-trigger>
+        <span>How to stop a GenericHostCliCommand</span>
+    </h2>
+</doc-anchor-target>
+<p>If you&#x27;re running a <code v-pre>GenericHostCliCommand</code> in the server configuration, you need to stop the command explicitly - or it will run forever.</p>
+<p>There are various ways to stop a <code v-pre>GenericHostCliCommand</code>. All of them will shutdown the application <em>gracefully</em>, i.e. by executing any existing shutdown code before terminating:</p>
+<ol>
+<li>You hit <code v-pre>Ctrl+C</code>.</li>
+<li>You can call <code v-pre>GenericHostCliCommand.Stop()</code>.</li>
+<li>You can obtain (via DI) the <code v-pre>IHostApplicationLifetime</code> instance and call <code v-pre>StopApplication()</code>.</li>
+<li>You can pass a <code v-pre>CancellationToken</code> to the application&#x27;s <code v-pre>Run()</code> method and then cancel it.</li>
+</ol>
+<doc-anchor-target id="lifetime-events">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#lifetime-events">#</doc-anchor-trigger>
+        <span>Lifetime events</span>
+    </h2>
+</doc-anchor-target>
+<p>The property <code v-pre>GenericHostCliCommand.LifetimeEvents</code> gives you access to various events regarding the lifetime of the command.</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-csharp"><code v-pre class="language-csharp">public sealed class GenericHostCliCommandLifetimeEvents
+{
+    // Triggered when the GenericHostCliCommand has fully started.
+    public event EventHandler? Started;
+
+    // Triggered when the GenericHostCliCommand is starting a graceful shutdown.
+    // Shutdown will block until all event handlers registered on this event have completed.
+    public event EventHandler? Stopping;
+
+    // Triggered when the GenericHostCliCommand has completed a graceful shutdown.
+    // The application will not exit until all event handlers registered on this event have completed.
+    public event EventHandler? Stopped;
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="customize-the-host-builder">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#customize-the-host-builder">#</doc-anchor-trigger>
+        <span>Customize the Host Builder</span>
+    </h2>
+</doc-anchor-target>
+<p>By default, <code v-pre>GenericHostCliCommand</code> provides you with:</p>
+<ul>
+<li>.NET&#x27;s built-in dependency injection framework</li>
+<li>a Console logger that&#x27;s used by <code v-pre>ILogger&lt;T&gt;</code></li>
+</ul>
+<p>Both (and more) can be customized by providing your own <code v-pre>IHostBuilderFactory</code>. AppMotor comes with two factories built-in:</p>
+<ol>
+<li><code v-pre>MethodHostBuilderFactory</code>: let&#x27;s you define a factory method (i.e. <code v-pre>Func&lt;IHostBuilder&gt;</code>)</li>
+<li><code v-pre>DefaultHostBuilderFactory</code>: let&#x27;s you customize the host builder by overriding methods</li>
+</ol>
+<p><code v-pre>GenericHostCliCommand</code> uses <code v-pre>DefaultHostBuilderFactory</code> by default but you can provide your own by overriding the <code v-pre>GenericHostCliCommand.HostBuilderFactory</code> property.</p>
+<p>The following sections assume you&#x27;re customizing <code v-pre>DefaultHostBuilderFactory</code>:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-csharp"><code v-pre class="language-csharp">class MyHostBuilderFactory : DefaultHostBuilderFactory
+{
+    // Customizations here
+}
+
+class MyGenericHostCliCommand : GenericHostCliCommand
+{
+    protected override IHostBuilderFactory HostBuilderFactory { get; }
+        = new MyHostBuilderFactory();
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="how-to-use-another-di-framework">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#how-to-use-another-di-framework">#</doc-anchor-trigger>
+        <span>How to use another DI framework</span>
+    </h3>
+</doc-anchor-target>
+<p>To use your own DI framework, it needs to provide an implementation of <code v-pre>IServiceProviderFactory&lt;IServiceCollection&gt;</code>.</p>
+<p>Then simply override <code v-pre>DefaultHostBuilderFactory.CreateServiceProviderFactory()</code>:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-csharp"><code v-pre class="language-csharp">class MyHostBuilderFactory : DefaultHostBuilderFactory
+{
+    protected override IServiceProviderFactory&lt;IServiceCollection&gt; CreateServiceProviderFactory(HostBuilderContext context)
+    {
+        // Return your DI framework
+        return ...;
+    }
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="how-to-configure-the-logging-framework">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#how-to-configure-the-logging-framework">#</doc-anchor-trigger>
+        <span>How to configure the logging framework</span>
+    </h3>
+</doc-anchor-target>
+<p>To configure logging, you need to override <code v-pre>DefaultHostBuilderFactory.ConfigureLogging()</code>:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-csharp"><code v-pre class="language-csharp">class MyHostBuilderFactory : DefaultHostBuilderFactory
+{
+    protected override void ConfigureLogging(HostBuilderContext context, ILoggingBuilder loggingBuilder)
+    {
+        // Your logging configuration here
+        loggingBuilder.AddConsole();
+        loggingBuilder.AddEventLog();
+    }
+}</code></pre>
+</doc-codeblock></div>
+<p>For more details, see the <a href="https://docs.microsoft.com/en-us/dotnet/core/extensions/logging">official documentation</a>.</p>
+
+
+
+
+                <!-- Required only on API pages -->
+                <doc-toolbar-member-filter-no-results />
+            </div>
+
+            
+<nav class="flex mt-14">
+    <div class="w-1/2">
+        <a class="px-5 py-4 h-full flex items-center break-all md:break-normal font-medium text-blue-500 dark:text-blue-400 border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded-l-lg transition-colors duration-150 relative hover:z-5" href="/appmotor.cliapp/commandline/design-notes/">
+            <svg xmlns="http://www.w3.org/2000/svg" class="mr-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19 11H7.41l5.29-5.29a.996.996 0 10-1.41-1.41l-7 7a1 1 0 000 1.42l7 7a1.024 1.024 0 001.42-.01.996.996 0 000-1.41L7.41 13H19c.55 0 1-.45 1-1s-.45-1-1-1z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
+            <span>
+                <span class="block text-xs font-normal text-gray-400 dark:text-dark-400">Previous</span>
+                <span class="block mt-1">Design Notes on the Command Line API</span>
+            </span>
+        </a>
+    </div>
+
+    <div class="w-1/2">
+        <a class="px-5 py-4 -mx-px h-full flex items-center justify-end break-all md:break-normal font-medium text-blue-500 dark:text-blue-400 border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded-r-lg transition-colors duration-150 relative hover:z-5" href="/appmotor.core/security/secrets/">
+            <span>
+                <span class="block text-xs font-normal text-right text-gray-400 dark:text-dark-400">Next</span>
+                <span class="block mt-1">Secrets API</span>
+            </span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="ml-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19.92 12.38a1 1 0 00-.22-1.09l-7-7a.996.996 0 10-1.41 1.41l5.3 5.3H5c-.55 0-1 .45-1 1s.45 1 1 1h11.59l-5.29 5.29a.996.996 0 000 1.41c.19.2.44.3.7.3s.51-.1.71-.29l7-7c.09-.09.16-.21.21-.33z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
+        </a>
+    </div>
+</nav>
+
+
+        </main>
+
+        <div class="border-t dark:border-dark-650 pt-6 mb-8">
+            <footer class="flex flex-wrap items-center justify-between">
+    <div>
+        <ul class="flex flex-wrap items-center text-sm">
+</ul>
+
+    </div>
+    <div class="docs-copyright py-2 text-gray-500 dark:text-dark-350 text-sm leading-relaxed"><p>© Copyright 2021. All rights reserved.</p>
+</div>
+</footer>
+
+        </div>
+    </div>
+    
+    <!-- Rendered if sidebar right is enabled -->
+    <!-- Sidebar right skeleton-->
+    <div v-cloak class="fixed top-0 bottom-0 right-0 transform translate-x-full bg-white border-gray-200 lg:sticky lg:border-l lg:flex-shrink-0 lg:pt-6 lg:transform-none lg:w-56 lg:z-0 md:w-72 sidebar-right skeleton dark:bg-dark-850 dark:border-dark-650">
+        <div class="pl-5">
+            <div class="w-32 h-3 mb-4 bg-gray-200 dark:bg-dark-600 rounded-full loading"></div>
+            <div class="w-48 h-3 mb-4 bg-gray-200 dark:bg-dark-600 rounded-full loading"></div>
+            <div class="w-40 h-3 mb-4 bg-gray-200 dark:bg-dark-600 rounded-full loading"></div>
+        </div>
+    </div>
+    
+    <!-- User should be able to hide sidebar right -->
+    <doc-sidebar-right v-cloak></doc-sidebar-right>
+</div>
+
+        </div>
+    </div>
+
+    <doc-search-mobile></doc-search-mobile>
+    <doc-back-to-top></doc-back-to-top>
+</div>
+
+
+        <div id="docs-overlay-target"></div>
+
+        <script>window.__DOCS__ = { "title": "GenericHost Integration", icon: "file", hasPrism: true, hasMermaid: false, hasMath: false }</script>
+    </body>
+</html>
