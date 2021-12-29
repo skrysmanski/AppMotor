@@ -24,137 +24,136 @@ using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
-namespace AppMotor.Core.IO
+namespace AppMotor.Core.IO;
+
+/// <summary>
+/// Represents a read-only view on a <see cref="Stream"/>.
+/// </summary>
+[PublicAPI]
+public class ReadOnlyStream : AsyncDisposable, IReadOnlyStream
 {
-    /// <summary>
-    /// Represents a read-only view on a <see cref="Stream"/>.
-    /// </summary>
-    [PublicAPI]
-    public class ReadOnlyStream : AsyncDisposable, IReadOnlyStream
+    private readonly Stream _underlyingStream;
+
+    /// <inheritdoc />
+    public bool CanSeek => this._underlyingStream.CanSeek;
+
+    /// <inheritdoc />
+    public long Position
     {
-        private readonly Stream _underlyingStream;
+        get => this._underlyingStream.Position;
+        set => this._underlyingStream.Position = value;
+    }
 
-        /// <inheritdoc />
-        public bool CanSeek => this._underlyingStream.CanSeek;
+    /// <inheritdoc />
+    public long Length => this._underlyingStream.Length;
 
-        /// <inheritdoc />
-        public long Position
+    /// <inheritdoc />
+    public bool CanTimeout => this._underlyingStream.CanTimeout;
+
+    /// <inheritdoc />
+    public TimeSpan ReadTimeout
+    {
+        get => TimeSpan.FromMilliseconds(this._underlyingStream.ReadTimeout);
+        set => this._underlyingStream.ReadTimeout = (int)value.TotalMilliseconds;
+    }
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="underlyingStream">The stream to wrap in this read-only stream.</param>
+    public ReadOnlyStream(Stream underlyingStream)
+    {
+        Validate.ArgumentWithName(nameof(underlyingStream)).IsNotNull(underlyingStream);
+
+        if (!underlyingStream.CanRead)
         {
-            get => this._underlyingStream.Position;
-            set => this._underlyingStream.Position = value;
+            throw new ArgumentException("The specified stream is not readable.", nameof(underlyingStream));
         }
 
-        /// <inheritdoc />
-        public long Length => this._underlyingStream.Length;
+        this._underlyingStream = underlyingStream;
+    }
 
-        /// <inheritdoc />
-        public bool CanTimeout => this._underlyingStream.CanTimeout;
+    /// <inheritdoc />
+    protected override void DisposeManagedResources()
+    {
+        this._underlyingStream.Dispose();
 
-        /// <inheritdoc />
-        public TimeSpan ReadTimeout
+        base.DisposeManagedResources();
+    }
+
+    /// <inheritdoc />
+    protected override async ValueTask DisposeAsyncCore()
+    {
+        await this._underlyingStream.DisposeAsync().ConfigureAwait(false);
+    }
+
+    /// <inheritdoc />
+    public void CopyTo(Stream destination, int? bufferSize = null)
+    {
+        if (bufferSize == null)
         {
-            get => TimeSpan.FromMilliseconds(this._underlyingStream.ReadTimeout);
-            set => this._underlyingStream.ReadTimeout = (int)value.TotalMilliseconds;
+            this._underlyingStream.CopyTo(destination);
         }
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="underlyingStream">The stream to wrap in this read-only stream.</param>
-        public ReadOnlyStream(Stream underlyingStream)
+        else
         {
-            Validate.ArgumentWithName(nameof(underlyingStream)).IsNotNull(underlyingStream);
+            this._underlyingStream.CopyTo(destination, bufferSize.Value);
+        }
+    }
 
-            if (!underlyingStream.CanRead)
+    /// <inheritdoc />
+    public async Task CopyToAsync(Stream destination, int? bufferSize = null, CancellationToken cancellationToken = default)
+    {
+        if (bufferSize == null)
+        {
+            await this._underlyingStream.CopyToAsync(destination, cancellationToken).ConfigureAwait(false);
+        }
+        else
+        {
+            await this._underlyingStream.CopyToAsync(destination, bufferSize.Value, cancellationToken).ConfigureAwait(false);
+        }
+    }
+
+    /// <inheritdoc />
+    public byte? ReadByte()
+    {
+        byte[] sharedBuffer = ArrayPool<byte>.Shared.Rent(1);
+        try
+        {
+            var numRead = Read(sharedBuffer.AsSpan());
+            if (numRead == 0)
             {
-                throw new ArgumentException("The specified stream is not readable.", nameof(underlyingStream));
+                return null;
             }
 
-            this._underlyingStream = underlyingStream;
+            return sharedBuffer[0];
         }
-
-        /// <inheritdoc />
-        protected override void DisposeManagedResources()
+        finally
         {
-            this._underlyingStream.Dispose();
-
-            base.DisposeManagedResources();
+            ArrayPool<byte>.Shared.Return(sharedBuffer);
         }
+    }
 
-        /// <inheritdoc />
-        protected override async ValueTask DisposeAsyncCore()
-        {
-            await this._underlyingStream.DisposeAsync().ConfigureAwait(false);
-        }
+    /// <inheritdoc />
+    public int Read(Span<byte> buffer)
+    {
+        // NOTE: While the default implementation of "Stream.Read(Span)" may seem to have
+        //   worse performance than "Read(byte[],int,int)" (because of the array being copied),
+        //   most Stream implementations override this method to have a similar performance as
+        //   "Read(byte[],int,int)". Although there is no way to detect this, the Span-based API
+        //   is the newer one - so we're going to support it (instead of the older API).
 
-        /// <inheritdoc />
-        public void CopyTo(Stream destination, int? bufferSize = null)
-        {
-            if (bufferSize == null)
-            {
-                this._underlyingStream.CopyTo(destination);
-            }
-            else
-            {
-                this._underlyingStream.CopyTo(destination, bufferSize.Value);
-            }
-        }
+        return this._underlyingStream.Read(buffer);
+    }
 
-        /// <inheritdoc />
-        public async Task CopyToAsync(Stream destination, int? bufferSize = null, CancellationToken cancellationToken = default)
-        {
-            if (bufferSize == null)
-            {
-                await this._underlyingStream.CopyToAsync(destination, cancellationToken).ConfigureAwait(false);
-            }
-            else
-            {
-                await this._underlyingStream.CopyToAsync(destination, bufferSize.Value, cancellationToken).ConfigureAwait(false);
-            }
-        }
+    /// <inheritdoc />
+    public ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
+    {
+        return this._underlyingStream.ReadAsync(buffer, cancellationToken);
+    }
 
-        /// <inheritdoc />
-        public byte? ReadByte()
-        {
-            byte[] sharedBuffer = ArrayPool<byte>.Shared.Rent(1);
-            try
-            {
-                var numRead = Read(sharedBuffer.AsSpan());
-                if (numRead == 0)
-                {
-                    return null;
-                }
-
-                return sharedBuffer[0];
-            }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(sharedBuffer);
-            }
-        }
-
-        /// <inheritdoc />
-        public int Read(Span<byte> buffer)
-        {
-            // NOTE: While the default implementation of "Stream.Read(Span)" may seem to have
-            //   worse performance than "Read(byte[],int,int)" (because of the array being copied),
-            //   most Stream implementations override this method to have a similar performance as
-            //   "Read(byte[],int,int)". Although there is no way to detect this, the Span-based API
-            //   is the newer one - so we're going to support it (instead of the older API).
-
-            return this._underlyingStream.Read(buffer);
-        }
-
-        /// <inheritdoc />
-        public ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
-        {
-            return this._underlyingStream.ReadAsync(buffer, cancellationToken);
-        }
-
-        /// <inheritdoc />
-        public long Seek(long offset, SeekOrigin origin)
-        {
-            return this._underlyingStream.Seek(offset, origin);
-        }
+    /// <inheritdoc />
+    public long Seek(long offset, SeekOrigin origin)
+    {
+        return this._underlyingStream.Seek(offset, origin);
     }
 }

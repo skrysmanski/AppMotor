@@ -24,56 +24,55 @@ using JetBrains.Annotations;
 
 using NotNullOnExitAttribute = System.Diagnostics.CodeAnalysis.NotNullAttribute;
 
-namespace AppMotor.Core.DataModel
+namespace AppMotor.Core.DataModel;
+
+/// <summary>
+/// Contains methods related to sensitive values. See <see cref="ISensitiveValue"/>
+/// for more details.
+/// </summary>
+public static class SensitiveValues
 {
     /// <summary>
-    /// Contains methods related to sensitive values. See <see cref="ISensitiveValue"/>
-    /// for more details.
+    /// Returns whether the specified value is a sensitive value (see <see cref="ISensitiveValue"/>).
+    /// Respects <see cref="SecureString"/>, <see cref="ISensitiveValue"/>, and <see cref="SensitiveValueMarker"/>.
     /// </summary>
-    public static class SensitiveValues
+    /// <seealso cref="IsSensitiveValueType"/>
+    [PublicAPI, Pure]
+    public static bool IsSensitiveValue<T>([NotNullOnExit] this T value) where T : notnull
     {
-        /// <summary>
-        /// Returns whether the specified value is a sensitive value (see <see cref="ISensitiveValue"/>).
-        /// Respects <see cref="SecureString"/>, <see cref="ISensitiveValue"/>, and <see cref="SensitiveValueMarker"/>.
-        /// </summary>
-        /// <seealso cref="IsSensitiveValueType"/>
-        [PublicAPI, Pure]
-        public static bool IsSensitiveValue<T>([NotNullOnExit] this T value) where T : notnull
+        Validate.ArgumentWithName(nameof(value)).IsNotNullUnconstrained(value);
+
+        if (value is SecureString || value is ISensitiveValue)
         {
-            Validate.ArgumentWithName(nameof(value)).IsNotNullUnconstrained(value);
-
-            if (value is SecureString || value is ISensitiveValue)
-            {
-                return true;
-            }
-
-            if (value.GetType().IsMarkedWith<SensitiveValueMarker>())
-            {
-                return true;
-            }
-
-            return false;
+            return true;
         }
 
-        /// <summary>
-        /// Returns whether the specified type is a type that may contain sensitive information (see <see cref="ISensitiveValue"/>).
-        /// Respects <see cref="SecureString"/>, <see cref="ISensitiveValue"/>, and <see cref="SensitiveValueMarker"/>.
-        /// </summary>
-        /// <seealso cref="IsSensitiveValue{T}"/>
-        [PublicAPI, Pure]
-        public static bool IsSensitiveValueType(Type typeToCheck)
+        if (value.GetType().IsMarkedWith<SensitiveValueMarker>())
         {
-            if (typeToCheck == typeof(SecureString) || typeToCheck.Is<ISensitiveValue>())
-            {
-                return true;
-            }
-
-            if (typeToCheck.IsMarkedWith<SensitiveValueMarker>())
-            {
-                return true;
-            }
-
-            return false;
+            return true;
         }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Returns whether the specified type is a type that may contain sensitive information (see <see cref="ISensitiveValue"/>).
+    /// Respects <see cref="SecureString"/>, <see cref="ISensitiveValue"/>, and <see cref="SensitiveValueMarker"/>.
+    /// </summary>
+    /// <seealso cref="IsSensitiveValue{T}"/>
+    [PublicAPI, Pure]
+    public static bool IsSensitiveValueType(Type typeToCheck)
+    {
+        if (typeToCheck == typeof(SecureString) || typeToCheck.Is<ISensitiveValue>())
+        {
+            return true;
+        }
+
+        if (typeToCheck.IsMarkedWith<SensitiveValueMarker>())
+        {
+            return true;
+        }
+
+        return false;
     }
 }

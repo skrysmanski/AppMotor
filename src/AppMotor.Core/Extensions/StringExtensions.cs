@@ -23,56 +23,55 @@ using AppMotor.Core.Globalization;
 
 using JetBrains.Annotations;
 
-namespace AppMotor.Core.Extensions
+namespace AppMotor.Core.Extensions;
+
+/// <summary>
+/// Various extension methods related to strings.
+/// </summary>
+public static class StringExtensions
 {
     /// <summary>
-    /// Various extension methods related to strings.
+    /// Convenience method for calling <c>string.Format()</c> with the current UI culture
+    /// (<see cref="UICulture.FormatsAndSorting"/>) as format provider.
     /// </summary>
-    public static class StringExtensions
+    /// <seealso cref="WithIC"/>
+    [StringFormatMethod("message")]
+    [PublicAPI]
+    public static string With([Localizable(true)] this string message, params object[] args)
     {
-        /// <summary>
-        /// Convenience method for calling <c>string.Format()</c> with the current UI culture
-        /// (<see cref="UICulture.FormatsAndSorting"/>) as format provider.
-        /// </summary>
-        /// <seealso cref="WithIC"/>
-        [StringFormatMethod("message")]
-        [PublicAPI]
-        public static string With([Localizable(true)] this string message, params object[] args)
-        {
-            return string.Format(UICulture.FormatsAndSorting, message, args);
-        }
+        return string.Format(UICulture.FormatsAndSorting, message, args);
+    }
 
-        /// <summary>
-        /// Convenience method for calling <c>string.Format()</c> with <see cref="CultureInfo.InvariantCulture"/>.
-        /// </summary>
-        /// <seealso cref="With"/>
-        [StringFormatMethod("message")]
-        [PublicAPI]
-        public static string WithIC([Localizable(false)] this string message, params object[] args)
-        {
-            return string.Format(CultureInfo.InvariantCulture, message, args);
-        }
+    /// <summary>
+    /// Convenience method for calling <c>string.Format()</c> with <see cref="CultureInfo.InvariantCulture"/>.
+    /// </summary>
+    /// <seealso cref="With"/>
+    [StringFormatMethod("message")]
+    [PublicAPI]
+    public static string WithIC([Localizable(false)] this string message, params object[] args)
+    {
+        return string.Format(CultureInfo.InvariantCulture, message, args);
+    }
 
-        /// <summary>
-        /// Splits the input string into individual lines.
-        ///
-        /// <para>Note: Lines are returned without the trailing end-of-line characters (i.e. <c>\r</c> and <c>\n</c>).</para>
-        /// </summary>
-        [PublicAPI, Pure]
-        public static IEnumerable<string> SplitLines(this string input)
-        {
-            using var reader = new StringReader(input);
+    /// <summary>
+    /// Splits the input string into individual lines.
+    ///
+    /// <para>Note: Lines are returned without the trailing end-of-line characters (i.e. <c>\r</c> and <c>\n</c>).</para>
+    /// </summary>
+    [PublicAPI, Pure]
+    public static IEnumerable<string> SplitLines(this string input)
+    {
+        using var reader = new StringReader(input);
 
-            while (true)
+        while (true)
+        {
+            var line = reader.ReadLine();
+            if (line == null)
             {
-                var line = reader.ReadLine();
-                if (line == null)
-                {
-                    break;
-                }
-
-                yield return line;
+                break;
             }
+
+            yield return line;
         }
     }
 }

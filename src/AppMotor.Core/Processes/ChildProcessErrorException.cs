@@ -16,16 +16,15 @@
 
 using System;
 
-namespace AppMotor.Core.Processes
+namespace AppMotor.Core.Processes;
+
+/// <summary>
+/// Thrown by <see cref="ChildProcess"/> when the child process signals an error.
+/// </summary>
+public sealed class ChildProcessErrorException : Exception
 {
-    /// <summary>
-    /// Thrown by <see cref="ChildProcess"/> when the child process signals an error.
-    /// </summary>
-    public sealed class ChildProcessErrorException : Exception
+    /// <inheritdoc />
+    public ChildProcessErrorException(string message) : base(message)
     {
-        /// <inheritdoc />
-        public ChildProcessErrorException(string message) : base(message)
-        {
-        }
     }
 }

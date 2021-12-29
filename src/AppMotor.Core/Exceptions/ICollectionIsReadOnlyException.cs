@@ -14,14 +14,13 @@
 // limitations under the License.
 #endregion
 
-namespace AppMotor.Core.Exceptions
+namespace AppMotor.Core.Exceptions;
+
+/// <summary>
+/// Marker interface for <see cref="CollectionIsReadOnlyException"/>
+/// and its variants. Via this interface on can catch all related
+/// exceptions in one <c>catch</c> block.
+/// </summary>
+public interface ICollectionIsReadOnlyException
 {
-    /// <summary>
-    /// Marker interface for <see cref="CollectionIsReadOnlyException"/>
-    /// and its variants. Via this interface on can catch all related
-    /// exceptions in one <c>catch</c> block.
-    /// </summary>
-    public interface ICollectionIsReadOnlyException
-    {
-    }
 }

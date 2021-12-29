@@ -22,112 +22,111 @@ using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
-namespace AppMotor.Core.Events
+namespace AppMotor.Core.Events;
+
+/// <summary>
+/// The public API surface of an <see cref="EventSource{TEventArgs}"/> (accessible via <see cref="EventSource{TEventArgs}.Event"/>).
+/// Contains the methods to register new event handlers.
+/// </summary>
+public sealed class Event<TEventArgs>
 {
+    private readonly object _eventHandlersLock = new();
+
+    private ImmutableArray<EventHandlerRegistration> _eventHandlers = ImmutableArray<EventHandlerRegistration>.Empty;
+
     /// <summary>
-    /// The public API surface of an <see cref="EventSource{TEventArgs}"/> (accessible via <see cref="EventSource{TEventArgs}.Event"/>).
-    /// Contains the methods to register new event handlers.
+    /// Constructor.
     /// </summary>
-    public sealed class Event<TEventArgs>
+    internal Event()
     {
-        private readonly object _eventHandlersLock = new();
+    }
 
-        private ImmutableArray<EventHandlerRegistration> _eventHandlers = ImmutableArray<EventHandlerRegistration>.Empty;
+    /// <summary>
+    /// Registers a synchronous event handler and returns its registration.
+    /// </summary>
+    /// <param name="eventHandler">The event handler</param>
+    /// <returns>The event handler registration. Dispose this instance to remove the registration.</returns>
+    /// <seealso cref="RegisterEventHandler(Func{TEventArgs,Task})"/>
+    [MustUseReturnValue]
+    public IEventHandlerRegistration RegisterEventHandler(Action<TEventArgs> eventHandler)
+    {
+        var registration = new EventHandlerRegistration(
+            this,
+            eventArgs =>
+            {
+                eventHandler(eventArgs);
+                return Task.CompletedTask;
+            }
+        );
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        internal Event()
+        lock (this._eventHandlersLock)
         {
+            this._eventHandlers = this._eventHandlers.Add(registration);
         }
 
-        /// <summary>
-        /// Registers a synchronous event handler and returns its registration.
-        /// </summary>
-        /// <param name="eventHandler">The event handler</param>
-        /// <returns>The event handler registration. Dispose this instance to remove the registration.</returns>
-        /// <seealso cref="RegisterEventHandler(Func{TEventArgs,Task})"/>
-        [MustUseReturnValue]
-        public IEventHandlerRegistration RegisterEventHandler(Action<TEventArgs> eventHandler)
+        return registration;
+    }
+
+    /// <summary>
+    /// Registers an <c>async</c> event handler and returns its registration.
+    /// </summary>
+    /// <param name="eventHandler">The event handler</param>
+    /// <returns>The event handler registration. Dispose this instance to remove the registration.</returns>
+    /// <seealso cref="RegisterEventHandler(Action{TEventArgs})"/>
+    [MustUseReturnValue]
+    public IEventHandlerRegistration RegisterEventHandler(Func<TEventArgs, Task> eventHandler)
+    {
+        var registration = new EventHandlerRegistration(this, eventHandler);
+
+        lock (this._eventHandlersLock)
         {
-            var registration = new EventHandlerRegistration(
-                this,
-                eventArgs =>
-                {
-                    eventHandler(eventArgs);
-                    return Task.CompletedTask;
-                }
-            );
-
-            lock (this._eventHandlersLock)
-            {
-                this._eventHandlers = this._eventHandlers.Add(registration);
-            }
-
-            return registration;
+            this._eventHandlers = this._eventHandlers.Add(registration);
         }
 
-        /// <summary>
-        /// Registers an <c>async</c> event handler and returns its registration.
-        /// </summary>
-        /// <param name="eventHandler">The event handler</param>
-        /// <returns>The event handler registration. Dispose this instance to remove the registration.</returns>
-        /// <seealso cref="RegisterEventHandler(Action{TEventArgs})"/>
-        [MustUseReturnValue]
-        public IEventHandlerRegistration RegisterEventHandler(Func<TEventArgs, Task> eventHandler)
+        return registration;
+    }
+
+    private void RemoveRegistration(EventHandlerRegistration registration)
+    {
+        lock (this._eventHandlersLock)
         {
-            var registration = new EventHandlerRegistration(this, eventHandler);
+            this._eventHandlers = this._eventHandlers.Remove(registration);
+        }
+    }
 
-            lock (this._eventHandlersLock)
-            {
-                this._eventHandlers = this._eventHandlers.Add(registration);
-            }
-
-            return registration;
+    internal async Task RaiseEvent(TEventArgs eventArgs)
+    {
+        // ReSharper disable once InconsistentlySynchronizedField
+        ImmutableArray<EventHandlerRegistration> eventHandlers = this._eventHandlers;
+        if (eventHandlers.IsEmpty)
+        {
+            return;
         }
 
-        private void RemoveRegistration(EventHandlerRegistration registration)
+        foreach (var eventHandlerRegistration in eventHandlers)
         {
-            lock (this._eventHandlersLock)
-            {
-                this._eventHandlers = this._eventHandlers.Remove(registration);
-            }
+            await eventHandlerRegistration.EventHandler(eventArgs).ConfigureAwait(false);
+        }
+    }
+
+    private sealed class EventHandlerRegistration : Disposable, IEventHandlerRegistration
+    {
+        public readonly Func<TEventArgs, Task> EventHandler;
+
+        private readonly Event<TEventArgs> _containingEvent;
+
+        public EventHandlerRegistration(Event<TEventArgs> containingEvent, Func<TEventArgs, Task> eventHandler)
+        {
+            this.EventHandler = eventHandler;
+            this._containingEvent = containingEvent;
         }
 
-        internal async Task RaiseEvent(TEventArgs eventArgs)
+        /// <inheritdoc />
+        protected override void DisposeManagedResources()
         {
-            // ReSharper disable once InconsistentlySynchronizedField
-            ImmutableArray<EventHandlerRegistration> eventHandlers = this._eventHandlers;
-            if (eventHandlers.IsEmpty)
-            {
-                return;
-            }
+            base.DisposeManagedResources();
 
-            foreach (var eventHandlerRegistration in eventHandlers)
-            {
-                await eventHandlerRegistration.EventHandler(eventArgs).ConfigureAwait(false);
-            }
-        }
-
-        private sealed class EventHandlerRegistration : Disposable, IEventHandlerRegistration
-        {
-            public readonly Func<TEventArgs, Task> EventHandler;
-
-            private readonly Event<TEventArgs> _containingEvent;
-
-            public EventHandlerRegistration(Event<TEventArgs> containingEvent, Func<TEventArgs, Task> eventHandler)
-            {
-                this.EventHandler = eventHandler;
-                this._containingEvent = containingEvent;
-            }
-
-            /// <inheritdoc />
-            protected override void DisposeManagedResources()
-            {
-                base.DisposeManagedResources();
-
-                this._containingEvent.RemoveRegistration(this);
-            }
+            this._containingEvent.RemoveRegistration(this);
         }
     }
 }

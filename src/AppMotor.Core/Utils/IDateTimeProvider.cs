@@ -18,27 +18,26 @@ using System;
 
 using JetBrains.Annotations;
 
-namespace AppMotor.Core.Utils
+namespace AppMotor.Core.Utils;
+
+/// <summary>
+/// Provides the current time and date. This interface primarily exists for (unit) testing
+/// code that relies on the current time and date (thus allowing test code to mock the current
+/// time and date). For the default implementation, see <see cref="DefaultDateTimeProvider"/>.
+/// </summary>
+public interface IDateTimeProvider
 {
     /// <summary>
-    /// Provides the current time and date. This interface primarily exists for (unit) testing
-    /// code that relies on the current time and date (thus allowing test code to mock the current
-    /// time and date). For the default implementation, see <see cref="DefaultDateTimeProvider"/>.
+    /// The current date and time in the local timezone (i.e. <see cref="DateTimeKind.Local"/>).
     /// </summary>
-    public interface IDateTimeProvider
-    {
-        /// <summary>
-        /// The current date and time in the local timezone (i.e. <see cref="DateTimeKind.Local"/>).
-        /// </summary>
-        /// <seealso cref="UtcNow"/>
-        [PublicAPI]
-        DateTime LocalNow { get; }
+    /// <seealso cref="UtcNow"/>
+    [PublicAPI]
+    DateTime LocalNow { get; }
 
-        /// <summary>
-        /// The current date and time in the UTC timezone (i.e. <see cref="DateTimeKind.Utc"/>).
-        /// </summary>
-        /// <seealso cref="LocalNow"/>
-        [PublicAPI]
-        DateTimeUtc UtcNow { get; }
-    }
+    /// <summary>
+    /// The current date and time in the UTC timezone (i.e. <see cref="DateTimeKind.Utc"/>).
+    /// </summary>
+    /// <seealso cref="LocalNow"/>
+    [PublicAPI]
+    DateTimeUtc UtcNow { get; }
 }
