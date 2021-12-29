@@ -32,251 +32,250 @@ using Shouldly;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace AppMotor.CliApp.Tests.CommandLine.Hosting
+namespace AppMotor.CliApp.Tests.CommandLine.Hosting;
+
+public sealed class GenericHostCliCommandTests : TestBase
 {
-    public sealed class GenericHostCliCommandTests : TestBase
+    public GenericHostCliCommandTests(ITestOutputHelper testOutputHelper)
+        : base(testOutputHelper)
     {
-        public GenericHostCliCommandTests(ITestOutputHelper testOutputHelper)
-            : base(testOutputHelper)
+    }
+
+    [Fact]
+    public void Test_DefaultGenericHost_NotStoppingOnItsOwn()
+    {
+        // The number of seconds to wait for the stopping event not to happen to "deduce"
+        // that it would not fire on its own. (This test is not 100% reliable but it's better
+        // than nothing.)
+        const int MAX_WAIT_SECONDS_FOR_CONFIRMATION = 2;
+
+        // Setup
+        var command = new GenericHostTestCommand(this.TestConsole);
+        var testApp = new TestApplicationWithCommand(command);
+
+        using var startedEvent = new ManualResetEventSlim();
+        using var stoppingEvent = new ManualResetEventSlim();
+        using var stoppedEvent = new ManualResetEventSlim();
+
+        // ReSharper disable once AccessToDisposedClosure
+        command.LifetimeEvents.Started.RegisterEventHandler(() => startedEvent.Set()).ShouldNotBeNull();
+        // ReSharper disable once AccessToDisposedClosure
+        command.LifetimeEvents.Stopping.RegisterEventHandler(() => stoppingEvent.Set()).ShouldNotBeNull();
+        // ReSharper disable once AccessToDisposedClosure
+        command.LifetimeEvents.Stopped.RegisterEventHandler(() => stoppedEvent.Set()).ShouldNotBeNull();
+
+        var appTask = testApp.RunAsync();
+
+        TestLoggerStatistics loggerStatistics;
+        try
         {
-        }
-
-        [Fact]
-        public void Test_DefaultGenericHost_NotStoppingOnItsOwn()
-        {
-            // The number of seconds to wait for the stopping event not to happen to "deduce"
-            // that it would not fire on its own. (This test is not 100% reliable but it's better
-            // than nothing.)
-            const int MAX_WAIT_SECONDS_FOR_CONFIRMATION = 2;
-
-            // Setup
-            var command = new GenericHostTestCommand(this.TestConsole);
-            var testApp = new TestApplicationWithCommand(command);
-
-            using var startedEvent = new ManualResetEventSlim();
-            using var stoppingEvent = new ManualResetEventSlim();
-            using var stoppedEvent = new ManualResetEventSlim();
-
-            // ReSharper disable once AccessToDisposedClosure
-            command.LifetimeEvents.Started.RegisterEventHandler(() => startedEvent.Set()).ShouldNotBeNull();
-            // ReSharper disable once AccessToDisposedClosure
-            command.LifetimeEvents.Stopping.RegisterEventHandler(() => stoppingEvent.Set()).ShouldNotBeNull();
-            // ReSharper disable once AccessToDisposedClosure
-            command.LifetimeEvents.Stopped.RegisterEventHandler(() => stoppedEvent.Set()).ShouldNotBeNull();
-
-            var appTask = testApp.RunAsync();
-
-            TestLoggerStatistics loggerStatistics;
-            try
-            {
-                command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(false);
-
-                startedEvent.Wait(TimeSpan.FromSeconds(10)).ShouldBe(true);
-
-                loggerStatistics = command.ServiceProvider.GetRequiredService<TestLoggerStatistics>();
-
-                command.LifetimeEvents.Stopping.RegisterEventHandler(() => command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(true)).ShouldNotBeNull();
-
-                // Test
-                stoppingEvent.Wait(TimeSpan.FromSeconds(MAX_WAIT_SECONDS_FOR_CONFIRMATION)).ShouldBe(false); // Stopping event was not triggered within 2 seconds
-            }
-            finally
-            {
-                // Cleanup
-                command.Stop();
-
-                // Verify
-                stoppingEvent.IsSet.ShouldBe(true);
-                command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(true);
-
-                appTask.Wait(TimeSpan.FromSeconds(30)).ShouldBe(true);
-
-                // Verify
-                stoppedEvent.IsSet.ShouldBe(true);
-            }
-
-            loggerStatistics.ShouldHaveNoErrors();
-        }
-
-        private class GenericHostTestCommand : GenericHostCliCommand
-        {
-            /// <inheritdoc />
-            protected sealed override IHostBuilderFactory HostBuilderFactory { get; }
-
-            public IServiceProvider ServiceProvider => this.Services;
-
-            /// <inheritdoc />
-            public GenericHostTestCommand(ITestOutputHelper testOutputHelper)
-            {
-                this.HostBuilderFactory = new DefaultHostBuilderFactory()
-                {
-                    LoggingConfigurationProvider = (_, builder) =>
-                    {
-                        builder.AddXUnitLogger(testOutputHelper);
-                    },
-                };
-            }
-        }
-
-        [Fact]
-        public void Test_ServiceProvider()
-        {
-            // Setup
-            var command = new GenericHostCommandWithServiceProvider(this.TestConsole);
-            var testApp = new TestApplicationWithCommand(command);
-
-            using var startedEvent = new ManualResetEventSlim();
-
-            // ReSharper disable once AccessToDisposedClosure
-            command.LifetimeEvents.Started.RegisterEventHandler(() => startedEvent.Set()).ShouldNotBeNull();
-
-            var appTask = testApp.RunAsync();
-
             command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(false);
 
             startedEvent.Wait(TimeSpan.FromSeconds(10)).ShouldBe(true);
 
-            var loggerStatistics = command.ServiceProvider.GetRequiredService<TestLoggerStatistics>();
+            loggerStatistics = command.ServiceProvider.GetRequiredService<TestLoggerStatistics>();
 
             command.LifetimeEvents.Stopping.RegisterEventHandler(() => command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(true)).ShouldNotBeNull();
 
             // Test
-            var testService = command.ServiceProvider.GetRequiredService<GenericHostCommandWithServiceProvider.ITestService>();
-            testService.DoSomething(42).ShouldBe(42);
-
-            var logger = command.ServiceProvider.GetRequiredService<ILogger<GenericHostCommandWithServiceProvider>>();
-            logger.LogInformation("abc");
-
-            command.ServiceProvider.GetRequiredService<IGenericHostCliCommandLifetimeEvents>().ShouldBeSameAs(command.LifetimeEvents);
-
-            // Shutdown
+            stoppingEvent.Wait(TimeSpan.FromSeconds(MAX_WAIT_SECONDS_FOR_CONFIRMATION)).ShouldBe(false); // Stopping event was not triggered within 2 seconds
+        }
+        finally
+        {
+            // Cleanup
             command.Stop();
-            appTask.Wait(TimeSpan.FromSeconds(30)).ShouldBe(true);
-
-            loggerStatistics.ShouldHaveNoErrors();
-        }
-
-        private sealed class GenericHostCommandWithServiceProvider : GenericHostTestCommand
-        {
-            public GenericHostCommandWithServiceProvider(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
-            {
-            }
-
-            /// <inheritdoc />
-            protected override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
-            {
-                base.ConfigureServices(context, services);
-
-                services.AddSingleton<ITestService, TestService>();
-            }
-
-            public interface ITestService
-            {
-                int DoSomething(int value);
-            }
-
-            private sealed class TestService : ITestService
-            {
-                /// <inheritdoc />
-                public int DoSomething(int value)
-                {
-                    return value;
-                }
-            }
-        }
-
-        [Fact]
-        public void Test_ExplicitExecutor()
-        {
-            const int WAIT_SECONDS_INSIDE_COMMAND = 1;
-
-            // Setup
-            var command = new GenericHostCommandWithExplicitExecutor(waitInsideExecute: TimeSpan.FromSeconds(WAIT_SECONDS_INSIDE_COMMAND), this.TestConsole);
-            var testApp = new TestApplicationWithCommand(command);
-
-            using var startedEvent = new ManualResetEventSlim();
-            using var stoppingEvent = new ManualResetEventSlim();
-            using var stoppedEvent = new ManualResetEventSlim();
-
-            // ReSharper disable once AccessToDisposedClosure
-            command.LifetimeEvents.Started.RegisterEventHandler(() => startedEvent.Set()).ShouldNotBeNull();
-            // ReSharper disable once AccessToDisposedClosure
-            command.LifetimeEvents.Stopping.RegisterEventHandler(() =>
-                {
-                    command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(true);
-                    stoppingEvent.Set();
-                }
-            ).ShouldNotBeNull();
-            // ReSharper disable once AccessToDisposedClosure
-            command.LifetimeEvents.Stopped.RegisterEventHandler(() => stoppedEvent.Set()).ShouldNotBeNull();
-
-            command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(false);
-
-            var appTask = testApp.RunAsync();
-
-            startedEvent.Wait(TimeSpan.FromSeconds(10)).ShouldBe(true);
-
-            // Test
-            appTask.Wait(TimeSpan.FromSeconds(WAIT_SECONDS_INSIDE_COMMAND * 3)).ShouldBe(true);
 
             // Verify
             stoppingEvent.IsSet.ShouldBe(true);
+            command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(true);
+
+            appTask.Wait(TimeSpan.FromSeconds(30)).ShouldBe(true);
+
+            // Verify
             stoppedEvent.IsSet.ShouldBe(true);
         }
 
-        private sealed class GenericHostCommandWithExplicitExecutor : GenericHostTestCommand
+        loggerStatistics.ShouldHaveNoErrors();
+    }
+
+    private class GenericHostTestCommand : GenericHostCliCommand
+    {
+        /// <inheritdoc />
+        protected sealed override IHostBuilderFactory HostBuilderFactory { get; }
+
+        public IServiceProvider ServiceProvider => this.Services;
+
+        /// <inheritdoc />
+        public GenericHostTestCommand(ITestOutputHelper testOutputHelper)
         {
-            /// <inheritdoc />
-            protected override CliCommandExecutor ExplicitExecutor => new(Execute);
-
-            private readonly TimeSpan _waitInsideExecute;
-
-            public GenericHostCommandWithExplicitExecutor(TimeSpan waitInsideExecute, ITestOutputHelper testOutputHelper)
-                : base(testOutputHelper)
+            this.HostBuilderFactory = new DefaultHostBuilderFactory()
             {
-                this._waitInsideExecute = waitInsideExecute;
-            }
+                LoggingConfigurationProvider = (_, builder) =>
+                {
+                    builder.AddXUnitLogger(testOutputHelper);
+                },
+            };
+        }
+    }
 
-            private void Execute()
-            {
-                Thread.Sleep(this._waitInsideExecute);
-            }
+    [Fact]
+    public void Test_ServiceProvider()
+    {
+        // Setup
+        var command = new GenericHostCommandWithServiceProvider(this.TestConsole);
+        var testApp = new TestApplicationWithCommand(command);
+
+        using var startedEvent = new ManualResetEventSlim();
+
+        // ReSharper disable once AccessToDisposedClosure
+        command.LifetimeEvents.Started.RegisterEventHandler(() => startedEvent.Set()).ShouldNotBeNull();
+
+        var appTask = testApp.RunAsync();
+
+        command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(false);
+
+        startedEvent.Wait(TimeSpan.FromSeconds(10)).ShouldBe(true);
+
+        var loggerStatistics = command.ServiceProvider.GetRequiredService<TestLoggerStatistics>();
+
+        command.LifetimeEvents.Stopping.RegisterEventHandler(() => command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(true)).ShouldNotBeNull();
+
+        // Test
+        var testService = command.ServiceProvider.GetRequiredService<GenericHostCommandWithServiceProvider.ITestService>();
+        testService.DoSomething(42).ShouldBe(42);
+
+        var logger = command.ServiceProvider.GetRequiredService<ILogger<GenericHostCommandWithServiceProvider>>();
+        logger.LogInformation("abc");
+
+        command.ServiceProvider.GetRequiredService<IGenericHostCliCommandLifetimeEvents>().ShouldBeSameAs(command.LifetimeEvents);
+
+        // Shutdown
+        command.Stop();
+        appTask.Wait(TimeSpan.FromSeconds(30)).ShouldBe(true);
+
+        loggerStatistics.ShouldHaveNoErrors();
+    }
+
+    private sealed class GenericHostCommandWithServiceProvider : GenericHostTestCommand
+    {
+        public GenericHostCommandWithServiceProvider(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
+        {
         }
 
-        [Fact]
-        public void TestCustomHostBuilderFactory()
+        /// <inheritdoc />
+        protected override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
         {
-            // Setup
-            var command = new CommandWithCustomHostBuilderFactory();
-            var testApp = new TestApplicationWithCommand(command);
+            base.ConfigureServices(context, services);
 
-            command.LifetimeEvents.Started.RegisterEventHandler(() => command.Stop()).ShouldNotBeNull();
-
-            // Test
-            testApp.Run();
-
-            // Verify
-            command.CustomHostBuilderFactoryCalled.ShouldBe(true);
+            services.AddSingleton<ITestService, TestService>();
         }
 
-        private sealed class CommandWithCustomHostBuilderFactory : GenericHostCliCommand
+        public interface ITestService
         {
-            public bool CustomHostBuilderFactoryCalled { get; private set; }
+            int DoSomething(int value);
+        }
 
+        private sealed class TestService : ITestService
+        {
             /// <inheritdoc />
-            protected override IHostBuilderFactory HostBuilderFactory { get; }
-
-            /// <inheritdoc />
-            public CommandWithCustomHostBuilderFactory()
+            public int DoSomething(int value)
             {
-                this.HostBuilderFactory = new MethodHostBuilderFactory(
-                    () =>
-                    {
-                        this.CustomHostBuilderFactoryCalled = true;
-                        return new HostBuilder();
-                    }
-                );
+                return value;
             }
+        }
+    }
+
+    [Fact]
+    public void Test_ExplicitExecutor()
+    {
+        const int WAIT_SECONDS_INSIDE_COMMAND = 1;
+
+        // Setup
+        var command = new GenericHostCommandWithExplicitExecutor(waitInsideExecute: TimeSpan.FromSeconds(WAIT_SECONDS_INSIDE_COMMAND), this.TestConsole);
+        var testApp = new TestApplicationWithCommand(command);
+
+        using var startedEvent = new ManualResetEventSlim();
+        using var stoppingEvent = new ManualResetEventSlim();
+        using var stoppedEvent = new ManualResetEventSlim();
+
+        // ReSharper disable once AccessToDisposedClosure
+        command.LifetimeEvents.Started.RegisterEventHandler(() => startedEvent.Set()).ShouldNotBeNull();
+        // ReSharper disable once AccessToDisposedClosure
+        command.LifetimeEvents.Stopping.RegisterEventHandler(() =>
+            {
+                command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(true);
+                stoppingEvent.Set();
+            }
+        ).ShouldNotBeNull();
+        // ReSharper disable once AccessToDisposedClosure
+        command.LifetimeEvents.Stopped.RegisterEventHandler(() => stoppedEvent.Set()).ShouldNotBeNull();
+
+        command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(false);
+
+        var appTask = testApp.RunAsync();
+
+        startedEvent.Wait(TimeSpan.FromSeconds(10)).ShouldBe(true);
+
+        // Test
+        appTask.Wait(TimeSpan.FromSeconds(WAIT_SECONDS_INSIDE_COMMAND * 3)).ShouldBe(true);
+
+        // Verify
+        stoppingEvent.IsSet.ShouldBe(true);
+        stoppedEvent.IsSet.ShouldBe(true);
+    }
+
+    private sealed class GenericHostCommandWithExplicitExecutor : GenericHostTestCommand
+    {
+        /// <inheritdoc />
+        protected override CliCommandExecutor ExplicitExecutor => new(Execute);
+
+        private readonly TimeSpan _waitInsideExecute;
+
+        public GenericHostCommandWithExplicitExecutor(TimeSpan waitInsideExecute, ITestOutputHelper testOutputHelper)
+            : base(testOutputHelper)
+        {
+            this._waitInsideExecute = waitInsideExecute;
+        }
+
+        private void Execute()
+        {
+            Thread.Sleep(this._waitInsideExecute);
+        }
+    }
+
+    [Fact]
+    public void TestCustomHostBuilderFactory()
+    {
+        // Setup
+        var command = new CommandWithCustomHostBuilderFactory();
+        var testApp = new TestApplicationWithCommand(command);
+
+        command.LifetimeEvents.Started.RegisterEventHandler(() => command.Stop()).ShouldNotBeNull();
+
+        // Test
+        testApp.Run();
+
+        // Verify
+        command.CustomHostBuilderFactoryCalled.ShouldBe(true);
+    }
+
+    private sealed class CommandWithCustomHostBuilderFactory : GenericHostCliCommand
+    {
+        public bool CustomHostBuilderFactoryCalled { get; private set; }
+
+        /// <inheritdoc />
+        protected override IHostBuilderFactory HostBuilderFactory { get; }
+
+        /// <inheritdoc />
+        public CommandWithCustomHostBuilderFactory()
+        {
+            this.HostBuilderFactory = new MethodHostBuilderFactory(
+                () =>
+                {
+                    this.CustomHostBuilderFactoryCalled = true;
+                    return new HostBuilder();
+                }
+            );
         }
     }
 }

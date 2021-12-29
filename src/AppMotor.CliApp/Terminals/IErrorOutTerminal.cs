@@ -19,27 +19,26 @@ using System.IO;
 
 using JetBrains.Annotations;
 
-namespace AppMotor.CliApp.Terminals
+namespace AppMotor.CliApp.Terminals;
+
+/// <summary>
+/// Represents the error output (i.e. analog to <see cref="Console.Error"/>) of a terminal.
+/// </summary>
+/// <seealso cref="ITerminal"/>
+/// <seealso cref="IOutputTerminal"/>
+/// <seealso cref="IStdOutTerminal"/>
+public interface IErrorOutTerminal
 {
     /// <summary>
-    /// Represents the error output (i.e. analog to <see cref="Console.Error"/>) of a terminal.
+    /// The standard error output stream.
     /// </summary>
-    /// <seealso cref="ITerminal"/>
-    /// <seealso cref="IOutputTerminal"/>
-    /// <seealso cref="IStdOutTerminal"/>
-    public interface IErrorOutTerminal
-    {
-        /// <summary>
-        /// The standard error output stream.
-        /// </summary>
-        [PublicAPI]
-        TextWriter Error { get; }
+    [PublicAPI]
+    TextWriter Error { get; }
 
-        /// <summary>
-        /// Whether <see cref="Error"/> is redirected (to a file or the input
-        /// of another process).
-        /// </summary>
-        [PublicAPI]
-        bool IsErrorRedirected { get; }
-    }
+    /// <summary>
+    /// Whether <see cref="Error"/> is redirected (to a file or the input
+    /// of another process).
+    /// </summary>
+    [PublicAPI]
+    bool IsErrorRedirected { get; }
 }

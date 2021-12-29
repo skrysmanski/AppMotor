@@ -4,35 +4,34 @@ using AppMotor.CliApp.CommandLine.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace AppMotor.CliApp.Hosting.Sample
+namespace AppMotor.CliApp.Hosting.Sample;
+
+internal sealed class MyGenericHostCliCommand : GenericHostCliCommand
 {
-    internal sealed class MyGenericHostCliCommand : GenericHostCliCommand
+    /// <inheritdoc />
+    protected override CliCommandExecutor ExplicitExecutor => new(Execute);
+
+    /// <inheritdoc />
+    protected override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
     {
-        /// <inheritdoc />
-        protected override CliCommandExecutor ExplicitExecutor => new(Execute);
+        services.AddHostedService<MyTestServer>();
+    }
 
-        /// <inheritdoc />
-        protected override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
+    private void Execute()
+    {
+        while (!this.LifetimeEvents.Stopping.HasBeenRaised)
         {
-            services.AddHostedService<MyTestServer>();
-        }
+            this.Terminal.Write("Enter something: ");
+            var text = this.Terminal.ReadLine();
 
-        private void Execute()
-        {
-            while (!this.LifetimeEvents.Stopping.HasBeenRaised)
+            if (text is null)
             {
-                this.Terminal.Write("Enter something: ");
-                var text = this.Terminal.ReadLine();
-
-                if (text is null)
-                {
-                    break;
-                }
-                else if (!string.IsNullOrWhiteSpace(text))
-                {
-                    this.Terminal.WriteLine($"You wrote: {text}");
-                    break;
-                }
+                break;
+            }
+            else if (!string.IsNullOrWhiteSpace(text))
+            {
+                this.Terminal.WriteLine($"You wrote: {text}");
+                break;
             }
         }
     }

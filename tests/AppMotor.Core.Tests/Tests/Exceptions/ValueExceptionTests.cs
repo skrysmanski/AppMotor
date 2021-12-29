@@ -21,17 +21,16 @@ using Shouldly;
 
 using Xunit;
 
-namespace AppMotor.Core.Tests.Exceptions
-{
-    public sealed class ValueExceptionTests
-    {
-        [Fact]
-        public void TestDefaultConstructor()
-        {
-            var ex = new ValueException();
+namespace AppMotor.Core.Tests.Exceptions;
 
-            ex.ValueName.ShouldBe(null);
-            ex.Message.ShouldBe(Validate.ExceptionMessages.DEFAULT_MESSAGE);
-        }
+public sealed class ValueExceptionTests
+{
+    [Fact]
+    public void TestDefaultConstructor()
+    {
+        var ex = new ValueException();
+
+        ex.ValueName.ShouldBe(null);
+        ex.Message.ShouldBe(Validate.ExceptionMessages.DEFAULT_MESSAGE);
     }
 }

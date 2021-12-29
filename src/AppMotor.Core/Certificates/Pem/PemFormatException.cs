@@ -16,18 +16,17 @@
 
 using System;
 
-namespace AppMotor.Core.Certificates.Pem
+namespace AppMotor.Core.Certificates.Pem;
+
+/// <summary>
+/// Exception thrown for format errors in PEM files.
+/// </summary>
+public sealed class PemFormatException : Exception
 {
     /// <summary>
-    /// Exception thrown for format errors in PEM files.
+    /// Constructor.
     /// </summary>
-    public sealed class PemFormatException : Exception
+    public PemFormatException(string? message) : base(message)
     {
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        public PemFormatException(string? message) : base(message)
-        {
-        }
     }
 }

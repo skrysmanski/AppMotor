@@ -23,68 +23,67 @@ using AppMotor.CliApp.Properties;
 using AppMotor.CliApp.Terminals;
 using AppMotor.Core.Extensions;
 
-namespace AppMotor.CliApp.CommandLine.Utils
+namespace AppMotor.CliApp.CommandLine.Utils;
+
+/// <summary>
+/// Utils to interact with <see cref="Debugger"/> - but make it compatible for unit tests.
+/// </summary>
+[ExcludeFromCodeCoverage]
+internal static class DebuggerUtils
 {
+    public static bool IsTestRun { get; set; }
+
+    public static int DebuggerLaunchCount { get; private set; }
+
     /// <summary>
-    /// Utils to interact with <see cref="Debugger"/> - but make it compatible for unit tests.
+    /// Should be used instead of <see cref="Debugger.IsAttached"/>.
     /// </summary>
-    [ExcludeFromCodeCoverage]
-    internal static class DebuggerUtils
+    public static bool IsDebuggerAttached
     {
-        public static bool IsTestRun { get; set; }
-
-        public static int DebuggerLaunchCount { get; private set; }
-
-        /// <summary>
-        /// Should be used instead of <see cref="Debugger.IsAttached"/>.
-        /// </summary>
-        public static bool IsDebuggerAttached
+        get
         {
-            get
-            {
-                if (IsTestRun)
-                {
-                    return false;
-                }
-                else
-                {
-                    return Debugger.IsAttached;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Should be used instead of <see cref="Debugger.Launch"/>.
-        /// </summary>
-        public static void LaunchDebugger(IStdOutTerminal terminal)
-        {
-            if (IsDebuggerAttached)
-            {
-                return;
-            }
-
             if (IsTestRun)
             {
-                DebuggerLaunchCount++;
+                return false;
             }
             else
             {
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
-                    // This is only supported on Windows.
-                    Debugger.Launch();
-                }
-                else
-                {
-                    var process = Process.GetCurrentProcess();
+                return Debugger.IsAttached;
+            }
+        }
+    }
 
-                    terminal.WriteLine(LocalizableResources.WaitForDebuggerAttach.With(process.Id, process.ProcessName));
-                    terminal.WriteLine();
+    /// <summary>
+    /// Should be used instead of <see cref="Debugger.Launch"/>.
+    /// </summary>
+    public static void LaunchDebugger(IStdOutTerminal terminal)
+    {
+        if (IsDebuggerAttached)
+        {
+            return;
+        }
 
-                    while (!Debugger.IsAttached)
-                    {
-                        Thread.Sleep(50);
-                    }
+        if (IsTestRun)
+        {
+            DebuggerLaunchCount++;
+        }
+        else
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                // This is only supported on Windows.
+                Debugger.Launch();
+            }
+            else
+            {
+                var process = Process.GetCurrentProcess();
+
+                terminal.WriteLine(LocalizableResources.WaitForDebuggerAttach.With(process.Id, process.ProcessName));
+                terminal.WriteLine();
+
+                while (!Debugger.IsAttached)
+                {
+                    Thread.Sleep(50);
                 }
             }
         }

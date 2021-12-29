@@ -16,14 +16,13 @@
 
 using AppMotor.CliApp.CommandLine;
 
-namespace AppMotor.CliApp.TestUtils
+namespace AppMotor.CliApp.TestUtils;
+
+internal class TestApplicationWithVerbs : TestApplicationWithVerbsBase
 {
-    internal class TestApplicationWithVerbs : TestApplicationWithVerbsBase
+    /// <inheritdoc />
+    public TestApplicationWithVerbs(params CliVerb[] verbs)
     {
-        /// <inheritdoc />
-        public TestApplicationWithVerbs(params CliVerb[] verbs)
-        {
-            this.Verbs = verbs;
-        }
+        this.Verbs = verbs;
     }
 }

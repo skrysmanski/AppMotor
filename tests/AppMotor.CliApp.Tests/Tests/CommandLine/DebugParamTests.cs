@@ -25,296 +25,295 @@ using Shouldly;
 
 using Xunit;
 
-namespace AppMotor.CliApp.Tests.CommandLine
+namespace AppMotor.CliApp.Tests.CommandLine;
+
+public sealed class DebugParamTests
 {
-    public sealed class DebugParamTests
+    // ReSharper disable MultipleSpaces
+    [Theory]
+    [InlineData(TestScenarios.BothAliasesAvailable, true, true)]
+    [InlineData(TestScenarios.DAliasTaken,          true, true)]
+    [InlineData(TestScenarios.DebugAliasTaken,      true, false)]
+    [InlineData(TestScenarios.BothAliasesTaken,     true, false)]
+    [InlineData(TestScenarios.BothAliasesAvailable, false, true)]
+    [InlineData(TestScenarios.DAliasTaken,          false, false)]
+    [InlineData(TestScenarios.DebugAliasTaken,      false, true)]
+    [InlineData(TestScenarios.BothAliasesTaken,     false, false)]
+    // ReSharper restore MultipleSpaces
+    public void TestCliApplicationWithCommand_WhenEnabled(TestScenarios scenario, bool longAlias, bool expectedLaunch)
     {
-        // ReSharper disable MultipleSpaces
-        [Theory]
-        [InlineData(TestScenarios.BothAliasesAvailable, true, true)]
-        [InlineData(TestScenarios.DAliasTaken,          true, true)]
-        [InlineData(TestScenarios.DebugAliasTaken,      true, false)]
-        [InlineData(TestScenarios.BothAliasesTaken,     true, false)]
-        [InlineData(TestScenarios.BothAliasesAvailable, false, true)]
-        [InlineData(TestScenarios.DAliasTaken,          false, false)]
-        [InlineData(TestScenarios.DebugAliasTaken,      false, true)]
-        [InlineData(TestScenarios.BothAliasesTaken,     false, false)]
-        // ReSharper restore MultipleSpaces
-        public void TestCliApplicationWithCommand_WhenEnabled(TestScenarios scenario, bool longAlias, bool expectedLaunch)
+        // Setup
+        var testCommand = new TestCommand(scenario);
+        var app = new TestApplicationWithCommand(testCommand);
+
+        app.EnableGlobalDebugParam.ShouldBe(true);
+
+        int oldDebuggerLaunchCount = DebuggerUtils.DebuggerLaunchCount;
+
+        // Test
+        if (longAlias)
         {
-            // Setup
-            var testCommand = new TestCommand(scenario);
-            var app = new TestApplicationWithCommand(testCommand);
-
-            app.EnableGlobalDebugParam.ShouldBe(true);
-
-            int oldDebuggerLaunchCount = DebuggerUtils.DebuggerLaunchCount;
-
-            // Test
-            if (longAlias)
-            {
-                app.Run("--value", "42", "--debug");
-            }
-            else
-            {
-                app.Run("--value", "42", "-d");
-            }
-
-            // Verify
-            app.TerminalOutput.ShouldBeEmpty();
-            testCommand.Executed.ShouldBe(true);
-            if (expectedLaunch)
-            {
-                DebuggerUtils.DebuggerLaunchCount.ShouldBe(oldDebuggerLaunchCount + 1);
-            }
-            else
-            {
-                DebuggerUtils.DebuggerLaunchCount.ShouldBe(oldDebuggerLaunchCount);
-            }
+            app.Run("--value", "42", "--debug");
+        }
+        else
+        {
+            app.Run("--value", "42", "-d");
         }
 
-        [Fact]
-        public void TestCliApplicationWithCommand_WhenDisabled()
+        // Verify
+        app.TerminalOutput.ShouldBeEmpty();
+        testCommand.Executed.ShouldBe(true);
+        if (expectedLaunch)
         {
-            // Setup
-            var testCommand = new TestCommand(TestScenarios.BothAliasesAvailable);
-            var app = new TestApplicationWithCommand(testCommand);
+            DebuggerUtils.DebuggerLaunchCount.ShouldBe(oldDebuggerLaunchCount + 1);
+        }
+        else
+        {
+            DebuggerUtils.DebuggerLaunchCount.ShouldBe(oldDebuggerLaunchCount);
+        }
+    }
 
-            // Test
-            app.EnableGlobalDebugParam = false;
+    [Fact]
+    public void TestCliApplicationWithCommand_WhenDisabled()
+    {
+        // Setup
+        var testCommand = new TestCommand(TestScenarios.BothAliasesAvailable);
+        var app = new TestApplicationWithCommand(testCommand);
 
-            app.RunWithExpectedExitCode(expectedExitCode: 1, "--value", "42", "--debug");
-            app.RunWithExpectedExitCode(expectedExitCode: 1, "--value", "42", "-d");
+        // Test
+        app.EnableGlobalDebugParam = false;
 
-            // Verify
-            testCommand.Executed.ShouldBe(false);
+        app.RunWithExpectedExitCode(expectedExitCode: 1, "--value", "42", "--debug");
+        app.RunWithExpectedExitCode(expectedExitCode: 1, "--value", "42", "-d");
+
+        // Verify
+        testCommand.Executed.ShouldBe(false);
+    }
+
+    // ReSharper disable MultipleSpaces
+    [Theory]
+    [InlineData(TestScenarios.BothAliasesAvailable, true, true)]
+    [InlineData(TestScenarios.DAliasTaken,          true, true)]
+    [InlineData(TestScenarios.DebugAliasTaken,      true, false)]
+    [InlineData(TestScenarios.BothAliasesTaken,     true, false)]
+    [InlineData(TestScenarios.BothAliasesAvailable, false, true)]
+    [InlineData(TestScenarios.DAliasTaken,          false, false)]
+    [InlineData(TestScenarios.DebugAliasTaken,      false, true)]
+    [InlineData(TestScenarios.BothAliasesTaken,     false, false)]
+    // ReSharper restore MultipleSpaces
+    public void TestCliApplicationWithParams_WhenEnabled(TestScenarios scenario, bool longAlias, bool expectedLaunch)
+    {
+        // Setup
+        var app = new TestApplicationWithParams(scenario);
+
+        app.EnableGlobalDebugParam.ShouldBe(true);
+
+        int oldDebuggerLaunchCount = DebuggerUtils.DebuggerLaunchCount;
+
+        // Test
+        if (longAlias)
+        {
+            app.Run("--value", "42", "--debug");
+        }
+        else
+        {
+            app.Run("--value", "42", "-d");
         }
 
-        // ReSharper disable MultipleSpaces
-        [Theory]
-        [InlineData(TestScenarios.BothAliasesAvailable, true, true)]
-        [InlineData(TestScenarios.DAliasTaken,          true, true)]
-        [InlineData(TestScenarios.DebugAliasTaken,      true, false)]
-        [InlineData(TestScenarios.BothAliasesTaken,     true, false)]
-        [InlineData(TestScenarios.BothAliasesAvailable, false, true)]
-        [InlineData(TestScenarios.DAliasTaken,          false, false)]
-        [InlineData(TestScenarios.DebugAliasTaken,      false, true)]
-        [InlineData(TestScenarios.BothAliasesTaken,     false, false)]
-        // ReSharper restore MultipleSpaces
-        public void TestCliApplicationWithParams_WhenEnabled(TestScenarios scenario, bool longAlias, bool expectedLaunch)
+        // Verify
+        app.TerminalOutput.ShouldBeEmpty();
+        app.Executed.ShouldBe(true);
+        if (expectedLaunch)
         {
-            // Setup
-            var app = new TestApplicationWithParams(scenario);
+            DebuggerUtils.DebuggerLaunchCount.ShouldBe(oldDebuggerLaunchCount + 1);
+        }
+        else
+        {
+            DebuggerUtils.DebuggerLaunchCount.ShouldBe(oldDebuggerLaunchCount);
+        }
+    }
 
-            app.EnableGlobalDebugParam.ShouldBe(true);
+    [Fact]
+    public void TestCliApplicationWithParams_WhenDisabled()
+    {
+        // Setup
+        var app = new TestApplicationWithParams(TestScenarios.BothAliasesAvailable);
 
-            int oldDebuggerLaunchCount = DebuggerUtils.DebuggerLaunchCount;
+        // Test
+        app.EnableGlobalDebugParam = false;
 
-            // Test
-            if (longAlias)
-            {
-                app.Run("--value", "42", "--debug");
-            }
-            else
-            {
-                app.Run("--value", "42", "-d");
-            }
+        app.RunWithExpectedExitCode(expectedExitCode: 1, "--value", "42", "--debug");
+        app.RunWithExpectedExitCode(expectedExitCode: 1, "--value", "42", "-d");
 
-            // Verify
-            app.TerminalOutput.ShouldBeEmpty();
-            app.Executed.ShouldBe(true);
-            if (expectedLaunch)
-            {
-                DebuggerUtils.DebuggerLaunchCount.ShouldBe(oldDebuggerLaunchCount + 1);
-            }
-            else
-            {
-                DebuggerUtils.DebuggerLaunchCount.ShouldBe(oldDebuggerLaunchCount);
-            }
+        // Verify
+        app.Executed.ShouldBe(false);
+    }
+
+    // ReSharper disable MultipleSpaces
+    [Theory]
+    [InlineData(TestScenarios.BothAliasesAvailable, true, true)]
+    [InlineData(TestScenarios.DAliasTaken,          true, true)]
+    [InlineData(TestScenarios.DebugAliasTaken,      true, false)]
+    [InlineData(TestScenarios.BothAliasesTaken,     true, false)]
+    [InlineData(TestScenarios.BothAliasesAvailable, false, true)]
+    [InlineData(TestScenarios.DAliasTaken,          false, false)]
+    [InlineData(TestScenarios.DebugAliasTaken,      false, true)]
+    [InlineData(TestScenarios.BothAliasesTaken,     false, false)]
+    // ReSharper restore MultipleSpaces
+    public void TestCliApplicationWithVerbs_WhenEnabled(TestScenarios scenario, bool longAlias, bool expectedLaunch)
+    {
+        // Setup
+        var command = new TestCommand(scenario);
+        var app = new TestApplicationWithVerbs(new CliVerb("doit", command));
+
+        app.EnableGlobalDebugParam.ShouldBe(true);
+
+        int oldDebuggerLaunchCount = DebuggerUtils.DebuggerLaunchCount;
+
+        // Test
+        if (longAlias)
+        {
+            app.Run("doit", "--value", "42", "--debug");
+        }
+        else
+        {
+            app.Run("doit", "--value", "42", "-d");
         }
 
-        [Fact]
-        public void TestCliApplicationWithParams_WhenDisabled()
+        // Verify
+        app.TerminalOutput.ShouldBeEmpty();
+        command.Executed.ShouldBe(true);
+        if (expectedLaunch)
         {
-            // Setup
-            var app = new TestApplicationWithParams(TestScenarios.BothAliasesAvailable);
+            DebuggerUtils.DebuggerLaunchCount.ShouldBe(oldDebuggerLaunchCount + 1);
+        }
+        else
+        {
+            DebuggerUtils.DebuggerLaunchCount.ShouldBe(oldDebuggerLaunchCount);
+        }
+    }
 
-            // Test
-            app.EnableGlobalDebugParam = false;
+    [Fact]
+    public void TestCliApplicationWithVerbs_WhenDisabled()
+    {
+        // Setup
+        var command = new TestCommand(TestScenarios.BothAliasesAvailable);
+        var app = new TestApplicationWithVerbs(new CliVerb("doit", command));
 
-            app.RunWithExpectedExitCode(expectedExitCode: 1, "--value", "42", "--debug");
-            app.RunWithExpectedExitCode(expectedExitCode: 1, "--value", "42", "-d");
+        // Test
+        app.EnableGlobalDebugParam = false;
 
-            // Verify
-            app.Executed.ShouldBe(false);
+        app.RunWithExpectedExitCode(expectedExitCode: 1, "doit", "--value", "42", "--debug");
+        app.RunWithExpectedExitCode(expectedExitCode: 1, "doit", "--value", "42", "-d");
+
+        // Verify
+        command.Executed.ShouldBe(false);
+    }
+
+    private static List<CliParamBase> CreateTestParams(TestScenarios scenario, out CliParam<int> valueParam)
+    {
+        var paramList = new List<CliParamBase>();
+
+        valueParam = new CliParam<int>("--value");
+        paramList.Add(valueParam);
+
+        switch (scenario)
+        {
+            case TestScenarios.BothAliasesAvailable:
+                // No other parameters.
+                break;
+
+            case TestScenarios.DAliasTaken:
+                paramList.Add(new CliParam<bool>("-d"));
+                break;
+
+            case TestScenarios.DebugAliasTaken:
+                paramList.Add(new CliParam<bool>("--debug"));
+                break;
+
+            case TestScenarios.BothAliasesTaken:
+                paramList.Add(new CliParam<bool>("--debug", "-d"));
+                break;
+
+            default:
+                throw new UnexpectedSwitchValueException(nameof(scenario), scenario);
         }
 
-        // ReSharper disable MultipleSpaces
-        [Theory]
-        [InlineData(TestScenarios.BothAliasesAvailable, true, true)]
-        [InlineData(TestScenarios.DAliasTaken,          true, true)]
-        [InlineData(TestScenarios.DebugAliasTaken,      true, false)]
-        [InlineData(TestScenarios.BothAliasesTaken,     true, false)]
-        [InlineData(TestScenarios.BothAliasesAvailable, false, true)]
-        [InlineData(TestScenarios.DAliasTaken,          false, false)]
-        [InlineData(TestScenarios.DebugAliasTaken,      false, true)]
-        [InlineData(TestScenarios.BothAliasesTaken,     false, false)]
-        // ReSharper restore MultipleSpaces
-        public void TestCliApplicationWithVerbs_WhenEnabled(TestScenarios scenario, bool longAlias, bool expectedLaunch)
+        return paramList;
+    }
+
+    public enum TestScenarios
+    {
+        BothAliasesAvailable,
+        DAliasTaken,
+        DebugAliasTaken,
+        BothAliasesTaken,
+    }
+
+    private sealed class TestCommand : CliCommand
+    {
+        /// <inheritdoc />
+        protected override CliCommandExecutor Executor => new(Execute);
+
+        private readonly TestScenarios _scenario;
+
+        private CliParam<int>? _valueParam;
+
+        public bool Executed { get; private set; }
+
+        /// <inheritdoc />
+        public TestCommand(TestScenarios scenario)
         {
-            // Setup
-            var command = new TestCommand(scenario);
-            var app = new TestApplicationWithVerbs(new CliVerb("doit", command));
-
-            app.EnableGlobalDebugParam.ShouldBe(true);
-
-            int oldDebuggerLaunchCount = DebuggerUtils.DebuggerLaunchCount;
-
-            // Test
-            if (longAlias)
-            {
-                app.Run("doit", "--value", "42", "--debug");
-            }
-            else
-            {
-                app.Run("doit", "--value", "42", "-d");
-            }
-
-            // Verify
-            app.TerminalOutput.ShouldBeEmpty();
-            command.Executed.ShouldBe(true);
-            if (expectedLaunch)
-            {
-                DebuggerUtils.DebuggerLaunchCount.ShouldBe(oldDebuggerLaunchCount + 1);
-            }
-            else
-            {
-                DebuggerUtils.DebuggerLaunchCount.ShouldBe(oldDebuggerLaunchCount);
-            }
+            this._scenario = scenario;
         }
 
-        [Fact]
-        public void TestCliApplicationWithVerbs_WhenDisabled()
+        /// <inheritdoc />
+        protected override IEnumerable<CliParamBase> GetAllParams()
         {
-            // Setup
-            var command = new TestCommand(TestScenarios.BothAliasesAvailable);
-            var app = new TestApplicationWithVerbs(new CliVerb("doit", command));
-
-            // Test
-            app.EnableGlobalDebugParam = false;
-
-            app.RunWithExpectedExitCode(expectedExitCode: 1, "doit", "--value", "42", "--debug");
-            app.RunWithExpectedExitCode(expectedExitCode: 1, "doit", "--value", "42", "-d");
-
-            // Verify
-            command.Executed.ShouldBe(false);
+            return CreateTestParams(this._scenario, out this._valueParam);
         }
 
-        private static List<CliParamBase> CreateTestParams(TestScenarios scenario, out CliParam<int> valueParam)
+        private void Execute()
         {
-            var paramList = new List<CliParamBase>();
+            this.Executed.ShouldBe(false);
+            this.Executed = true;
 
-            valueParam = new CliParam<int>("--value");
-            paramList.Add(valueParam);
+            this._valueParam.ShouldNotBeNull();
+            this._valueParam.Value.ShouldBe(42);
+        }
+    }
 
-            switch (scenario)
-            {
-                case TestScenarios.BothAliasesAvailable:
-                    // No other parameters.
-                    break;
+    private sealed class TestApplicationWithParams : TestApplicationWithParamsBase
+    {
+        /// <inheritdoc />
+        protected override CliCommandExecutor Executor => new(Execute);
 
-                case TestScenarios.DAliasTaken:
-                    paramList.Add(new CliParam<bool>("-d"));
-                    break;
+        private readonly TestScenarios _scenario;
 
-                case TestScenarios.DebugAliasTaken:
-                    paramList.Add(new CliParam<bool>("--debug"));
-                    break;
+        private CliParam<int>? _valueParam;
 
-                case TestScenarios.BothAliasesTaken:
-                    paramList.Add(new CliParam<bool>("--debug", "-d"));
-                    break;
+        public bool Executed { get; private set; }
 
-                default:
-                    throw new UnexpectedSwitchValueException(nameof(scenario), scenario);
-            }
-
-            return paramList;
+        /// <inheritdoc />
+        public TestApplicationWithParams(TestScenarios scenario)
+        {
+            this._scenario = scenario;
         }
 
-        public enum TestScenarios
+        /// <inheritdoc />
+        protected override IEnumerable<CliParamBase> GetAllParams()
         {
-            BothAliasesAvailable,
-            DAliasTaken,
-            DebugAliasTaken,
-            BothAliasesTaken,
+            return CreateTestParams(this._scenario, out this._valueParam);
         }
 
-        private sealed class TestCommand : CliCommand
+        private void Execute()
         {
-            /// <inheritdoc />
-            protected override CliCommandExecutor Executor => new(Execute);
+            this.Executed.ShouldBe(false);
+            this.Executed = true;
 
-            private readonly TestScenarios _scenario;
-
-            private CliParam<int>? _valueParam;
-
-            public bool Executed { get; private set; }
-
-            /// <inheritdoc />
-            public TestCommand(TestScenarios scenario)
-            {
-                this._scenario = scenario;
-            }
-
-            /// <inheritdoc />
-            protected override IEnumerable<CliParamBase> GetAllParams()
-            {
-                return CreateTestParams(this._scenario, out this._valueParam);
-            }
-
-            private void Execute()
-            {
-                this.Executed.ShouldBe(false);
-                this.Executed = true;
-
-                this._valueParam.ShouldNotBeNull();
-                this._valueParam.Value.ShouldBe(42);
-            }
+            this._valueParam.ShouldNotBeNull();
+            this._valueParam.Value.ShouldBe(42);
         }
 
-        private sealed class TestApplicationWithParams : TestApplicationWithParamsBase
-        {
-            /// <inheritdoc />
-            protected override CliCommandExecutor Executor => new(Execute);
-
-            private readonly TestScenarios _scenario;
-
-            private CliParam<int>? _valueParam;
-
-            public bool Executed { get; private set; }
-
-            /// <inheritdoc />
-            public TestApplicationWithParams(TestScenarios scenario)
-            {
-                this._scenario = scenario;
-            }
-
-            /// <inheritdoc />
-            protected override IEnumerable<CliParamBase> GetAllParams()
-            {
-                return CreateTestParams(this._scenario, out this._valueParam);
-            }
-
-            private void Execute()
-            {
-                this.Executed.ShouldBe(false);
-                this.Executed = true;
-
-                this._valueParam.ShouldNotBeNull();
-                this._valueParam.Value.ShouldBe(42);
-            }
-
-        }
     }
 }

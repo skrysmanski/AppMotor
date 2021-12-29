@@ -24,55 +24,54 @@ using Shouldly;
 
 using Xunit;
 
-namespace AppMotor.Core.Tests.Utils
+namespace AppMotor.Core.Tests.Utils;
+
+public class Base64EncodingTests
 {
-    public class Base64EncodingTests
+    public static IEnumerable<object[]> TestDataWithPadding
     {
-        public static IEnumerable<object[]> TestDataWithPadding
+        get
         {
-            get
-            {
-                yield return new object[] { "", "" };
-                yield return new object[] { "f", "Zg==" };
-                yield return new object[] { "fo", "Zm8=" };
-                yield return new object[] { "foo", "Zm9v" };
-                yield return new object[] { "foob", "Zm9vYg==" };
-                yield return new object[] { "fooba", "Zm9vYmE=" };
-                yield return new object[] { "foobar", "Zm9vYmFy" };
-            }
+            yield return new object[] { "", "" };
+            yield return new object[] { "f", "Zg==" };
+            yield return new object[] { "fo", "Zm8=" };
+            yield return new object[] { "foo", "Zm9v" };
+            yield return new object[] { "foob", "Zm9vYg==" };
+            yield return new object[] { "fooba", "Zm9vYmE=" };
+            yield return new object[] { "foobar", "Zm9vYmFy" };
         }
+    }
 
-        [Theory]
-        [MemberData(nameof(TestDataWithPadding))]
-        public void TestEncoding_WithPadding(string input, string expectedOutput)
-        {
-            var inputArray = Encoding.ASCII.GetBytes(input);
+    [Theory]
+    [MemberData(nameof(TestDataWithPadding))]
+    public void TestEncoding_WithPadding(string input, string expectedOutput)
+    {
+        var inputArray = Encoding.ASCII.GetBytes(input);
 
-            // Tests
-            Base64Encoding.DefaultWithPadding.Encode(inputArray).ShouldBe(expectedOutput);
-        }
+        // Tests
+        Base64Encoding.DefaultWithPadding.Encode(inputArray).ShouldBe(expectedOutput);
+    }
 
-        [Theory]
-        [MemberData(nameof(TestDataWithPadding))]
-        public void TestDecoding_WithPadding(string expectedOutput, string input)
-        {
-            var expectedOutputArray = Encoding.ASCII.GetBytes(expectedOutput);
+    [Theory]
+    [MemberData(nameof(TestDataWithPadding))]
+    public void TestDecoding_WithPadding(string expectedOutput, string input)
+    {
+        var expectedOutputArray = Encoding.ASCII.GetBytes(expectedOutput);
 
-            // Tests
-            Base64Encoding.DefaultWithPadding.Decode(input).ShouldBe(expectedOutputArray);
-        }
+        // Tests
+        Base64Encoding.DefaultWithPadding.Decode(input).ShouldBe(expectedOutputArray);
+    }
 
-        [Fact]
-        public void TestDecodingInvalidChar()
-        {
-            // $ is an invalid symbol in the default Base64 symbols list.
-            Should.Throw<FormatException>(() => Base64Encoding.DefaultWithPadding.Decode("Zm9$"));
-        }
+    [Fact]
+    public void TestDecodingInvalidChar()
+    {
+        // $ is an invalid symbol in the default Base64 symbols list.
+        Should.Throw<FormatException>(() => Base64Encoding.DefaultWithPadding.Decode("Zm9$"));
+    }
 
-        [Fact]
-        public void TestDecodingInvalidLength()
-        {
-            Should.Throw<FormatException>(() => Base64Encoding.DefaultWithPadding.Decode("Zm9"));
-        }
+    [Fact]
+    public void TestDecodingInvalidLength()
+    {
+        Should.Throw<FormatException>(() => Base64Encoding.DefaultWithPadding.Decode("Zm9"));
     }
 }

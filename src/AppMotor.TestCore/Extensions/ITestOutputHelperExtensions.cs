@@ -18,20 +18,19 @@ using JetBrains.Annotations;
 
 using Xunit.Abstractions;
 
-namespace AppMotor.TestCore.Extensions
+namespace AppMotor.TestCore.Extensions;
+
+/// <summary>
+/// Extension methods for <see cref="ITestOutputHelper"/>
+/// </summary>
+public static class ITestOutputHelperExtensions
 {
     /// <summary>
-    /// Extension methods for <see cref="ITestOutputHelper"/>
+    /// Writes a blank line.
     /// </summary>
-    public static class ITestOutputHelperExtensions
+    [PublicAPI]
+    public static void WriteLine(this ITestOutputHelper testOutputHelper)
     {
-        /// <summary>
-        /// Writes a blank line.
-        /// </summary>
-        [PublicAPI]
-        public static void WriteLine(this ITestOutputHelper testOutputHelper)
-        {
-            testOutputHelper.WriteLine("");
-        }
+        testOutputHelper.WriteLine("");
     }
 }

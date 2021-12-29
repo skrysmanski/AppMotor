@@ -16,11 +16,10 @@
 
 using JetBrains.Annotations;
 
-namespace AppMotor.CliApp.TestUtils
+namespace AppMotor.CliApp.TestUtils;
+
+[PublicAPI]
+internal interface ITestApplication
 {
-    [PublicAPI]
-    internal interface ITestApplication
-    {
-        string TerminalOutput { get; }
-    }
+    string TerminalOutput { get; }
 }

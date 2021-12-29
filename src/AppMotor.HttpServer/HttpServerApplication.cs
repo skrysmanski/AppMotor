@@ -27,128 +27,127 @@ using JetBrains.Annotations;
 
 using Microsoft.AspNetCore.Hosting;
 
-namespace AppMotor.HttpServer
+namespace AppMotor.HttpServer;
+
+/// <summary>
+/// A very simple HTTP server reachable only on a single HTTP port. Enables ASP.NET Core MVC (with Razor views).
+/// </summary>
+/// <remarks>
+/// The primary goal of this class is to make the on-boarding process as easy as possible. If you
+/// need more flexibility, you need to write your own application (inheriting from <see cref="CliApplicationWithCommand"/>)
+/// and server command (inheriting from <see cref="HttpServerCommandBase"/>).
+/// </remarks>
+public class HttpServerApplication : CliApplicationWithCommand
 {
     /// <summary>
-    /// A very simple HTTP server reachable only on a single HTTP port. Enables ASP.NET Core MVC (with Razor views).
+    /// Creates an HTTP server application with the specified HTTP port.
     /// </summary>
-    /// <remarks>
-    /// The primary goal of this class is to make the on-boarding process as easy as possible. If you
-    /// need more flexibility, you need to write your own application (inheriting from <see cref="CliApplicationWithCommand"/>)
-    /// and server command (inheriting from <see cref="HttpServerCommandBase"/>).
-    /// </remarks>
-    public class HttpServerApplication : CliApplicationWithCommand
+    /// <param name="httpPort">The HTTP port to use</param>
+    /// <param name="startupClass">The ASP.NET Core Startup class to use. If <c>null</c>,
+    /// <see cref="MvcStartup"/> will be used.</param>
+    [PublicAPI]
+    public HttpServerApplication(HttpServerPort httpPort, object? startupClass = null)
+        : this(new HttpServerCommand(httpPort, startupClass))
     {
-        /// <summary>
-        /// Creates an HTTP server application with the specified HTTP port.
-        /// </summary>
-        /// <param name="httpPort">The HTTP port to use</param>
-        /// <param name="startupClass">The ASP.NET Core Startup class to use. If <c>null</c>,
-        /// <see cref="MvcStartup"/> will be used.</param>
-        [PublicAPI]
-        public HttpServerApplication(HttpServerPort httpPort, object? startupClass = null)
-            : this(new HttpServerCommand(httpPort, startupClass))
+    }
+
+    /// <summary>
+    /// Creates an HTTP server application with the specified <see cref="HttpServerCommandBase"/> instance.
+    /// </summary>
+    /// <param name="httpServerCommand">The server command implementation</param>
+    /// <remarks>
+    /// This constructor exists to make <see cref="HttpServerCommandBase"/> easier to discover. It's identical
+    /// to using <c>new CliApplicationWithCommand(httpServerCommand)</c>.
+    /// </remarks>
+    public HttpServerApplication(HttpServerCommandBase httpServerCommand)
+        : base(httpServerCommand)
+    {
+    }
+
+    /// <summary>
+    /// Runs an HTTP server at the specified port.
+    /// </summary>
+    /// <param name="port">The HTTP port to use (will be bound to <see cref="SocketListenAddresses.Loopback"/>)</param>
+    /// <param name="cancellationToken">A cancellation token to stop the HTTP server application.</param>
+    /// <returns>The exit code to use.</returns>
+    [PublicAPI]
+    public static int Run(int port, CancellationToken cancellationToken = default)
+    {
+        return Run(port, bindToLoopbackOnly: true, cancellationToken);
+    }
+
+    /// <summary>
+    /// Runs an HTTP server at the specified port.
+    /// </summary>
+    /// <param name="port">The HTTP port to use</param>
+    /// <param name="bindToLoopbackOnly">Whether to bind <paramref name="port"/> to the loopback adapter only
+    /// (i.e. reachable only from this machine itself).</param>
+    /// <param name="cancellationToken">A cancellation token to stop the HTTP server application.</param>
+    /// <returns>The exit code to use.</returns>
+    [PublicAPI]
+    public static int Run(int port, bool bindToLoopbackOnly, CancellationToken cancellationToken = default)
+    {
+        return Task.Run(() => RunAsync(port, bindToLoopbackOnly, cancellationToken), cancellationToken).Result;
+    }
+
+    /// <summary>
+    /// Runs an HTTP server at the specified port.
+    /// </summary>
+    /// <param name="port">The HTTP port to use (will be bound to <see cref="SocketListenAddresses.Loopback"/>)</param>
+    /// <param name="cancellationToken">A cancellation token to stop the HTTP server application.</param>
+    /// <returns>The exit code to use.</returns>
+    [PublicAPI]
+    public static Task<int> RunAsync(int port, CancellationToken cancellationToken = default)
+    {
+        return RunAsync(port, bindToLoopbackOnly: true, cancellationToken);
+    }
+
+    /// <summary>
+    /// Runs an HTTP server at the specified port.
+    /// </summary>
+    /// <param name="port">The HTTP port to use</param>
+    /// <param name="bindToLoopbackOnly">Whether to bind <paramref name="port"/> to the loopback adapter only
+    /// (i.e. reachable only from this machine itself).</param>
+    /// <param name="cancellationToken">A cancellation token to stop the HTTP server application.</param>
+    /// <returns>The exit code to use.</returns>
+    [PublicAPI]
+    public static Task<int> RunAsync(int port, bool bindToLoopbackOnly, CancellationToken cancellationToken = default)
+    {
+        var serverPort = new HttpServerPort(bindToLoopbackOnly ? SocketListenAddresses.Loopback : SocketListenAddresses.Any, port);
+
+        var app = new HttpServerApplication(serverPort);
+
+        return app.RunAsync(cancellationToken);
+    }
+
+    private sealed class HttpServerCommand : HttpServerCommandBase
+    {
+        private readonly HttpServerPort _httpPort;
+
+        private readonly object? _startupClass;
+
+        public HttpServerCommand(HttpServerPort httpPort, object? startupClass)
         {
+            this._httpPort = httpPort;
+            this._startupClass = startupClass;
         }
 
-        /// <summary>
-        /// Creates an HTTP server application with the specified <see cref="HttpServerCommandBase"/> instance.
-        /// </summary>
-        /// <param name="httpServerCommand">The server command implementation</param>
-        /// <remarks>
-        /// This constructor exists to make <see cref="HttpServerCommandBase"/> easier to discover. It's identical
-        /// to using <c>new CliApplicationWithCommand(httpServerCommand)</c>.
-        /// </remarks>
-        public HttpServerApplication(HttpServerCommandBase httpServerCommand)
-            : base(httpServerCommand)
+        /// <inheritdoc />
+        protected override object CreateStartupClass(WebHostBuilderContext context)
         {
-        }
-
-        /// <summary>
-        /// Runs an HTTP server at the specified port.
-        /// </summary>
-        /// <param name="port">The HTTP port to use (will be bound to <see cref="SocketListenAddresses.Loopback"/>)</param>
-        /// <param name="cancellationToken">A cancellation token to stop the HTTP server application.</param>
-        /// <returns>The exit code to use.</returns>
-        [PublicAPI]
-        public static int Run(int port, CancellationToken cancellationToken = default)
-        {
-            return Run(port, bindToLoopbackOnly: true, cancellationToken);
-        }
-
-        /// <summary>
-        /// Runs an HTTP server at the specified port.
-        /// </summary>
-        /// <param name="port">The HTTP port to use</param>
-        /// <param name="bindToLoopbackOnly">Whether to bind <paramref name="port"/> to the loopback adapter only
-        /// (i.e. reachable only from this machine itself).</param>
-        /// <param name="cancellationToken">A cancellation token to stop the HTTP server application.</param>
-        /// <returns>The exit code to use.</returns>
-        [PublicAPI]
-        public static int Run(int port, bool bindToLoopbackOnly, CancellationToken cancellationToken = default)
-        {
-            return Task.Run(() => RunAsync(port, bindToLoopbackOnly, cancellationToken), cancellationToken).Result;
-        }
-
-        /// <summary>
-        /// Runs an HTTP server at the specified port.
-        /// </summary>
-        /// <param name="port">The HTTP port to use (will be bound to <see cref="SocketListenAddresses.Loopback"/>)</param>
-        /// <param name="cancellationToken">A cancellation token to stop the HTTP server application.</param>
-        /// <returns>The exit code to use.</returns>
-        [PublicAPI]
-        public static Task<int> RunAsync(int port, CancellationToken cancellationToken = default)
-        {
-            return RunAsync(port, bindToLoopbackOnly: true, cancellationToken);
-        }
-
-        /// <summary>
-        /// Runs an HTTP server at the specified port.
-        /// </summary>
-        /// <param name="port">The HTTP port to use</param>
-        /// <param name="bindToLoopbackOnly">Whether to bind <paramref name="port"/> to the loopback adapter only
-        /// (i.e. reachable only from this machine itself).</param>
-        /// <param name="cancellationToken">A cancellation token to stop the HTTP server application.</param>
-        /// <returns>The exit code to use.</returns>
-        [PublicAPI]
-        public static Task<int> RunAsync(int port, bool bindToLoopbackOnly, CancellationToken cancellationToken = default)
-        {
-            var serverPort = new HttpServerPort(bindToLoopbackOnly ? SocketListenAddresses.Loopback : SocketListenAddresses.Any, port);
-
-            var app = new HttpServerApplication(serverPort);
-
-            return app.RunAsync(cancellationToken);
-        }
-
-        private sealed class HttpServerCommand : HttpServerCommandBase
-        {
-            private readonly HttpServerPort _httpPort;
-
-            private readonly object? _startupClass;
-
-            public HttpServerCommand(HttpServerPort httpPort, object? startupClass)
+            if (this._startupClass is not null)
             {
-                this._httpPort = httpPort;
-                this._startupClass = startupClass;
+                return this._startupClass;
             }
 
-            /// <inheritdoc />
-            protected override object CreateStartupClass(WebHostBuilderContext context)
-            {
-                if (this._startupClass is not null)
-                {
-                    return this._startupClass;
-                }
+            var entryAssembly = Assembly.GetEntryAssembly() ?? throw new InvalidOperationException("Could not determine main assembly.");
+            return new MvcStartup(entryAssembly);
+        }
 
-                var entryAssembly = Assembly.GetEntryAssembly() ?? throw new InvalidOperationException("Could not determine main assembly.");
-                return new MvcStartup(entryAssembly);
-            }
-
-            /// <inheritdoc />
-            protected override IEnumerable<HttpServerPort> GetServerPorts(IServiceProvider serviceProvider)
-            {
-                yield return this._httpPort;
-            }
+        /// <inheritdoc />
+        protected override IEnumerable<HttpServerPort> GetServerPorts(IServiceProvider serviceProvider)
+        {
+            yield return this._httpPort;
         }
     }
 }

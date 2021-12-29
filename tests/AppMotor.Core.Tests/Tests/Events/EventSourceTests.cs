@@ -23,180 +23,179 @@ using Shouldly;
 
 using Xunit;
 
-namespace AppMotor.Core.Tests.Events
+namespace AppMotor.Core.Tests.Events;
+
+public sealed class EventSourceTests
 {
-    public sealed class EventSourceTests
+    private readonly Guid _testGuid = Guid.NewGuid();
+
+    private int _syncHandlerCallCount;
+
+    private int _asyncHandlerCallCount;
+
+    [Fact]
+    public void Test_BasicUsage_WithoutEventArgs()
     {
-        private readonly Guid _testGuid = Guid.NewGuid();
+        var eventSource = new EventSource();
 
-        private int _syncHandlerCallCount;
+        var syncRegistration = eventSource.Event.RegisterEventHandler(OnTestEvent);
+        var asyncRegistration = eventSource.Event.RegisterEventHandler(OnTestEventAsync);
 
-        private int _asyncHandlerCallCount;
+        eventSource.RaiseEvent();
 
-        [Fact]
-        public void Test_BasicUsage_WithoutEventArgs()
+        this._syncHandlerCallCount.ShouldBe(1);
+        this._asyncHandlerCallCount.ShouldBe(1);
+
+        eventSource.RaiseEvent();
+
+        this._syncHandlerCallCount.ShouldBe(2);
+        this._asyncHandlerCallCount.ShouldBe(2);
+
+        syncRegistration.Dispose();
+
+        eventSource.RaiseEvent();
+
+        this._syncHandlerCallCount.ShouldBe(2);
+        this._asyncHandlerCallCount.ShouldBe(3);
+
+        asyncRegistration.Dispose();
+
+        eventSource.RaiseEvent();
+
+        this._syncHandlerCallCount.ShouldBe(2);
+        this._asyncHandlerCallCount.ShouldBe(3);
+    }
+
+    [Fact]
+    public void Test_BasicUsage_WithEventArgs()
+    {
+        var eventSource = new EventSource<TestEventArgs>();
+
+        var syncRegistration = eventSource.Event.RegisterEventHandler(OnTestEvent);
+        var asyncRegistration = eventSource.Event.RegisterEventHandler(OnTestEventAsync);
+
+        eventSource.RaiseEvent(new TestEventArgs(this._testGuid));
+
+        this._syncHandlerCallCount.ShouldBe(1);
+        this._asyncHandlerCallCount.ShouldBe(1);
+
+        eventSource.RaiseEvent(new TestEventArgs(this._testGuid));
+
+        this._syncHandlerCallCount.ShouldBe(2);
+        this._asyncHandlerCallCount.ShouldBe(2);
+
+        syncRegistration.Dispose();
+
+        eventSource.RaiseEvent(new TestEventArgs(this._testGuid));
+
+        this._syncHandlerCallCount.ShouldBe(2);
+        this._asyncHandlerCallCount.ShouldBe(3);
+
+        asyncRegistration.Dispose();
+
+        eventSource.RaiseEvent(new TestEventArgs(this._testGuid));
+
+        this._syncHandlerCallCount.ShouldBe(2);
+        this._asyncHandlerCallCount.ShouldBe(3);
+    }
+
+    [Fact]
+    public async Task Test_BasicUsage_WithoutEventArgs_Async()
+    {
+        var eventSource = new EventSource();
+
+        var syncRegistration = eventSource.Event.RegisterEventHandler(OnTestEvent);
+        var asyncRegistration = eventSource.Event.RegisterEventHandler(OnTestEventAsync);
+
+        await eventSource.RaiseEventAsync();
+
+        this._syncHandlerCallCount.ShouldBe(1);
+        this._asyncHandlerCallCount.ShouldBe(1);
+
+        await eventSource.RaiseEventAsync();
+
+        this._syncHandlerCallCount.ShouldBe(2);
+        this._asyncHandlerCallCount.ShouldBe(2);
+
+        syncRegistration.Dispose();
+
+        await eventSource.RaiseEventAsync();
+
+        this._syncHandlerCallCount.ShouldBe(2);
+        this._asyncHandlerCallCount.ShouldBe(3);
+
+        asyncRegistration.Dispose();
+
+        await eventSource.RaiseEventAsync();
+
+        this._syncHandlerCallCount.ShouldBe(2);
+        this._asyncHandlerCallCount.ShouldBe(3);
+    }
+
+    [Fact]
+    public async Task Test_BasicUsage_WithEventArgs_Async()
+    {
+        var eventSource = new EventSource<TestEventArgs>();
+
+        var syncRegistration = eventSource.Event.RegisterEventHandler(OnTestEvent);
+        var asyncRegistration = eventSource.Event.RegisterEventHandler(OnTestEventAsync);
+
+        await eventSource.RaiseEventAsync(new TestEventArgs(this._testGuid));
+
+        this._syncHandlerCallCount.ShouldBe(1);
+        this._asyncHandlerCallCount.ShouldBe(1);
+
+        await eventSource.RaiseEventAsync(new TestEventArgs(this._testGuid));
+
+        this._syncHandlerCallCount.ShouldBe(2);
+        this._asyncHandlerCallCount.ShouldBe(2);
+
+        syncRegistration.Dispose();
+
+        await eventSource.RaiseEventAsync(new TestEventArgs(this._testGuid));
+
+        this._syncHandlerCallCount.ShouldBe(2);
+        this._asyncHandlerCallCount.ShouldBe(3);
+
+        asyncRegistration.Dispose();
+
+        await eventSource.RaiseEventAsync(new TestEventArgs(this._testGuid));
+
+        this._syncHandlerCallCount.ShouldBe(2);
+        this._asyncHandlerCallCount.ShouldBe(3);
+    }
+
+    private void OnTestEvent()
+    {
+        this._syncHandlerCallCount++;
+    }
+
+    private async Task OnTestEventAsync()
+    {
+        await Task.Delay(0);
+        this._asyncHandlerCallCount++;
+    }
+
+    private void OnTestEvent(TestEventArgs eventArgs)
+    {
+        eventArgs.TestGuid.ShouldBe(this._testGuid);
+        this._syncHandlerCallCount++;
+    }
+
+    private async Task OnTestEventAsync(TestEventArgs eventArgs)
+    {
+        await Task.Delay(0);
+        eventArgs.TestGuid.ShouldBe(this._testGuid);
+        this._asyncHandlerCallCount++;
+    }
+
+    private sealed class TestEventArgs
+    {
+        public Guid TestGuid { get; }
+
+        public TestEventArgs(Guid testGuid)
         {
-            var eventSource = new EventSource();
-
-            var syncRegistration = eventSource.Event.RegisterEventHandler(OnTestEvent);
-            var asyncRegistration = eventSource.Event.RegisterEventHandler(OnTestEventAsync);
-
-            eventSource.RaiseEvent();
-
-            this._syncHandlerCallCount.ShouldBe(1);
-            this._asyncHandlerCallCount.ShouldBe(1);
-
-            eventSource.RaiseEvent();
-
-            this._syncHandlerCallCount.ShouldBe(2);
-            this._asyncHandlerCallCount.ShouldBe(2);
-
-            syncRegistration.Dispose();
-
-            eventSource.RaiseEvent();
-
-            this._syncHandlerCallCount.ShouldBe(2);
-            this._asyncHandlerCallCount.ShouldBe(3);
-
-            asyncRegistration.Dispose();
-
-            eventSource.RaiseEvent();
-
-            this._syncHandlerCallCount.ShouldBe(2);
-            this._asyncHandlerCallCount.ShouldBe(3);
-        }
-
-        [Fact]
-        public void Test_BasicUsage_WithEventArgs()
-        {
-            var eventSource = new EventSource<TestEventArgs>();
-
-            var syncRegistration = eventSource.Event.RegisterEventHandler(OnTestEvent);
-            var asyncRegistration = eventSource.Event.RegisterEventHandler(OnTestEventAsync);
-
-            eventSource.RaiseEvent(new TestEventArgs(this._testGuid));
-
-            this._syncHandlerCallCount.ShouldBe(1);
-            this._asyncHandlerCallCount.ShouldBe(1);
-
-            eventSource.RaiseEvent(new TestEventArgs(this._testGuid));
-
-            this._syncHandlerCallCount.ShouldBe(2);
-            this._asyncHandlerCallCount.ShouldBe(2);
-
-            syncRegistration.Dispose();
-
-            eventSource.RaiseEvent(new TestEventArgs(this._testGuid));
-
-            this._syncHandlerCallCount.ShouldBe(2);
-            this._asyncHandlerCallCount.ShouldBe(3);
-
-            asyncRegistration.Dispose();
-
-            eventSource.RaiseEvent(new TestEventArgs(this._testGuid));
-
-            this._syncHandlerCallCount.ShouldBe(2);
-            this._asyncHandlerCallCount.ShouldBe(3);
-        }
-
-        [Fact]
-        public async Task Test_BasicUsage_WithoutEventArgs_Async()
-        {
-            var eventSource = new EventSource();
-
-            var syncRegistration = eventSource.Event.RegisterEventHandler(OnTestEvent);
-            var asyncRegistration = eventSource.Event.RegisterEventHandler(OnTestEventAsync);
-
-            await eventSource.RaiseEventAsync();
-
-            this._syncHandlerCallCount.ShouldBe(1);
-            this._asyncHandlerCallCount.ShouldBe(1);
-
-            await eventSource.RaiseEventAsync();
-
-            this._syncHandlerCallCount.ShouldBe(2);
-            this._asyncHandlerCallCount.ShouldBe(2);
-
-            syncRegistration.Dispose();
-
-            await eventSource.RaiseEventAsync();
-
-            this._syncHandlerCallCount.ShouldBe(2);
-            this._asyncHandlerCallCount.ShouldBe(3);
-
-            asyncRegistration.Dispose();
-
-            await eventSource.RaiseEventAsync();
-
-            this._syncHandlerCallCount.ShouldBe(2);
-            this._asyncHandlerCallCount.ShouldBe(3);
-        }
-
-        [Fact]
-        public async Task Test_BasicUsage_WithEventArgs_Async()
-        {
-            var eventSource = new EventSource<TestEventArgs>();
-
-            var syncRegistration = eventSource.Event.RegisterEventHandler(OnTestEvent);
-            var asyncRegistration = eventSource.Event.RegisterEventHandler(OnTestEventAsync);
-
-            await eventSource.RaiseEventAsync(new TestEventArgs(this._testGuid));
-
-            this._syncHandlerCallCount.ShouldBe(1);
-            this._asyncHandlerCallCount.ShouldBe(1);
-
-            await eventSource.RaiseEventAsync(new TestEventArgs(this._testGuid));
-
-            this._syncHandlerCallCount.ShouldBe(2);
-            this._asyncHandlerCallCount.ShouldBe(2);
-
-            syncRegistration.Dispose();
-
-            await eventSource.RaiseEventAsync(new TestEventArgs(this._testGuid));
-
-            this._syncHandlerCallCount.ShouldBe(2);
-            this._asyncHandlerCallCount.ShouldBe(3);
-
-            asyncRegistration.Dispose();
-
-            await eventSource.RaiseEventAsync(new TestEventArgs(this._testGuid));
-
-            this._syncHandlerCallCount.ShouldBe(2);
-            this._asyncHandlerCallCount.ShouldBe(3);
-        }
-
-        private void OnTestEvent()
-        {
-            this._syncHandlerCallCount++;
-        }
-
-        private async Task OnTestEventAsync()
-        {
-            await Task.Delay(0);
-            this._asyncHandlerCallCount++;
-        }
-
-        private void OnTestEvent(TestEventArgs eventArgs)
-        {
-            eventArgs.TestGuid.ShouldBe(this._testGuid);
-            this._syncHandlerCallCount++;
-        }
-
-        private async Task OnTestEventAsync(TestEventArgs eventArgs)
-        {
-            await Task.Delay(0);
-            eventArgs.TestGuid.ShouldBe(this._testGuid);
-            this._asyncHandlerCallCount++;
-        }
-
-        private sealed class TestEventArgs
-        {
-            public Guid TestGuid { get; }
-
-            public TestEventArgs(Guid testGuid)
-            {
-                this.TestGuid = testGuid;
-            }
+            this.TestGuid = testGuid;
         }
     }
 }

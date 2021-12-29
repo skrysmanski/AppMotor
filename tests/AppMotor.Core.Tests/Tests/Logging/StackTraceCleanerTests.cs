@@ -24,15 +24,15 @@ using Shouldly;
 
 using Xunit;
 
-namespace AppMotor.Core.Tests.Logging
+namespace AppMotor.Core.Tests.Logging;
+
+public sealed class StackTraceCleanerTests
 {
-    public sealed class StackTraceCleanerTests
+    public static IEnumerable<object[]> Data
     {
-        public static IEnumerable<object[]> Data
+        get
         {
-            get
-            {
-                var testStackTrace = @"
+            var testStackTrace = @"
 bei System.CommandLine.Help.HelpBuilder..ctor(IConsole console, Int32 maxWidth)
 bei System.CommandLine.CommandLineConfiguration.<>c.<.ctor>b__1_0(BindingContext context)
 bei System.CommandLine.Invocation.ServiceProvider.<>c__DisplayClass1_0.<.ctor>b__3(IServiceProvider _)
@@ -48,7 +48,7 @@ bei AppMotor.CliApp.CliApplicationExecutor.Execute(String[] args, CancellationTo
 bei AppMotor.CliApp.CliApplication.RunAsync(String[] args, CancellationToken cancellationToken) in /_/src/AppMotor.CliApp/CliApplication.cs:line 187
 ".Trim().SplitLines().ToList();
 
-                var expectedCleanedStackTrace = @"
+            var expectedCleanedStackTrace = @"
 at System.CommandLine.Help.HelpBuilder..ctor(IConsole console, int maxWidth)
 at System.CommandLine.CommandLineConfiguration..ctor.λ(BindingContext context)
 at System.CommandLine.Invocation.ServiceProvider..ctor.λ(IServiceProvider _)
@@ -64,23 +64,22 @@ at AppMotor.CliApp.CliApplicationExecutor.Execute(String[] args, CancellationTok
 at AppMotor.CliApp.CliApplication.RunAsync(String[] args, CancellationToken cancellationToken) in /_/src/AppMotor.CliApp/CliApplication.cs:line 187
 ".Trim().SplitLines().ToList();
 
-                for (var i = 0; i < testStackTrace.Count; i++)
+            for (var i = 0; i < testStackTrace.Count; i++)
+            {
+                yield return new object[]
                 {
-                    yield return new object[]
-                    {
-                        testStackTrace[i],
-                        expectedCleanedStackTrace[i],
-                    };
-                }
+                    testStackTrace[i],
+                    expectedCleanedStackTrace[i],
+                };
             }
         }
+    }
 
-        [Theory]
-        [MemberData(nameof(Data))]
-        public void Test_Cleanup(string actualStackTraceLine, string expectedStackTraceLine)
-        {
-            var cleanedStackTraceLines = StackTraceCleaner.CleanupStackTraceLines(new [] { actualStackTraceLine }).ToList();
-            cleanedStackTraceLines[0].ShouldBe(expectedStackTraceLine);
-        }
+    [Theory]
+    [MemberData(nameof(Data))]
+    public void Test_Cleanup(string actualStackTraceLine, string expectedStackTraceLine)
+    {
+        var cleanedStackTraceLines = StackTraceCleaner.CleanupStackTraceLines(new [] { actualStackTraceLine }).ToList();
+        cleanedStackTraceLines[0].ShouldBe(expectedStackTraceLine);
     }
 }

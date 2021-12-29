@@ -14,21 +14,20 @@
 // limitations under the License.
 #endregion
 
-namespace AppMotor.CliApp.ExecutorGenerator
+namespace AppMotor.CliApp.ExecutorGenerator;
+
+internal sealed class ExecutorParameterDescriptor
 {
-    internal sealed class ExecutorParameterDescriptor
+    public string ParameterType { get; }
+
+    public string ParameterName { get; }
+
+    public string ParameterDescription { get; }
+
+    public ExecutorParameterDescriptor(string parameterType, string parameterName, string parameterDescription)
     {
-        public string ParameterType { get; }
-
-        public string ParameterName { get; }
-
-        public string ParameterDescription { get; }
-
-        public ExecutorParameterDescriptor(string parameterType, string parameterName, string parameterDescription)
-        {
-            this.ParameterType = parameterType;
-            this.ParameterName = parameterName;
-            this.ParameterDescription = parameterDescription;
-        }
+        this.ParameterType = parameterType;
+        this.ParameterName = parameterName;
+        this.ParameterDescription = parameterDescription;
     }
 }

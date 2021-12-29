@@ -1,12 +1,11 @@
-﻿namespace AppMotor.HttpServer.Sample.Services
-{
-    public sealed class ServiceSettingsProvider
-    {
-        public int HttpsPort { get; }
+﻿namespace AppMotor.HttpServer.Sample.Services;
 
-        public ServiceSettingsProvider(int httpsPort)
-        {
-            this.HttpsPort = httpsPort;
-        }
+public sealed class ServiceSettingsProvider
+{
+    public int HttpsPort { get; }
+
+    public ServiceSettingsProvider(int httpsPort)
+    {
+        this.HttpsPort = httpsPort;
     }
 }

@@ -20,98 +20,97 @@ using System.Collections.Generic;
 
 using JetBrains.Annotations;
 
-namespace AppMotor.Core.DataModel
+namespace AppMotor.Core.DataModel;
+
+/// <summary>
+/// Companion class to provide static properties and events for the <see cref="TypeMarker"/> feature.
+/// </summary>
+public static class TypeMarkers
 {
+    private static readonly ConcurrentDictionary<Type, TypeMarkerCollection> s_markers = new ConcurrentDictionary<Type, TypeMarkerCollection>();
+
     /// <summary>
-    /// Companion class to provide static properties and events for the <see cref="TypeMarker"/> feature.
+    /// This event is raised whenever a type is marked with a new type marker (via
+    /// <see cref="TypeMarkerExtensions.MarkWith{TTypeMarker}"/>).
     /// </summary>
-    public static class TypeMarkers
+    public static event EventHandler<TypeMarkerAddedEventArgs>? TypeMarkerAdded;
+
+    /// <summary>
+    /// See <see cref="TypeMarkerExtensions.MarkWith{TTypeMarker}"/> for documentation.
+    /// </summary>
+    internal static void RegisterTypeMaker(Type typeToMark, Type markerType)
     {
-        private static readonly ConcurrentDictionary<Type, TypeMarkerCollection> s_markers = new ConcurrentDictionary<Type, TypeMarkerCollection>();
-
-        /// <summary>
-        /// This event is raised whenever a type is marked with a new type marker (via
-        /// <see cref="TypeMarkerExtensions.MarkWith{TTypeMarker}"/>).
-        /// </summary>
-        public static event EventHandler<TypeMarkerAddedEventArgs>? TypeMarkerAdded;
-
-        /// <summary>
-        /// See <see cref="TypeMarkerExtensions.MarkWith{TTypeMarker}"/> for documentation.
-        /// </summary>
-        internal static void RegisterTypeMaker(Type typeToMark, Type markerType)
+        var typeMarkerCollection = s_markers.GetOrAdd(typeToMark, CreateTypeMarkerCollection);
+        bool markerAdded = typeMarkerCollection.Add(markerType);
+        if (markerAdded)
         {
-            var typeMarkerCollection = s_markers.GetOrAdd(typeToMark, CreateTypeMarkerCollection);
-            bool markerAdded = typeMarkerCollection.Add(markerType);
-            if (markerAdded)
-            {
-                TypeMarkerAdded?.Invoke(null, new TypeMarkerAddedEventArgs(typeToMark, markerType));
-            }
+            TypeMarkerAdded?.Invoke(null, new TypeMarkerAddedEventArgs(typeToMark, markerType));
+        }
+    }
+
+    /// <summary>
+    /// See <see cref="TypeMarkerExtensions.IsMarkedWith{TTypeMarker}"/> for documentation.
+    /// </summary>
+    [Pure]
+    internal static bool IsTypeMarkerRegistered(Type typeToCheck, Type markerType)
+    {
+        if (s_markers.TryGetValue(typeToCheck, out var typeMarkerCollection))
+        {
+            return typeMarkerCollection.Contains(markerType);
         }
 
+        return false;
+    }
+
+    private static TypeMarkerCollection CreateTypeMarkerCollection(Type arg)
+    {
+        return new TypeMarkerCollection();
+    }
+
+    private sealed class TypeMarkerCollection
+    {
+        private readonly object m_updateLock = new object();
+
         /// <summary>
-        /// See <see cref="TypeMarkerExtensions.IsMarkedWith{TTypeMarker}"/> for documentation.
+        /// The underlying set. Note this set is managed as "copy-on-write". This way we
+        /// don't need a lock in <see cref="Contains"/>.
         /// </summary>
-        [Pure]
-        internal static bool IsTypeMarkerRegistered(Type typeToCheck, Type markerType)
+        private HashSet<Type>? m_underlyingCollection;
+
+        public bool Add(Type markerType)
         {
-            if (s_markers.TryGetValue(typeToCheck, out var typeMarkerCollection))
+            lock (this.m_updateLock)
             {
-                return typeMarkerCollection.Contains(markerType);
-            }
-
-            return false;
-        }
-
-        private static TypeMarkerCollection CreateTypeMarkerCollection(Type arg)
-        {
-            return new TypeMarkerCollection();
-        }
-
-        private sealed class TypeMarkerCollection
-        {
-            private readonly object m_updateLock = new object();
-
-            /// <summary>
-            /// The underlying set. Note this set is managed as "copy-on-write". This way we
-            /// don't need a lock in <see cref="Contains"/>.
-            /// </summary>
-            private HashSet<Type>? m_underlyingCollection;
-
-            public bool Add(Type markerType)
-            {
-                lock (this.m_updateLock)
+                if (Contains(markerType))
                 {
-                    if (Contains(markerType))
-                    {
-                        // Already present. We don't need to update the set.
-                        return false;
-                    }
-
-                    HashSet<Type> newCollection;
-
-                    if (this.m_underlyingCollection != null)
-                    {
-                        newCollection = new HashSet<Type>(this.m_underlyingCollection);
-                    }
-                    else
-                    {
-                        newCollection = new HashSet<Type>();
-                    }
-
-                    newCollection.Add(markerType);
-
-                    this.m_underlyingCollection = newCollection;
+                    // Already present. We don't need to update the set.
+                    return false;
                 }
 
-                return true;
+                HashSet<Type> newCollection;
+
+                if (this.m_underlyingCollection != null)
+                {
+                    newCollection = new HashSet<Type>(this.m_underlyingCollection);
+                }
+                else
+                {
+                    newCollection = new HashSet<Type>();
+                }
+
+                newCollection.Add(markerType);
+
+                this.m_underlyingCollection = newCollection;
             }
 
-            [Pure]
-            public bool Contains(Type markerType)
-            {
-                return this.m_underlyingCollection?.Contains(markerType) == true;
-            }
+            return true;
         }
 
+        [Pure]
+        public bool Contains(Type markerType)
+        {
+            return this.m_underlyingCollection?.Contains(markerType) == true;
+        }
     }
+
 }

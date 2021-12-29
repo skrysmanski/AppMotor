@@ -24,528 +24,527 @@ using AppMotor.Core.Extensions;
 
 using JetBrains.Annotations;
 
-namespace AppMotor.CliApp.Terminals
+namespace AppMotor.CliApp.Terminals;
+
+/// <summary>
+/// Replacement for <see cref="Console"/> that supports <see cref="ColoredString"/>.
+/// </summary>
+[ExcludeFromCodeCoverage]
+public static class Terminal
 {
     /// <summary>
-    /// Replacement for <see cref="Console"/> that supports <see cref="ColoredString"/>.
+    /// The terminal as <see cref="ITerminalWindow"/> and <see cref="ITerminal"/>.
     /// </summary>
-    [ExcludeFromCodeCoverage]
-    public static class Terminal
+    [PublicAPI]
+    public static ITerminalWindow Instance { get; } = new TerminalAsInstance();
+
+    /// <summary>
+    /// The standard input stream.
+    /// </summary>
+    [PublicAPI]
+    public static TextReader Input => Console.In;
+
+    /// <summary>
+    /// The encoding used for <see cref="Input"/>.
+    /// </summary>
+    /// <remarks>
+    /// For details and defaults, see <see cref="Console.InputEncoding"/>.
+    /// </remarks>
+    [PublicAPI]
+    public static Encoding InputEncoding
     {
-        /// <summary>
-        /// The terminal as <see cref="ITerminalWindow"/> and <see cref="ITerminal"/>.
-        /// </summary>
-        [PublicAPI]
-        public static ITerminalWindow Instance { get; } = new TerminalAsInstance();
+        get => Console.InputEncoding;
+        set => Console.InputEncoding = value;
+    }
 
-        /// <summary>
-        /// The standard input stream.
-        /// </summary>
-        [PublicAPI]
-        public static TextReader Input => Console.In;
+    /// <summary>
+    /// Whether <see cref="Input"/> is redirected (to a file or the output
+    /// of another process). If this property is <c>true</c>, some members
+    /// of this class won't work anymore (<see cref="IsKeyAvailable"/>,
+    /// <see cref="ReadKey"/>). Also, <see cref="ReadLine"/> can return
+    /// <c>null</c> in this case.
+    /// </summary>
+    /// <remarks>
+    /// You MAY interpret a value of <c>true</c> as "the process is non-interactive".
+    /// It's not 100% correct (because the input source may still be interactive)
+    /// but it could be a good estimation if you have no other way of figuring out
+    /// whether the process runs interactively or not.
+    /// </remarks>
+    [PublicAPI]
+    public static bool IsInputRedirected => Console.IsInputRedirected;
 
-        /// <summary>
-        /// The encoding used for <see cref="Input"/>.
-        /// </summary>
-        /// <remarks>
-        /// For details and defaults, see <see cref="Console.InputEncoding"/>.
-        /// </remarks>
-        [PublicAPI]
-        public static Encoding InputEncoding
+    /// <summary>
+    /// Whether a key press is available to be read by <see cref="ReadKey"/>. If
+    /// this property is <c>true</c>, <see cref="ReadKey"/> will return immediately.
+    /// If this is <c>false</c>, <see cref="ReadKey"/> will block until a key is pressed.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown if <see cref="IsInputRedirected"/>
+    /// is <c>true</c>.</exception>
+    [PublicAPI]
+    public static bool IsKeyAvailable => Console.KeyAvailable;
+
+    /// <summary>
+    /// The standard output stream.
+    /// </summary>
+    [PublicAPI]
+    public static TextWriter Out => Console.Out;
+
+    /// <summary>
+    /// Whether <see cref="Out"/> is redirected (to a file or the input
+    /// of another process).
+    /// </summary>
+    [PublicAPI]
+    public static bool IsOutputRedirected => Console.IsOutputRedirected;
+
+    /// <summary>
+    /// The standard error output stream.
+    /// </summary>
+    [PublicAPI]
+    public static TextWriter Error => Console.Error;
+
+    /// <summary>
+    /// Whether <see cref="Error"/> is redirected (to a file or the input
+    /// of another process).
+    /// </summary>
+    [PublicAPI]
+    public static bool IsErrorRedirected => Console.IsErrorRedirected;
+
+    /// <summary>
+    /// The encoding used for the various <c>Write()</c> and <c>WriteLine()</c> methods
+    /// and for <see cref="Error"/>.
+    /// </summary>
+    /// <remarks>
+    /// For details and defaults, see <see cref="Console.OutputEncoding"/>.
+    /// </remarks>
+    [PublicAPI]
+    public static Encoding OutputEncoding
+    {
+        get => Console.OutputEncoding;
+        set => Console.OutputEncoding = value;
+    }
+
+    /// <summary>
+    /// The background color of the terminal.
+    /// </summary>
+    /// <remarks>
+    /// To set the foreground (text) color, use <see cref="Write(ColoredString)"/>
+    /// or <see cref="WriteLine(ColoredString)"/>.
+    /// </remarks>
+    [PublicAPI]
+    public static ConsoleColor BackgroundColor
+    {
+        get => Console.BackgroundColor;
+        set => Console.BackgroundColor = value;
+    }
+
+    /// <summary>
+    /// The width of the terminal window; i.e. how many characters can be displayed
+    /// on a single line.
+    ///
+    /// <para>Note: This class does not differentiate between "buffer width" and
+    /// "window width" (as it is done for the height). It's very uncommon (if not
+    /// often impossible) to have a window width different from the buffer width.</para>
+    /// </summary>
+    /// <remarks>
+    /// Changing the terminal size is only supported on Windows. This is why
+    /// this API is not exposed here. Use <see cref="Console.SetWindowSize"/>
+    /// to do this.
+    /// </remarks>
+    /// <seealso cref="TerminalBufferHeight"/>
+    /// <seealso cref="TerminalWindowHeight"/>
+    [PublicAPI]
+    public static int TerminalWidth => Console.BufferWidth;
+
+    /// <summary>
+    /// The full height of the terminal buffer (i.e. how many lines are stored
+    /// at most in the scroll back buffer). Note that this value is usually
+    /// higher than the number of visible lines (<see cref="TerminalWindowHeight"/>).
+    /// </summary>
+    /// <remarks>
+    /// Changing the terminal buffer size is only supported on Windows. This is why
+    /// this API is not exposed here. Use <see cref="Console.BufferHeight"/>
+    /// to do this.
+    /// </remarks>
+    /// <seealso cref="TerminalWidth"/>
+    /// <seealso cref="TerminalWindowHeight"/>
+    [PublicAPI]
+    public static int TerminalBufferHeight => Console.BufferHeight;
+
+    /// <summary>
+    /// The height of the terminal window; i.e. the number of visible lines.
+    /// </summary>
+    /// <remarks>
+    /// Changing the terminal size is only supported on Windows. This is why
+    /// this API is not exposed here. Use <see cref="Console.SetWindowSize"/>
+    /// to do this.
+    /// </remarks>
+    /// <seealso cref="TerminalWidth"/>
+    /// <seealso cref="TerminalBufferHeight"/>
+    [PublicAPI]
+    public static int TerminalWindowHeight => Console.WindowHeight;
+
+    /// <summary>
+    /// The column of the cursor within the terminal's buffer.
+    /// </summary>
+    /// <seealso cref="SetCursorPosition"/>
+    /// <seealso cref="CursorTop"/>
+    [PublicAPI]
+    public static int CursorLeft
+    {
+        get => Console.CursorLeft;
+        set => Console.CursorLeft = value;
+    }
+
+    /// <summary>
+    /// The line of the cursor within the terminal's buffer.
+    /// </summary>
+    /// <seealso cref="SetCursorPosition"/>
+    /// <seealso cref="CursorLeft"/>
+    [PublicAPI]
+    public static int CursorTop
+    {
+        get => Console.CursorTop;
+        set => Console.CursorTop = value;
+    }
+
+    /// <summary>
+    /// Whether the key combination <c>Ctrl + C</c>  is treated as ordinary input (<c>true</c>) or
+    /// as an interruption that is handled by the operating system (<c>false</c>; the default).
+    ///
+    /// <para>Note: Instead of using this property, you should consider using <see cref="TerminateKeyCombinationPressed"/>
+    /// instead.</para>
+    /// </summary>
+    /// <remarks>
+    /// If the value of this property is <c>false</c> and <c>Ctrl + C</c> is pressed, the pressed
+    /// keys are not stored in the input buffer and the operating system terminates the currently
+    /// executing process.
+    ///
+    /// <para>This is what most user will expect. So only change this property to <c>true</c>,
+    /// if you really must. In this case, users can still terminate the process via <c>Ctrl + Break</c>.
+    /// </para>
+    /// </remarks>
+    /// <seealso cref="TerminateKeyCombinationPressed"/>
+    [PublicAPI]
+    public static bool TreatControlCAsInput
+    {
+        get => Console.TreatControlCAsInput;
+        set => Console.TreatControlCAsInput = value;
+    }
+
+    /// <summary>
+    /// Occurs when one of the "terminate process" key combinations has been press (i.e. either
+    /// <c>Ctrl + C</c> or <c>Ctrl + Break</c>).
+    /// </summary>
+    /// <remarks>
+    /// This event will only be raised for <c>Ctrl + C</c> if <see cref="TreatControlCAsInput"/>
+    /// is <c>false</c> (the default). This event will always be raised for <c>Ctrl + Break</c>.
+    ///
+    /// <para>The event handlers will be given a <see cref="ConsoleCancelEventArgs"/> instance.
+    /// This instance contains the property <see cref="ConsoleCancelEventArgs.Cancel"/> which
+    /// is <c>false</c> by default. If it's still <c>false</c> when all event handlers have
+    /// completed, the currently executing process is terminated. On the other hand, if one
+    /// of the handlers sets it to <c>true</c>, the current process will not terminate but
+    /// continue running.</para>
+    ///
+    /// <para>Note that the event handlers for this event will be executed on a thread pool
+    /// thread (i.e. especially not on the main thread).</para>
+    /// </remarks>
+    /// <seealso cref="TreatControlCAsInput"/>
+    [PublicAPI]
+    public static event EventHandler<ConsoleCancelEventArgs>? TerminateKeyCombinationPressed;
+
+    static Terminal()
+    {
+        Console.CancelKeyPress += OnTerminateKeyCombinationPressed;
+    }
+
+    private static void OnTerminateKeyCombinationPressed(object? sender, ConsoleCancelEventArgs e)
+    {
+        TerminateKeyCombinationPressed?.Invoke(null, e);
+    }
+
+    /// <summary>
+    /// Writes the specified object to the terminal's standard output.
+    /// </summary>
+    [PublicAPI]
+    public static void Write([Localizable(true)] object? value)
+    {
+        Out.Write(value);
+    }
+
+    /// <summary>
+    /// Writes the specified string to the terminal's standard output.
+    /// </summary>
+    [PublicAPI]
+    public static void Write([Localizable(true)] string? value)
+    {
+        Out.Write(value);
+    }
+
+    /// <summary>
+    /// Formats <paramref name="format"/> with <paramref name="args"/> and writes the result
+    /// to the terminal's standard output.
+    /// </summary>
+    [PublicAPI]
+    [StringFormatMethod("format")]
+    public static void Write([Localizable(true)] string format, params object[] args)
+    {
+        Write(format.With(args));
+    }
+
+    /// <summary>
+    /// Writes the specified colored string to the terminal's standard output.
+    /// </summary>
+    [PublicAPI]
+    public static void Write(ColoredString? coloredString)
+    {
+        if (coloredString == null || coloredString.Count == 0)
         {
-            get => Console.InputEncoding;
-            set => Console.InputEncoding = value;
+            return;
         }
 
-        /// <summary>
-        /// Whether <see cref="Input"/> is redirected (to a file or the output
-        /// of another process). If this property is <c>true</c>, some members
-        /// of this class won't work anymore (<see cref="IsKeyAvailable"/>,
-        /// <see cref="ReadKey"/>). Also, <see cref="ReadLine"/> can return
-        /// <c>null</c> in this case.
-        /// </summary>
-        /// <remarks>
-        /// You MAY interpret a value of <c>true</c> as "the process is non-interactive".
-        /// It's not 100% correct (because the input source may still be interactive)
-        /// but it could be a good estimation if you have no other way of figuring out
-        /// whether the process runs interactively or not.
-        /// </remarks>
-        [PublicAPI]
-        public static bool IsInputRedirected => Console.IsInputRedirected;
+        var originalColor = Console.ForegroundColor;
 
-        /// <summary>
-        /// Whether a key press is available to be read by <see cref="ReadKey"/>. If
-        /// this property is <c>true</c>, <see cref="ReadKey"/> will return immediately.
-        /// If this is <c>false</c>, <see cref="ReadKey"/> will block until a key is pressed.
-        /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown if <see cref="IsInputRedirected"/>
-        /// is <c>true</c>.</exception>
-        [PublicAPI]
-        public static bool IsKeyAvailable => Console.KeyAvailable;
-
-        /// <summary>
-        /// The standard output stream.
-        /// </summary>
-        [PublicAPI]
-        public static TextWriter Out => Console.Out;
-
-        /// <summary>
-        /// Whether <see cref="Out"/> is redirected (to a file or the input
-        /// of another process).
-        /// </summary>
-        [PublicAPI]
-        public static bool IsOutputRedirected => Console.IsOutputRedirected;
-
-        /// <summary>
-        /// The standard error output stream.
-        /// </summary>
-        [PublicAPI]
-        public static TextWriter Error => Console.Error;
-
-        /// <summary>
-        /// Whether <see cref="Error"/> is redirected (to a file or the input
-        /// of another process).
-        /// </summary>
-        [PublicAPI]
-        public static bool IsErrorRedirected => Console.IsErrorRedirected;
-
-        /// <summary>
-        /// The encoding used for the various <c>Write()</c> and <c>WriteLine()</c> methods
-        /// and for <see cref="Error"/>.
-        /// </summary>
-        /// <remarks>
-        /// For details and defaults, see <see cref="Console.OutputEncoding"/>.
-        /// </remarks>
-        [PublicAPI]
-        public static Encoding OutputEncoding
+        try
         {
-            get => Console.OutputEncoding;
-            set => Console.OutputEncoding = value;
-        }
-
-        /// <summary>
-        /// The background color of the terminal.
-        /// </summary>
-        /// <remarks>
-        /// To set the foreground (text) color, use <see cref="Write(ColoredString)"/>
-        /// or <see cref="WriteLine(ColoredString)"/>.
-        /// </remarks>
-        [PublicAPI]
-        public static ConsoleColor BackgroundColor
-        {
-            get => Console.BackgroundColor;
-            set => Console.BackgroundColor = value;
-        }
-
-        /// <summary>
-        /// The width of the terminal window; i.e. how many characters can be displayed
-        /// on a single line.
-        ///
-        /// <para>Note: This class does not differentiate between "buffer width" and
-        /// "window width" (as it is done for the height). It's very uncommon (if not
-        /// often impossible) to have a window width different from the buffer width.</para>
-        /// </summary>
-        /// <remarks>
-        /// Changing the terminal size is only supported on Windows. This is why
-        /// this API is not exposed here. Use <see cref="Console.SetWindowSize"/>
-        /// to do this.
-        /// </remarks>
-        /// <seealso cref="TerminalBufferHeight"/>
-        /// <seealso cref="TerminalWindowHeight"/>
-        [PublicAPI]
-        public static int TerminalWidth => Console.BufferWidth;
-
-        /// <summary>
-        /// The full height of the terminal buffer (i.e. how many lines are stored
-        /// at most in the scroll back buffer). Note that this value is usually
-        /// higher than the number of visible lines (<see cref="TerminalWindowHeight"/>).
-        /// </summary>
-        /// <remarks>
-        /// Changing the terminal buffer size is only supported on Windows. This is why
-        /// this API is not exposed here. Use <see cref="Console.BufferHeight"/>
-        /// to do this.
-        /// </remarks>
-        /// <seealso cref="TerminalWidth"/>
-        /// <seealso cref="TerminalWindowHeight"/>
-        [PublicAPI]
-        public static int TerminalBufferHeight => Console.BufferHeight;
-
-        /// <summary>
-        /// The height of the terminal window; i.e. the number of visible lines.
-        /// </summary>
-        /// <remarks>
-        /// Changing the terminal size is only supported on Windows. This is why
-        /// this API is not exposed here. Use <see cref="Console.SetWindowSize"/>
-        /// to do this.
-        /// </remarks>
-        /// <seealso cref="TerminalWidth"/>
-        /// <seealso cref="TerminalBufferHeight"/>
-        [PublicAPI]
-        public static int TerminalWindowHeight => Console.WindowHeight;
-
-        /// <summary>
-        /// The column of the cursor within the terminal's buffer.
-        /// </summary>
-        /// <seealso cref="SetCursorPosition"/>
-        /// <seealso cref="CursorTop"/>
-        [PublicAPI]
-        public static int CursorLeft
-        {
-            get => Console.CursorLeft;
-            set => Console.CursorLeft = value;
-        }
-
-        /// <summary>
-        /// The line of the cursor within the terminal's buffer.
-        /// </summary>
-        /// <seealso cref="SetCursorPosition"/>
-        /// <seealso cref="CursorLeft"/>
-        [PublicAPI]
-        public static int CursorTop
-        {
-            get => Console.CursorTop;
-            set => Console.CursorTop = value;
-        }
-
-        /// <summary>
-        /// Whether the key combination <c>Ctrl + C</c>  is treated as ordinary input (<c>true</c>) or
-        /// as an interruption that is handled by the operating system (<c>false</c>; the default).
-        ///
-        /// <para>Note: Instead of using this property, you should consider using <see cref="TerminateKeyCombinationPressed"/>
-        /// instead.</para>
-        /// </summary>
-        /// <remarks>
-        /// If the value of this property is <c>false</c> and <c>Ctrl + C</c> is pressed, the pressed
-        /// keys are not stored in the input buffer and the operating system terminates the currently
-        /// executing process.
-        ///
-        /// <para>This is what most user will expect. So only change this property to <c>true</c>,
-        /// if you really must. In this case, users can still terminate the process via <c>Ctrl + Break</c>.
-        /// </para>
-        /// </remarks>
-        /// <seealso cref="TerminateKeyCombinationPressed"/>
-        [PublicAPI]
-        public static bool TreatControlCAsInput
-        {
-            get => Console.TreatControlCAsInput;
-            set => Console.TreatControlCAsInput = value;
-        }
-
-        /// <summary>
-        /// Occurs when one of the "terminate process" key combinations has been press (i.e. either
-        /// <c>Ctrl + C</c> or <c>Ctrl + Break</c>).
-        /// </summary>
-        /// <remarks>
-        /// This event will only be raised for <c>Ctrl + C</c> if <see cref="TreatControlCAsInput"/>
-        /// is <c>false</c> (the default). This event will always be raised for <c>Ctrl + Break</c>.
-        ///
-        /// <para>The event handlers will be given a <see cref="ConsoleCancelEventArgs"/> instance.
-        /// This instance contains the property <see cref="ConsoleCancelEventArgs.Cancel"/> which
-        /// is <c>false</c> by default. If it's still <c>false</c> when all event handlers have
-        /// completed, the currently executing process is terminated. On the other hand, if one
-        /// of the handlers sets it to <c>true</c>, the current process will not terminate but
-        /// continue running.</para>
-        ///
-        /// <para>Note that the event handlers for this event will be executed on a thread pool
-        /// thread (i.e. especially not on the main thread).</para>
-        /// </remarks>
-        /// <seealso cref="TreatControlCAsInput"/>
-        [PublicAPI]
-        public static event EventHandler<ConsoleCancelEventArgs>? TerminateKeyCombinationPressed;
-
-        static Terminal()
-        {
-            Console.CancelKeyPress += OnTerminateKeyCombinationPressed;
-        }
-
-        private static void OnTerminateKeyCombinationPressed(object? sender, ConsoleCancelEventArgs e)
-        {
-            TerminateKeyCombinationPressed?.Invoke(null, e);
-        }
-
-        /// <summary>
-        /// Writes the specified object to the terminal's standard output.
-        /// </summary>
-        [PublicAPI]
-        public static void Write([Localizable(true)] object? value)
-        {
-            Out.Write(value);
-        }
-
-        /// <summary>
-        /// Writes the specified string to the terminal's standard output.
-        /// </summary>
-        [PublicAPI]
-        public static void Write([Localizable(true)] string? value)
-        {
-            Out.Write(value);
-        }
-
-        /// <summary>
-        /// Formats <paramref name="format"/> with <paramref name="args"/> and writes the result
-        /// to the terminal's standard output.
-        /// </summary>
-        [PublicAPI]
-        [StringFormatMethod("format")]
-        public static void Write([Localizable(true)] string format, params object[] args)
-        {
-            Write(format.With(args));
-        }
-
-        /// <summary>
-        /// Writes the specified colored string to the terminal's standard output.
-        /// </summary>
-        [PublicAPI]
-        public static void Write(ColoredString? coloredString)
-        {
-            if (coloredString == null || coloredString.Count == 0)
+            foreach (var coloredSubstring in coloredString)
             {
-                return;
-            }
+                Console.ForegroundColor = coloredSubstring.Color ?? originalColor;
 
-            var originalColor = Console.ForegroundColor;
-
-            try
-            {
-                foreach (var coloredSubstring in coloredString)
-                {
-                    Console.ForegroundColor = coloredSubstring.Color ?? originalColor;
-
-                    Out.Write(coloredSubstring.Text);
-                }
-            }
-            finally
-            {
-                Console.ForegroundColor = originalColor;
+                Out.Write(coloredSubstring.Text);
             }
         }
-
-        /// <summary>
-        /// Writes the specified object to the terminal's standard output
-        /// and appends a line break at the end.
-        /// </summary>
-        [PublicAPI]
-        public static void WriteLine([Localizable(true)] object? value)
+        finally
         {
-            Out.WriteLine(value);
+            Console.ForegroundColor = originalColor;
+        }
+    }
+
+    /// <summary>
+    /// Writes the specified object to the terminal's standard output
+    /// and appends a line break at the end.
+    /// </summary>
+    [PublicAPI]
+    public static void WriteLine([Localizable(true)] object? value)
+    {
+        Out.WriteLine(value);
+    }
+
+    /// <summary>
+    /// Writes the specified string to the terminal's standard output
+    /// and appends a line break at the end.
+    /// </summary>
+    [PublicAPI]
+    public static void WriteLine([Localizable(true)] string? value)
+    {
+        Out.WriteLine(value);
+    }
+
+    /// <summary>
+    /// Formats <paramref name="format"/> with <paramref name="args"/> and writes the result
+    /// to the terminal's standard output and appends a line break at the end.
+    /// </summary>
+    [PublicAPI]
+    [StringFormatMethod("format")]
+    public static void WriteLine([Localizable(true)] string format, params object[] args)
+    {
+        WriteLine(format.With(args));
+    }
+
+    /// <summary>
+    /// Writes the specified colored string to the terminal's standard output
+    /// and appends a line break at the end.
+    /// </summary>
+    [PublicAPI]
+    public static void WriteLine(ColoredString? coloredString)
+    {
+        Write(coloredString);
+        WriteLine();
+    }
+
+    /// <summary>
+    /// Writes a line break to the terminal's standard output.
+    /// </summary>
+    [PublicAPI]
+    public static void WriteLine()
+    {
+        Out.WriteLine();
+    }
+
+    /// <summary>
+    /// Obtains the next character or function key pressed by the user. Note that
+    /// this call will block until the user presses a key. To avoid this, check
+    /// <see cref="IsKeyAvailable"/>.
+    /// </summary>
+    /// <param name="displayPressedKey">Whether the pressed key should be displayed
+    /// on the terminal or not. Default to <c>true</c>.</param>
+    /// <exception cref="InvalidOperationException">Thrown if <see cref="IsInputRedirected"/>
+    /// is <c>true</c>.</exception>
+    [PublicAPI]
+    public static ConsoleKeyInfo ReadKey(bool displayPressedKey = true)
+    {
+        return Console.ReadKey(!displayPressedKey);
+    }
+
+    /// <summary>
+    /// Reads the next line of characters from the standard input stream.
+    /// </summary>
+    /// <returns>
+    /// The read line (without the end-of-line characters). Returns <c>null</c>
+    /// if the input stream has been redirected (<see cref="IsInputRedirected"/>)
+    /// and no more lines are available - or if the user hits <c>Ctrl+C</c>.
+    /// </returns>
+    [PublicAPI]
+    public static string? ReadLine()
+    {
+        return Console.ReadLine();
+    }
+
+    /// <summary>
+    /// Clears the terminal buffer (i.e. makes the terminal "blank").
+    /// </summary>
+    [PublicAPI]
+    public static void Clear()
+    {
+        Console.Clear();
+    }
+
+    /// <summary>
+    /// Plays a beep sound through the terminal "speaker".
+    /// </summary>
+    [PublicAPI]
+    public static void Beep()
+    {
+        try
+        {
+            Console.Beep();
+        }
+        catch (Exception)
+        {
+            // Ignore.
+        }
+    }
+
+    /// <summary>
+    /// Sets the window's title.
+    /// </summary>
+    /// <remarks>
+    /// Reading the window's title is only supported on Windows. This
+    /// why this API is not exposed in the class. To read the title
+    /// on Windows, use <see cref="Console.Title"/>.
+    /// </remarks>
+    [PublicAPI]
+    public static void SetWindowTitle([Localizable(true)] string title)
+    {
+        Console.Title = title;
+    }
+
+    /// <summary>
+    /// Sets the cursor position within the terminal's buffer (see <see cref="TerminalWidth"/>
+    /// and <see cref="TerminalBufferHeight"/>). The cursor's position determines where
+    /// the next character will be written.
+    /// </summary>
+    /// <remarks>
+    /// If the cursor is placed outside the visible area (vertically), the window will automatically
+    /// scroll so that the cursor becomes visible.
+    /// </remarks>
+    /// <param name="left">The column of the cursor within the terminal's buffer.</param>
+    /// <param name="top">The line of the cursor within the terminal's buffer.</param>
+    /// <seealso cref="CursorLeft"/>
+    /// <seealso cref="CursorTop"/>
+    [PublicAPI]
+    public static void SetCursorPosition(int left, int top)
+    {
+        Console.SetCursorPosition(left: left, top: top);
+    }
+
+    [SuppressMessage("ReSharper", "MemberHidesStaticFromOuterClass")]
+    private sealed class TerminalAsInstance : ITerminalWindow
+    {
+        /// <inheritdoc />
+        public TextReader Input => Terminal.Input;
+
+        /// <inheritdoc />
+        public bool IsInputRedirected => Terminal.IsInputRedirected;
+
+        /// <inheritdoc />
+        public bool IsKeyAvailable => Terminal.IsKeyAvailable;
+
+        /// <inheritdoc />
+        public TextWriter Out => Terminal.Out;
+
+        /// <inheritdoc />
+        public bool IsOutputRedirected => Terminal.IsOutputRedirected;
+
+        /// <inheritdoc />
+        public TextWriter Error => Terminal.Error;
+
+        /// <inheritdoc />
+        public bool IsErrorRedirected => Terminal.IsErrorRedirected;
+
+        /// <inheritdoc />
+        public Encoding InputEncoding
+        {
+            get => Terminal.InputEncoding;
+            set => Terminal.InputEncoding = value;
         }
 
-        /// <summary>
-        /// Writes the specified string to the terminal's standard output
-        /// and appends a line break at the end.
-        /// </summary>
-        [PublicAPI]
-        public static void WriteLine([Localizable(true)] string? value)
+        /// <inheritdoc />
+        public Encoding OutputEncoding
         {
-            Out.WriteLine(value);
+            get => Terminal.OutputEncoding;
+            set => Terminal.OutputEncoding = value;
         }
 
-        /// <summary>
-        /// Formats <paramref name="format"/> with <paramref name="args"/> and writes the result
-        /// to the terminal's standard output and appends a line break at the end.
-        /// </summary>
-        [PublicAPI]
-        [StringFormatMethod("format")]
-        public static void WriteLine([Localizable(true)] string format, params object[] args)
+        /// <inheritdoc />
+        public ConsoleColor BackgroundColor
         {
-            WriteLine(format.With(args));
+            get => Terminal.BackgroundColor;
+            set => Terminal.BackgroundColor = value;
         }
 
-        /// <summary>
-        /// Writes the specified colored string to the terminal's standard output
-        /// and appends a line break at the end.
-        /// </summary>
-        [PublicAPI]
-        public static void WriteLine(ColoredString? coloredString)
+        /// <inheritdoc />
+        public int TerminalWidth => Terminal.TerminalWidth;
+
+        /// <inheritdoc />
+        public int TerminalBufferHeight => Terminal.TerminalBufferHeight;
+
+        /// <inheritdoc />
+        public int TerminalWindowHeight => Terminal.TerminalWindowHeight;
+
+        /// <inheritdoc />
+        public int CursorLeft
         {
-            Write(coloredString);
-            WriteLine();
+            get => Terminal.CursorLeft;
+            set => Terminal.CursorLeft = value;
         }
 
-        /// <summary>
-        /// Writes a line break to the terminal's standard output.
-        /// </summary>
-        [PublicAPI]
-        public static void WriteLine()
+        /// <inheritdoc />
+        public int CursorTop
         {
-            Out.WriteLine();
+            get => Terminal.CursorTop;
+            set => Terminal.CursorTop = value;
         }
 
-        /// <summary>
-        /// Obtains the next character or function key pressed by the user. Note that
-        /// this call will block until the user presses a key. To avoid this, check
-        /// <see cref="IsKeyAvailable"/>.
-        /// </summary>
-        /// <param name="displayPressedKey">Whether the pressed key should be displayed
-        /// on the terminal or not. Default to <c>true</c>.</param>
-        /// <exception cref="InvalidOperationException">Thrown if <see cref="IsInputRedirected"/>
-        /// is <c>true</c>.</exception>
-        [PublicAPI]
-        public static ConsoleKeyInfo ReadKey(bool displayPressedKey = true)
-        {
-            return Console.ReadKey(!displayPressedKey);
-        }
+        /// <inheritdoc />
+        public void Write(ColoredString? coloredString) => Terminal.Write(coloredString);
 
-        /// <summary>
-        /// Reads the next line of characters from the standard input stream.
-        /// </summary>
-        /// <returns>
-        /// The read line (without the end-of-line characters). Returns <c>null</c>
-        /// if the input stream has been redirected (<see cref="IsInputRedirected"/>)
-        /// and no more lines are available - or if the user hits <c>Ctrl+C</c>.
-        /// </returns>
-        [PublicAPI]
-        public static string? ReadLine()
-        {
-            return Console.ReadLine();
-        }
+        /// <inheritdoc />
+        public ConsoleKeyInfo ReadKey(bool displayPressedKey = true) => Terminal.ReadKey(displayPressedKey);
 
-        /// <summary>
-        /// Clears the terminal buffer (i.e. makes the terminal "blank").
-        /// </summary>
-        [PublicAPI]
-        public static void Clear()
-        {
-            Console.Clear();
-        }
+        /// <inheritdoc />
+        public string? ReadLine() => Terminal.ReadLine();
 
-        /// <summary>
-        /// Plays a beep sound through the terminal "speaker".
-        /// </summary>
-        [PublicAPI]
-        public static void Beep()
-        {
-            try
-            {
-                Console.Beep();
-            }
-            catch (Exception)
-            {
-                // Ignore.
-            }
-        }
+        /// <inheritdoc />
+        public void Clear() => Terminal.Clear();
 
-        /// <summary>
-        /// Sets the window's title.
-        /// </summary>
-        /// <remarks>
-        /// Reading the window's title is only supported on Windows. This
-        /// why this API is not exposed in the class. To read the title
-        /// on Windows, use <see cref="Console.Title"/>.
-        /// </remarks>
-        [PublicAPI]
-        public static void SetWindowTitle([Localizable(true)] string title)
-        {
-            Console.Title = title;
-        }
+        /// <inheritdoc />
+        public void Beep() => Terminal.Beep();
 
-        /// <summary>
-        /// Sets the cursor position within the terminal's buffer (see <see cref="TerminalWidth"/>
-        /// and <see cref="TerminalBufferHeight"/>). The cursor's position determines where
-        /// the next character will be written.
-        /// </summary>
-        /// <remarks>
-        /// If the cursor is placed outside the visible area (vertically), the window will automatically
-        /// scroll so that the cursor becomes visible.
-        /// </remarks>
-        /// <param name="left">The column of the cursor within the terminal's buffer.</param>
-        /// <param name="top">The line of the cursor within the terminal's buffer.</param>
-        /// <seealso cref="CursorLeft"/>
-        /// <seealso cref="CursorTop"/>
-        [PublicAPI]
-        public static void SetCursorPosition(int left, int top)
-        {
-            Console.SetCursorPosition(left: left, top: top);
-        }
+        /// <inheritdoc />
+        public void SetWindowTitle(string title) => Terminal.SetWindowTitle(title);
 
-        [SuppressMessage("ReSharper", "MemberHidesStaticFromOuterClass")]
-        private sealed class TerminalAsInstance : ITerminalWindow
-        {
-            /// <inheritdoc />
-            public TextReader Input => Terminal.Input;
-
-            /// <inheritdoc />
-            public bool IsInputRedirected => Terminal.IsInputRedirected;
-
-            /// <inheritdoc />
-            public bool IsKeyAvailable => Terminal.IsKeyAvailable;
-
-            /// <inheritdoc />
-            public TextWriter Out => Terminal.Out;
-
-            /// <inheritdoc />
-            public bool IsOutputRedirected => Terminal.IsOutputRedirected;
-
-            /// <inheritdoc />
-            public TextWriter Error => Terminal.Error;
-
-            /// <inheritdoc />
-            public bool IsErrorRedirected => Terminal.IsErrorRedirected;
-
-            /// <inheritdoc />
-            public Encoding InputEncoding
-            {
-                get => Terminal.InputEncoding;
-                set => Terminal.InputEncoding = value;
-            }
-
-            /// <inheritdoc />
-            public Encoding OutputEncoding
-            {
-                get => Terminal.OutputEncoding;
-                set => Terminal.OutputEncoding = value;
-            }
-
-            /// <inheritdoc />
-            public ConsoleColor BackgroundColor
-            {
-                get => Terminal.BackgroundColor;
-                set => Terminal.BackgroundColor = value;
-            }
-
-            /// <inheritdoc />
-            public int TerminalWidth => Terminal.TerminalWidth;
-
-            /// <inheritdoc />
-            public int TerminalBufferHeight => Terminal.TerminalBufferHeight;
-
-            /// <inheritdoc />
-            public int TerminalWindowHeight => Terminal.TerminalWindowHeight;
-
-            /// <inheritdoc />
-            public int CursorLeft
-            {
-                get => Terminal.CursorLeft;
-                set => Terminal.CursorLeft = value;
-            }
-
-            /// <inheritdoc />
-            public int CursorTop
-            {
-                get => Terminal.CursorTop;
-                set => Terminal.CursorTop = value;
-            }
-
-            /// <inheritdoc />
-            public void Write(ColoredString? coloredString) => Terminal.Write(coloredString);
-
-            /// <inheritdoc />
-            public ConsoleKeyInfo ReadKey(bool displayPressedKey = true) => Terminal.ReadKey(displayPressedKey);
-
-            /// <inheritdoc />
-            public string? ReadLine() => Terminal.ReadLine();
-
-            /// <inheritdoc />
-            public void Clear() => Terminal.Clear();
-
-            /// <inheritdoc />
-            public void Beep() => Terminal.Beep();
-
-            /// <inheritdoc />
-            public void SetWindowTitle(string title) => Terminal.SetWindowTitle(title);
-
-            /// <inheritdoc />
-            public void SetCursorPosition(int left, int top) => Terminal.SetCursorPosition(left, top);
-        }
+        /// <inheritdoc />
+        public void SetCursorPosition(int left, int top) => Terminal.SetCursorPosition(left, top);
     }
 }

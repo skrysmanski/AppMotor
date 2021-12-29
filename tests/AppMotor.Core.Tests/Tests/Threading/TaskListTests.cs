@@ -25,261 +25,260 @@ using Shouldly;
 
 using Xunit;
 
-namespace AppMotor.Core.Tests.Threading
+namespace AppMotor.Core.Tests.Threading;
+
+public sealed class TaskListTests
 {
-    public sealed class TaskListTests
+    [Fact]
+    public void TestEmptyList()
     {
-        [Fact]
-        public void TestEmptyList()
-        {
-            var taskList = new TaskList();
+        var taskList = new TaskList();
 
-            taskList.Count.ShouldBe(0);
-            taskList.ExecuteGenericEnumerator().Count.ShouldBe(0);
-            taskList.ExecuteNonGenericEnumerator<Task>().Count.ShouldBe(0);
+        taskList.Count.ShouldBe(0);
+        taskList.ExecuteGenericEnumerator().Count.ShouldBe(0);
+        taskList.ExecuteNonGenericEnumerator<Task>().Count.ShouldBe(0);
 
-            Should.Throw<ArgumentOutOfRangeException>(() => taskList[0]);
+        Should.Throw<ArgumentOutOfRangeException>(() => taskList[0]);
 
-            Should.NotThrow(() => taskList.WhenAll());
-            Should.Throw<InvalidOperationException>(() => taskList.WhenAny());
-        }
+        Should.NotThrow(() => taskList.WhenAll());
+        Should.Throw<InvalidOperationException>(() => taskList.WhenAny());
+    }
 
-        [Fact]
-        public void TestEmptyList_GenericTaskList()
-        {
-            var taskList = new TaskList<int>();
+    [Fact]
+    public void TestEmptyList_GenericTaskList()
+    {
+        var taskList = new TaskList<int>();
 
-            taskList.Count.ShouldBe(0);
-            taskList.ExecuteGenericEnumerator().Count.ShouldBe(0);
-            taskList.ExecuteNonGenericEnumerator<Task<int>>().Count.ShouldBe(0);
+        taskList.Count.ShouldBe(0);
+        taskList.ExecuteGenericEnumerator().Count.ShouldBe(0);
+        taskList.ExecuteNonGenericEnumerator<Task<int>>().Count.ShouldBe(0);
 
-            Should.Throw<ArgumentOutOfRangeException>(() => taskList[0]);
+        Should.Throw<ArgumentOutOfRangeException>(() => taskList[0]);
 
-            Should.NotThrow(() => taskList.WhenAll());
-            Should.Throw<InvalidOperationException>(() => taskList.WhenAny());
-        }
-
-        /// <summary>
-        /// Tests that using the + operator on a task list doesn't modify the original task list.
-        /// </summary>
-        [Fact]
-        public async Task TestAddOperator()
-        {
-            var taskList1 = new TaskList();
+        Should.NotThrow(() => taskList.WhenAll());
+        Should.Throw<InvalidOperationException>(() => taskList.WhenAny());
+    }
 
-            var taskList2 = taskList1 + DoSomethingAsync();
+    /// <summary>
+    /// Tests that using the + operator on a task list doesn't modify the original task list.
+    /// </summary>
+    [Fact]
+    public async Task TestAddOperator()
+    {
+        var taskList1 = new TaskList();
 
-            taskList1.Count.ShouldBe(0);
-            taskList2.Count.ShouldBe(1);
+        var taskList2 = taskList1 + DoSomethingAsync();
 
-            await taskList2.WhenAll(); // just cleanup
-        }
+        taskList1.Count.ShouldBe(0);
+        taskList2.Count.ShouldBe(1);
 
-        /// <summary>
-        /// Tests that using the + operator on a task list doesn't modify the original task list.
-        /// </summary>
-        [Fact]
-        public async Task TestAddOperator_GenericTaskList()
-        {
-            var taskList1 = new TaskList<int>();
-
-            var taskList2 = taskList1 + DoSomethingAndReturnSomethingAsync();
+        await taskList2.WhenAll(); // just cleanup
+    }
 
-            taskList1.Count.ShouldBe(0);
-            taskList2.Count.ShouldBe(1);
+    /// <summary>
+    /// Tests that using the + operator on a task list doesn't modify the original task list.
+    /// </summary>
+    [Fact]
+    public async Task TestAddOperator_GenericTaskList()
+    {
+        var taskList1 = new TaskList<int>();
 
-            await taskList2.WhenAll();
-        }
+        var taskList2 = taskList1 + DoSomethingAndReturnSomethingAsync();
 
-        [Fact]
-        public async Task TestGetEnumerator()
-        {
-            // setup
-            var taskList = new TaskList();
+        taskList1.Count.ShouldBe(0);
+        taskList2.Count.ShouldBe(1);
 
-            taskList += DoSomethingAsync();
-            taskList += DoSomethingAsync();
+        await taskList2.WhenAll();
+    }
 
-            taskList.Count.ShouldBe(2);
+    [Fact]
+    public async Task TestGetEnumerator()
+    {
+        // setup
+        var taskList = new TaskList();
 
-            // test
-            taskList.ExecuteGenericEnumerator().Count.ShouldBe(2);
-            taskList.ExecuteNonGenericEnumerator<Task>().Count.ShouldBe(2);
+        taskList += DoSomethingAsync();
+        taskList += DoSomethingAsync();
 
-            // cleanup
-            await taskList.WhenAll();
-        }
+        taskList.Count.ShouldBe(2);
 
-        [Fact]
-        public async Task TestGetEnumerator_GenericTaskList()
-        {
-            // setup
-            var taskList = new TaskList<int>();
+        // test
+        taskList.ExecuteGenericEnumerator().Count.ShouldBe(2);
+        taskList.ExecuteNonGenericEnumerator<Task>().Count.ShouldBe(2);
 
-            taskList += DoSomethingAndReturnSomethingAsync();
-            taskList += DoSomethingAndReturnSomethingAsync();
+        // cleanup
+        await taskList.WhenAll();
+    }
 
-            taskList.Count.ShouldBe(2);
+    [Fact]
+    public async Task TestGetEnumerator_GenericTaskList()
+    {
+        // setup
+        var taskList = new TaskList<int>();
 
-            // test
-            taskList.ExecuteGenericEnumerator().Count.ShouldBe(2);
-            taskList.ExecuteNonGenericEnumerator<Task>().Count.ShouldBe(2);
+        taskList += DoSomethingAndReturnSomethingAsync();
+        taskList += DoSomethingAndReturnSomethingAsync();
 
-            // cleanup
-            await taskList.WhenAll();
-        }
+        taskList.Count.ShouldBe(2);
 
-        [Fact]
-        public async Task TestIndexer()
-        {
-            // setup
-            var taskList = new TaskList();
+        // test
+        taskList.ExecuteGenericEnumerator().Count.ShouldBe(2);
+        taskList.ExecuteNonGenericEnumerator<Task>().Count.ShouldBe(2);
 
-            var task1 = DoSomethingAsync();
-            var task2 = DoSomethingAsync();
+        // cleanup
+        await taskList.WhenAll();
+    }
 
-            taskList += task1;
-            taskList += task2;
+    [Fact]
+    public async Task TestIndexer()
+    {
+        // setup
+        var taskList = new TaskList();
 
-            taskList.Count.ShouldBe(2);
+        var task1 = DoSomethingAsync();
+        var task2 = DoSomethingAsync();
 
-            // test
-            taskList[0].ShouldBeSameAs(task1);
-            taskList[1].ShouldBeSameAs(task2);
-            Should.Throw<ArgumentOutOfRangeException>(() => taskList[2]);
-            Should.Throw<ArgumentOutOfRangeException>(() => taskList[-1]);
+        taskList += task1;
+        taskList += task2;
 
-            // cleanup
-            await taskList.WhenAll();
-        }
+        taskList.Count.ShouldBe(2);
 
-        [Fact]
-        public async Task TestIndexer_GenericTaskList()
-        {
-            // setup
-            var taskList = new TaskList<int>();
+        // test
+        taskList[0].ShouldBeSameAs(task1);
+        taskList[1].ShouldBeSameAs(task2);
+        Should.Throw<ArgumentOutOfRangeException>(() => taskList[2]);
+        Should.Throw<ArgumentOutOfRangeException>(() => taskList[-1]);
 
-            var task1 = DoSomethingAndReturnSomethingAsync();
-            var task2 = DoSomethingAndReturnSomethingAsync();
+        // cleanup
+        await taskList.WhenAll();
+    }
 
-            taskList += task1;
-            taskList += task2;
+    [Fact]
+    public async Task TestIndexer_GenericTaskList()
+    {
+        // setup
+        var taskList = new TaskList<int>();
 
-            taskList.Count.ShouldBe(2);
+        var task1 = DoSomethingAndReturnSomethingAsync();
+        var task2 = DoSomethingAndReturnSomethingAsync();
 
-            // test
-            taskList[0].ShouldBeSameAs(task1);
-            taskList[1].ShouldBeSameAs(task2);
-            Should.Throw<ArgumentOutOfRangeException>(() => taskList[2]);
-            Should.Throw<ArgumentOutOfRangeException>(() => taskList[-1]);
+        taskList += task1;
+        taskList += task2;
 
-            // cleanup
-            await taskList.WhenAll();
-        }
+        taskList.Count.ShouldBe(2);
 
-        [Fact]
-        public async Task TestWhenAll()
-        {
-            // setup
-            var taskList = new TaskList();
+        // test
+        taskList[0].ShouldBeSameAs(task1);
+        taskList[1].ShouldBeSameAs(task2);
+        Should.Throw<ArgumentOutOfRangeException>(() => taskList[2]);
+        Should.Throw<ArgumentOutOfRangeException>(() => taskList[-1]);
 
-            var task1 = DoSomethingAsync();
-            var task2 = DoSomethingAsync(milliseconds: 20);
+        // cleanup
+        await taskList.WhenAll();
+    }
 
-            taskList += task1;
-            taskList += task2;
+    [Fact]
+    public async Task TestWhenAll()
+    {
+        // setup
+        var taskList = new TaskList();
 
-            taskList.Count.ShouldBe(2);
+        var task1 = DoSomethingAsync();
+        var task2 = DoSomethingAsync(milliseconds: 20);
 
-            // test
-            await taskList.WhenAll();
+        taskList += task1;
+        taskList += task2;
 
-            task1.Status.ShouldBe(TaskStatus.RanToCompletion);
-            task2.Status.ShouldBe(TaskStatus.RanToCompletion);
-        }
+        taskList.Count.ShouldBe(2);
 
-        [Fact]
-        public async Task TestWhenAll_GenericTaskList()
-        {
-            // setup
-            var taskList = new TaskList<int>();
+        // test
+        await taskList.WhenAll();
 
-            var task1 = DoSomethingAndReturnSomethingAsync(result: 42);
-            var task2 = DoSomethingAndReturnSomethingAsync(milliseconds: 20, result: 43);
+        task1.Status.ShouldBe(TaskStatus.RanToCompletion);
+        task2.Status.ShouldBe(TaskStatus.RanToCompletion);
+    }
 
-            taskList += task1;
-            taskList += task2;
+    [Fact]
+    public async Task TestWhenAll_GenericTaskList()
+    {
+        // setup
+        var taskList = new TaskList<int>();
 
-            taskList.Count.ShouldBe(2);
+        var task1 = DoSomethingAndReturnSomethingAsync(result: 42);
+        var task2 = DoSomethingAndReturnSomethingAsync(milliseconds: 20, result: 43);
 
-            // test
-            var result = await taskList.WhenAll();
+        taskList += task1;
+        taskList += task2;
 
-            result[0].ShouldBe(42);
-            result[1].ShouldBe(43);
+        taskList.Count.ShouldBe(2);
 
-            task1.Status.ShouldBe(TaskStatus.RanToCompletion);
-            task2.Status.ShouldBe(TaskStatus.RanToCompletion);
-        }
+        // test
+        var result = await taskList.WhenAll();
 
-        [Fact]
-        public async Task TestWhenAny()
-        {
-            // setup
-            var taskList = new TaskList();
+        result[0].ShouldBe(42);
+        result[1].ShouldBe(43);
 
-            var task1 = DoSomethingAsync(milliseconds: 5);
-            var task2 = DoSomethingAsync(milliseconds: 100);
+        task1.Status.ShouldBe(TaskStatus.RanToCompletion);
+        task2.Status.ShouldBe(TaskStatus.RanToCompletion);
+    }
 
-            taskList += task1;
-            taskList += task2;
+    [Fact]
+    public async Task TestWhenAny()
+    {
+        // setup
+        var taskList = new TaskList();
 
-            taskList.Count.ShouldBe(2);
+        var task1 = DoSomethingAsync(milliseconds: 5);
+        var task2 = DoSomethingAsync(milliseconds: 100);
 
-            // test
-            var completedTask = await taskList.WhenAny();
+        taskList += task1;
+        taskList += task2;
 
-            completedTask.ShouldBeSameAs(task1);
-            task1.Status.ShouldBe(TaskStatus.RanToCompletion);
+        taskList.Count.ShouldBe(2);
 
-            // cleanup
-            await taskList.WhenAll();
-        }
+        // test
+        var completedTask = await taskList.WhenAny();
 
-        [Fact]
-        public async Task TestWhenAny_GenericTaskList()
-        {
-            // setup
-            var taskList = new TaskList<int>();
+        completedTask.ShouldBeSameAs(task1);
+        task1.Status.ShouldBe(TaskStatus.RanToCompletion);
 
-            var task1 = DoSomethingAndReturnSomethingAsync(milliseconds: 5);
-            var task2 = DoSomethingAndReturnSomethingAsync(milliseconds: TestEnvInfo.RunsInCiPipeline ? 1000 : 100);
+        // cleanup
+        await taskList.WhenAll();
+    }
 
-            taskList += task1;
-            taskList += task2;
+    [Fact]
+    public async Task TestWhenAny_GenericTaskList()
+    {
+        // setup
+        var taskList = new TaskList<int>();
 
-            taskList.Count.ShouldBe(2);
+        var task1 = DoSomethingAndReturnSomethingAsync(milliseconds: 5);
+        var task2 = DoSomethingAndReturnSomethingAsync(milliseconds: TestEnvInfo.RunsInCiPipeline ? 1000 : 100);
 
-            // test
-            var completedTask = await taskList.WhenAny();
+        taskList += task1;
+        taskList += task2;
 
-            completedTask.ShouldBeSameAs(task1);
-            task1.Status.ShouldBe(TaskStatus.RanToCompletion);
+        taskList.Count.ShouldBe(2);
 
-            // cleanup
-            await taskList.WhenAll();
-        }
+        // test
+        var completedTask = await taskList.WhenAny();
 
-        private static async Task DoSomethingAsync(int milliseconds = 10)
-        {
-            await Task.Delay(TimeSpan.FromMilliseconds(milliseconds));
-        }
+        completedTask.ShouldBeSameAs(task1);
+        task1.Status.ShouldBe(TaskStatus.RanToCompletion);
 
-        private static async Task<int> DoSomethingAndReturnSomethingAsync(int milliseconds = 10, int result = 42)
-        {
-            await Task.Delay(TimeSpan.FromMilliseconds(milliseconds));
+        // cleanup
+        await taskList.WhenAll();
+    }
 
-            return result;
-        }
+    private static async Task DoSomethingAsync(int milliseconds = 10)
+    {
+        await Task.Delay(TimeSpan.FromMilliseconds(milliseconds));
+    }
+
+    private static async Task<int> DoSomethingAndReturnSomethingAsync(int milliseconds = 10, int result = 42)
+    {
+        await Task.Delay(TimeSpan.FromMilliseconds(milliseconds));
+
+        return result;
     }
 }

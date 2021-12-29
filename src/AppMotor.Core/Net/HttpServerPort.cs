@@ -16,33 +16,32 @@
 
 using JetBrains.Annotations;
 
-namespace AppMotor.Core.Net
+namespace AppMotor.Core.Net;
+
+/// <summary>
+/// Represents an HTTP server port. For HTTPS, use <see cref="HttpsServerPort"/> instead.
+/// </summary>
+public class HttpServerPort : ServerPort
 {
     /// <summary>
-    /// Represents an HTTP server port. For HTTPS, use <see cref="HttpsServerPort"/> instead.
+    /// The default HTTP port.
     /// </summary>
-    public class HttpServerPort : ServerPort
+    [PublicAPI]
+    public const int DEFAULT_PORT = 80;
+
+    /// <summary>
+    /// Constructor. Uses <see cref="DEFAULT_PORT"/> as port.
+    /// </summary>
+    [PublicAPI]
+    public HttpServerPort(SocketListenAddresses listenAddress) : this(listenAddress, port: DEFAULT_PORT)
     {
-        /// <summary>
-        /// The default HTTP port.
-        /// </summary>
-        [PublicAPI]
-        public const int DEFAULT_PORT = 80;
+    }
 
-        /// <summary>
-        /// Constructor. Uses <see cref="DEFAULT_PORT"/> as port.
-        /// </summary>
-        [PublicAPI]
-        public HttpServerPort(SocketListenAddresses listenAddress) : this(listenAddress, port: DEFAULT_PORT)
-        {
-        }
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        [PublicAPI]
-        public HttpServerPort(SocketListenAddresses listenAddress, int port) : base(listenAddress, port)
-        {
-        }
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    [PublicAPI]
+    public HttpServerPort(SocketListenAddresses listenAddress, int port) : base(listenAddress, port)
+    {
     }
 }

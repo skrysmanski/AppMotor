@@ -22,66 +22,65 @@ using Shouldly;
 
 using Xunit;
 
-namespace AppMotor.Core.Tests.Certificates
+namespace AppMotor.Core.Tests.Certificates;
+
+public sealed class CertificateOidTests
 {
-    public sealed class CertificateOidTests
+    [Fact]
+    public void Test_Value()
     {
-        [Fact]
-        public void Test_Value()
-        {
-            new CertificateOid("1.2.840.113549.1.1.1").Value.ShouldBe("1.2.840.113549.1.1.1");
-            new CertificateOid("RSA").Value.ShouldBe("1.2.840.113549.1.1.1");
-        }
+        new CertificateOid("1.2.840.113549.1.1.1").Value.ShouldBe("1.2.840.113549.1.1.1");
+        new CertificateOid("RSA").Value.ShouldBe("1.2.840.113549.1.1.1");
+    }
 
-        [Fact]
-        public void Test_Equals()
-        {
-            var rsaOidById = new CertificateOid("1.2.840.113549.1.1.1");
-            var rsaOidByName = new CertificateOid("RSA");
-            var otherOid = new CertificateOid("3DES");
+    [Fact]
+    public void Test_Equals()
+    {
+        var rsaOidById = new CertificateOid("1.2.840.113549.1.1.1");
+        var rsaOidByName = new CertificateOid("RSA");
+        var otherOid = new CertificateOid("3DES");
 
-            rsaOidById.Equals(rsaOidByName).ShouldBe(true);
-            rsaOidById.Equals(otherOid).ShouldBe(false);
+        rsaOidById.Equals(rsaOidByName).ShouldBe(true);
+        rsaOidById.Equals(otherOid).ShouldBe(false);
 
-            rsaOidById.Equals(rsaOidById).ShouldBe(true);
-            rsaOidById.Equals(new CertificateOid()).ShouldBe(false);
+        rsaOidById.Equals(rsaOidById).ShouldBe(true);
+        rsaOidById.Equals(new CertificateOid()).ShouldBe(false);
 
-            (rsaOidById == rsaOidByName).ShouldBe(true);
-            (rsaOidById != otherOid).ShouldBe(true);
+        (rsaOidById == rsaOidByName).ShouldBe(true);
+        (rsaOidById != otherOid).ShouldBe(true);
 
-            // ReSharper disable once SuspiciousTypeConversion.Global
-            rsaOidById.Equals("").ShouldBe(false);
-            rsaOidById.Equals((object)rsaOidByName).ShouldBe(true);
-        }
+        // ReSharper disable once SuspiciousTypeConversion.Global
+        rsaOidById.Equals("").ShouldBe(false);
+        rsaOidById.Equals((object)rsaOidByName).ShouldBe(true);
+    }
 
-        [Fact]
-        public void Test_GetHashCode()
-        {
-            var rsaOidById = new CertificateOid("1.2.840.113549.1.1.1");
-            var rsaOidByName = new CertificateOid("RSA");
+    [Fact]
+    public void Test_GetHashCode()
+    {
+        var rsaOidById = new CertificateOid("1.2.840.113549.1.1.1");
+        var rsaOidByName = new CertificateOid("RSA");
 
-            rsaOidById.GetHashCode().ShouldBe(rsaOidByName.GetHashCode());
-        }
+        rsaOidById.GetHashCode().ShouldBe(rsaOidByName.GetHashCode());
+    }
 
-        [Fact]
-        public void Test_ToString()
-        {
-            var rsaOidById = new CertificateOid("1.2.840.113549.1.1.1");
-            var rsaOidByName = new CertificateOid("RSA");
+    [Fact]
+    public void Test_ToString()
+    {
+        var rsaOidById = new CertificateOid("1.2.840.113549.1.1.1");
+        var rsaOidByName = new CertificateOid("RSA");
 
-            rsaOidById.ToString().ShouldBe("1.2.840.113549.1.1.1");
-            rsaOidByName.ToString().ShouldBe("1.2.840.113549.1.1.1");
+        rsaOidById.ToString().ShouldBe("1.2.840.113549.1.1.1");
+        rsaOidByName.ToString().ShouldBe("1.2.840.113549.1.1.1");
 
-            new CertificateOid().ToString().ShouldBe("");
-        }
+        new CertificateOid().ToString().ShouldBe("");
+    }
 
-        [Fact]
-        public void Test_ImplicitConversion()
-        {
-            Oid oid = new CertificateOid("1.2.840.113549.1.1.1");
-            CertificateOid certOid = oid;
+    [Fact]
+    public void Test_ImplicitConversion()
+    {
+        Oid oid = new CertificateOid("1.2.840.113549.1.1.1");
+        CertificateOid certOid = oid;
 
-            certOid.Value.ShouldBe("1.2.840.113549.1.1.1");
-        }
+        certOid.Value.ShouldBe("1.2.840.113549.1.1.1");
     }
 }

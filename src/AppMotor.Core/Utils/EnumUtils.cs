@@ -18,23 +18,22 @@ using System;
 
 using JetBrains.Annotations;
 
-namespace AppMotor.Core.Utils
+namespace AppMotor.Core.Utils;
+
+/// <summary>
+/// Utility method for enums.
+/// </summary>
+public static class EnumUtils
 {
     /// <summary>
-    /// Utility method for enums.
+    /// Returns the enum values of the specified enum.
     /// </summary>
-    public static class EnumUtils
+    /// <remarks>
+    /// This is the typed version of <see cref="Enum.GetValues"/>.
+    /// </remarks>
+    [PublicAPI, Pure]
+    public static TEnum[] GetValues<TEnum>() where TEnum : Enum
     {
-        /// <summary>
-        /// Returns the enum values of the specified enum.
-        /// </summary>
-        /// <remarks>
-        /// This is the typed version of <see cref="Enum.GetValues"/>.
-        /// </remarks>
-        [PublicAPI, Pure]
-        public static TEnum[] GetValues<TEnum>() where TEnum : Enum
-        {
-            return (TEnum[])Enum.GetValues(typeof(TEnum));
-        }
+        return (TEnum[])Enum.GetValues(typeof(TEnum));
     }
 }

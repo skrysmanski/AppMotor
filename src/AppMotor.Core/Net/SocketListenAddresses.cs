@@ -16,23 +16,22 @@
 
 using JetBrains.Annotations;
 
-namespace AppMotor.Core.Net
+namespace AppMotor.Core.Net;
+
+/// <summary>
+/// The address a socket (server) can listen on (i.e. from where to accept connections).
+/// </summary>
+/// <seealso cref="ServerPort"/>
+[PublicAPI]
+public enum SocketListenAddresses
 {
     /// <summary>
-    /// The address a socket (server) can listen on (i.e. from where to accept connections).
+    /// Accept connections from anywhere.
     /// </summary>
-    /// <seealso cref="ServerPort"/>
-    [PublicAPI]
-    public enum SocketListenAddresses
-    {
-        /// <summary>
-        /// Accept connections from anywhere.
-        /// </summary>
-        Any,
+    Any,
 
-        /// <summary>
-        /// Accept connections only from localhost.
-        /// </summary>
-        Loopback,
-    }
+    /// <summary>
+    /// Accept connections only from localhost.
+    /// </summary>
+    Loopback,
 }

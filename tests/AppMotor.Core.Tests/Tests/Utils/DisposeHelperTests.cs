@@ -25,37 +25,36 @@ using Moq;
 
 using Xunit;
 
-namespace AppMotor.Core.Tests.Utils
+namespace AppMotor.Core.Tests.Utils;
+
+public sealed class DisposeHelperTests
 {
-    public sealed class DisposeHelperTests
+    [Fact]
+    public async Task Test_DisposeWithAsyncSupport_WithAsyncDisposable()
     {
-        [Fact]
-        public async Task Test_DisposeWithAsyncSupport_WithAsyncDisposable()
-        {
-            var disposableMock = new Mock<IMixedDisposable>(MockBehavior.Loose);
-            IDisposable disposable = disposableMock.Object;
+        var disposableMock = new Mock<IMixedDisposable>(MockBehavior.Loose);
+        IDisposable disposable = disposableMock.Object;
 
-            await DisposeHelper.DisposeWithAsyncSupport(disposable);
+        await DisposeHelper.DisposeWithAsyncSupport(disposable);
 
-            disposableMock.Verify(m => m.DisposeAsync(), Times.Once);
-            disposableMock.Verify(m => m.Dispose(), Times.Never);
-        }
+        disposableMock.Verify(m => m.DisposeAsync(), Times.Once);
+        disposableMock.Verify(m => m.Dispose(), Times.Never);
+    }
 
-        [Fact]
-        public async Task Test_DisposeWithAsyncSupport_WithoutAsyncDisposable()
-        {
-            var disposableMock = new Mock<IDisposable>(MockBehavior.Loose);
-            IDisposable disposable = disposableMock.Object;
+    [Fact]
+    public async Task Test_DisposeWithAsyncSupport_WithoutAsyncDisposable()
+    {
+        var disposableMock = new Mock<IDisposable>(MockBehavior.Loose);
+        IDisposable disposable = disposableMock.Object;
 
-            await DisposeHelper.DisposeWithAsyncSupport(disposable);
+        await DisposeHelper.DisposeWithAsyncSupport(disposable);
 
-            disposableMock.Verify(m => m.Dispose(), Times.Once);
-        }
+        disposableMock.Verify(m => m.Dispose(), Times.Once);
+    }
 
-        [UsedImplicitly(ImplicitUseKindFlags.Access)]
-        public interface IMixedDisposable : IDisposable, IAsyncDisposable
-        {
+    [UsedImplicitly(ImplicitUseKindFlags.Access)]
+    public interface IMixedDisposable : IDisposable, IAsyncDisposable
+    {
 
-        }
     }
 }

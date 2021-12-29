@@ -24,21 +24,20 @@ using Shouldly;
 
 using Xunit;
 
-namespace AppMotor.Core.Tests.Utils
+namespace AppMotor.Core.Tests.Utils;
+
+public sealed class DefaultDateTimeProviderTests
 {
-    public sealed class DefaultDateTimeProviderTests
+    [Fact]
+    public void TestNow()
     {
-        [Fact]
-        public void TestNow()
-        {
-            DefaultDateTimeProvider.Instance.LocalNow.ShouldBe(DateTime.Now, tolerance: TimeSpan.FromMilliseconds(2));
-            DefaultDateTimeProvider.Instance.UtcNow.ShouldBe(DateTimeUtc.Now, tolerance: TimeSpan.FromMilliseconds(2));
+        DefaultDateTimeProvider.Instance.LocalNow.ShouldBe(DateTime.Now, tolerance: TimeSpan.FromMilliseconds(2));
+        DefaultDateTimeProvider.Instance.UtcNow.ShouldBe(DateTimeUtc.Now, tolerance: TimeSpan.FromMilliseconds(2));
 
-            Thread.Sleep(TimeSpan.FromMilliseconds(500));
+        Thread.Sleep(TimeSpan.FromMilliseconds(500));
 
-            // Check that is has changed
-            DefaultDateTimeProvider.Instance.LocalNow.ShouldBe(DateTime.Now, tolerance: TimeSpan.FromMilliseconds(2));
-            DefaultDateTimeProvider.Instance.UtcNow.ShouldBe(DateTimeUtc.Now, tolerance: TimeSpan.FromMilliseconds(2));
-        }
+        // Check that is has changed
+        DefaultDateTimeProvider.Instance.LocalNow.ShouldBe(DateTime.Now, tolerance: TimeSpan.FromMilliseconds(2));
+        DefaultDateTimeProvider.Instance.UtcNow.ShouldBe(DateTimeUtc.Now, tolerance: TimeSpan.FromMilliseconds(2));
     }
 }

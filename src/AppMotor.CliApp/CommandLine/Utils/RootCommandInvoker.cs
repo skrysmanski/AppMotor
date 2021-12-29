@@ -23,56 +23,55 @@ using System.Threading.Tasks;
 
 using AppMotor.CliApp.Terminals;
 
-namespace AppMotor.CliApp.CommandLine.Utils
+namespace AppMotor.CliApp.CommandLine.Utils;
+
+internal static class RootCommandInvoker
 {
-    internal static class RootCommandInvoker
+    public static async Task<int> InvokeRootCommand(
+            string? appDescription,
+            IEnumerable<Symbol> rootSymbols,
+            ICommandHandler? commandHandler,
+            ITerminal terminal,
+            string[] args,
+            Func<Exception, int> exceptionHandlerFunc
+        )
     {
-        public static async Task<int> InvokeRootCommand(
-                string? appDescription,
-                IEnumerable<Symbol> rootSymbols,
-                ICommandHandler? commandHandler,
-                ITerminal terminal,
-                string[] args,
-                Func<Exception, int> exceptionHandlerFunc
-            )
+        var rootCommand = new RootCommand();
+
+        if (!string.IsNullOrWhiteSpace(appDescription))
         {
-            var rootCommand = new RootCommand();
-
-            if (!string.IsNullOrWhiteSpace(appDescription))
-            {
-                rootCommand.Description = appDescription;
-            }
-
-            foreach (var symbol in rootSymbols)
-            {
-                rootCommand.Add(symbol);
-            }
-
-            if (commandHandler is not null)
-            {
-                rootCommand.Handler = commandHandler;
-            }
-
-            // IMPORTANT: This must be called after all root symbols have been added - otherwise
-            //   the "--version" and the "--help" option will be listed before other named parameters.
-            CreatePipelineFor(rootCommand, exceptionHandlerFunc);
-
-            return await rootCommand.InvokeAsync(args, CommandLineConsole.FromTerminal(terminal))
-                                    .ConfigureAwait(continueOnCapturedContext: false);
+            rootCommand.Description = appDescription;
         }
 
-        private static void CreatePipelineFor(RootCommand rootCommand, Func<Exception, int> exceptionHandlerFunc)
+        foreach (var symbol in rootSymbols)
         {
-            var builder = new CommandLineBuilder(rootCommand);
-
-            builder.UseDefaults();
-
-            builder.UseExceptionHandler((exception, context) => {
-                int exitCode = exceptionHandlerFunc(exception);
-                context.ExitCode = exitCode;
-            });
-
-            builder.Build();
+            rootCommand.Add(symbol);
         }
+
+        if (commandHandler is not null)
+        {
+            rootCommand.Handler = commandHandler;
+        }
+
+        // IMPORTANT: This must be called after all root symbols have been added - otherwise
+        //   the "--version" and the "--help" option will be listed before other named parameters.
+        CreatePipelineFor(rootCommand, exceptionHandlerFunc);
+
+        return await rootCommand.InvokeAsync(args, CommandLineConsole.FromTerminal(terminal))
+                                .ConfigureAwait(continueOnCapturedContext: false);
+    }
+
+    private static void CreatePipelineFor(RootCommand rootCommand, Func<Exception, int> exceptionHandlerFunc)
+    {
+        var builder = new CommandLineBuilder(rootCommand);
+
+        builder.UseDefaults();
+
+        builder.UseExceptionHandler((exception, context) => {
+            int exitCode = exceptionHandlerFunc(exception);
+            context.ExitCode = exitCode;
+        });
+
+        builder.Build();
     }
 }

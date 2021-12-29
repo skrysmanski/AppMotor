@@ -14,20 +14,19 @@
 // limitations under the License.
 #endregion
 
-namespace AppMotor.Core.Exceptions
+namespace AppMotor.Core.Exceptions;
+
+/// <summary>
+/// <see cref="ValueException"/> version of <see cref="CollectionIsReadOnlyException"/>.
+/// </summary>
+public class CollectionIsReadOnlyValueException : ValueException, ICollectionIsReadOnlyException
 {
     /// <summary>
-    /// <see cref="ValueException"/> version of <see cref="CollectionIsReadOnlyException"/>.
+    /// Constructor.
     /// </summary>
-    public class CollectionIsReadOnlyValueException : ValueException, ICollectionIsReadOnlyException
+    /// <param name="valueName">The name of the value this exception applies to.</param>
+    public CollectionIsReadOnlyValueException(string valueName)
+        : base(CollectionIsReadOnlyException.DEFAULT_MESSAGE, valueName: valueName)
     {
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="valueName">The name of the value this exception applies to.</param>
-        public CollectionIsReadOnlyValueException(string valueName)
-            : base(CollectionIsReadOnlyException.DEFAULT_MESSAGE, valueName: valueName)
-        {
-        }
     }
 }
