@@ -10,7 +10,7 @@
 #
 # For more details on workflows, see README.md.
 #
-name: CI (Scheduled)
+name: CI (scheduled)
 
 # When to run this workflow
 # See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows
