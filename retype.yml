@@ -6,9 +6,18 @@
 input: src/
 output: .retype
 url: https://skrysmanski.github.io/AppMotor/
+
 branding:
   title: AppMotor
   label: Docs
+
+meta:
+  title: " | AppMotor"
+
+edit:
+  repo: github.com/skrysmanski/AppMotor/edit
+  base: /src/
+
 links:
   - text: AppMotor.CliApp
     link: AppMotor.CliApp
@@ -20,5 +29,6 @@ links:
     link: https://github.com/skrysmanski/AppMotor/
     icon: mark-github
     target: blank
+
 footer:
   copyright: "&copy; Copyright {{ year }}. All rights reserved."
