@@ -38,32 +38,32 @@ internal sealed class CloneCommand : GitCommandBase
     {
         if (this.QuietParam.Value)
         {
-            Terminal.WriteLine((TextInDarkGray)"This command would run quite.");
-            Terminal.WriteLine();
+            this.Terminal.WriteLine((TextInDarkGray)"This command would run quite.");
+            this.Terminal.WriteLine();
         }
 
         if (this.VerboseParam.Value)
         {
-            Terminal.WriteLine((TextInDarkGray)"This command would run verbose.");
-            Terminal.WriteLine();
+            this.Terminal.WriteLine((TextInDarkGray)"This command would run verbose.");
+            this.Terminal.WriteLine();
         }
 
-        Terminal.WriteLine("This command would clone the repository:");
-        Terminal.WriteLine();
-        Terminal.WriteLine((TextInCyan)$"  {this.RepositoryParam.Value}");
-        Terminal.WriteLine();
-        Terminal.WriteLine("To: ");
-        Terminal.WriteLine();
-        Terminal.WriteLine((TextInCyan)$"  {this.DirectoryParam.Value}");
-        Terminal.WriteLine();
-        Terminal.WriteLine("With the selected branch:");
-        Terminal.WriteLine();
-        Terminal.WriteLine((TextInCyan)$"  {this.BranchParam.Value ?? "<the default branch>"}");
-        Terminal.WriteLine();
+        this.Terminal.WriteLine("This command would clone the repository:");
+        this.Terminal.WriteLine();
+        this.Terminal.WriteLine((TextInCyan)$"  {this.RepositoryParam.Value}");
+        this.Terminal.WriteLine();
+        this.Terminal.WriteLine("To: ");
+        this.Terminal.WriteLine();
+        this.Terminal.WriteLine((TextInCyan)$"  {this.DirectoryParam.Value}");
+        this.Terminal.WriteLine();
+        this.Terminal.WriteLine("With the selected branch:");
+        this.Terminal.WriteLine();
+        this.Terminal.WriteLine((TextInCyan)$"  {this.BranchParam.Value ?? "<the default branch>"}");
+        this.Terminal.WriteLine();
 
         foreach (var configPair in this.ConfigParam.Value)
         {
-            Terminal.WriteLine($"Setting config: {configPair}");
+            this.Terminal.WriteLine($"Setting config: {configPair}");
         }
     }
 }

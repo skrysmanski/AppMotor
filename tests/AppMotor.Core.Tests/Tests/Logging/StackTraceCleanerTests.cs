@@ -76,7 +76,7 @@ at AppMotor.CliApp.CliApplication.RunAsync(String[] args, CancellationToken canc
     [MemberData(nameof(Data))]
     public void Test_Cleanup(string actualStackTraceLine, string expectedStackTraceLine)
     {
-        var cleanedStackTraceLines = StackTraceCleaner.CleanupStackTraceLines(new [] { actualStackTraceLine }).ToList();
+        var cleanedStackTraceLines = StackTraceCleaner.CleanupStackTraceLines(new[] { actualStackTraceLine }).ToList();
         cleanedStackTraceLines[0].ShouldBe(expectedStackTraceLine);
     }
 }

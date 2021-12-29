@@ -173,7 +173,7 @@ public sealed class ExceptionDataAccessorTests
         private sealed class MyCustomDictionary : IDictionary<object, object>, IDictionary
         {
             // ReSharper disable once CollectionNeverUpdated.Local
-            private readonly Dictionary<object, object> m_underlyingDictionary = new Dictionary<object, object>();
+            private readonly Dictionary<object, object> _underlyingDictionary = new();
 
             public int Count => throw new NotSupportedException();
 
@@ -202,7 +202,7 @@ public sealed class ExceptionDataAccessorTests
 
             public object this[object key]
             {
-                get => this.m_underlyingDictionary[key];
+                get => this._underlyingDictionary[key];
 #pragma warning disable 8767
                 set => throw new NotSupportedException();
 #pragma warning restore 8767

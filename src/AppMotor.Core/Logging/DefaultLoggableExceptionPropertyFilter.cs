@@ -65,7 +65,7 @@ public class DefaultLoggableExceptionPropertyFilter : ILoggableExceptionProperty
 
         if (loggableProperty.Name == nameof(Exception.HResult))
         {
-            if (propertyValue is int hResult && hResult == HResults.COR_E_EXCEPTION)
+            if (propertyValue is HResults.COR_E_EXCEPTION)
             {
                 // Default HResult. No useful information here.
                 return true;

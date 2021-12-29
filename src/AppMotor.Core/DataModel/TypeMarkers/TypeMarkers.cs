@@ -67,17 +67,17 @@ public static class TypeMarkers
 
     private sealed class TypeMarkerCollection
     {
-        private readonly object m_updateLock = new object();
+        private readonly object _updateLock = new();
 
         /// <summary>
         /// The underlying set. Note this set is managed as "copy-on-write". This way we
         /// don't need a lock in <see cref="Contains"/>.
         /// </summary>
-        private HashSet<Type>? m_underlyingCollection;
+        private HashSet<Type>? _underlyingCollection;
 
         public bool Add(Type markerType)
         {
-            lock (this.m_updateLock)
+            lock (this._updateLock)
             {
                 if (Contains(markerType))
                 {
@@ -87,9 +87,9 @@ public static class TypeMarkers
 
                 HashSet<Type> newCollection;
 
-                if (this.m_underlyingCollection != null)
+                if (this._underlyingCollection != null)
                 {
-                    newCollection = new HashSet<Type>(this.m_underlyingCollection);
+                    newCollection = new HashSet<Type>(this._underlyingCollection);
                 }
                 else
                 {
@@ -98,7 +98,7 @@ public static class TypeMarkers
 
                 newCollection.Add(markerType);
 
-                this.m_underlyingCollection = newCollection;
+                this._underlyingCollection = newCollection;
             }
 
             return true;
@@ -107,7 +107,7 @@ public static class TypeMarkers
         [Pure]
         public bool Contains(Type markerType)
         {
-            return this.m_underlyingCollection?.Contains(markerType) == true;
+            return this._underlyingCollection?.Contains(markerType) == true;
         }
     }
 

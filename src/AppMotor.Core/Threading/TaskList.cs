@@ -133,28 +133,28 @@ public readonly struct TaskList : IReadOnlyList<Task>
 public readonly struct TaskList<T> : IReadOnlyList<Task<T>>
 #pragma warning restore CA1815 // Override equals and operator equals on value types
 {
-    private readonly AppendOnlyList<Task<T>>? m_underlyingList;
+    private readonly AppendOnlyList<Task<T>>? _underlyingList;
 
     /// <inheritdoc />
-    public int Count => this.m_underlyingList?.Count ?? 0;
+    public int Count => this._underlyingList?.Count ?? 0;
 
     /// <inheritdoc />
     public Task<T> this[int index]
     {
         get
         {
-            if (this.m_underlyingList == null)
+            if (this._underlyingList == null)
             {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
 
-            return this.m_underlyingList[index];
+            return this._underlyingList[index];
         }
     }
 
     private TaskList(AppendOnlyList<Task<T>> list)
     {
-        this.m_underlyingList = list;
+        this._underlyingList = list;
     }
 
     /// <summary>
@@ -162,7 +162,7 @@ public readonly struct TaskList<T> : IReadOnlyList<Task<T>>
     /// </summary>
     public static TaskList<T> operator +(TaskList<T> taskList, Task<T> task)
     {
-        var newList = taskList.m_underlyingList?.CloneShallow() ?? new AppendOnlyList<Task<T>>();
+        var newList = taskList._underlyingList?.CloneShallow() ?? new AppendOnlyList<Task<T>>();
         newList.Append(task);
 
         return new TaskList<T>(newList);
@@ -174,12 +174,12 @@ public readonly struct TaskList<T> : IReadOnlyList<Task<T>>
     [PublicAPI]
     public Task<T[]> WhenAll()
     {
-        if (this.m_underlyingList is null || this.m_underlyingList.Count == 0)
+        if (this._underlyingList is null || this._underlyingList.Count == 0)
         {
             return Task.FromResult(Array.Empty<T>());
         }
 
-        return Task.WhenAll(this.m_underlyingList);
+        return Task.WhenAll(this._underlyingList);
     }
 
     /// <summary>
@@ -188,20 +188,20 @@ public readonly struct TaskList<T> : IReadOnlyList<Task<T>>
     [PublicAPI]
     public Task<Task<T>> WhenAny()
     {
-        if (this.m_underlyingList is null || this.m_underlyingList.Count == 0)
+        if (this._underlyingList is null || this._underlyingList.Count == 0)
         {
             throw new InvalidOperationException("The task list is empty.");
         }
 
-        return Task.WhenAny(this.m_underlyingList);
+        return Task.WhenAny(this._underlyingList);
     }
 
     /// <inheritdoc />
     public IEnumerator<Task<T>> GetEnumerator()
     {
-        if (this.m_underlyingList != null)
+        if (this._underlyingList != null)
         {
-            return this.m_underlyingList.GetEnumerator();
+            return this._underlyingList.GetEnumerator();
         }
         else
         {

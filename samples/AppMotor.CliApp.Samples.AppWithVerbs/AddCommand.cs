@@ -31,35 +31,36 @@ internal class AddCommand : GitCommandBase
     {
         if (this.QuietParam.Value)
         {
-            Terminal.WriteLine((TextInDarkGray)"This command would run quite.");
-            Terminal.WriteLine();
+            this.Terminal.WriteLine((TextInDarkGray)"This command would run quite.");
+            this.Terminal.WriteLine();
         }
 
         if (this.VerboseParam.Value)
         {
-            Terminal.WriteLine((TextInDarkGray)"This command would run verbose.");
-            Terminal.WriteLine();
+            this.Terminal.WriteLine((TextInDarkGray)"This command would run verbose.");
+            this.Terminal.WriteLine();
         }
 
         if (this.DryRunParam.Value)
         {
-            Terminal.WriteLine("Just a dry-run.");
-            Terminal.WriteLine();
+            this.Terminal.WriteLine("Just a dry-run.");
+            this.Terminal.WriteLine();
         }
 
         if (this.ChmodParam.Value is null)
         {
-            Terminal.WriteLine("This command would add the following files:");
+            this.Terminal.WriteLine("This command would add the following files:");
         }
         else
         {
-            Terminal.WriteLine($"This command would add the following files (with chmod={this.ChmodParam.Value}):");
+            this.Terminal.WriteLine($"This command would add the following files (with chmod={this.ChmodParam.Value}):");
         }
-        Terminal.WriteLine();
+
+        this.Terminal.WriteLine();
 
         foreach (var fileToAdd in this.FilesParam.Value)
         {
-            Terminal.WriteLine((TextInCyan)$" - {fileToAdd.FullName}");
+            this.Terminal.WriteLine((TextInCyan)$" - {fileToAdd.FullName}");
         }
     }
 }
