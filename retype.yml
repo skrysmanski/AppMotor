@@ -5,16 +5,16 @@
 #
 input: src/
 output: .retype
-url: # Add your website address here
+url: https://skrysmanski.github.io/AppMotor/
 branding:
   title: AppMotor
   label: Docs
 links:
   - text: AppMotor.CliApp
-    link: /src/AppMotor.CliApp
+    link: AppMotor.CliApp
     icon: terminal
   - text: AppMotor.HttpServer
-    link: /src/AppMotor.HttpServer
+    link: AppMotor.HttpServer
     icon: server
   - text: GitHub
     link: https://github.com/skrysmanski/AppMotor/
