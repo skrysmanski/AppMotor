@@ -1,0 +1,24 @@
+#
+# Project configuration for Retype (https://retype.com)
+#
+# Documentation: https://retype.com/configuration/project/
+#
+input: src/
+output: .retype
+url: # Add your website address here
+branding:
+  title: AppMotor
+  label: Docs
+links:
+  - text: AppMotor.CliApp
+    link: /src/AppMotor.CliApp
+    icon: terminal
+  - text: AppMotor.HttpServer
+    link: /src/AppMotor.HttpServer
+    icon: server
+  - text: GitHub
+    link: https://github.com/skrysmanski/AppMotor/
+    icon: mark-github
+    target: blank
+footer:
+  copyright: "&copy; Copyright {{ year }}. All rights reserved."

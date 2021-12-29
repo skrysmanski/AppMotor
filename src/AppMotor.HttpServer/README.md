@@ -1,4 +1,7 @@
-﻿# APIs for running a HTTP(S) Server
+﻿---
+icon: server
+---
+# APIs for running a HTTP(S) Server
 
 This package provides APIs to host an HTTP(S) (ASP.NET Core) server (in a console application).
 
