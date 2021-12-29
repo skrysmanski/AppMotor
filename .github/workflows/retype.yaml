@@ -1,4 +1,10 @@
+#
+# Generates the contents of this repo's GitHub Pages page.
+#
+# For more details on workflows, see README.md.
+#
 name: Create Documentation on GitHub Pages
+
 on:
   workflow_dispatch:
   push:
@@ -14,7 +20,7 @@ jobs:
     steps:
       # See: https://github.com/actions/checkout
       - uses: actions/checkout@v2
-        name: Get code
+        name: Clone Git repository
         with:
           lfs: true
           submodules: false # not needed

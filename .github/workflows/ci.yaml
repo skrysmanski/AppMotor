@@ -1,6 +1,9 @@
 #
 # GitHub Actions workflow: Builds and tests the code in this repository.
 #
+# NOTE: This file must be kept in sync with "ci-scheduled.yaml". For the reason why it exists, see
+#   NOTE in "ci-scheduled.yaml".
+#
 # For more details on workflows, see README.md.
 #
 name: CI (on push)
@@ -33,44 +36,44 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Get code
-        # See: https://github.com/actions/checkout
-        uses: actions/checkout@v2
+      # See: https://github.com/actions/checkout
+      - uses: actions/checkout@v2
+        name: Clone Git repository
         with:
           lfs: true
           submodules: true
 
       # This creates ${{ steps.short-sha.outputs.sha }} to be used below.
-      - name: Determine Git short commit hash
-        # See: https://github.com/marketplace/actions/short-sha
-        uses: benjlevesque/short-sha@56c9032868f85fc82058ff0793e58ab97bb2b856
+      # See: https://github.com/marketplace/actions/short-sha
+      - uses: benjlevesque/short-sha@56c9032868f85fc82058ff0793e58ab97bb2b856
+        name: Determine Git short commit hash
         id: short-sha
 
-      - name: Setup .NET build environment
-        # See: https://github.com/actions/setup-dotnet
-        uses: actions/setup-dotnet@v1
+      # See: https://github.com/actions/setup-dotnet
+      - uses: actions/setup-dotnet@v1
+        name: Setup .NET build environment
         with:
           # NOTE: Apparently only the 3rd component can be "x"; i.e. "5.x" is not supported.
           dotnet-version: '6.0.x'
 
-      - name: Download NuGet dependencies
-        run: dotnet restore
+      - run: dotnet restore
+        name: Download NuGet dependencies
 
-      - name: Build main solution
-        # See: https://docs.microsoft.com/de-de/dotnet/core/tools/dotnet-build
-        # NOTE: Without specifying a solution file, "dotnet build" searches for a .sln file in the current directory.
-        run: dotnet build --configuration Release --no-restore
+      # See: https://docs.microsoft.com/de-de/dotnet/core/tools/dotnet-build
+      # NOTE: Without specifying a solution file, "dotnet build" searches for a .sln file in the current directory.
+      - run: dotnet build --configuration Release --no-restore
+        name: Build main solution
 
-      - name: Run tests
-        # See: https://docs.microsoft.com/de-de/dotnet/core/tools/dotnet-test
-        # NOTE: Without specifying a solution file, "dotnet test" searches for a .sln file in the current directory.
-        # NOTE 2: There seems to be no way to name the .trx file as '<project>.trx'. If no 'LogFileName' is specified,
-        #   the .trx files will be named something like "_fv-az278-737_2021-08-15_03_50_33.trx".
-        run: RUNS_IN_CI=true dotnet test --configuration Release --no-restore --no-build --logger "trx;LogFileName=test-results.trx" --nologo
+      # See: https://docs.microsoft.com/de-de/dotnet/core/tools/dotnet-test
+      # NOTE: Without specifying a solution file, "dotnet test" searches for a .sln file in the current directory.
+      # NOTE 2: There seems to be no way to name the .trx file as '<project>.trx'. If no 'LogFileName' is specified,
+      #   the .trx files will be named something like "_fv-az278-737_2021-08-15_03_50_33.trx".
+      - run: RUNS_IN_CI=true dotnet test --configuration Release --no-restore --no-build --logger "trx;LogFileName=test-results.trx" --nologo
+        name: Run tests
 
-      - name: Upload test results
-        # See: https://github.com/actions/upload-artifact
-        uses: actions/upload-artifact@v2
+      # See: https://github.com/actions/upload-artifact
+      - uses: actions/upload-artifact@v2
+        name: Upload test results
         # Run this step even if any of the previous steps has failed
         if: success() || failure()
         with:
