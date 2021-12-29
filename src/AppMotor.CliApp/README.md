@@ -1,4 +1,7 @@
-﻿# APIs for Command Line Apps
+﻿---
+icon: terminal
+---
+# APIs for Command Line Apps
 
 This library contains various APIs for building command line apps.
 

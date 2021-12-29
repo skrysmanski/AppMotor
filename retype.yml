@@ -3,7 +3,7 @@
 #
 # Documentation: https://retype.com/configuration/project/
 #
-input: .
+input: src/
 output: .retype
 url: # Add your website address here
 branding:
