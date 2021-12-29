@@ -2,7 +2,7 @@
 
 ![ci-badge](https://github.com/skrysmanski/AppMotor/actions/workflows/ci.yaml/badge.svg)
 
-This repository contains the code for the AppMotor packages. AppMotor provide various building blocks for .NET 5 applications.
+This repository contains the code for the AppMotor packages. AppMotor provide various building blocks for .NET 6 applications.
 
 ## Packages
 
