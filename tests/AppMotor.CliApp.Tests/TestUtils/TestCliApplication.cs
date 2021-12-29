@@ -14,8 +14,6 @@
 // limitations under the License.
 #endregion
 
-using System;
-
 namespace AppMotor.CliApp.TestUtils;
 
 internal class TestCliApplication : TestCliApplicationBase

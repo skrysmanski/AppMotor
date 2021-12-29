@@ -14,9 +14,6 @@
 // limitations under the License.
 #endregion
 
-using System;
-using System.Collections.Generic;
-
 namespace AppMotor.Core.Exceptions;
 
 /// <summary>

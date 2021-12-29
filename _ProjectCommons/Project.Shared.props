@@ -18,6 +18,12 @@
     <Nullable>enable</Nullable>
 
     <!--
+      Enable implicit (global) usings.
+      See: https://aka.ms/csharp-implicit-usings
+    -->
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <!--
       The language used as default language for .resx files (i.e. for .resx files without language code in their file name).
       See also: https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1824
     -->

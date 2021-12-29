@@ -14,11 +14,8 @@
 // limitations under the License.
 #endregion
 
-using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.CommandLine;
-using System.Threading;
 
 using AppMotor.CliApp.CommandLine.Utils;
 using AppMotor.CliApp.Terminals;

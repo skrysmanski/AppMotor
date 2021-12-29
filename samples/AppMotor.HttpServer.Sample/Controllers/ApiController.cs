@@ -1,8 +1,5 @@
-﻿using System;
+﻿using AppMotor.HttpServer.Sample.Services;
 
-using AppMotor.HttpServer.Sample.Services;
-
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AppMotor.HttpServer.Sample.Controllers;

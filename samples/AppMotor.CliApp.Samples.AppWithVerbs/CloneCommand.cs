@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-
-using AppMotor.CliApp.CommandLine;
+﻿using AppMotor.CliApp.CommandLine;
 using AppMotor.CliApp.Terminals;
 
 namespace AppMotor.CliApp.Samples.AppWithVerbs;

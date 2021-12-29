@@ -14,8 +14,6 @@
 // limitations under the License.
 #endregion
 
-using System;
-using System.Collections.Generic;
 using System.Formats.Asn1;
 using System.Security.Cryptography.X509Certificates;
 

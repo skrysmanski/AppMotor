@@ -14,8 +14,6 @@
 // limitations under the License.
 #endregion
 
-using System;
-using System.Linq;
 using System.Reflection;
 
 using AppMotor.CliApp.Terminals;

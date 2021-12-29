@@ -14,14 +14,9 @@
 // limitations under the License.
 #endregion
 
-using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
 
 using AppMotor.CliApp.CommandLine.Hosting;
 using AppMotor.Core.Exceptions;

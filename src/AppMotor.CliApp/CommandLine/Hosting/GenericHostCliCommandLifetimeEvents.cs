@@ -16,8 +16,6 @@
 
 #endregion
 
-using System.Threading;
-
 using AppMotor.Core.Events;
 using AppMotor.Core.Utils;
 

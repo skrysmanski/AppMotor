@@ -14,9 +14,6 @@
 // limitations under the License.
 #endregion
 
-using System;
-using System.Threading.Tasks;
-
 using AppMotor.Core.TestUtils;
 using AppMotor.Core.Threading;
 using AppMotor.TestCore;

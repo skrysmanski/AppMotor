@@ -14,8 +14,6 @@
 // limitations under the License.
 #endregion
 
-using System.Collections.Generic;
-
 using AppMotor.CliApp.CommandLine;
 using AppMotor.CliApp.CommandLine.Utils;
 using AppMotor.Core.Exceptions;

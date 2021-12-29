@@ -14,7 +14,6 @@
 // limitations under the License.
 #endregion
 
-using System;
 using System.Collections.Immutable;
 using System.IO.Abstractions;
 using System.Security.Cryptography.X509Certificates;
