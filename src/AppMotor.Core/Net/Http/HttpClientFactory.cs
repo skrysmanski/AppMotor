@@ -14,9 +14,7 @@
 // limitations under the License.
 #endregion
 
-using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Net.Http;
 using System.Security.Authentication;
 
 using AppMotor.Core.Certificates;

@@ -16,7 +16,6 @@
 
 using System.IO.Abstractions.TestingHelpers;
 using System.Security.Cryptography;
-using System.Threading.Tasks;
 
 using AppMotor.Core.Certificates.Exporting;
 

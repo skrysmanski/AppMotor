@@ -14,9 +14,6 @@
 // limitations under the License.
 #endregion
 
-using System;
-using System.Threading;
-
 using AppMotor.Core.Events;
 
 namespace AppMotor.CliApp.CommandLine.Hosting;

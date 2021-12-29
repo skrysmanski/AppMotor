@@ -14,10 +14,6 @@
 // limitations under the License.
 #endregion
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
 using AppMotor.CliApp.CommandLine;
 using AppMotor.CliApp.CommandLine.Utils;
 using AppMotor.CliApp.Properties;

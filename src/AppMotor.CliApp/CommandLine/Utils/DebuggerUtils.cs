@@ -17,7 +17,6 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
-using System.Threading;
 
 using AppMotor.CliApp.Properties;
 using AppMotor.CliApp.Terminals;

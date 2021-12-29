@@ -15,7 +15,6 @@
 #endregion
 
 using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
 
 namespace AppMotor.Core.Events;
 

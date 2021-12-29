@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-using AppMotor.CliApp.CommandLine;
+﻿using AppMotor.CliApp.CommandLine;
 using AppMotor.Core.Exceptions;
 
 namespace AppMotor.CliApp.Samples.AppWithParams;
