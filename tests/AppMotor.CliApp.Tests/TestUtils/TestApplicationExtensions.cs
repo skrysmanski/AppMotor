@@ -16,13 +16,12 @@
 
 using Shouldly;
 
-namespace AppMotor.CliApp.TestUtils
+namespace AppMotor.CliApp.TestUtils;
+
+internal static class TestApplicationExtensions
 {
-    internal static class TestApplicationExtensions
+    public static void ShouldHaveNoOutput(this ITestApplication app)
     {
-        public static void ShouldHaveNoOutput(this ITestApplication app)
-        {
-            app.TerminalOutput.ShouldBeEmpty();
-        }
+        app.TerminalOutput.ShouldBeEmpty();
     }
 }

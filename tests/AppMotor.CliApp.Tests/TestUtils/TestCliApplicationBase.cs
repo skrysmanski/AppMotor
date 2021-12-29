@@ -18,48 +18,47 @@ using System;
 
 using JetBrains.Annotations;
 
-namespace AppMotor.CliApp.TestUtils
+namespace AppMotor.CliApp.TestUtils;
+
+internal abstract class TestCliApplicationBase : CliApplication, ITestApplication
 {
-    internal abstract class TestCliApplicationBase : CliApplication, ITestApplication
+    public readonly TestApplicationHelper AppHelper;
+
+    /// <inheritdoc />
+    public string TerminalOutput => this.AppHelper.TerminalOutput;
+
+    protected TestCliApplicationBase()
     {
-        public readonly TestApplicationHelper AppHelper;
+        this.AppHelper = new TestApplicationHelper(this);
+    }
 
-        /// <inheritdoc />
-        public string TerminalOutput => this.AppHelper.TerminalOutput;
+    public new void Run(params string[] args)
+    {
+        this.AppHelper.Run(args, expectedExitCode: 0);
+    }
 
-        protected TestCliApplicationBase()
-        {
-            this.AppHelper = new TestApplicationHelper(this);
-        }
+    public void RunWithExpectedExitCode(int expectedExitCode, params string[] args)
+    {
+        this.AppHelper.Run(args, expectedExitCode: expectedExitCode);
+    }
 
-        public new void Run(params string[] args)
-        {
-            this.AppHelper.Run(args, expectedExitCode: 0);
-        }
+    [MustUseReturnValue]
+    public Exception RunWithExpectedException(params string[] args)
+    {
+        return this.AppHelper.RunWithExpectedException(args, expectedExitCode: this.ExitCodeOnException);
+    }
 
-        public void RunWithExpectedExitCode(int expectedExitCode, params string[] args)
-        {
-            this.AppHelper.Run(args, expectedExitCode: expectedExitCode);
-        }
+    [MustUseReturnValue]
+    public Exception RunWithExpectedException(int expectedExitCode, params string[] args)
+    {
+        return this.AppHelper.RunWithExpectedException(args, expectedExitCode: expectedExitCode);
+    }
 
-        [MustUseReturnValue]
-        public Exception RunWithExpectedException(params string[] args)
-        {
-            return this.AppHelper.RunWithExpectedException(args, expectedExitCode: this.ExitCodeOnException);
-        }
+    /// <inheritdoc />
+    protected override void OnUnhandledException(Exception exception, ref int exitCode)
+    {
+        this.AppHelper.OnUnhandledException(exception);
 
-        [MustUseReturnValue]
-        public Exception RunWithExpectedException(int expectedExitCode, params string[] args)
-        {
-            return this.AppHelper.RunWithExpectedException(args, expectedExitCode: expectedExitCode);
-        }
-
-        /// <inheritdoc />
-        protected override void OnUnhandledException(Exception exception, ref int exitCode)
-        {
-            this.AppHelper.OnUnhandledException(exception);
-
-            base.OnUnhandledException(exception, ref exitCode);
-        }
+        base.OnUnhandledException(exception, ref exitCode);
     }
 }

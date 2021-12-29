@@ -24,78 +24,77 @@ using Microsoft.Extensions.Logging;
 
 using Xunit.Abstractions;
 
-namespace AppMotor.TestCore.Logging
+namespace AppMotor.TestCore.Logging;
+
+/// <summary>
+/// Implements <see cref="ILogger"/> and writes output to XUnit's <see cref="ITestOutputHelper"/>.
+/// </summary>
+internal sealed class XUnitLogger : ILogger
 {
-    /// <summary>
-    /// Implements <see cref="ILogger"/> and writes output to XUnit's <see cref="ITestOutputHelper"/>.
-    /// </summary>
-    internal sealed class XUnitLogger : ILogger
+    private readonly ITestOutputHelper _testOutputHelper;
+
+    private readonly string _categoryName;
+
+    private readonly TestLoggerStatistics _loggerStatistics;
+
+    public XUnitLogger(ITestOutputHelper testOutputHelper, string categoryName, TestLoggerStatistics loggerStatistics)
     {
-        private readonly ITestOutputHelper _testOutputHelper;
+        this._testOutputHelper = testOutputHelper;
+        this._categoryName = categoryName;
+        this._loggerStatistics = loggerStatistics;
+    }
 
-        private readonly string _categoryName;
+    /// <inheritdoc />
+    public IDisposable BeginScope<TState>(TState state)
+    {
+        return NullScope.Instance;
+    }
 
-        private readonly TestLoggerStatistics _loggerStatistics;
+    /// <inheritdoc />
+    public bool IsEnabled(LogLevel logLevel)
+    {
+        return logLevel != LogLevel.None;
+    }
 
-        public XUnitLogger(ITestOutputHelper testOutputHelper, string categoryName, TestLoggerStatistics loggerStatistics)
+    /// <inheritdoc />
+    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+    {
+        var now = DateTime.Now;
+        var message = formatter(state, exception);
+        this._testOutputHelper.WriteLine($"[{now:HH:mm:ss.fff}] [{GetLogLevelString(logLevel)}] {this._categoryName}{Environment.NewLine}      {message}");
+
+        this._loggerStatistics.OnLogMessage(logLevel);
+    }
+
+    [MustUseReturnValue]
+    private static string GetLogLevelString(LogLevel logLevel)
+    {
+        return logLevel switch
         {
-            this._testOutputHelper = testOutputHelper;
-            this._categoryName = categoryName;
-            this._loggerStatistics = loggerStatistics;
+            LogLevel.Trace => "trce",
+            LogLevel.Debug => "dbug",
+            LogLevel.Information => "info",
+            LogLevel.Warning => "warn",
+            LogLevel.Error => "fail",
+            LogLevel.Critical => "crit",
+            _ => throw new UnexpectedSwitchValueException(nameof(logLevel), logLevel),
+        };
+    }
+
+    /// <summary>
+    /// An empty scope without any logic
+    /// </summary>
+    private sealed class NullScope : IDisposable
+    {
+        public static NullScope Instance { get; } = new();
+
+        private NullScope()
+        {
         }
 
         /// <inheritdoc />
-        public IDisposable BeginScope<TState>(TState state)
+        public void Dispose()
         {
-            return NullScope.Instance;
-        }
-
-        /// <inheritdoc />
-        public bool IsEnabled(LogLevel logLevel)
-        {
-            return logLevel != LogLevel.None;
-        }
-
-        /// <inheritdoc />
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
-        {
-            var now = DateTime.Now;
-            var message = formatter(state, exception);
-            this._testOutputHelper.WriteLine($"[{now:HH:mm:ss.fff}] [{GetLogLevelString(logLevel)}] {this._categoryName}{Environment.NewLine}      {message}");
-
-            this._loggerStatistics.OnLogMessage(logLevel);
-        }
-
-        [MustUseReturnValue]
-        private static string GetLogLevelString(LogLevel logLevel)
-        {
-            return logLevel switch
-            {
-                LogLevel.Trace => "trce",
-                LogLevel.Debug => "dbug",
-                LogLevel.Information => "info",
-                LogLevel.Warning => "warn",
-                LogLevel.Error => "fail",
-                LogLevel.Critical => "crit",
-                _ => throw new UnexpectedSwitchValueException(nameof(logLevel), logLevel),
-            };
-        }
-
-        /// <summary>
-        /// An empty scope without any logic
-        /// </summary>
-        private sealed class NullScope : IDisposable
-        {
-            public static NullScope Instance { get; } = new();
-
-            private NullScope()
-            {
-            }
-
-            /// <inheritdoc />
-            public void Dispose()
-            {
-            }
         }
     }
 }

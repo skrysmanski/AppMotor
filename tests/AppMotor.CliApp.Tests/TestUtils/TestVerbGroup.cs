@@ -16,13 +16,12 @@
 
 using AppMotor.CliApp.CommandLine;
 
-namespace AppMotor.CliApp.TestUtils
+namespace AppMotor.CliApp.TestUtils;
+
+internal class TestVerbGroup : CliVerb
 {
-    internal class TestVerbGroup : CliVerb
+    public TestVerbGroup(string name, params CliVerb[] subVerbs) : base(name)
     {
-        public TestVerbGroup(string name, params CliVerb[] subVerbs) : base(name)
-        {
-            this.SubVerbs = subVerbs;
-        }
+        this.SubVerbs = subVerbs;
     }
 }

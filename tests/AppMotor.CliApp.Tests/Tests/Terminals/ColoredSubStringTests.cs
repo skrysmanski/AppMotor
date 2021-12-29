@@ -22,39 +22,38 @@ using Shouldly;
 
 using Xunit;
 
-namespace AppMotor.CliApp.Tests.Terminals
+namespace AppMotor.CliApp.Tests.Terminals;
+
+public sealed class ColoredSubStringTests
 {
-    public sealed class ColoredSubStringTests
+    [Fact]
+    public void TestEquals_Equatable()
     {
-        [Fact]
-        public void TestEquals_Equatable()
-        {
-            IEquatable<ColoredSubstring> text = (TextInBlack)"abc";
+        IEquatable<ColoredSubstring> text = (TextInBlack)"abc";
 
-            text.Equals(null).ShouldBe(false);
-            text!.Equals(text).ShouldBe(true);
-            text.Equals((TextInBlack)"abc").ShouldBe(true);
-            text.Equals((TextInWhite)"abc").ShouldBe(false);
-            text.Equals((TextInBlack)"ab").ShouldBe(false);
-        }
+        text.Equals(null).ShouldBe(false);
+        text!.Equals(text).ShouldBe(true);
+        text.Equals((TextInBlack)"abc").ShouldBe(true);
+        text.Equals((TextInWhite)"abc").ShouldBe(false);
+        text.Equals((TextInBlack)"ab").ShouldBe(false);
+    }
 
-        [Fact]
-        public void TestEquals_Object()
-        {
-            object text = (TextInBlack)"abc";
+    [Fact]
+    public void TestEquals_Object()
+    {
+        object text = (TextInBlack)"abc";
 
-            text.Equals(null).ShouldBe(false);
-            text!.Equals(text).ShouldBe(true);
-            text.Equals((TextInBlack)"abc").ShouldBe(true);
-            text.Equals((TextInWhite)"abc").ShouldBe(false);
-            text.Equals((TextInBlack)"ab").ShouldBe(false);
-        }
+        text.Equals(null).ShouldBe(false);
+        text!.Equals(text).ShouldBe(true);
+        text.Equals((TextInBlack)"abc").ShouldBe(true);
+        text.Equals((TextInWhite)"abc").ShouldBe(false);
+        text.Equals((TextInBlack)"ab").ShouldBe(false);
+    }
 
-        [Fact]
-        public void TestGetHashCode()
-        {
-            ((TextInBlack)"abc").GetHashCode().ShouldBe(((TextInBlack)"abc").GetHashCode());
-            ((TextInBlack)"abc").GetHashCode().ShouldNotBe(((TextInWhite)"abc").GetHashCode());
-        }
+    [Fact]
+    public void TestGetHashCode()
+    {
+        ((TextInBlack)"abc").GetHashCode().ShouldBe(((TextInBlack)"abc").GetHashCode());
+        ((TextInBlack)"abc").GetHashCode().ShouldNotBe(((TextInWhite)"abc").GetHashCode());
     }
 }

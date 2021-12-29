@@ -22,29 +22,28 @@ using Shouldly;
 
 using Xunit;
 
-namespace AppMotor.CliApp.Tests.CommandLine.Hosting
+namespace AppMotor.CliApp.Tests.CommandLine.Hosting;
+
+public sealed class MethodHostBuilderFactoryTests
 {
-    public sealed class MethodHostBuilderFactoryTests
+    [Fact]
+    public void TestCreateHostBuilder()
     {
-        [Fact]
-        public void TestCreateHostBuilder()
+        // Setup
+        bool called = false;
+        HostBuilder? createdHostBuilder = null;
+
+        var factory = new MethodHostBuilderFactory(() =>
         {
-            // Setup
-            bool called = false;
-            HostBuilder? createdHostBuilder = null;
+            called = true;
+            createdHostBuilder = new HostBuilder();
+            return createdHostBuilder;
+        });
 
-            var factory = new MethodHostBuilderFactory(() =>
-            {
-                called = true;
-                createdHostBuilder = new HostBuilder();
-                return createdHostBuilder;
-            });
-
-            // Test
-            var result = factory.CreateHostBuilder();
-            result.ShouldNotBeNull();
-            result.ShouldBeSameAs(createdHostBuilder);
-            called.ShouldBe(true);
-        }
+        // Test
+        var result = factory.CreateHostBuilder();
+        result.ShouldNotBeNull();
+        result.ShouldBeSameAs(createdHostBuilder);
+        called.ShouldBe(true);
     }
 }

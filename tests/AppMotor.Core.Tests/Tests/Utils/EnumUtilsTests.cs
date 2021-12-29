@@ -20,28 +20,27 @@ using Shouldly;
 
 using Xunit;
 
-namespace AppMotor.Core.Tests.Utils
+namespace AppMotor.Core.Tests.Utils;
+
+public sealed class EnumUtilsTests
 {
-    public sealed class EnumUtilsTests
+    [Fact]
+    public void TestGetValues()
     {
-        [Fact]
-        public void TestGetValues()
-        {
-            // test
-            MyTestEnum[] enumValues = EnumUtils.GetValues<MyTestEnum>();
+        // test
+        MyTestEnum[] enumValues = EnumUtils.GetValues<MyTestEnum>();
 
-            // verify
-            enumValues.ShouldContain(MyTestEnum.Value1);
-            enumValues.ShouldContain(MyTestEnum.Value2);
-            enumValues.ShouldContain(MyTestEnum.Value3);
-            enumValues.Length.ShouldBe(3);
-        }
+        // verify
+        enumValues.ShouldContain(MyTestEnum.Value1);
+        enumValues.ShouldContain(MyTestEnum.Value2);
+        enumValues.ShouldContain(MyTestEnum.Value3);
+        enumValues.Length.ShouldBe(3);
+    }
 
-        private enum MyTestEnum
-        {
-            Value1,
-            Value2,
-            Value3,
-        }
+    private enum MyTestEnum
+    {
+        Value1,
+        Value2,
+        Value3,
     }
 }

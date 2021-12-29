@@ -17,25 +17,24 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
-namespace AppMotor.CliApp.HttpServer.TestUtils
-{
-    internal sealed class SimplePingStartup
-    {
-        public void Configure(IApplicationBuilder app)
-        {
-            // Enable routing feature; required for defining endpoints below.
-            // See: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing#routing-basics
-            app.UseRouting();
+namespace AppMotor.CliApp.HttpServer.TestUtils;
 
-            // Define endpoints (invokable actions). Requires call to "UseRouting()" above.
-            // See: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing#endpoint
-            app.UseEndpoints(endpoints =>
+internal sealed class SimplePingStartup
+{
+    public void Configure(IApplicationBuilder app)
+    {
+        // Enable routing feature; required for defining endpoints below.
+        // See: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing#routing-basics
+        app.UseRouting();
+
+        // Define endpoints (invokable actions). Requires call to "UseRouting()" above.
+        // See: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing#endpoint
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapGet("/api/ping", async context =>
             {
-                endpoints.MapGet("/api/ping", async context =>
-                {
-                    await context.Response.WriteAsync("Hello World!");
-                });
+                await context.Response.WriteAsync("Hello World!");
             });
-        }
+        });
     }
 }

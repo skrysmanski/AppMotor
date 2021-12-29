@@ -19,33 +19,32 @@ using System.Collections.Generic;
 
 using AppMotor.CliApp.CommandLine;
 
-namespace AppMotor.CliApp.TestUtils
+namespace AppMotor.CliApp.TestUtils;
+
+internal class TestApplicationWithParams : TestApplicationWithParamsBase
 {
-    internal class TestApplicationWithParams : TestApplicationWithParamsBase
+    private readonly Action _mainAction;
+
+    private readonly List<CliParamBase> _params = new();
+
+    /// <inheritdoc />
+    protected override CliCommandExecutor Executor => new(Execute);
+
+    public TestApplicationWithParams(Action mainAction, params CliParamBase[] cliParams)
     {
-        private readonly Action _mainAction;
+        this._mainAction = mainAction;
 
-        private readonly List<CliParamBase> _params = new();
+        this._params.AddRange(cliParams);
+    }
 
-        /// <inheritdoc />
-        protected override CliCommandExecutor Executor => new(Execute);
+    /// <inheritdoc />
+    protected override IEnumerable<CliParamBase> GetAllParams()
+    {
+        return this._params;
+    }
 
-        public TestApplicationWithParams(Action mainAction, params CliParamBase[] cliParams)
-        {
-            this._mainAction = mainAction;
-
-            this._params.AddRange(cliParams);
-        }
-
-        /// <inheritdoc />
-        protected override IEnumerable<CliParamBase> GetAllParams()
-        {
-            return this._params;
-        }
-
-        private void Execute()
-        {
-            this._mainAction();
-        }
+    private void Execute()
+    {
+        this._mainAction();
     }
 }

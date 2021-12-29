@@ -36,73 +36,72 @@ using Shouldly;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace AppMotor.CliApp.HttpServer.Tests
+namespace AppMotor.CliApp.HttpServer.Tests;
+
+public sealed class HttpTests : TestBase
 {
-    public sealed class HttpTests : TestBase
+    public HttpTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
     {
-        public HttpTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
+    }
+
+    [Fact]
+    public async Task TestHttpApiCall()
+    {
+        int testPort = ServerPortProvider.GetNextTestPort();
+
+        using var cts = new CancellationTokenSource();
+
+        var app = new HttpServerApplication(new TestHttpServerCommand(testPort, this.TestConsole));
+        Task appTask = app.RunAsync(cts.Token);
+
+        using (var httpClient = HttpClientFactory.CreateHttpClient())
         {
+            // ReSharper disable once MethodSupportsCancellation
+            var response = await httpClient.GetAsync($"http://localhost:{testPort}/api/ping");
+
+            response.EnsureSuccessStatusCode();
+
+            // ReSharper disable once MethodSupportsCancellation
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            responseString.ShouldBe("Hello World!");
         }
 
-        [Fact]
-        public async Task TestHttpApiCall()
+        cts.Cancel();
+
+        await appTask.OrTimeoutAfter(TimeSpan.FromSeconds(10));
+    }
+
+    private sealed class TestHttpServerCommand : HttpServerCommandBase
+    {
+        private readonly int _testPort;
+
+        /// <inheritdoc />
+        protected override IHostBuilderFactory HostBuilderFactory { get; }
+
+        public TestHttpServerCommand(int testPort, ITestOutputHelper testOutputHelper)
         {
-            int testPort = ServerPortProvider.GetNextTestPort();
+            this._testPort = testPort;
 
-            using var cts = new CancellationTokenSource();
-
-            var app = new HttpServerApplication(new TestHttpServerCommand(testPort, this.TestConsole));
-            Task appTask = app.RunAsync(cts.Token);
-
-            using (var httpClient = HttpClientFactory.CreateHttpClient())
+            this.HostBuilderFactory = new DefaultHostBuilderFactory()
             {
-                // ReSharper disable once MethodSupportsCancellation
-                var response = await httpClient.GetAsync($"http://localhost:{testPort}/api/ping");
-
-                response.EnsureSuccessStatusCode();
-
-                // ReSharper disable once MethodSupportsCancellation
-                var responseString = await response.Content.ReadAsStringAsync();
-
-                responseString.ShouldBe("Hello World!");
-            }
-
-            cts.Cancel();
-
-            await appTask.OrTimeoutAfter(TimeSpan.FromSeconds(10));
-        }
-
-        private sealed class TestHttpServerCommand : HttpServerCommandBase
-        {
-            private readonly int _testPort;
-
-            /// <inheritdoc />
-            protected override IHostBuilderFactory HostBuilderFactory { get; }
-
-            public TestHttpServerCommand(int testPort, ITestOutputHelper testOutputHelper)
-            {
-                this._testPort = testPort;
-
-                this.HostBuilderFactory = new DefaultHostBuilderFactory()
+                LoggingConfigurationProvider = (_, builder) =>
                 {
-                    LoggingConfigurationProvider = (_, builder) =>
-                    {
-                        builder.AddXUnitLogger(testOutputHelper);
-                    },
-                };
-            }
+                    builder.AddXUnitLogger(testOutputHelper);
+                },
+            };
+        }
 
-            /// <inheritdoc />
-            protected override IEnumerable<HttpServerPort> GetServerPorts(IServiceProvider serviceProvider)
-            {
-                yield return new HttpServerPort(SocketListenAddresses.Loopback, this._testPort);
-            }
+        /// <inheritdoc />
+        protected override IEnumerable<HttpServerPort> GetServerPorts(IServiceProvider serviceProvider)
+        {
+            yield return new HttpServerPort(SocketListenAddresses.Loopback, this._testPort);
+        }
 
-            /// <inheritdoc />
-            protected override object CreateStartupClass(WebHostBuilderContext context)
-            {
-                return new SimplePingStartup();
-            }
+        /// <inheritdoc />
+        protected override object CreateStartupClass(WebHostBuilderContext context)
+        {
+            return new SimplePingStartup();
         }
     }
 }
