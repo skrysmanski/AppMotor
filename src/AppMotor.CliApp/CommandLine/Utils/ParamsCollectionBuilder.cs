@@ -22,34 +22,33 @@ using AppMotor.Core.Extensions;
 
 using JetBrains.Annotations;
 
-namespace AppMotor.CliApp.CommandLine.Utils
+namespace AppMotor.CliApp.CommandLine.Utils;
+
+internal sealed class ParamsCollectionBuilder
 {
-    internal sealed class ParamsCollectionBuilder
+    private readonly List<CliParamBase> _params = new();
+
+    private readonly HashSet<string> _aliases = new();
+
+    public IReadOnlySet<string> RegisteredAliases => this._aliases;
+
+    public void AddParam(CliParamBase param)
     {
-        private readonly List<CliParamBase> _params = new();
-
-        private readonly HashSet<string> _aliases = new();
-
-        public IReadOnlySet<string> RegisteredAliases => this._aliases;
-
-        public void AddParam(CliParamBase param)
+        foreach (var paramName in param.Names)
         {
-            foreach (var paramName in param.Names)
+            if (this._aliases.Contains(paramName))
             {
-                if (this._aliases.Contains(paramName))
-                {
-                    throw new InvalidOperationException($"The alias '{paramName}' is already used by another parameter.");
-                }
+                throw new InvalidOperationException($"The alias '{paramName}' is already used by another parameter.");
             }
-
-            this._aliases.AddRange(param.Names);
-            this._params.Add(param);
         }
 
-        [MustUseReturnValue]
-        public ImmutableArray<CliParamBase> Build()
-        {
-            return this._params.ToImmutableArray();
-        }
+        this._aliases.AddRange(param.Names);
+        this._params.Add(param);
+    }
+
+    [MustUseReturnValue]
+    public ImmutableArray<CliParamBase> Build()
+    {
+        return this._params.ToImmutableArray();
     }
 }

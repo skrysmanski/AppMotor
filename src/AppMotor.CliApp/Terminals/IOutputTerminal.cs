@@ -14,12 +14,11 @@
 // limitations under the License.
 #endregion
 
-namespace AppMotor.CliApp.Terminals
+namespace AppMotor.CliApp.Terminals;
+
+/// <summary>
+/// Combination of <see cref="IStdOutTerminal"/> and <see cref="IErrorOutTerminal"/>.
+/// </summary>
+public interface IOutputTerminal : IStdOutTerminal, IErrorOutTerminal
 {
-    /// <summary>
-    /// Combination of <see cref="IStdOutTerminal"/> and <see cref="IErrorOutTerminal"/>.
-    /// </summary>
-    public interface IOutputTerminal : IStdOutTerminal, IErrorOutTerminal
-    {
-    }
 }
