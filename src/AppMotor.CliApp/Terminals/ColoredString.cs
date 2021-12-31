@@ -331,7 +331,12 @@ public class ColoredSubstring : IEquatable<ColoredSubstring>
     [PublicAPI]
     public ConsoleColor? Color { get; }
 
-    internal ColoredSubstring(ConsoleColor? color, string? text)
+    /// <summary>
+    /// Constructor to create colored text dynamically.
+    /// </summary>
+    /// <param name="color">The color of the text. Use <c>null</c> if the text should use the default color.</param>
+    /// <param name="text">The text.</param>
+    public ColoredSubstring(ConsoleColor? color, string? text)
     {
         this.Text = text ?? "";
         this.Color = color;
