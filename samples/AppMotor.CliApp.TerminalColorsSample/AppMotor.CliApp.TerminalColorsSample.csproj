@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="$(ProjectCommonsDirectory)Project.Sample.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\AppMotor.CliApp\AppMotor.CliApp.csproj" />
+  </ItemGroup>
+
+</Project>
