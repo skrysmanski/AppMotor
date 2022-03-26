@@ -9,7 +9,7 @@
 <Project>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
 
     <PackageReference Include="Shouldly" Version="4.0.3" />
 
