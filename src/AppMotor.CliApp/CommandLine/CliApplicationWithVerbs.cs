@@ -72,14 +72,14 @@ public class CliApplicationWithVerbs : CliApplication
         }
 
         return await RootCommandInvoker.InvokeRootCommand(
-                                           this.AppDescription,
-                                           this.Verbs.Select(verb => verb.ToUnderlyingImplementation(enableDebugParam: this.EnableGlobalDebugParam, this.Terminal, cancellationToken)),
-                                           commandHandler: null,
-                                           this.Terminal,
-                                           args: SortHelpFirst(args),
-                                           ProcessUnhandledException
-                                       )
-                                       .ConfigureAwait(continueOnCapturedContext: false);
+            this.AppDescription,
+            this.Verbs.Select(verb => verb.ToUnderlyingImplementation(enableDebugParam: this.EnableGlobalDebugParam, this.Terminal, cancellationToken)),
+            commandHandler: null,
+            this.Terminal,
+            args: SortHelpFirst(args),
+            ProcessUnhandledException
+        )
+            .ConfigureAwait(continueOnCapturedContext: false);
     }
 
     /// <summary>
