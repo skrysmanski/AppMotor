@@ -19,6 +19,7 @@ using System.CommandLine;
 
 using AppMotor.CliApp.CommandLine.Utils;
 using AppMotor.CliApp.Terminals;
+using AppMotor.Core.Exceptions;
 using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
@@ -140,7 +141,19 @@ public class CliVerb
 
                 foreach (var cliParam in commandHandler.AllParams)
                 {
-                    command.Add(cliParam.UnderlyingImplementation);
+                    switch (cliParam.UnderlyingImplementation)
+                    {
+                        case Argument argument:
+                            command.Add(argument);
+                            break;
+
+                        case Option option:
+                            command.Add(option);
+                            break;
+
+                        default:
+                            throw new UnexpectedSwitchValueException("underlying implementation", cliParam.UnderlyingImplementation.GetType());
+                    }
                 }
 
                 command.Handler = commandHandler;

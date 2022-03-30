@@ -19,6 +19,7 @@ using System.CommandLine.Builder;
 using System.CommandLine.Invocation;
 
 using AppMotor.CliApp.Terminals;
+using AppMotor.Core.Exceptions;
 
 namespace AppMotor.CliApp.CommandLine.Utils;
 
@@ -42,7 +43,23 @@ internal static class RootCommandInvoker
 
         foreach (var symbol in rootSymbols)
         {
-            rootCommand.Add(symbol);
+            switch (symbol)
+            {
+                case Argument argument:
+                    rootCommand.Add(argument);
+                    break;
+
+                case Option option:
+                    rootCommand.Add(option);
+                    break;
+
+                case Command command:
+                    rootCommand.Add(command);
+                    break;
+
+                default:
+                    throw new UnexpectedSwitchValueException("underlying implementation", symbol.GetType());
+            }
         }
 
         if (commandHandler is not null)

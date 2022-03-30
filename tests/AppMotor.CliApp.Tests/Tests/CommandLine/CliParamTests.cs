@@ -1083,6 +1083,6 @@ public sealed class CliParamTests
         }
 
         /// <inheritdoc />
-        internal override Symbol UnderlyingImplementation { get; } = new Argument();
+        internal override Symbol UnderlyingImplementation { get; } = new Command("abc");
     }
 }
