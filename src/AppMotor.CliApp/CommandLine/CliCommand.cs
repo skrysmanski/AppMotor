@@ -138,6 +138,12 @@ public abstract class CliCommand
         }
 
         /// <inheritdoc />
+        public int Invoke(InvocationContext context)
+        {
+            throw new NotSupportedException("This call is not implemented as it's not needed.");
+        }
+
+        /// <inheritdoc />
         public async Task<int> InvokeAsync(InvocationContext context)
         {
             foreach (var cliParam in this.AllParams)
