@@ -3,7 +3,9 @@
 #
 # For more details on workflows, see README.md.
 #
-name: CI (on push)
+
+# IMPORTANT: When changing this name, also change the name in the trigger section in "test-report.yaml".
+name: CI
 
 # When to run this workflow
 # See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows
