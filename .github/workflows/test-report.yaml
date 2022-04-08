@@ -2,7 +2,7 @@
 # GitHub Actions workflow: Generates a test report (annotations and summary HTML) for a CI run.
 #
 # NOTE: We need this separate workflow because the test-reporter step below requires the "checks: write"
-#   permission - which is, for security reasons, not available for pull requests from forks (for details,
+#   permission - which, for security reasons, is not available for pull requests from forks (for details,
 #   see link at the 'permissions' property below). Follow-up workflows (triggered by "on.workflow_run")
 #   have full permissions - and thus we can circumvent this problem.
 #
