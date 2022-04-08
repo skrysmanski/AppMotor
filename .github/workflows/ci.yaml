@@ -1,9 +1,6 @@
 #
 # GitHub Actions workflow: Builds and tests the code in this repository.
 #
-# NOTE: This file must be kept in sync with "ci-scheduled.yaml". For the reason why it exists, see
-#   NOTE in "ci-scheduled.yaml".
-#
 # For more details on workflows, see README.md.
 #
 name: CI (on push)
