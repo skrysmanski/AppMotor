@@ -70,7 +70,7 @@ public sealed class CertificatePublicKey : IEquatable<CertificatePublicKey>
     /// <inheritdoc />
     public override bool Equals(object? obj)
     {
-        return ReferenceEquals(this, obj) || obj is CertificatePublicKey other && Equals(other);
+        return ReferenceEquals(this, obj) || (obj is CertificatePublicKey other && Equals(other));
     }
 
     /// <inheritdoc />
