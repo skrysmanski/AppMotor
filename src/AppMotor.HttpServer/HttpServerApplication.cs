@@ -38,12 +38,41 @@ public class HttpServerApplication : CliApplicationWithCommand
     /// <summary>
     /// Creates an HTTP server application with the specified HTTP port.
     /// </summary>
-    /// <param name="httpPort">The HTTP port to use</param>
+    /// <param name="port">The HTTP port to use</param>
     /// <param name="startupClass">The ASP.NET Core Startup class to use. If <c>null</c>,
     /// <see cref="MvcStartup"/> will be used.</param>
     [PublicAPI]
-    public HttpServerApplication(HttpServerPort httpPort, object? startupClass = null)
-        : this(new HttpServerCommand(httpPort, startupClass))
+    public HttpServerApplication(int port, object? startupClass = null)
+        : this(port, bindToLoopbackOnly: true, startupClass)
+    {
+    }
+
+    /// <summary>
+    /// Creates an HTTP server application with the specified HTTP port.
+    /// </summary>
+    /// <param name="port">The HTTP port to use</param>
+    /// <param name="bindToLoopbackOnly">Whether to bind <paramref name="port"/> to the loopback adapter only
+    /// (i.e. reachable only from this machine itself).</param>
+    /// <param name="startupClass">The ASP.NET Core Startup class to use. If <c>null</c>,
+    /// <see cref="MvcStartup"/> will be used.</param>
+    [PublicAPI]
+    public HttpServerApplication(int port, bool bindToLoopbackOnly, object? startupClass = null)
+        : this(
+            new HttpServerPort(bindToLoopbackOnly ? SocketListenAddresses.Loopback : SocketListenAddresses.Any, port),
+            startupClass
+        )
+    {
+    }
+
+    /// <summary>
+    /// Creates an HTTP server application with the specified HTTP port.
+    /// </summary>
+    /// <param name="port">The HTTP port to use</param>
+    /// <param name="startupClass">The ASP.NET Core Startup class to use. If <c>null</c>,
+    /// <see cref="MvcStartup"/> will be used.</param>
+    [PublicAPI]
+    public HttpServerApplication(HttpServerPort port, object? startupClass = null)
+        : this(new HttpServerCommand(port, startupClass))
     {
     }
 
@@ -109,9 +138,7 @@ public class HttpServerApplication : CliApplicationWithCommand
     [PublicAPI]
     public static Task<int> RunAsync(int port, bool bindToLoopbackOnly, CancellationToken cancellationToken = default)
     {
-        var serverPort = new HttpServerPort(bindToLoopbackOnly ? SocketListenAddresses.Loopback : SocketListenAddresses.Any, port);
-
-        var app = new HttpServerApplication(serverPort);
+        var app = new HttpServerApplication(port, bindToLoopbackOnly: bindToLoopbackOnly);
 
         return app.RunAsync(cancellationToken);
     }
