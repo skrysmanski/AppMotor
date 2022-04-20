@@ -1,3 +1,6 @@
 [submodule "_StyleGuide"]
 	path = _StyleGuide
 	url = https://github.com/skrysmanski/AppMotor.StyleGuide.git
+[submodule "_ProjectCommons"]
+	path = _ProjectCommons
+	url = https://github.com/skrysmanski/AppMotor.ProjectCommons.git
