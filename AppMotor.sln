@@ -14,6 +14,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Solution Items", "_Solutio
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_ProjectCommons", "_ProjectCommons", "{BA1E9B9F-AD3B-41A4-B9AC-490A101FD762}"
 	ProjectSection(SolutionItems) = preProject
+		_ProjectCommons\CA.globalconfig = _ProjectCommons\CA.globalconfig
+		_ProjectCommons\Common.Directory.Build.props = _ProjectCommons\Common.Directory.Build.props
+		_ProjectCommons\Common.Directory.Build.targets = _ProjectCommons\Common.Directory.Build.targets
 		_ProjectCommons\Project.Code.props = _ProjectCommons\Project.Code.props
 		_ProjectCommons\Project.Code_Packages.props = _ProjectCommons\Project.Code_Packages.props
 		_ProjectCommons\Project.NuGetPackage.props = _ProjectCommons\Project.NuGetPackage.props
@@ -24,6 +27,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_ProjectCommons", "_Project
 		_ProjectCommons\Project.Tests.props = _ProjectCommons\Project.Tests.props
 		_ProjectCommons\Project.Tests_Packages.props = _ProjectCommons\Project.Tests_Packages.props
 		_ProjectCommons\Project.Tool.props = _ProjectCommons\Project.Tool.props
+		_ProjectCommons\StyleGuide.globalconfig = _ProjectCommons\StyleGuide.globalconfig
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{6A287989-1384-4140-AFC8-8CA4B1F52D41}"
@@ -39,12 +43,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.CliApp.Samples.AppWithVerbs", "samples\AppMotor.CliApp.Samples.AppWithVerbs\AppMotor.CliApp.Samples.AppWithVerbs.csproj", "{40B23696-445C-42B2-85AA-5ED5A3EF428B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.CliApp.Samples.AppWithParams", "samples\AppMotor.CliApp.Samples.AppWithParams\AppMotor.CliApp.Samples.AppWithParams.csproj", "{33259BEB-A97E-4869-B1F2-9B668C2A00B9}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_StyleGuide", "_StyleGuide", "{515E0138-C1FA-48D0-A43D-AD50971E421A}"
-	ProjectSection(SolutionItems) = preProject
-		_StyleGuide\CA.globalconfig = _StyleGuide\CA.globalconfig
-		_StyleGuide\StyleGuide.globalconfig = _StyleGuide\StyleGuide.globalconfig
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "utils", "utils", "{C835EA81-9921-4245-8020-9F65AB4D2175}"
 EndProject
@@ -78,7 +76,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{6259
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.CliApp.TerminalColorsSample", "samples\AppMotor.CliApp.TerminalColorsSample\AppMotor.CliApp.TerminalColorsSample.csproj", "{D8624985-4035-4989-BCA5-6224337C8B84}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppMotor.CliApp.ProgressBarSample", "samples\AppMotor.CliApp.ProgressBarSample\AppMotor.CliApp.ProgressBarSample.csproj", "{8A9084C9-9812-4024-BB76-76A43615BF52}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.CliApp.ProgressBarSample", "samples\AppMotor.CliApp.ProgressBarSample\AppMotor.CliApp.ProgressBarSample.csproj", "{8A9084C9-9812-4024-BB76-76A43615BF52}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -155,7 +153,6 @@ Global
 		{F4EAF0C1-51E2-40BD-8A54-627D8D958428} = {199CEEF6-083D-4216-87BF-24630D8C6DEE}
 		{40B23696-445C-42B2-85AA-5ED5A3EF428B} = {625969C5-2EAE-4A6F-B879-3EC7FCA63F56}
 		{33259BEB-A97E-4869-B1F2-9B668C2A00B9} = {625969C5-2EAE-4A6F-B879-3EC7FCA63F56}
-		{515E0138-C1FA-48D0-A43D-AD50971E421A} = {D449EFC6-4D96-4FF2-B01F-A4748B50D9C3}
 		{C835EA81-9921-4245-8020-9F65AB4D2175} = {199CEEF6-083D-4216-87BF-24630D8C6DEE}
 		{A67BAA24-CC7F-4680-90EB-F10958C4C75B} = {C835EA81-9921-4245-8020-9F65AB4D2175}
 		{C3E155CE-B854-4DB1-B1E2-42FF9CBBC18A} = {95655C2B-7841-4B20-BA71-827B8E8127DA}
