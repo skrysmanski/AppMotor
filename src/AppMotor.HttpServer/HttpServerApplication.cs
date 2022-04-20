@@ -22,6 +22,8 @@ using AppMotor.Core.Net;
 using JetBrains.Annotations;
 
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace AppMotor.HttpServer;
 
@@ -30,11 +32,16 @@ namespace AppMotor.HttpServer;
 /// </summary>
 /// <remarks>
 /// The primary goal of this class is to make the on-boarding process as easy as possible. If you
-/// need more flexibility, you need to write your own application (inheriting from <see cref="CliApplicationWithCommand"/>)
-/// and server command (inheriting from <see cref="HttpServerCommandBase"/>).
+/// need more flexibility, you need to create your own instance of <see cref="CliApplicationWithCommand"/>
+/// and implement your own server command (inheriting from <see cref="HttpServerCommandBase"/>).
 /// </remarks>
 public class HttpServerApplication : CliApplicationWithCommand
 {
+    /// <summary>
+    /// This collection can be used to register additional services into the application's dependency injection system.
+    /// </summary>
+    public IServiceCollection Services { get; }
+
     /// <summary>
     /// Creates an HTTP server application with the specified HTTP port.
     /// </summary>
@@ -57,10 +64,7 @@ public class HttpServerApplication : CliApplicationWithCommand
     /// <see cref="MvcStartup"/> will be used.</param>
     [PublicAPI]
     public HttpServerApplication(int port, SocketListenAddresses listenAddresses, object? startupClass = null)
-        : this(
-            new HttpServerPort(listenAddresses, port),
-            startupClass
-        )
+        : this(new HttpServerPort(listenAddresses, port), startupClass)
     {
     }
 
@@ -76,17 +80,10 @@ public class HttpServerApplication : CliApplicationWithCommand
     {
     }
 
-    /// <summary>
-    /// Creates an HTTP server application with the specified <see cref="HttpServerCommandBase"/> instance.
-    /// </summary>
-    /// <param name="httpServerCommand">The server command implementation</param>
-    /// <remarks>
-    /// This constructor exists to make <see cref="HttpServerCommandBase"/> easier to discover. It's identical
-    /// to using <c>new CliApplicationWithCommand(httpServerCommand)</c>.
-    /// </remarks>
-    public HttpServerApplication(HttpServerCommandBase httpServerCommand)
+    private HttpServerApplication(HttpServerCommand httpServerCommand)
         : base(httpServerCommand)
     {
+        this.Services = httpServerCommand.AppServiceCollection;
     }
 
     /// <summary>
@@ -151,10 +148,23 @@ public class HttpServerApplication : CliApplicationWithCommand
 
         private readonly object? _startupClass;
 
+        public IServiceCollection AppServiceCollection { get; } = new ServiceCollection();
+
         public HttpServerCommand(HttpServerPort httpPort, object? startupClass)
         {
             this._httpPort = httpPort;
             this._startupClass = startupClass;
+        }
+
+        /// <inheritdoc />
+        protected override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
+        {
+            base.ConfigureServices(context, services);
+
+            foreach (var serviceDescriptor in this.AppServiceCollection)
+            {
+                services.Add(serviceDescriptor);
+            }
         }
 
         /// <inheritdoc />

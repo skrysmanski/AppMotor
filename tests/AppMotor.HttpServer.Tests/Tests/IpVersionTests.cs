@@ -18,6 +18,7 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 
+using AppMotor.CliApp.CommandLine;
 using AppMotor.CliApp.CommandLine.Hosting;
 using AppMotor.Core.Exceptions;
 using AppMotor.Core.Logging;
@@ -75,7 +76,7 @@ public sealed class IpVersionTests : TestBase
         {
             IPVersion = ipVersion,
         };
-        var app = new HttpServerApplication(new TestHttpServerCommand(serverPort, this.TestConsole));
+        var app = new CliApplicationWithCommand(new TestHttpServerCommand(serverPort, this.TestConsole));
         Task appTask = app.RunAsync(cts.Token);
 
         try

@@ -14,6 +14,7 @@
 // limitations under the License.
 #endregion
 
+using AppMotor.CliApp.CommandLine;
 using AppMotor.CliApp.CommandLine.Hosting;
 using AppMotor.CliApp.HttpServer.TestUtils;
 using AppMotor.Core.Net;
@@ -46,7 +47,7 @@ public sealed class HttpTests : TestBase
 
         using var cts = new CancellationTokenSource();
 
-        var app = new HttpServerApplication(new TestHttpServerCommand(testPort, this.TestConsole));
+        var app = new CliApplicationWithCommand(new TestHttpServerCommand(testPort, this.TestConsole));
         Task appTask = app.RunAsync(cts.Token);
 
         using (var httpClient = HttpClientFactory.CreateHttpClient())
