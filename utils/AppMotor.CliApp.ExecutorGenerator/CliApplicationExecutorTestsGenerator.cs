@@ -71,7 +71,7 @@ internal sealed class CliApplicationExecutorTestsGenerator : ExecutorTestsGenera
     }
 
     /// <inheritdoc />
-    protected override string CreateTestApplicationParam(TestMethodDescriptor descriptor)
+    protected override string CreateTestApplicationParam()
     {
         return "new CliApplicationExecutor(Execute)";
     }

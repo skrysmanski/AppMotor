@@ -67,7 +67,7 @@ public void {testMethodName}({CreateTestMethodParameterList(descriptor)})
 
 {CreateExecuteMethod(descriptor)}
 
-    var testApplication = new TestApplication({CreateTestApplicationParam(descriptor)});
+    var testApplication = new TestApplication({CreateTestApplicationParam()});
 
     // Test
     testApplication.AppHelper.{CreateRunMethodCall(descriptor)};
@@ -83,7 +83,7 @@ public void {testMethodName}({CreateTestMethodParameterList(descriptor)})
     protected abstract string CreateTestMethodName(TestMethodDescriptor descriptor);
 
     [MustUseReturnValue]
-    protected abstract string CreateTestApplicationParam(TestMethodDescriptor descriptor);
+    protected abstract string CreateTestApplicationParam();
 
     [MustUseReturnValue]
     protected static string CreateTestAttributes(TestMethodDescriptor descriptor)

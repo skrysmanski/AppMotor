@@ -58,7 +58,7 @@ internal sealed class CliCommandExecutorTestsGenerator : ExecutorTestsGeneratorB
     }
 
     /// <inheritdoc />
-    protected override string CreateTestApplicationParam(TestMethodDescriptor descriptor)
+    protected override string CreateTestApplicationParam()
     {
         return "new CliCommandExecutor(Execute)";
     }
