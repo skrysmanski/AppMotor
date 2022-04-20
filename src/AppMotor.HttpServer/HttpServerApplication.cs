@@ -38,12 +38,12 @@ public class HttpServerApplication : CliApplicationWithCommand
     /// <summary>
     /// Creates an HTTP server application with the specified HTTP port.
     /// </summary>
-    /// <param name="port">The HTTP port to use</param>
+    /// <param name="port">The HTTP port to use (will be bound to <see cref="SocketListenAddresses.Loopback"/>)</param>
     /// <param name="startupClass">The ASP.NET Core Startup class to use. If <c>null</c>,
     /// <see cref="MvcStartup"/> will be used.</param>
     [PublicAPI]
     public HttpServerApplication(int port, object? startupClass = null)
-        : this(port, bindToLoopbackOnly: true, startupClass)
+        : this(port, SocketListenAddresses.Loopback, startupClass)
     {
     }
 
@@ -51,14 +51,14 @@ public class HttpServerApplication : CliApplicationWithCommand
     /// Creates an HTTP server application with the specified HTTP port.
     /// </summary>
     /// <param name="port">The HTTP port to use</param>
-    /// <param name="bindToLoopbackOnly">Whether to bind <paramref name="port"/> to the loopback adapter only
-    /// (i.e. reachable only from this machine itself).</param>
+    /// <param name="listenAddresses">Whether <paramref name="port"/> should be reachable only from the local machine
+    /// (<see cref="SocketListenAddresses.Loopback"/>) or from anywhere on the network (<see cref="SocketListenAddresses.Any"/>).</param>
     /// <param name="startupClass">The ASP.NET Core Startup class to use. If <c>null</c>,
     /// <see cref="MvcStartup"/> will be used.</param>
     [PublicAPI]
-    public HttpServerApplication(int port, bool bindToLoopbackOnly, object? startupClass = null)
+    public HttpServerApplication(int port, SocketListenAddresses listenAddresses, object? startupClass = null)
         : this(
-            new HttpServerPort(bindToLoopbackOnly ? SocketListenAddresses.Loopback : SocketListenAddresses.Any, port),
+            new HttpServerPort(listenAddresses, port),
             startupClass
         )
     {
@@ -98,21 +98,23 @@ public class HttpServerApplication : CliApplicationWithCommand
     [PublicAPI]
     public static int Run(int port, CancellationToken cancellationToken = default)
     {
-        return Run(port, bindToLoopbackOnly: true, cancellationToken);
+        var app = new HttpServerApplication(port);
+        return app.Run(cancellationToken);
     }
 
     /// <summary>
     /// Runs an HTTP server at the specified port.
     /// </summary>
     /// <param name="port">The HTTP port to use</param>
-    /// <param name="bindToLoopbackOnly">Whether to bind <paramref name="port"/> to the loopback adapter only
-    /// (i.e. reachable only from this machine itself).</param>
+    /// <param name="listenAddresses">Whether <paramref name="port"/> should be reachable only from the local machine
+    /// (<see cref="SocketListenAddresses.Loopback"/>) or from anywhere on the network (<see cref="SocketListenAddresses.Any"/>).</param>
     /// <param name="cancellationToken">A cancellation token to stop the HTTP server application.</param>
     /// <returns>The exit code to use.</returns>
     [PublicAPI]
-    public static int Run(int port, bool bindToLoopbackOnly, CancellationToken cancellationToken = default)
+    public static int Run(int port, SocketListenAddresses listenAddresses, CancellationToken cancellationToken = default)
     {
-        return Task.Run(() => RunAsync(port, bindToLoopbackOnly, cancellationToken), cancellationToken).Result;
+        var app = new HttpServerApplication(port, listenAddresses);
+        return app.Run(cancellationToken);
     }
 
     /// <summary>
@@ -124,22 +126,22 @@ public class HttpServerApplication : CliApplicationWithCommand
     [PublicAPI]
     public static Task<int> RunAsync(int port, CancellationToken cancellationToken = default)
     {
-        return RunAsync(port, bindToLoopbackOnly: true, cancellationToken);
+        var app = new HttpServerApplication(port);
+        return app.RunAsync(cancellationToken);
     }
 
     /// <summary>
     /// Runs an HTTP server at the specified port.
     /// </summary>
     /// <param name="port">The HTTP port to use</param>
-    /// <param name="bindToLoopbackOnly">Whether to bind <paramref name="port"/> to the loopback adapter only
-    /// (i.e. reachable only from this machine itself).</param>
+    /// <param name="listenAddresses">Whether <paramref name="port"/> should be reachable only from the local machine
+    /// (<see cref="SocketListenAddresses.Loopback"/>) or from anywhere on the network (<see cref="SocketListenAddresses.Any"/>).</param>
     /// <param name="cancellationToken">A cancellation token to stop the HTTP server application.</param>
     /// <returns>The exit code to use.</returns>
     [PublicAPI]
-    public static Task<int> RunAsync(int port, bool bindToLoopbackOnly, CancellationToken cancellationToken = default)
+    public static Task<int> RunAsync(int port, SocketListenAddresses listenAddresses, CancellationToken cancellationToken = default)
     {
-        var app = new HttpServerApplication(port, bindToLoopbackOnly: bindToLoopbackOnly);
-
+        var app = new HttpServerApplication(port, listenAddresses);
         return app.RunAsync(cancellationToken);
     }
 
