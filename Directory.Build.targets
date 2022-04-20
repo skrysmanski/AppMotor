@@ -1,6 +1,6 @@
 ﻿<!--
 
-  This .props file is automatically imported by MSBuild/Visual Studio.
+  This .targets file is automatically imported by MSBuild/Visual Studio.
 
   For more details, see: https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build#directorybuildprops-and-directorybuildtargets
 
@@ -8,7 +8,6 @@
 <!-- You can find the latest version of this file here: https://github.com/skrysmanski/base-dotnet -->
 <Project>
 
-  <!-- Automatically import "_Post.props" files from the "_ProjectCommons" directory. -->
-  <Import Project="$(ProjectCommonsDirectory)*_Post.props" />
+  <Import Project="$(MSBuildThisFileDirectory)_ProjectCommons/Common.Directory.Build.targets" />
 
 </Project>
