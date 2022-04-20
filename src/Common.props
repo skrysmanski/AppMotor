@@ -15,10 +15,10 @@
   </PropertyGroup>
 
   <PropertyGroup Label="Versions">
-    <AppMotorCoreVersion>0.14.1</AppMotorCoreVersion>
-    <AppMotorCliAppVersion>0.7.1</AppMotorCliAppVersion>
-    <AppMotorHttpServerVersion>0.3.1</AppMotorHttpServerVersion>
-    <AppMotorTestCoreVersion>0.1.0</AppMotorTestCoreVersion>
+    <AppMotorCoreVersion>0.15.0</AppMotorCoreVersion>
+    <AppMotorCliAppVersion>0.8.0</AppMotorCliAppVersion>
+    <AppMotorHttpServerVersion>0.4.0</AppMotorHttpServerVersion>
+    <AppMotorTestCoreVersion>0.2.0</AppMotorTestCoreVersion>
   </PropertyGroup>
 
 </Project>
