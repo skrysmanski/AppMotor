@@ -8,12 +8,6 @@
 <!-- You can find the latest version of this file here: https://github.com/skrysmanski/base-dotnet -->
 <Project>
 
-  <PropertyGroup>
-    <!-- The directory where this file is located. -->
-    <ProjectsRootDirectory>$(MSBuildThisFileDirectory)</ProjectsRootDirectory>
-
-    <!-- This directory contains all shared/common .props (and related) files. -->
-    <ProjectCommonsDirectory>$(ProjectsRootDirectory)/_ProjectCommons/</ProjectCommonsDirectory>
-  </PropertyGroup>
+  <Import Project="$(MSBuildThisFileDirectory)_ProjectCommons/Common.Directory.Build.props" />
 
 </Project>
