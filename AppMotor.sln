@@ -52,7 +52,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.HttpServer", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.HttpServer.Tests", "tests\AppMotor.HttpServer.Tests\AppMotor.HttpServer.Tests.csproj", "{C0EBEF12-DFB0-4078-BE78-7030F00756AA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.HttpServer.Sample", "samples\AppMotor.HttpServer.Sample\AppMotor.HttpServer.Sample.csproj", "{DF00176B-0C36-4F74-826C-687236B1A7C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.HttpServer.MvcSample", "samples\AppMotor.HttpServer.MvcSample\AppMotor.HttpServer.MvcSample.csproj", "{DF00176B-0C36-4F74-826C-687236B1A7C6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.CliApp.Hosting.Sample", "samples\AppMotor.CliApp.Hosting.Sample\AppMotor.CliApp.Hosting.Sample.csproj", "{3CE0C1D8-870B-49A9-86E9-FF61B82A99F1}"
 EndProject
