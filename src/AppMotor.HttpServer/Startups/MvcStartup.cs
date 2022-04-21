@@ -25,7 +25,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 
-namespace AppMotor.HttpServer;
+namespace AppMotor.HttpServer.Startups;
 
 /// <summary>
 /// Startup class for this ASP.NET Core MVC application (with Razor views). The idea behind this

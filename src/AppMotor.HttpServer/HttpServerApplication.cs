@@ -18,6 +18,7 @@ using System.Reflection;
 
 using AppMotor.CliApp.CommandLine;
 using AppMotor.Core.Net;
+using AppMotor.HttpServer.Startups;
 
 using JetBrains.Annotations;
 
