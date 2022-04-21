@@ -25,6 +25,7 @@ using AppMotor.Core.Logging;
 using AppMotor.Core.Net;
 using AppMotor.Core.Net.Http;
 using AppMotor.HttpServer;
+using AppMotor.HttpServer.Startups;
 using AppMotor.TestCore;
 using AppMotor.TestCore.Extensions;
 using AppMotor.TestCore.Logging;
@@ -35,6 +36,7 @@ using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using Shouldly;
@@ -266,15 +268,22 @@ public sealed class IpVersionTests : TestBase
         }
 
         /// <inheritdoc />
-        protected override object CreateStartupClass(WebHostBuilderContext context)
+        protected override IAspNetStartup CreateStartupClass(WebHostBuilderContext context)
         {
             return new Startup();
         }
     }
 
-    private sealed class Startup
+    private sealed class Startup : IAspNetStartup
     {
-        public void Configure(IApplicationBuilder app)
+        /// <inheritdoc />
+        public void ConfigureServices(IServiceCollection services)
+        {
+            // Nothing to do
+        }
+
+        /// <inheritdoc />
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             // Enable routing feature; required for defining endpoints below.
             // See: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing#routing-basics

@@ -46,7 +46,7 @@ public abstract class HttpServerCommandBase : GenericHostCliCommand
     ///
     /// <para>The default implementation creates an instance of <see cref="MvcStartup"/>.</para>
     /// </summary>
-    protected virtual object CreateStartupClass(WebHostBuilderContext context)
+    protected virtual IAspNetStartup CreateStartupClass(WebHostBuilderContext context)
     {
         return new MvcStartup(GetType().Assembly);
     }

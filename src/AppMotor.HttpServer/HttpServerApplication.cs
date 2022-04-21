@@ -50,7 +50,7 @@ public class HttpServerApplication : CliApplicationWithCommand
     /// <param name="startupClass">The ASP.NET Core Startup class to use. If <c>null</c>,
     /// <see cref="MvcStartup"/> will be used.</param>
     [PublicAPI]
-    public HttpServerApplication(int port, object? startupClass = null)
+    public HttpServerApplication(int port, IAspNetStartup? startupClass = null)
         : this(port, SocketListenAddresses.Loopback, startupClass)
     {
     }
@@ -64,7 +64,7 @@ public class HttpServerApplication : CliApplicationWithCommand
     /// <param name="startupClass">The ASP.NET Core Startup class to use. If <c>null</c>,
     /// <see cref="MvcStartup"/> will be used.</param>
     [PublicAPI]
-    public HttpServerApplication(int port, SocketListenAddresses listenAddresses, object? startupClass = null)
+    public HttpServerApplication(int port, SocketListenAddresses listenAddresses, IAspNetStartup? startupClass = null)
         : this(new HttpServerPort(listenAddresses, port), startupClass)
     {
     }
@@ -76,7 +76,7 @@ public class HttpServerApplication : CliApplicationWithCommand
     /// <param name="startupClass">The ASP.NET Core Startup class to use. If <c>null</c>,
     /// <see cref="MvcStartup"/> will be used.</param>
     [PublicAPI]
-    public HttpServerApplication(HttpServerPort port, object? startupClass = null)
+    public HttpServerApplication(HttpServerPort port, IAspNetStartup? startupClass = null)
         : this(new HttpServerCommand(port, startupClass))
     {
     }
@@ -147,11 +147,11 @@ public class HttpServerApplication : CliApplicationWithCommand
     {
         private readonly HttpServerPort _httpPort;
 
-        private readonly object? _startupClass;
+        private readonly IAspNetStartup? _startupClass;
 
         public IServiceCollection AppServiceCollection { get; } = new ServiceCollection();
 
-        public HttpServerCommand(HttpServerPort httpPort, object? startupClass)
+        public HttpServerCommand(HttpServerPort httpPort, IAspNetStartup? startupClass)
         {
             this._httpPort = httpPort;
             this._startupClass = startupClass;
@@ -169,7 +169,7 @@ public class HttpServerApplication : CliApplicationWithCommand
         }
 
         /// <inheritdoc />
-        protected override object CreateStartupClass(WebHostBuilderContext context)
+        protected override IAspNetStartup CreateStartupClass(WebHostBuilderContext context)
         {
             if (this._startupClass is not null)
             {

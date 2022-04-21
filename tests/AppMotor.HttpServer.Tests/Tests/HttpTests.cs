@@ -20,6 +20,7 @@ using AppMotor.CliApp.HttpServer.TestUtils;
 using AppMotor.Core.Net;
 using AppMotor.Core.Net.Http;
 using AppMotor.HttpServer;
+using AppMotor.HttpServer.Startups;
 using AppMotor.TestCore;
 using AppMotor.TestCore.Extensions;
 using AppMotor.TestCore.Logging;
@@ -95,7 +96,7 @@ public sealed class HttpTests : TestBase
         }
 
         /// <inheritdoc />
-        protected override object CreateStartupClass(WebHostBuilderContext context)
+        protected override IAspNetStartup CreateStartupClass(WebHostBuilderContext context)
         {
             return new SimplePingStartup();
         }

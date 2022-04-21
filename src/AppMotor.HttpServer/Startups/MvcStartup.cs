@@ -32,13 +32,7 @@ namespace AppMotor.HttpServer.Startups;
 /// class is to make bootstrapping an MVC application extremely easier by providing the most common
 /// defaults out-of-the-box.
 /// </summary>
-/// <remarks>
-/// Both the constructor and <see cref="Configure"/> support dependency injection for their parameters.
-/// This is why this class has no interface for its methods.
-///
-/// <para>See also: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/startup </para>
-/// </remarks>
-public class MvcStartup
+public class MvcStartup : IAspNetStartup
 {
     private readonly Assembly _mainAssembly;
 
@@ -71,14 +65,7 @@ public class MvcStartup
         this._mainAssembly = mainAssembly;
     }
 
-    /// <summary>
-    /// This method gets called by the ASP.NET Core runtime. It registers services in the dependency injection
-    /// system exposed via <paramref name="services"/>.
-    /// </summary>
-    /// <remarks>
-    /// The name of this method is pre-defined and must not be changed.
-    /// </remarks>
-    [UsedImplicitly]
+    /// <inheritdoc />
     public virtual void ConfigureServices(IServiceCollection services)
     {
         var mvcBuilder = services.AddControllersWithViews();
@@ -115,17 +102,7 @@ public class MvcStartup
         });
     }
 
-    /// <summary>
-    /// This method gets called by the ASP.NET Core runtime. It creates the ASP.NET Core Middleware
-    /// pipeline.
-    /// </summary>
-    /// <remarks>
-    /// You can request any registered service as parameter in this method. Parameters are provided
-    /// by the dependency injection framework.
-    ///
-    /// <para>The name of this method is pre-defined and must not be changed.</para>
-    /// </remarks>
-    [UsedImplicitly]
+    /// <inheritdoc />
     public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
         //
