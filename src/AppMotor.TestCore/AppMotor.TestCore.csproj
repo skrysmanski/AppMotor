@@ -11,6 +11,8 @@
     <Version>$(AppMotorTestCoreVersion)</Version>
 
     <Description>Sharable test helper APIs.</Description>
+
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
