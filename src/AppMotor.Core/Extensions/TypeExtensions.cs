@@ -15,7 +15,9 @@
 #endregion
 
 using System.Numerics;
+using System.Reflection;
 
+using AppMotor.Core.DataModel;
 using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
@@ -190,5 +192,140 @@ public static class TypeExtensions
         Validate.ArgumentWithName(nameof(baseType)).IsNotNull(baseType);
 
         return baseType.IsAssignableFrom(typeToCheck);
+    }
+
+    /// <summary>
+    /// Returns the <see cref="MethodInfo"/> for the specified custom operator defined in this type.
+    /// For binary operators (i.e. with two parameters/operands), this method assumes that both operands
+    /// are of this type. Returns <c>null</c>, if the operator method doesn't exist.
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="operator">The operator as string (e.g. "+", "--", "==", ...)</param>
+    /// <param name="unary">The operators "+" and "-" exist both as unary and binary operator.
+    /// If <c>true</c>, the unary operator is returned; if <c>false</c>, the binary operator
+    /// is returned.</param>
+    [MustUseReturnValue]
+    public static MethodInfo? GetOperator(this Type type, string @operator, bool unary = false)
+    {
+        UnaryOperators? unaryOperator = @operator switch
+        {
+            "+"  => unary ? UnaryOperators.UnaryPlus : null,
+            "-"  => unary ? UnaryOperators.UnaryNegation : null,
+            "++" => UnaryOperators.Increment,
+            "--" => UnaryOperators.Decrement,
+            "!"  => UnaryOperators.LogicalNot,
+            "~"  => UnaryOperators.OnesComplement,
+            _    => null,
+        };
+
+        if (unaryOperator != null)
+        {
+            return type.GetOperator(unaryOperator.Value);
+        }
+        else
+        {
+            switch (@operator)
+            {
+                case "<<":
+                    return type.GetOperator(BinaryOperators.LeftShift, otherType: typeof(int));
+                case ">>":
+                    return type.GetOperator(BinaryOperators.RightShift, otherType: typeof(int));
+                default:
+                    return type.GetOperator(@operator, otherType: type);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Returns the <see cref="MethodInfo"/> for the specified custom binary (i.e. two parameters/operands) operator
+    /// defined in this type. Returns <c>null</c>, if the operator method doesn't exist.
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="operator">The operator as string (e.g. "+", "/", "==", ...)</param>
+    /// <param name="otherType">The type of the other operand (one is always this type);
+    /// can be the same as this type</param>
+    /// <param name="otherTypeIsSecondOperand">Whether <paramref name="otherType"/> is used as first (<c>false</c>)
+    /// or as second (<c>true</c>) operand; the latter is the default</param>
+    [MustUseReturnValue]
+    public static MethodInfo? GetOperator(this Type type, string @operator, Type otherType, bool otherTypeIsSecondOperand = true)
+    {
+        BinaryOperators binaryOperator = @operator switch
+        {
+            "+"  => BinaryOperators.Addition,
+            "-"  => BinaryOperators.Subtraction,
+            "*"  => BinaryOperators.Multiply,
+            "/"  => BinaryOperators.Division,
+            "%"  => BinaryOperators.Modulus,
+            "==" => BinaryOperators.Equality,
+            "!=" => BinaryOperators.Inequality,
+            "<"  => BinaryOperators.LessThan,
+            ">"  => BinaryOperators.GreaterThan,
+            "<=" => BinaryOperators.LessThanOrEqual,
+            ">=" => BinaryOperators.GreaterThanOrEqual,
+            "&"  => BinaryOperators.BitwiseAnd,
+            "|"  => BinaryOperators.BitwiseOr,
+            "^"  => BinaryOperators.ExclusiveOr,
+            "<<" => BinaryOperators.LeftShift,
+            ">>" => BinaryOperators.RightShift,
+            _    => throw new ArgumentException($"The operator '{@operator}' is not a valid binary operator."),
+        };
+
+        return type.GetOperator(binaryOperator, otherType, otherTypeIsSecondOperand);
+    }
+
+    /// <summary>
+    /// Returns the <see cref="MethodInfo"/> for the specified custom unary (i.e. one parameter/operand) operator
+    /// defined in this type. This method assumes that both operands are of this type. Returns <c>null</c>, if
+    /// the operator method doesn't exist.
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="operator">The operator</param>
+    [MustUseReturnValue]
+    public static MethodInfo? GetOperator(this Type type, UnaryOperators @operator)
+    {
+        return type.GetMethod("op_" + @operator, BindingFlags.Public | BindingFlags.Static, new[] { type });
+    }
+
+    /// <summary>
+    /// Returns the <see cref="MethodInfo"/> for the specified custom binary (i.e. two parameters/operands) operator
+    /// defined in this type. This method assumes that both operands are of this type. Returns <c>null</c>, if the
+    /// operator method doesn't exist.
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="operator">The operator</param>
+    [MustUseReturnValue]
+    public static MethodInfo? GetOperator(this Type type, BinaryOperators @operator)
+    {
+        switch (@operator)
+        {
+            case BinaryOperators.LeftShift:
+            case BinaryOperators.RightShift:
+                return type.GetOperator(@operator, otherType: typeof(int));
+            default:
+                return type.GetOperator(@operator, otherType: type);
+        }
+    }
+
+    /// <summary>
+    /// Returns the <see cref="MethodInfo"/> for the specified custom binary (i.e. two parameters/operands) operator
+    /// defined in this type. Returns <c>null</c>, if the operator method doesn't exist.
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="operator">The operator</param>
+    /// <param name="otherType">The type of the other operand (one is always this type);
+    /// can be the same as this type</param>
+    /// <param name="otherTypeIsSecondOperand">Whether <paramref name="otherType"/> is used as first (<c>false</c>)
+    /// or as second (<c>true</c>) operand; the latter is the default</param>
+    [MustUseReturnValue]
+    public static MethodInfo? GetOperator(this Type type, BinaryOperators @operator, Type otherType, bool otherTypeIsSecondOperand = true)
+    {
+        if (otherTypeIsSecondOperand)
+        {
+            return type.GetMethod("op_" + @operator, BindingFlags.Public | BindingFlags.Static, new[] { type, otherType });
+        }
+        else
+        {
+            return type.GetMethod("op_" + @operator, BindingFlags.Public | BindingFlags.Static, new[] { otherType, type });
+        }
     }
 }
