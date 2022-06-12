@@ -27,7 +27,7 @@ namespace AppMotor.Core.Tests.Extensions;
 public sealed class TypeExtensionsTests
 {
     [Fact]
-    public void TestIsNumericType()
+    public void Test_IsNumericType()
     {
         typeof(string).IsNumericType().ShouldBe(false);
         typeof(char).IsNumericType().ShouldBe(false);
@@ -49,7 +49,7 @@ public sealed class TypeExtensionsTests
     }
 
     [Fact]
-    public void TestIsNumericIntegerType()
+    public void Test_IsNumericIntegerType()
     {
         typeof(string).IsNumericIntegerType().ShouldBe(false);
         typeof(char).IsNumericIntegerType().ShouldBe(false);
@@ -71,7 +71,7 @@ public sealed class TypeExtensionsTests
     }
 
     [Fact]
-    public void TestIsNumericFloatType()
+    public void Test_IsNumericFloatType()
     {
         typeof(string).IsNumericFloatType().ShouldBe(false);
         typeof(char).IsNumericFloatType().ShouldBe(false);
@@ -93,7 +93,7 @@ public sealed class TypeExtensionsTests
     }
 
     [Fact]
-    public void TestIsNullableValueType()
+    public void Test_IsNullableValueType()
     {
         typeof(int).IsNullableValueType().ShouldBe(false);
         typeof(int?).IsNullableValueType().ShouldBe(true);
@@ -106,7 +106,7 @@ public sealed class TypeExtensionsTests
     }
 
     [Fact]
-    public void TestIsNullableType()
+    public void Test_IsNullableType()
     {
 #pragma warning disable 618 // obsolete
         typeof(int).IsNullableType().ShouldBe(false);
@@ -121,7 +121,7 @@ public sealed class TypeExtensionsTests
     }
 
     [Fact]
-    public void TestIs()
+    public void Test_Is()
     {
         typeof(ClassA).Is<ITestInterface>().ShouldBe(true);
         typeof(ClassA).Is(typeof(ITestInterface)).ShouldBe(true);
