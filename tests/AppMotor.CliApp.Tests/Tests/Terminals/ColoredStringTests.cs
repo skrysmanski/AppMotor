@@ -101,7 +101,6 @@ public sealed class ColoredStringTests
         var coloredString2 = ColoredString.New().Append(ConsoleColor.Cyan, "my text in cyan");
 
         // test
-        // ReSharper disable MultipleSpaces
         VerifyColoredStringResult(regularText       + coloredSubstring1,    regularText,        coloredSubstring1);
         VerifyColoredStringResult(regularText       + coloredString1,       regularText,        coloredString1);
         VerifyColoredStringResult(coloredSubstring1 + regularText,          coloredSubstring1,  regularText);
@@ -113,7 +112,6 @@ public sealed class ColoredStringTests
         VerifyColoredStringResult(coloredSubstring1 + coloredString1,       coloredSubstring1,  coloredString1);
 
         VerifyColoredStringResult(coloredSubstring1 + coloredSubstring2,    coloredSubstring1,  coloredSubstring2);
-        // ReSharper restore MultipleSpaces
     }
 
     [Fact]

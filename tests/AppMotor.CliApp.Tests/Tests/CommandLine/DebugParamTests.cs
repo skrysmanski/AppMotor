@@ -27,7 +27,6 @@ namespace AppMotor.CliApp.Tests.CommandLine;
 
 public sealed class DebugParamTests
 {
-    // ReSharper disable MultipleSpaces
     [Theory]
     [InlineData(TestScenarios.BothAliasesAvailable, true, true)]
     [InlineData(TestScenarios.DAliasTaken,          true, true)]
@@ -37,7 +36,6 @@ public sealed class DebugParamTests
     [InlineData(TestScenarios.DAliasTaken,          false, false)]
     [InlineData(TestScenarios.DebugAliasTaken,      false, true)]
     [InlineData(TestScenarios.BothAliasesTaken,     false, false)]
-    // ReSharper restore MultipleSpaces
     public void TestCliApplicationWithCommand_WhenEnabled(TestScenarios scenario, bool longAlias, bool expectedLaunch)
     {
         // Setup
@@ -88,7 +86,6 @@ public sealed class DebugParamTests
         testCommand.Executed.ShouldBe(false);
     }
 
-    // ReSharper disable MultipleSpaces
     [Theory]
     [InlineData(TestScenarios.BothAliasesAvailable, true, true)]
     [InlineData(TestScenarios.DAliasTaken,          true, true)]
@@ -98,7 +95,6 @@ public sealed class DebugParamTests
     [InlineData(TestScenarios.DAliasTaken,          false, false)]
     [InlineData(TestScenarios.DebugAliasTaken,      false, true)]
     [InlineData(TestScenarios.BothAliasesTaken,     false, false)]
-    // ReSharper restore MultipleSpaces
     public void TestCliApplicationWithParams_WhenEnabled(TestScenarios scenario, bool longAlias, bool expectedLaunch)
     {
         // Setup
@@ -147,7 +143,6 @@ public sealed class DebugParamTests
         app.Executed.ShouldBe(false);
     }
 
-    // ReSharper disable MultipleSpaces
     [Theory]
     [InlineData(TestScenarios.BothAliasesAvailable, true, true)]
     [InlineData(TestScenarios.DAliasTaken,          true, true)]
@@ -157,7 +152,6 @@ public sealed class DebugParamTests
     [InlineData(TestScenarios.DAliasTaken,          false, false)]
     [InlineData(TestScenarios.DebugAliasTaken,      false, true)]
     [InlineData(TestScenarios.BothAliasesTaken,     false, false)]
-    // ReSharper restore MultipleSpaces
     public void TestCliApplicationWithVerbs_WhenEnabled(TestScenarios scenario, bool longAlias, bool expectedLaunch)
     {
         // Setup
