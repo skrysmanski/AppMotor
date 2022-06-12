@@ -1,4 +1,4 @@
-﻿namespace AppMotor.HttpServer.Sample.Services;
+﻿namespace AppMotor.HttpServer.MvcSample.Services;
 
 public sealed class ServiceSettingsProvider
 {

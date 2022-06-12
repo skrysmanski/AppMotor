@@ -1,6 +1,6 @@
 ﻿using AppMotor.CliApp.Terminals;
 using AppMotor.HttpServer;
-using AppMotor.HttpServer.Sample.Services;
+using AppMotor.HttpServer.MvcSample.Services;
 
 Terminal.WriteLine("Try the following URLs in your browser:");
 Terminal.WriteLine();

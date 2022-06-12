@@ -1,6 +1,6 @@
-﻿using AppMotor.HttpServer.Sample.Controllers;
+﻿using AppMotor.HttpServer.MvcSample.Controllers;
 
-namespace AppMotor.HttpServer.Sample.Models;
+namespace AppMotor.HttpServer.MvcSample.Models;
 
 /// <summary>
 /// Model for <c>Error.cshtml</c> and <see cref="HomeController.Error"/>.

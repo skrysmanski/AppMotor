@@ -1,8 +1,8 @@
-﻿using AppMotor.HttpServer.Sample.Services;
+﻿using AppMotor.HttpServer.MvcSample.Services;
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace AppMotor.HttpServer.Sample.Controllers;
+namespace AppMotor.HttpServer.MvcSample.Controllers;
 
 public sealed class ApiController : Controller
 {
