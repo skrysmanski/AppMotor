@@ -15,8 +15,7 @@
 #endregion
 
 using AppMotor.Core.Certificates;
-
-using Shouldly;
+using AppMotor.TestCore;
 
 using Xunit;
 
@@ -32,17 +31,7 @@ public sealed class CertificatePublicKeyTests
         using var cert2 = TlsCertificate.CreateSelfSigned("example.com", TimeSpan.FromDays(2));
 
         // Test
-        cert1.PublicKey.Equals(cert1.PublicKey).ShouldBe(true);
-        cert1.PublicKey.Equals(cert2.PublicKey).ShouldBe(false);
-
-        cert1.PublicKey.Equals((object?)cert1.PublicKey).ShouldBe(true);
-        cert1.PublicKey.Equals((object?)cert2.PublicKey).ShouldBe(false);
-
-        // ReSharper disable once EqualExpressionComparison
-        (cert1.PublicKey == cert1.PublicKey).ShouldBe(true);
-        (cert1.PublicKey != cert2.PublicKey).ShouldBe(true);
-
-        cert1.PublicKey.Equals(null).ShouldBe(false);
+        EqualityMembersTests.TestEquals(cert1.PublicKey, cert2.PublicKey);
     }
 
     [Fact]
@@ -52,6 +41,6 @@ public sealed class CertificatePublicKeyTests
         using var cert1 = TlsCertificate.CreateSelfSigned("example.com", TimeSpan.FromDays(2));
 
         // Test
-        cert1.PublicKey.GetHashCode().ShouldNotBe(0);
+        EqualityMembersTests.TestGetHashCode(cert1.PublicKey);
     }
 }

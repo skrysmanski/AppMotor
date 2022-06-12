@@ -17,6 +17,7 @@
 using System.Security.Cryptography;
 
 using AppMotor.Core.Certificates;
+using AppMotor.TestCore;
 
 using Shouldly;
 
@@ -40,18 +41,7 @@ public sealed class CertificateOidTests
         var rsaOidByName = new CertificateOid("RSA");
         var otherOid = new CertificateOid("3DES");
 
-        rsaOidById.Equals(rsaOidByName).ShouldBe(true);
-        rsaOidById.Equals(otherOid).ShouldBe(false);
-
-        rsaOidById.Equals(rsaOidById).ShouldBe(true);
-        rsaOidById.Equals(new CertificateOid()).ShouldBe(false);
-
-        (rsaOidById == rsaOidByName).ShouldBe(true);
-        (rsaOidById != otherOid).ShouldBe(true);
-
-        // ReSharper disable once SuspiciousTypeConversion.Global
-        rsaOidById.Equals("").ShouldBe(false);
-        rsaOidById.Equals((object)rsaOidByName).ShouldBe(true);
+        EqualityMembersTests.TestEquals(rsaOidById, rsaOidByName, otherOid);
     }
 
     [Fact]
@@ -60,7 +50,7 @@ public sealed class CertificateOidTests
         var rsaOidById = new CertificateOid("1.2.840.113549.1.1.1");
         var rsaOidByName = new CertificateOid("RSA");
 
-        rsaOidById.GetHashCode().ShouldBe(rsaOidByName.GetHashCode());
+        EqualityMembersTests.TestGetHashCode(rsaOidById, rsaOidByName);
     }
 
     [Fact]

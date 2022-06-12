@@ -18,6 +18,7 @@ using System.Globalization;
 using System.Text.Json;
 
 using AppMotor.Core.Utils;
+using AppMotor.TestCore;
 using AppMotor.TestCore.Shouldly;
 
 using Shouldly;
@@ -298,14 +299,7 @@ public sealed class DateTimeUtcTests
         var now = DateTimeUtc.Now;
         var later = now + TimeSpan.FromMilliseconds(1);
 
-        now.Equals(now).ShouldBe(true);
-        now.Equals(later).ShouldBe(false);
-        (now == later).ShouldBe(false);
-        (now != later).ShouldBe(true);
-
-        now.Equals((object)now).ShouldBe(true);
-        now.Equals((object)later).ShouldBe(false);
-        now.Equals(null).ShouldBe(false);
+        EqualityMembersTests.TestEquals(now, later);
     }
 
     [Fact]
@@ -316,7 +310,7 @@ public sealed class DateTimeUtcTests
         var a = new DateTimeUtc(nowDateTime);
         var b = new DateTimeUtc(nowDateTime.ToUniversalTime());
 
-        a.GetHashCode().ShouldBe(b.GetHashCode());
+        EqualityMembersTests.TestGetHashCode(a, b);
     }
 
     [Fact]
