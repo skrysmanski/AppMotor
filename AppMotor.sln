@@ -23,7 +23,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_ProjectCommons", "_Project
 		_ProjectCommons\Project.NuGetPackage_Post.props = _ProjectCommons\Project.NuGetPackage_Post.props
 		_ProjectCommons\Project.Sample.props = _ProjectCommons\Project.Sample.props
 		_ProjectCommons\Project.Shared.props = _ProjectCommons\Project.Shared.props
-		_ProjectCommons\Project.Shared_Packages.props = _ProjectCommons\Project.Shared_Packages.props
 		_ProjectCommons\Project.Tests.props = _ProjectCommons\Project.Tests.props
 		_ProjectCommons\Project.Tests_Packages.props = _ProjectCommons\Project.Tests_Packages.props
 		_ProjectCommons\Project.Tool.props = _ProjectCommons\Project.Tool.props
