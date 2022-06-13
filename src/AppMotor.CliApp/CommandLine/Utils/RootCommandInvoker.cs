@@ -17,6 +17,7 @@
 using System.CommandLine;
 using System.CommandLine.Builder;
 using System.CommandLine.Invocation;
+using System.CommandLine.Parsing;
 
 using AppMotor.CliApp.Terminals;
 using AppMotor.Core.Exceptions;
@@ -69,13 +70,13 @@ internal static class RootCommandInvoker
 
         // IMPORTANT: This must be called after all root symbols have been added - otherwise
         //   the "--version" and the "--help" option will be listed before other named parameters.
-        CreatePipelineFor(rootCommand, exceptionHandlerFunc);
+        var parser = CreatePipelineFor(rootCommand, exceptionHandlerFunc);
 
-        return await rootCommand.InvokeAsync(args, CommandLineConsole.FromTerminal(terminal))
-                                .ConfigureAwait(continueOnCapturedContext: false);
+        return await parser.InvokeAsync(args, CommandLineConsole.FromTerminal(terminal))
+                           .ConfigureAwait(continueOnCapturedContext: false);
     }
 
-    private static void CreatePipelineFor(RootCommand rootCommand, Func<Exception, int> exceptionHandlerFunc)
+    private static Parser CreatePipelineFor(RootCommand rootCommand, Func<Exception, int> exceptionHandlerFunc)
     {
         var builder = new CommandLineBuilder(rootCommand);
 
@@ -86,6 +87,6 @@ internal static class RootCommandInvoker
             context.ExitCode = exitCode;
         });
 
-        builder.Build();
+        return builder.Build();
     }
 }
