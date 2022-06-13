@@ -1,0 +1,57 @@
+﻿//
+// NOTE: This file has been automatically generated from '{{TemplateFile}}'. Any changes made to
+//   this file will be lost on the next build.
+//
+
+// SPDX-License-Identifier: MIT
+// Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
+
+using JetBrains.Annotations;
+
+namespace AppMotor.CliApp.Terminals.Formatting;
+
+public readonly partial struct AnsiTextFormatter
+{
+{{#Colors}}
+    #region {{MemberName}}
+
+    /// <summary>
+    /// Chains style: text color {{DisplayName}}
+    /// </summary>
+    /// <remarks>
+    /// See <see href="TermText"/> for more details.
+    /// </remarks>
+    /// <remarks>
+    /// The exact color used is up to the terminal and can often be customized by the user.
+    /// </remarks>
+    [MustUseReturnValue]
+    public AnsiTextFormatter {{MemberName}}() => In(ConsoleColor.{{MemberName}});
+
+    /// <summary>
+    /// Returns the specified text with the current style plus: text color {{DisplayName}}
+    /// </summary>
+    /// <remarks>
+    /// See <see href="TermText"/> for more details.
+    /// </remarks>
+    /// <remarks>
+    /// The exact color used is up to the terminal and can often be customized by the user.
+    /// </remarks>
+    [MustUseReturnValue]
+    public string {{MemberName}}(string text) => In(ConsoleColor.{{MemberName}}).Text(text);
+
+    /// <summary>
+    /// Chains style: background color {{DisplayName}}
+    /// </summary>
+    /// <remarks>
+    /// See <see href="TermText"/> for more details.
+    /// </remarks>
+    /// <remarks>
+    /// The exact color used is up to the terminal and can often be customized by the user.
+    /// </remarks>
+    [MustUseReturnValue]
+    public AnsiTextFormatter Bg{{MemberName}}() => Bg(ConsoleColor.{{MemberName}});
+
+    #endregion {{MemberName}}
+
+{{/Colors}}
+}
