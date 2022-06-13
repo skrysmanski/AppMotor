@@ -44,6 +44,9 @@ public readonly struct CmyColor : IColor, IEquatable<CmyColor>
     /// </summary>
     public byte Y { get; }
 
+    /// <summary>
+    /// Constructor. Uses 255 as value for <see cref="A"/>.
+    /// </summary>
     public CmyColor(byte c, byte m, byte y)
     {
         this.A = 255;
@@ -52,6 +55,9 @@ public readonly struct CmyColor : IColor, IEquatable<CmyColor>
         this.Y = y;
     }
 
+    /// <summary>
+    /// Constructor.
+    /// </summary>
     public CmyColor(byte a, byte c, byte m, byte y)
     {
         this.A = a;
@@ -60,6 +66,9 @@ public readonly struct CmyColor : IColor, IEquatable<CmyColor>
         this.Y = y;
     }
 
+    /// <summary>
+    /// Constructor.
+    /// </summary>
     public CmyColor(Color color)
     {
         this.A = color.A;
@@ -86,11 +95,17 @@ public readonly struct CmyColor : IColor, IEquatable<CmyColor>
         return HashCode.Combine(this.A, this.C, this.M, this.Y);
     }
 
+    /// <summary>
+    /// The == operator
+    /// </summary>
     public static bool operator ==(CmyColor left, CmyColor right)
     {
         return left.Equals(right);
     }
 
+    /// <summary>
+    /// The != operator
+    /// </summary>
     public static bool operator !=(CmyColor left, CmyColor right)
     {
         return !left.Equals(right);

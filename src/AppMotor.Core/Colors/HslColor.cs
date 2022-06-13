@@ -54,11 +54,17 @@ public readonly struct HslColor : IColor, IEquatable<HslColor>
 
     private readonly Half _l;
 
+    /// <summary>
+    /// Constructor. Uses 255 as value for <see cref="A"/>.
+    /// </summary>
     public HslColor(float h, float s, float l)
         : this(a: 255, h, s, l)
     {
     }
 
+    /// <summary>
+    /// Constructor.
+    /// </summary>
     public HslColor(byte a, float h, float s, float l)
     {
         if (h < 0 || h >= 360)
@@ -80,6 +86,9 @@ public readonly struct HslColor : IColor, IEquatable<HslColor>
         this._l = (Half)l;
     }
 
+    /// <summary>
+    /// Constructor.
+    /// </summary>
     public HslColor(Color color)
     {
         this.A = color.A;
@@ -109,11 +118,17 @@ public readonly struct HslColor : IColor, IEquatable<HslColor>
         return HashCode.Combine(this.A, this._h, this._s, this._l);
     }
 
+    /// <summary>
+    /// The == operator
+    /// </summary>
     public static bool operator ==(HslColor left, HslColor right)
     {
         return left.Equals(right);
     }
 
+    /// <summary>
+    /// The != operator
+    /// </summary>
     public static bool operator !=(HslColor left, HslColor right)
     {
         return !left.Equals(right);

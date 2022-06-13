@@ -17,6 +17,7 @@
 using System.Drawing;
 
 using AppMotor.Core.Colors;
+using AppMotor.Core.Extensions;
 using AppMotor.TestCore;
 using AppMotor.TestCore.Utils;
 

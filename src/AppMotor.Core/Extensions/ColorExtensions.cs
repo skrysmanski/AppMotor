@@ -15,31 +15,47 @@
 #endregion
 
 using System.Drawing;
+using AppMotor.Core.Colors;
 
 using JetBrains.Annotations;
 
-namespace AppMotor.Core.Colors;
+namespace AppMotor.Core.Extensions;
 
+/// <summary>
+/// Extension methods for <see cref="Color"/>.
+/// </summary>
 public static class ColorExtensions
 {
+    /// <summary>
+    /// Converts this color into its corresponding HSL color.
+    /// </summary>
     [MustUseReturnValue]
     public static HslColor ToHsl(this Color color)
     {
         return new HslColor(color);
     }
 
+    /// <summary>
+    /// Converts this color into its corresponding HSV/HSB color.
+    /// </summary>
     [MustUseReturnValue]
     public static HsvColor ToHsv(this Color color)
     {
         return new HsvColor(color);
     }
 
+    /// <summary>
+    /// Converts this color into its corresponding CMY color.
+    /// </summary>
     [MustUseReturnValue]
     public static CmyColor ToCmy(this Color color)
     {
         return new CmyColor(color);
     }
 
+    /// <summary>
+    /// Converts this color into its corresponding CMYK color.
+    /// </summary>
     [MustUseReturnValue]
     public static CmykColor ToCmyk(this Color color)
     {

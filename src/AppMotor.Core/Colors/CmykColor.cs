@@ -65,11 +65,17 @@ public readonly struct CmykColor : IColor, IEquatable<CmykColor>
 
     private readonly Half _k;
 
+    /// <summary>
+    /// Constructor. Uses 255 as value for <see cref="A"/>.
+    /// </summary>
     public CmykColor(float c, float m, float y, float k)
         : this(a: 255, c, m, y, k)
     {
     }
 
+    /// <summary>
+    /// Constructor.
+    /// </summary>
     public CmykColor(byte a, float c, float m, float y, float k)
     {
         if (c < 0 || c > 100)
@@ -96,6 +102,9 @@ public readonly struct CmykColor : IColor, IEquatable<CmykColor>
         this._k = (Half)(k / 100.0);
     }
 
+    /// <summary>
+    /// Constructor.
+    /// </summary>
     public CmykColor(Color color)
     {
         this.A = color.A;
@@ -136,6 +145,9 @@ public readonly struct CmykColor : IColor, IEquatable<CmykColor>
         }
     }
 
+    /// <summary>
+    /// Constructor.
+    /// </summary>
     public CmykColor(CmyColor cmyColor)
         : this(cmyColor.ToRgb())
     {
@@ -159,11 +171,17 @@ public readonly struct CmykColor : IColor, IEquatable<CmykColor>
         return HashCode.Combine(this.A, this.C, this.M, this.Y, this.K);
     }
 
+    /// <summary>
+    /// The == operator
+    /// </summary>
     public static bool operator ==(CmykColor left, CmykColor right)
     {
         return left.Equals(right);
     }
 
+    /// <summary>
+    /// The != operator
+    /// </summary>
     public static bool operator !=(CmykColor left, CmykColor right)
     {
         return !left.Equals(right);
