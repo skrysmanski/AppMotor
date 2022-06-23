@@ -78,6 +78,7 @@ public static class EqualityMembersTests
     /// <param name="equalItem">An item that's supposed to be equal to <paramref name="baseItem"/></param>
     public static void TestGetHashCode<T>(T baseItem, T equalItem) where T : notnull
     {
+        baseItem.GetHashCode().ShouldNotBe(0);
         baseItem.GetHashCode().ShouldBe(equalItem.GetHashCode());
     }
 }
