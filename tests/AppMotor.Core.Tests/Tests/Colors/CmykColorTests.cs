@@ -108,7 +108,7 @@ public sealed class CmykColorTests
     [Fact]
     public void Test_Equals()
     {
-        var red1 = new CmykColor(Color.Red);
+        var red1 = new CmykColor(0, 100, 100, 0);
         var red2 = new CmykColor(Color.Red);
         var green = new CmykColor(Color.Green);
 
@@ -118,7 +118,7 @@ public sealed class CmykColorTests
     [Fact]
     public void Test_GetHashCode()
     {
-        var red1 = new CmykColor(Color.Red);
+        var red1 = new CmykColor(0, 100, 100, 0);
         var red2 = new CmykColor(Color.Red);
 
         EqualityMembersTests.TestGetHashCode(red1, red2);

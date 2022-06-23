@@ -107,7 +107,7 @@ public sealed class CmyColorTests
     [Fact]
     public void Test_Equals()
     {
-        var red1 = new CmyColor(Color.Red);
+        var red1 = new CmyColor(0, 255, 255);
         var red2 = new CmyColor(Color.Red);
         var green = new CmyColor(Color.Green);
 
@@ -117,7 +117,7 @@ public sealed class CmyColorTests
     [Fact]
     public void Test_GetHashCode()
     {
-        var red1 = new CmyColor(Color.Red);
+        var red1 = new CmyColor(0, 255, 255);
         var red2 = new CmyColor(Color.Red);
 
         EqualityMembersTests.TestGetHashCode(red1, red2);

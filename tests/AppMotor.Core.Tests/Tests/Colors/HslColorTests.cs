@@ -104,7 +104,7 @@ public sealed class HslColorTests
     [Fact]
     public void Test_Equals()
     {
-        var red1 = new HslColor(Color.Red);
+        var red1 = new HslColor(0, 100, 50);
         var red2 = new HslColor(Color.Red);
         var green = new HslColor(Color.Green);
 
@@ -114,7 +114,7 @@ public sealed class HslColorTests
     [Fact]
     public void Test_GetHashCode()
     {
-        var red1 = new HslColor(Color.Red);
+        var red1 = new HslColor(0, 100, 50);
         var red2 = new HslColor(Color.Red);
 
         EqualityMembersTests.TestGetHashCode(red1, red2);
