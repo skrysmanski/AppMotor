@@ -14,8 +14,6 @@
 // limitations under the License.
 #endregion
 
-using System.Drawing;
-
 using JetBrains.Annotations;
 
 namespace AppMotor.Core.Colors;
@@ -35,5 +33,5 @@ public interface IColor
     /// Converts this color into its corresponding RGB color.
     /// </summary>
     [PublicAPI, MustUseReturnValue]
-    Color ToRgb();
+    RgbColor ToRgb();
 }

@@ -43,7 +43,7 @@ public sealed class HslColorTests
     public void Test_Conversion(byte r, byte g, byte b, double expectedH, double expectedS, double expectedL)
     {
         // Setup
-        var rgbColor = Color.FromArgb(alpha: 128, r, g, b);
+        var rgbColor = new RgbColor(a: 128, r, g, b);
 
         // Test
         var colorToTest = new HslColor(rgbColor);
@@ -83,8 +83,7 @@ public sealed class HslColorTests
     [ClassData(typeof(EnumTestDataGenerator<KnownColor>))]
     public void Test_KnownColors(KnownColor knownColor)
     {
-        var rgbColor = Color.FromKnownColor(knownColor);
-        rgbColor = Color.FromArgb(rgbColor.A, rgbColor.R, rgbColor.G, rgbColor.B);
+        var rgbColor = new RgbColor(knownColor);
 
         var hslColor = rgbColor.ToHsl();
 
@@ -105,8 +104,8 @@ public sealed class HslColorTests
     public void Test_Equals()
     {
         var red1 = new HslColor(0, 100, 50);
-        var red2 = new HslColor(Color.Red);
-        var green = new HslColor(Color.Green);
+        var red2 = new HslColor(RgbColor.Red);
+        var green = new HslColor(RgbColor.Green);
 
         EqualityMembersTests.TestEquals(red1, red2, green);
     }
@@ -115,7 +114,7 @@ public sealed class HslColorTests
     public void Test_GetHashCode()
     {
         var red1 = new HslColor(0, 100, 50);
-        var red2 = new HslColor(Color.Red);
+        var red2 = new HslColor(RgbColor.Red);
 
         EqualityMembersTests.TestGetHashCode(red1, red2);
     }

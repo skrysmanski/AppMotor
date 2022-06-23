@@ -14,8 +14,6 @@
 // limitations under the License.
 #endregion
 
-using System.Drawing;
-
 using AppMotor.Core.Extensions;
 
 using JetBrains.Annotations;
@@ -105,7 +103,7 @@ public readonly struct CmykColor : IColor, IEquatable<CmykColor>
     /// <summary>
     /// Constructor.
     /// </summary>
-    public CmykColor(Color color)
+    public CmykColor(RgbColor color)
     {
         this.A = color.A;
 
@@ -188,11 +186,11 @@ public readonly struct CmykColor : IColor, IEquatable<CmykColor>
     }
 
     /// <inheritdoc />
-    public Color ToRgb()
+    public RgbColor ToRgb()
     {
         var maxRgb = 1.0 - (double)this._k;
 
-        return Color.FromArgb(
+        return new RgbColor(
             this.A,
             (byte)Math.Round(255.0 * (1 - (double)this._c) * maxRgb),
             (byte)Math.Round(255.0 * (1 - (double)this._m) * maxRgb),

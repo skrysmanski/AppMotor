@@ -14,8 +14,6 @@
 // limitations under the License.
 #endregion
 
-using System.Drawing;
-
 using JetBrains.Annotations;
 
 namespace AppMotor.Core.Colors;
@@ -69,7 +67,7 @@ public readonly struct CmyColor : IColor, IEquatable<CmyColor>
     /// <summary>
     /// Constructor.
     /// </summary>
-    public CmyColor(Color color)
+    public CmyColor(RgbColor color)
     {
         this.A = color.A;
         this.C = (byte)(255 - color.R);
@@ -112,9 +110,9 @@ public readonly struct CmyColor : IColor, IEquatable<CmyColor>
     }
 
     /// <inheritdoc />
-    public Color ToRgb()
+    public RgbColor ToRgb()
     {
-        return Color.FromArgb(this.A, 255 - this.C, 255 - this.M, 255 - this.Y);
+        return new RgbColor(this.A, (byte)(255 - this.C), (byte)(255 - this.M), (byte)(255 - this.Y));
     }
 
     /// <summary>

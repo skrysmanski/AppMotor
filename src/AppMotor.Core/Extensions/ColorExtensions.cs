@@ -36,10 +36,28 @@ public static class ColorExtensions
     }
 
     /// <summary>
+    /// Converts this color into its corresponding HSL color.
+    /// </summary>
+    [MustUseReturnValue]
+    public static HslColor ToHsl(this RgbColor color)
+    {
+        return new HslColor(color);
+    }
+
+    /// <summary>
     /// Converts this color into its corresponding HSV/HSB color.
     /// </summary>
     [MustUseReturnValue]
     public static HsvColor ToHsv(this Color color)
+    {
+        return new HsvColor(color);
+    }
+
+    /// <summary>
+    /// Converts this color into its corresponding HSV/HSB color.
+    /// </summary>
+    [MustUseReturnValue]
+    public static HsvColor ToHsv(this RgbColor color)
     {
         return new HsvColor(color);
     }
@@ -54,6 +72,15 @@ public static class ColorExtensions
     }
 
     /// <summary>
+    /// Converts this color into its corresponding CMY color.
+    /// </summary>
+    [MustUseReturnValue]
+    public static CmyColor ToCmy(this RgbColor color)
+    {
+        return new CmyColor(color);
+    }
+
+    /// <summary>
     /// Converts this color into its corresponding CMYK color.
     /// </summary>
     [MustUseReturnValue]
@@ -61,4 +88,13 @@ public static class ColorExtensions
     {
         return new CmykColor(color);
     }
+    /// <summary>
+    /// Converts this color into its corresponding CMYK color.
+    /// </summary>
+    [MustUseReturnValue]
+    public static CmykColor ToCmyk(this RgbColor color)
+    {
+        return new CmykColor(color);
+    }
+
 }

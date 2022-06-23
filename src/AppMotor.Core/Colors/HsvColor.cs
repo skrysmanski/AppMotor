@@ -14,8 +14,6 @@
 // limitations under the License.
 #endregion
 
-using System.Drawing;
-
 using JetBrains.Annotations;
 
 namespace AppMotor.Core.Colors;
@@ -89,7 +87,7 @@ public readonly struct HsvColor : IColor, IEquatable<HsvColor>
     /// <summary>
     /// Constructor.
     /// </summary>
-    public HsvColor(Color color)
+    public HsvColor(RgbColor color)
     {
         this.A = color.A;
 
@@ -135,11 +133,11 @@ public readonly struct HsvColor : IColor, IEquatable<HsvColor>
     }
 
     /// <inheritdoc />
-    public Color ToRgb()
+    public RgbColor ToRgb()
     {
         HsxConverter.ConvertHsvToRgb((float)this._h, (float)this._s / 100, (float)this._v / 100, out var r, out var g, out var b);
 
-        return Color.FromArgb(this.A, r, g, b);
+        return new RgbColor(this.A, r, g, b);
     }
 
     /// <summary>

@@ -43,7 +43,7 @@ public sealed class HsvColorTests
     public void Test_Conversion(byte r, byte g, byte b, double expectedH, double expectedS, double expectedV)
     {
         // Setup
-        var rgbColor = Color.FromArgb(alpha: 128, r, g, b);
+        var rgbColor = new RgbColor(a: 128, r, g, b);
 
         // Test
         var colorToTest = new HsvColor(rgbColor);
@@ -83,8 +83,7 @@ public sealed class HsvColorTests
     [ClassData(typeof(EnumTestDataGenerator<KnownColor>))]
     public void Test_KnownColors(KnownColor knownColor)
     {
-        var rgbColor = Color.FromKnownColor(knownColor);
-        rgbColor = Color.FromArgb(rgbColor.A, rgbColor.R, rgbColor.G, rgbColor.B);
+        var rgbColor = new RgbColor(knownColor);
 
         var hsvColor = rgbColor.ToHsv();
 
@@ -105,8 +104,8 @@ public sealed class HsvColorTests
     public void Test_Equals()
     {
         var red1 = new HsvColor(0, 100, 100);
-        var red2 = new HsvColor(Color.Red);
-        var green = new HsvColor(Color.Green);
+        var red2 = new HsvColor(RgbColor.Red);
+        var green = new HsvColor(RgbColor.Green);
 
         EqualityMembersTests.TestEquals(red1, red2, green);
     }
@@ -115,7 +114,7 @@ public sealed class HsvColorTests
     public void Test_GetHashCode()
     {
         var red1 = new HsvColor(0, 100, 100);
-        var red2 = new HsvColor(Color.Red);
+        var red2 = new HsvColor(RgbColor.Red);
 
         EqualityMembersTests.TestGetHashCode(red1, red2);
     }

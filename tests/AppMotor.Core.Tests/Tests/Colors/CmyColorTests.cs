@@ -45,7 +45,7 @@ public sealed class CmyColorTests
     public void Test_Conversion(byte r, byte g, byte b, byte expectedC, byte expectedM, byte expectedY)
     {
         // Setup
-        var rgbColor = Color.FromArgb(alpha: 128, r, g, b);
+        var rgbColor = new RgbColor(a: 128, r, g, b);
 
         // Test
         var colorToTest = new CmyColor(rgbColor);
@@ -86,8 +86,7 @@ public sealed class CmyColorTests
     [ClassData(typeof(EnumTestDataGenerator<KnownColor>))]
     public void Test_KnownColors(KnownColor knownColor)
     {
-        var rgbColor = Color.FromKnownColor(knownColor);
-        rgbColor = Color.FromArgb(rgbColor.A, rgbColor.R, rgbColor.G, rgbColor.B);
+        var rgbColor = new RgbColor(knownColor);
 
         var cmyColor = rgbColor.ToCmy();
 
@@ -108,8 +107,8 @@ public sealed class CmyColorTests
     public void Test_Equals()
     {
         var red1 = new CmyColor(0, 255, 255);
-        var red2 = new CmyColor(Color.Red);
-        var green = new CmyColor(Color.Green);
+        var red2 = new CmyColor(RgbColor.Red);
+        var green = new CmyColor(RgbColor.Green);
 
         EqualityMembersTests.TestEquals(red1, red2, green);
     }
@@ -118,7 +117,7 @@ public sealed class CmyColorTests
     public void Test_GetHashCode()
     {
         var red1 = new CmyColor(0, 255, 255);
-        var red2 = new CmyColor(Color.Red);
+        var red2 = new CmyColor(RgbColor.Red);
 
         EqualityMembersTests.TestGetHashCode(red1, red2);
     }
