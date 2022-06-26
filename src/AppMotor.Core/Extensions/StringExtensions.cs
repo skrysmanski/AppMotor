@@ -32,24 +32,13 @@ public static class StringExtensions
     /// Convenience method for calling <c>string.Format()</c> with the current UI culture
     /// (<see cref="UICulture.FormatsAndSorting"/>) as format provider.
     /// </summary>
-    /// <seealso cref="WithIC"/>
+    /// <seealso cref="InvariantCultureExtensions.WithIC"/>
     [StringFormatMethod("message")]
     [MustUseReturnValue]
     [PublicAPI]
     public static string With([Localizable(true)] this string message, params object[] args)
     {
         return string.Format(UICulture.FormatsAndSorting, message, args);
-    }
-
-    /// <summary>
-    /// Convenience method for calling <c>string.Format()</c> with <see cref="CultureInfo.InvariantCulture"/>.
-    /// </summary>
-    /// <seealso cref="With"/>
-    [StringFormatMethod("message")]
-    [PublicAPI]
-    public static string WithIC([Localizable(false)] this string message, params object[] args)
-    {
-        return string.Format(CultureInfo.InvariantCulture, message, args);
     }
 
     /// <summary>

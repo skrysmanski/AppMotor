@@ -21,6 +21,7 @@ namespace AppMotor.Core.Extensions;
 /// <summary>
 /// Extension methods for number types.
 /// </summary>
+/// <seealso cref="InvariantCultureExtensions"/>
 public static class NumbersExtensions
 {
     /// <summary>
