@@ -22,10 +22,16 @@ using JetBrains.Annotations;
 namespace AppMotor.Core.Extensions;
 
 /// <summary>
-/// Extension methods for <see cref="Color"/>.
+/// Extension methods for <see cref="Color"/> and <see cref="RgbColor"/>.
 /// </summary>
 public static class ColorExtensions
 {
+    //
+    // NOTE: I was thinking of adding support for IColor here but in the end decided against it
+    //   because it would make the API surface of the colors more messy (e.g. having "HslColor.ToHsl()").
+    //   Also, something like "HslColor.ToHex()" may be confusing as the result is RGB, not HSL.
+    //
+
     /// <summary>
     /// Converts this color into its corresponding HSL color.
     /// </summary>
@@ -97,4 +103,20 @@ public static class ColorExtensions
         return new CmykColor(color);
     }
 
+    /// <summary>
+    /// Converts this color into its corresponding CMYK color.
+    /// </summary>
+    [MustUseReturnValue]
+    public static HexColor ToHex(this Color color)
+    {
+        return new HexColor(color);
+    }
+    /// <summary>
+    /// Converts this color into its corresponding CMYK color.
+    /// </summary>
+    [MustUseReturnValue]
+    public static HexColor ToHex(this RgbColor color)
+    {
+        return new HexColor(color);
+    }
 }

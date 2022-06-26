@@ -75,6 +75,40 @@ public sealed class RgbColorTests
     }
 
     [Theory]
+    [InlineData(255, 255,   0,   0)] // red
+    [InlineData(128,   0, 255,   0)] // green
+    [InlineData(  0,   0,   0, 255)] // blue
+    [InlineData(255,   0,   0,   0)] // black
+    [InlineData(255, 255, 255, 255)] // white
+    [InlineData(255, 128, 128, 128)] // gray
+    [InlineData(255, 255, 105, 180)] // hot pink
+    [InlineData(255,  64,  64,  96)] // dark blue
+    [InlineData(255, 115,  66,  32)] // brown
+    public void Test_ImplicitConversion(byte a, byte r, byte g, byte b)
+    {
+        // Setup
+        var color = Color.FromArgb(a, r, g, b);
+
+        // Test 1
+        RgbColor rgbColor = color;
+
+        // Verify 1
+        rgbColor.A.ShouldBe(a);
+        rgbColor.R.ShouldBe(r);
+        rgbColor.G.ShouldBe(g);
+        rgbColor.B.ShouldBe(b);
+
+        // Test 1
+        Color color2 = rgbColor;
+
+        // Verify 1
+        color2.A.ShouldBe(a);
+        color2.R.ShouldBe(r);
+        color2.G.ShouldBe(g);
+        color2.B.ShouldBe(b);
+    }
+
+    [Theory]
     [ClassData(typeof(EnumTestDataGenerator<KnownColor>))]
     public void Test_KnownColors(KnownColor knownColor)
     {
