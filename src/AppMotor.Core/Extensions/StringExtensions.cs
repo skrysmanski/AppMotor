@@ -34,6 +34,7 @@ public static class StringExtensions
     /// </summary>
     /// <seealso cref="WithIC"/>
     [StringFormatMethod("message")]
+    [MustUseReturnValue]
     [PublicAPI]
     public static string With([Localizable(true)] this string message, params object[] args)
     {

@@ -24,6 +24,9 @@ using Xunit;
 
 namespace AppMotor.Core.Tests.Extensions;
 
+/// <summary>
+/// Tests for <see cref="NumbersExtensions"/>.
+/// </summary>
 public sealed class NumbersExtensionsTests
 {
     [Theory]
