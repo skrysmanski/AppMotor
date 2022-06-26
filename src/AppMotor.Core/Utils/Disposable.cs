@@ -111,10 +111,7 @@ public abstract class Disposable : IDisposable
     /// </summary>
     /// <seealso cref="DisposeUnmanagedResources"/>
     [PublicAPI]
-    protected virtual void DisposeManagedResources()
-    {
-        // Does nothing by default.
-    }
+    protected abstract void DisposeManagedResources();
 
     /// <summary>
     /// Disposes all unmanaged resources of this class.

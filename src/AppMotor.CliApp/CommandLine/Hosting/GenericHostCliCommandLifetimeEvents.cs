@@ -48,8 +48,6 @@ internal sealed class GenericHostCliCommandLifetimeEvents : Disposable, IGeneric
     /// <inheritdoc />
     protected override void DisposeManagedResources()
     {
-        base.DisposeManagedResources();
-
         this._cts.Dispose();
     }
 

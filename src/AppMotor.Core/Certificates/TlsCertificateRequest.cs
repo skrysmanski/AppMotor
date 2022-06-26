@@ -66,8 +66,6 @@ public sealed class TlsCertificateRequest : Disposable
     /// <inheritdoc />
     protected override void DisposeManagedResources()
     {
-        base.DisposeManagedResources();
-
         this._rsaAlgorithm.Dispose();
     }
 

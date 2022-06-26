@@ -351,8 +351,6 @@ public class Base32Encoding : Rfc4648Encoding
         protected override void DisposeManagedResources()
         {
             ArrayPool<char>.Shared.Return(this._encodeBuffer);
-
-            base.DisposeManagedResources();
         }
 
         [MustUseReturnValue]
@@ -539,8 +537,6 @@ public class Base32Encoding : Rfc4648Encoding
         protected override void DisposeManagedResources()
         {
             ArrayPool<byte>.Shared.Return(this._decoderBuffer);
-
-            base.DisposeManagedResources();
         }
 
         protected ArraySegment<byte> DecodeGroup(ReadOnlySpan<char> symbolGroup)

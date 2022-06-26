@@ -122,8 +122,6 @@ public sealed class Event<TEventArgs>
         /// <inheritdoc />
         protected override void DisposeManagedResources()
         {
-            base.DisposeManagedResources();
-
             this._containingEvent.RemoveRegistration(this);
         }
     }

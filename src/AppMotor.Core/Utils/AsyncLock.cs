@@ -15,8 +15,6 @@ public sealed class AsyncLock : Disposable
     /// <inheritdoc />
     protected override void DisposeManagedResources()
     {
-        base.DisposeManagedResources();
-
         this._lock.Dispose();
     }
 
@@ -70,8 +68,6 @@ public sealed class AsyncLock : Disposable
         /// <inheritdoc />
         protected override void DisposeManagedResources()
         {
-            base.DisposeManagedResources();
-
             this._acquiredLock.Release();
         }
     }

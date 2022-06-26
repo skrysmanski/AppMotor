@@ -177,8 +177,6 @@ public sealed class TlsCertificate : Disposable
     /// <inheritdoc />
     protected override void DisposeManagedResources()
     {
-        base.DisposeManagedResources();
-
         this._underlyingCertificate?.Dispose();
         this._underlyingCertificate = null;
     }

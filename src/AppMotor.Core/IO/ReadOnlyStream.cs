@@ -73,8 +73,6 @@ public class ReadOnlyStream : AsyncDisposable, IReadOnlyStream
     protected override void DisposeManagedResources()
     {
         this._underlyingStream.Dispose();
-
-        base.DisposeManagedResources();
     }
 
     /// <inheritdoc />
