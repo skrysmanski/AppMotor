@@ -96,13 +96,6 @@ public sealed class CliApplicationTests
         public bool IsErrorRedirected => throw new NotSupportedException();
 
         /// <inheritdoc />
-        public ConsoleColor BackgroundColor
-        {
-            get => throw new NotSupportedException();
-            set => throw new NotSupportedException();
-        }
-
-        /// <inheritdoc />
         public bool IsKeyAvailable => true;
 
         private readonly StringBuilder _outWriter = new();

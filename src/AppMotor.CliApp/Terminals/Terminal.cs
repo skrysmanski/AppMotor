@@ -110,16 +110,6 @@ public static class Terminal
     }
 
     /// <summary>
-    /// The background color of the terminal.
-    /// </summary>
-    [PublicAPI]
-    public static ConsoleColor BackgroundColor
-    {
-        get => Console.BackgroundColor;
-        set => Console.BackgroundColor = value;
-    }
-
-    /// <summary>
     /// The width of the terminal window; i.e. how many characters can be displayed
     /// on a single line.
     ///
@@ -437,13 +427,6 @@ public static class Terminal
         {
             get => Terminal.OutputEncoding;
             set => Terminal.OutputEncoding = value;
-        }
-
-        /// <inheritdoc />
-        public ConsoleColor BackgroundColor
-        {
-            get => Terminal.BackgroundColor;
-            set => Terminal.BackgroundColor = value;
         }
 
         /// <inheritdoc />

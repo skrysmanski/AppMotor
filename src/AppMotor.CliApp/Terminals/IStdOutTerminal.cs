@@ -31,12 +31,6 @@ public interface IStdOutTerminal
     bool IsOutputRedirected { get; }
 
     /// <summary>
-    /// The background color of the terminal.
-    /// </summary>
-    [PublicAPI]
-    ConsoleColor BackgroundColor { get; set; }
-
-    /// <summary>
     /// Writes the specified object to the terminal's standard output.
     /// </summary>
     [PublicAPI]

@@ -34,13 +34,6 @@ internal sealed class TestTerminal : ITerminal
     /// <inheritdoc />
     public bool IsOutputRedirected => false;
 
-    /// <inheritdoc />
-    public ConsoleColor BackgroundColor
-    {
-        get => throw new NotSupportedException();
-        set => throw new NotSupportedException();
-    }
-
     public TestTerminal()
     {
         var threadSafeWriter = TextWriter.Synchronized(new StringWriter(this._outWriter));
