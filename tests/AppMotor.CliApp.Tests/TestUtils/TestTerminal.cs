@@ -58,10 +58,4 @@ internal sealed class TestTerminal : ITerminal
 
     /// <inheritdoc />
     public string ReadLine() => throw new NotSupportedException();
-
-    /// <inheritdoc />
-    public void Write(ColoredString? coloredString)
-    {
-        this.Out.Write(coloredString);
-    }
 }

@@ -33,10 +33,6 @@ public interface IStdOutTerminal
     /// <summary>
     /// The background color of the terminal.
     /// </summary>
-    /// <remarks>
-    /// To set the foreground (text) color, use <see cref="Write(ColoredString)"/>
-    /// or <see cref="WriteLine(ColoredString)"/>.
-    /// </remarks>
     [PublicAPI]
     ConsoleColor BackgroundColor { get; set; }
 
@@ -70,12 +66,6 @@ public interface IStdOutTerminal
     }
 
     /// <summary>
-    /// Writes the specified colored string to the terminal's standard output.
-    /// </summary>
-    [PublicAPI]
-    void Write(ColoredString? coloredString);
-
-    /// <summary>
     /// Writes the specified object to the terminal's standard output
     /// and appends a line break at the end.
     /// </summary>
@@ -104,17 +94,6 @@ public interface IStdOutTerminal
     void WriteLine([Localizable(true)] string format, params object[] args)
     {
         WriteLine(format.With(args));
-    }
-
-    /// <summary>
-    /// Writes the specified colored string to the terminal's standard output
-    /// and appends a line break at the end.
-    /// </summary>
-    [PublicAPI]
-    void WriteLine(ColoredString? coloredString)
-    {
-        Write(coloredString);
-        WriteLine();
     }
 
     /// <summary>

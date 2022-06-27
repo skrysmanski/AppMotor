@@ -5,6 +5,7 @@ using AppMotor.CliApp.CommandLine;
 using AppMotor.CliApp.CommandLine.Utils;
 using AppMotor.CliApp.Properties;
 using AppMotor.CliApp.Terminals;
+using AppMotor.CliApp.Terminals.Formatting;
 using AppMotor.Core.Exceptions;
 using AppMotor.Core.Logging;
 using AppMotor.Core.Utils;
@@ -254,7 +255,7 @@ public abstract class CliApplication
         if (supportMessage != null && printSupportMessage)
         {
             terminal.WriteLine();
-            terminal.WriteLine((TextInMagenta)supportMessage);
+            terminal.WriteLine(TermText.Magenta(supportMessage));
             terminal.WriteLine();
         }
     }
@@ -277,12 +278,12 @@ public abstract class CliApplication
         }
         else if (exception is ErrorMessageException)
         {
-            terminal.WriteLine((TextInRed)exception.Message);
+            terminal.WriteLine(TermText.Red(exception.Message));
             printSupportMessage = false;
         }
         else
         {
-            terminal.WriteLine((TextInRed)exception.ToStringExtended());
+            terminal.WriteLine(TermText.Red(exception.ToStringExtended()));
             printSupportMessage = true;
         }
 

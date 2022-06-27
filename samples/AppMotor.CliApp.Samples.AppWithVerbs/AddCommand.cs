@@ -1,5 +1,6 @@
 ﻿using AppMotor.CliApp.CommandLine;
-using AppMotor.CliApp.Terminals;
+
+using static AppMotor.CliApp.Terminals.Formatting.TermText;
 
 namespace AppMotor.CliApp.Samples.AppWithVerbs;
 
@@ -31,13 +32,13 @@ internal class AddCommand : GitCommandBase
     {
         if (this.QuietParam.Value)
         {
-            this.Terminal.WriteLine((TextInDarkGray)"This command would run quite.");
+            this.Terminal.WriteLine(DarkGray("This command would run quite."));
             this.Terminal.WriteLine();
         }
 
         if (this.VerboseParam.Value)
         {
-            this.Terminal.WriteLine((TextInDarkGray)"This command would run verbose.");
+            this.Terminal.WriteLine(DarkGray("This command would run verbose."));
             this.Terminal.WriteLine();
         }
 
@@ -60,7 +61,7 @@ internal class AddCommand : GitCommandBase
 
         foreach (var fileToAdd in this.FilesParam.Value)
         {
-            this.Terminal.WriteLine((TextInCyan)$" - {fileToAdd.FullName}");
+            this.Terminal.WriteLine(Cyan($" - {fileToAdd.FullName}"));
         }
     }
 }

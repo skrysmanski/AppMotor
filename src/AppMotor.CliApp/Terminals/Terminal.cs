@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
+using AppMotor.CliApp.Terminals.Formatting;
 using AppMotor.Core.Extensions;
 
 using JetBrains.Annotations;
@@ -12,7 +13,7 @@ using JetBrains.Annotations;
 namespace AppMotor.CliApp.Terminals;
 
 /// <summary>
-/// Replacement for <see cref="Console"/> that supports <see cref="ColoredString"/>.
+/// Replacement for <see cref="Console"/> that supports <see cref="TermText"/>.
 /// </summary>
 [ExcludeFromCodeCoverage]
 public static class Terminal
@@ -111,10 +112,6 @@ public static class Terminal
     /// <summary>
     /// The background color of the terminal.
     /// </summary>
-    /// <remarks>
-    /// To set the foreground (text) color, use <see cref="Write(ColoredString)"/>
-    /// or <see cref="WriteLine(ColoredString)"/>.
-    /// </remarks>
     [PublicAPI]
     public static ConsoleColor BackgroundColor
     {
@@ -278,34 +275,6 @@ public static class Terminal
     }
 
     /// <summary>
-    /// Writes the specified colored string to the terminal's standard output.
-    /// </summary>
-    [PublicAPI]
-    public static void Write(ColoredString? coloredString)
-    {
-        if (coloredString == null || coloredString.Count == 0)
-        {
-            return;
-        }
-
-        var originalColor = Console.ForegroundColor;
-
-        try
-        {
-            foreach (var coloredSubstring in coloredString)
-            {
-                Console.ForegroundColor = coloredSubstring.Color ?? originalColor;
-
-                Out.Write(coloredSubstring.Text);
-            }
-        }
-        finally
-        {
-            Console.ForegroundColor = originalColor;
-        }
-    }
-
-    /// <summary>
     /// Writes the specified object to the terminal's standard output
     /// and appends a line break at the end.
     /// </summary>
@@ -334,17 +303,6 @@ public static class Terminal
     public static void WriteLine([Localizable(true)] string format, params object[] args)
     {
         WriteLine(format.With(args));
-    }
-
-    /// <summary>
-    /// Writes the specified colored string to the terminal's standard output
-    /// and appends a line break at the end.
-    /// </summary>
-    [PublicAPI]
-    public static void WriteLine(ColoredString? coloredString)
-    {
-        Write(coloredString);
-        WriteLine();
     }
 
     /// <summary>
@@ -510,9 +468,6 @@ public static class Terminal
             get => Terminal.CursorTop;
             set => Terminal.CursorTop = value;
         }
-
-        /// <inheritdoc />
-        public void Write(ColoredString? coloredString) => Terminal.Write(coloredString);
 
         /// <inheritdoc />
         public ConsoleKeyInfo ReadKey(bool displayPressedKey = true) => Terminal.ReadKey(displayPressedKey);

@@ -2,6 +2,7 @@
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
 using AppMotor.CliApp.CommandLine;
+using AppMotor.CliApp.Terminals.Formatting;
 using AppMotor.CliApp.TestUtils;
 using AppMotor.Core.Exceptions;
 
@@ -41,7 +42,7 @@ public sealed class CliApplicationWithVerbsTests
         caughtException.Message.ShouldBe("This is an error message.");
 
         // This must be the only output.
-        app.TerminalOutput.Trim().ShouldBe("This is an error message.");
+        app.TerminalOutput.Trim().ShouldBe(TermText.Red("This is an error message."));
     }
 
     [Fact]

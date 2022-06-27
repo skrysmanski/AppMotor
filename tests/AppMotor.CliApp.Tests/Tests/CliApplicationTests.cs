@@ -126,12 +126,6 @@ public sealed class CliApplicationTests
 
         /// <inheritdoc />
         public string ReadLine() => throw new NotSupportedException();
-
-        /// <inheritdoc />
-        public void Write(ColoredString? coloredString)
-        {
-            this.Out.Write(coloredString);
-        }
     }
 
     private sealed class TestApplicationForExceptionHandling : TestCliApplicationBase
@@ -139,7 +133,7 @@ public sealed class CliApplicationTests
         /// <inheritdoc />
         protected override CliApplicationExecutor MainExecutor => new(Execute);
 
-        private void Execute()
+        private static void Execute()
         {
             try
             {
