@@ -19,13 +19,13 @@ internal sealed class TestTerminal : ITerminal
     public bool IsKeyAvailable => throw new NotSupportedException();
 
     /// <inheritdoc />
-    public TextWriter Error { get; }
+    public ITerminalWriter Error { get; }
 
     /// <inheritdoc />
     public bool IsErrorRedirected => throw new NotSupportedException();
 
     /// <inheritdoc />
-    public TextWriter Out { get; }
+    public ITerminalWriter Out { get; }
 
     private readonly StringBuilder _outWriter = new();
 
@@ -37,8 +37,8 @@ internal sealed class TestTerminal : ITerminal
     public TestTerminal()
     {
         var threadSafeWriter = TextWriter.Synchronized(new StringWriter(this._outWriter));
-        this.Out = threadSafeWriter;
-        this.Error = threadSafeWriter;
+        this.Out = new TerminalWriter(threadSafeWriter.Write);
+        this.Error = new TerminalWriter(threadSafeWriter.Write);
     }
 
     public void ResetOutput()

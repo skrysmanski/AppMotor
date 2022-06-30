@@ -2,68 +2,65 @@
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
 using System.ComponentModel;
+using System.Globalization;
 
-using AppMotor.Core.Extensions;
+using AppMotor.Core.Globalization;
 
 using JetBrains.Annotations;
 
 namespace AppMotor.CliApp.Terminals;
 
 /// <summary>
-/// Represents the standard output (i.e. analog to <see cref="Console.Out"/>) of a terminal.
+/// A writer that writes to a terminal's output stream - either stdout or stderr.
 /// </summary>
-/// <seealso cref="ITerminal"/>
-/// <seealso cref="IOutputTerminal"/>
-/// <seealso cref="IErrorOutTerminal"/>
-public interface IStdOutTerminal
+public interface ITerminalWriter
 {
-    /// <summary>
-    /// The standard out stream.
-    /// </summary>
-    [PublicAPI]
-    ITerminalWriter Out { get; }
+    string NewLine => Environment.NewLine;
 
-    /// <summary>
-    /// Whether <see cref="Out"/> is redirected (to a file or the input
-    /// of another process).
-    /// </summary>
-    [PublicAPI]
-    bool IsOutputRedirected { get; }
+    CultureInfo Culture => UICulture.FormatsAndSorting;
 
     /// <summary>
     /// Writes the specified object to the terminal's standard output.
     /// </summary>
-    [PublicAPI]
+    void Write<T>([Localizable(true)] T? value) where T : IConvertible
+    {
+        Write(value?.ToString(this.Culture));
+    }
+
+    /// <summary>
+    /// Writes the specified object to the terminal's standard output.
+    /// </summary>
     void Write([Localizable(true)] object? value)
     {
-        this.Out.Write(value?.ToString());
+        if (value is IConvertible convertible)
+        {
+            Write(convertible.ToString(this.Culture));
+        }
+        else
+        {
+            Write(value?.ToString());
+        }
     }
 
     /// <summary>
     /// Writes the specified string to the terminal's standard output.
     /// </summary>
-    [PublicAPI]
-    void Write([Localizable(true)] string? value)
-    {
-        this.Out.Write(value);
-    }
+    void Write([Localizable(true)] string? value);
 
     /// <summary>
     /// Formats <paramref name="format"/> with <paramref name="args"/> and writes the result
     /// to the terminal's standard output.
     /// </summary>
-    [PublicAPI]
     [StringFormatMethod("format")]
     void Write([Localizable(true)] string format, params object[] args)
     {
-        Write(format.With(args));
+        Write(string.Format(this.Culture, format, args));
     }
 
     /// <summary>
     /// Writes the specified object to the terminal's standard output
     /// and appends a line break at the end.
     /// </summary>
-    [PublicAPI]
     void WriteLine([Localizable(true)] object? value)
     {
         WriteLine(value?.ToString());
@@ -73,30 +70,28 @@ public interface IStdOutTerminal
     /// Writes the specified string to the terminal's standard output
     /// and appends a line break at the end.
     /// </summary>
-    [PublicAPI]
     void WriteLine([Localizable(true)] string? value)
     {
-        this.Out.Write(value);
-        this.Out.WriteLine();
+        Write(value);
+        WriteLine();
     }
 
     /// <summary>
     /// Formats <paramref name="format"/> with <paramref name="args"/> and writes the result
     /// to the terminal's standard output and appends a line break at the end.
     /// </summary>
-    [PublicAPI]
     [StringFormatMethod("format")]
     void WriteLine([Localizable(true)] string format, params object[] args)
     {
-        WriteLine(format.With(args));
+        Write(format, args);
+        WriteLine();
     }
 
     /// <summary>
     /// Writes a line break to the terminal's standard output.
     /// </summary>
-    [PublicAPI]
     void WriteLine()
     {
-        this.Out.WriteLine();
+        Write(this.NewLine);
     }
 }

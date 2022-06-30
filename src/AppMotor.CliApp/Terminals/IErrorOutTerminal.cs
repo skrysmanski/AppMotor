@@ -17,7 +17,7 @@ public interface IErrorOutTerminal
     /// The standard error output stream.
     /// </summary>
     [PublicAPI]
-    TextWriter Error { get; }
+    ITerminalWriter Error { get; }
 
     /// <summary>
     /// Whether <see cref="Error"/> is redirected (to a file or the input

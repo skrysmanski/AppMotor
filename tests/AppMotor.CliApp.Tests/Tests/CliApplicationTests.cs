@@ -84,13 +84,13 @@ public sealed class CliApplicationTests
         public bool IsInputRedirected => false;
 
         /// <inheritdoc />
-        public TextWriter Out { get; }
+        public ITerminalWriter Out { get; }
 
         /// <inheritdoc />
         public bool IsOutputRedirected => throw new NotSupportedException();
 
         /// <inheritdoc />
-        public TextWriter Error => throw new NotSupportedException();
+        public ITerminalWriter Error => throw new NotSupportedException();
 
         /// <inheritdoc />
         public bool IsErrorRedirected => throw new NotSupportedException();
@@ -106,8 +106,7 @@ public sealed class CliApplicationTests
 
         public WaitForKeyTerminal()
         {
-            var threadSafeWriter = TextWriter.Synchronized(new StringWriter(this._outWriter));
-            this.Out = threadSafeWriter;
+            this.Out = new TerminalWriter(value => this._outWriter.Append(value));
         }
 
         /// <inheritdoc />

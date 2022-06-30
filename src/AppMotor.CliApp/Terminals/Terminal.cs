@@ -73,7 +73,9 @@ public static class Terminal
     /// The standard output stream.
     /// </summary>
     [PublicAPI]
-    public static TextWriter Out => Console.Out;
+    // IMPORTANT: Don't use "new TerminalWriter(Console.Out.Write)" here as this would not
+    //   work properly if "Console.Out" is changed after creating the writer.
+    public static ITerminalWriter Out { get; } = new TerminalWriter(value => Console.Out.Write(value));
 
     /// <summary>
     /// Whether <see cref="Out"/> is redirected (to a file or the input
@@ -86,7 +88,9 @@ public static class Terminal
     /// The standard error output stream.
     /// </summary>
     [PublicAPI]
-    public static TextWriter Error => Console.Error;
+    // IMPORTANT: Don't use "new TerminalWriter(Console.Error.Write)" here as this would not
+    //   work properly if "Console.Error" is changed after creating the writer.
+    public static ITerminalWriter Error { get; } = new TerminalWriter(value => Console.Error.Write(value));
 
     /// <summary>
     /// Whether <see cref="Error"/> is redirected (to a file or the input
@@ -233,6 +237,14 @@ public static class Terminal
     private static void OnTerminateKeyCombinationPressed(object? sender, ConsoleCancelEventArgs e)
     {
         TerminateKeyCombinationPressed?.Invoke(null, e);
+    }
+
+    /// <summary>
+    /// Writes the specified object to the terminal's standard output.
+    /// </summary>
+    public static void Write<T>([Localizable(true)] T? value) where T : IConvertible
+    {
+        Out.Write(value);
     }
 
     /// <summary>
@@ -404,13 +416,13 @@ public static class Terminal
         public bool IsKeyAvailable => Terminal.IsKeyAvailable;
 
         /// <inheritdoc />
-        public TextWriter Out => Terminal.Out;
+        public ITerminalWriter Out => Terminal.Out;
 
         /// <inheritdoc />
         public bool IsOutputRedirected => Terminal.IsOutputRedirected;
 
         /// <inheritdoc />
-        public TextWriter Error => Terminal.Error;
+        public ITerminalWriter Error => Terminal.Error;
 
         /// <inheritdoc />
         public bool IsErrorRedirected => Terminal.IsErrorRedirected;
