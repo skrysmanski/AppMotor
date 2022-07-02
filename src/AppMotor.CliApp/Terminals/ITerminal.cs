@@ -8,6 +8,6 @@ namespace AppMotor.CliApp.Terminals;
 /// no interaction with the terminal window - like setting the terminal's title, cursor position or obtaining
 /// the terminal's width. For advanced features, see <see cref="ITerminalWindow"/>.
 /// </summary>
-public interface ITerminal : IOutputTerminal, IInputTerminal
+public interface ITerminal : ITerminalOutput, ITerminalInput
 {
 }

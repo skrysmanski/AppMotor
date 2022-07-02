@@ -10,12 +10,9 @@ using JetBrains.Annotations;
 namespace AppMotor.CliApp.Terminals;
 
 /// <summary>
-/// Represents the standard output (i.e. analog to <see cref="Console.Out"/>) of a terminal.
+/// Represents the output part of a terminal. For the input part, see <see cref="ITerminalInput"/>.
 /// </summary>
-/// <seealso cref="ITerminal"/>
-/// <seealso cref="IOutputTerminal"/>
-/// <seealso cref="IErrorOutTerminal"/>
-public interface IStdOutTerminal
+public interface ITerminalOutput
 {
     /// <summary>
     /// The standard out stream.
@@ -29,6 +26,19 @@ public interface IStdOutTerminal
     /// </summary>
     [PublicAPI]
     bool IsOutputRedirected { get; }
+
+    /// <summary>
+    /// The standard error output stream.
+    /// </summary>
+    [PublicAPI]
+    ITerminalWriter Error { get; }
+
+    /// <summary>
+    /// Whether <see cref="Error"/> is redirected (to a file or the input
+    /// of another process).
+    /// </summary>
+    [PublicAPI]
+    bool IsErrorRedirected { get; }
 
     /// <summary>
     /// Writes the specified object to the terminal's standard output.

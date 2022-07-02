@@ -9,7 +9,7 @@ namespace AppMotor.CliApp.Terminals;
 /// Represents the input of a terminal.
 /// </summary>
 /// <seealso cref="ITerminal"/>
-public interface IInputTerminal
+public interface ITerminalInput
 {
     /// <summary>
     /// The standard input stream.
