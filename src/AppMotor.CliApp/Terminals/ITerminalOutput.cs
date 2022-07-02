@@ -3,8 +3,6 @@
 
 using System.ComponentModel;
 
-using AppMotor.Core.Extensions;
-
 using JetBrains.Annotations;
 
 namespace AppMotor.CliApp.Terminals;
@@ -46,7 +44,7 @@ public interface ITerminalOutput
     [PublicAPI]
     void Write([Localizable(true)] object? value)
     {
-        this.Out.Write(value?.ToString());
+        this.Out.Write(value);
     }
 
     /// <summary>
@@ -66,7 +64,7 @@ public interface ITerminalOutput
     [StringFormatMethod("format")]
     void Write([Localizable(true)] string format, params object[] args)
     {
-        Write(format.With(args));
+        this.Out.Write(format, args);
     }
 
     /// <summary>
@@ -76,7 +74,7 @@ public interface ITerminalOutput
     [PublicAPI]
     void WriteLine([Localizable(true)] object? value)
     {
-        WriteLine(value?.ToString());
+        this.Out.WriteLine(value);
     }
 
     /// <summary>
@@ -86,8 +84,7 @@ public interface ITerminalOutput
     [PublicAPI]
     void WriteLine([Localizable(true)] string? value)
     {
-        this.Out.Write(value);
-        this.Out.WriteLine();
+        this.Out.WriteLine(value);
     }
 
     /// <summary>
@@ -98,7 +95,7 @@ public interface ITerminalOutput
     [StringFormatMethod("format")]
     void WriteLine([Localizable(true)] string format, params object[] args)
     {
-        WriteLine(format.With(args));
+        this.Out.WriteLine(format, args);
     }
 
     /// <summary>
