@@ -3,7 +3,6 @@
 
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
 
 using AppMotor.CliApp.Terminals.Formatting;
 using AppMotor.Core.Extensions;
@@ -29,19 +28,6 @@ public static class Terminal
     /// </summary>
     [PublicAPI]
     public static TextReader Input => Console.In;
-
-    /// <summary>
-    /// The encoding used for <see cref="Input"/>.
-    /// </summary>
-    /// <remarks>
-    /// For details and defaults, see <see cref="Console.InputEncoding"/>.
-    /// </remarks>
-    [PublicAPI]
-    public static Encoding InputEncoding
-    {
-        get => Console.InputEncoding;
-        set => Console.InputEncoding = value;
-    }
 
     /// <summary>
     /// Whether <see cref="Input"/> is redirected (to a file or the output
@@ -98,20 +84,6 @@ public static class Terminal
     /// </summary>
     [PublicAPI]
     public static bool IsErrorRedirected => Console.IsErrorRedirected;
-
-    /// <summary>
-    /// The encoding used for the various <c>Write()</c> and <c>WriteLine()</c> methods
-    /// and for <see cref="Error"/>.
-    /// </summary>
-    /// <remarks>
-    /// For details and defaults, see <see cref="Console.OutputEncoding"/>.
-    /// </remarks>
-    [PublicAPI]
-    public static Encoding OutputEncoding
-    {
-        get => Console.OutputEncoding;
-        set => Console.OutputEncoding = value;
-    }
 
     /// <summary>
     /// The width of the terminal window; i.e. how many characters can be displayed
@@ -426,20 +398,6 @@ public static class Terminal
 
         /// <inheritdoc />
         public bool IsErrorRedirected => Terminal.IsErrorRedirected;
-
-        /// <inheritdoc />
-        public Encoding InputEncoding
-        {
-            get => Terminal.InputEncoding;
-            set => Terminal.InputEncoding = value;
-        }
-
-        /// <inheritdoc />
-        public Encoding OutputEncoding
-        {
-            get => Terminal.OutputEncoding;
-            set => Terminal.OutputEncoding = value;
-        }
 
         /// <inheritdoc />
         public int TerminalWidth => Terminal.TerminalWidth;

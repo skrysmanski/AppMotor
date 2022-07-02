@@ -2,7 +2,6 @@
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
 using System.ComponentModel;
-using System.Text;
 
 using JetBrains.Annotations;
 
@@ -14,25 +13,6 @@ namespace AppMotor.CliApp.Terminals;
 /// <seealso cref="ITerminal"/>
 public interface ITerminalWindow : ITerminal
 {
-    /// <summary>
-    /// The encoding used for <see cref="IInputTerminal.Input"/>.
-    /// </summary>
-    /// <remarks>
-    /// For details and defaults, see <see cref="Console.InputEncoding"/>.
-    /// </remarks>
-    [PublicAPI]
-    Encoding InputEncoding { get; set; }
-
-    /// <summary>
-    /// The encoding used for the various <c>Write()</c> and <c>WriteLine()</c> methods
-    /// and for <see cref="IErrorOutTerminal.Error"/>.
-    /// </summary>
-    /// <remarks>
-    /// For details and defaults, see <see cref="Console.OutputEncoding"/>.
-    /// </remarks>
-    [PublicAPI]
-    Encoding OutputEncoding { get; set; }
-
     /// <summary>
     /// The width of the terminal window; i.e. how many characters can be displayed
     /// on a single line.
