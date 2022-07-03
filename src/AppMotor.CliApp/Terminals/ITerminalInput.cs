@@ -15,10 +15,10 @@ public interface ITerminalInput
     /// The standard input stream.
     /// </summary>
     [PublicAPI]
-    TextReader Input { get; }
+    TextReader In { get; }
 
     /// <summary>
-    /// Whether <see cref="Input"/> is redirected (to a file or the output
+    /// Whether <see cref="In"/> is redirected (to a file or the output
     /// of another process). If this property is <c>true</c>, some members
     /// of this class won't work anymore (<see cref="IsKeyAvailable"/>,
     /// <see cref="ReadKey"/>). Also, <see cref="ReadLine"/> can return

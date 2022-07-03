@@ -27,10 +27,10 @@ public static class Terminal
     /// The standard input stream.
     /// </summary>
     [PublicAPI]
-    public static TextReader Input => Console.In;
+    public static TextReader In => Console.In;
 
     /// <summary>
-    /// Whether <see cref="Input"/> is redirected (to a file or the output
+    /// Whether <see cref="In"/> is redirected (to a file or the output
     /// of another process). If this property is <c>true</c>, some members
     /// of this class won't work anymore (<see cref="IsKeyAvailable"/>,
     /// <see cref="ReadKey"/>). Also, <see cref="ReadLine"/> can return
@@ -379,7 +379,7 @@ public static class Terminal
     private sealed class TerminalAsInstance : ITerminalWindow
     {
         /// <inheritdoc />
-        public TextReader Input => Terminal.Input;
+        public TextReader In => Terminal.In;
 
         /// <inheritdoc />
         public bool IsInputRedirected => Terminal.IsInputRedirected;

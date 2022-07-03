@@ -10,7 +10,7 @@ namespace AppMotor.CliApp.TestUtils;
 internal sealed class TestTerminal : ITerminal
 {
     /// <inheritdoc />
-    public TextReader Input => throw new NotSupportedException();
+    public TextReader In => throw new NotSupportedException();
 
     /// <inheritdoc />
     public bool IsInputRedirected => true; // tests always run "non-interactive"

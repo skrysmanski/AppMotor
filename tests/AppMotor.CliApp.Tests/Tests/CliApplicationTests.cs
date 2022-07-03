@@ -78,7 +78,7 @@ public sealed class CliApplicationTests
     private sealed class WaitForKeyTerminal : ITerminal
     {
         /// <inheritdoc />
-        public TextReader Input => throw new NotSupportedException();
+        public TextReader In => throw new NotSupportedException();
 
         /// <inheritdoc />
         public bool IsInputRedirected => false;
