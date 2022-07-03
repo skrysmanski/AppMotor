@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using System.Text;
 
+using AppMotor.CliApp.Terminals;
 using AppMotor.CliApp.Terminals.Formatting;
 using AppMotor.Core.Colors;
 
@@ -16,64 +17,72 @@ public sealed class Program : CliApplication
     private static int Main(string[] args) => Run<Program>(args);
 
     // NOTE: This example is adapted from: https://github.com/chalk/chalk/blob/main/readme.md
-    private static void Execute()
+    private void Execute()
     {
         if (!AnsiSupportOnWindows.Enable())
         {
-            Console.WriteLine("ERROR: ANSI is not supported on your system.");
+            this.Terminal.WriteLine("ERROR: ANSI is not supported on your system.");
             return;
         }
 
         // Combine styled and normal strings
-        Console.WriteLine(Blue("Hello") + " World" + Red("!"));
+        this.Terminal.WriteLine(Blue("Hello") + " World" + Red("!"));
 
         // Compose multiple styles using the chainable API
-        Console.WriteLine(BgRed().Black().Underline("Hello world!"));
+        this.Terminal.WriteLine(BgRed().Black().Underline("Hello world!"));
 
         // Nest styles of the same type even (color, underline, background)
-        Console.WriteLine(Green(
+        this.Terminal.WriteLine(Green(
             "I am a green line " +
             Blue().Underline("with a blue substring") +
             " that becomes green again!"
         ));
 
-        Console.WriteLine(@$"
+        this.Terminal.WriteLine(@$"
         CPU: {Red("90%")}
         RAM: {Green("40%")}
         DISK: {Yellow("70%")}
         ");
 
         // 24 bit (RGB) support
-        Console.WriteLine(BgRgb(Color.CadetBlue).Rgb(Color.Crimson).Text("Hello") + " World");
+        this.Terminal.WriteLine(BgRgb(Color.CadetBlue).Rgb(Color.Crimson).Text("Hello") + " World");
 
         // Hex color support
-        Console.WriteLine(Hex("#ff0000").Text("Text in HTML red (#ff0000)"));
+        this.Terminal.WriteLine(Hex("#ff0000").Text("Text in HTML red (#ff0000)"));
 
         // Various formatting options
-        Console.WriteLine();
-        Console.WriteLine(Inverse("Inverse") + " - not Inverse");
+        this.Terminal.WriteLine();
+        this.Terminal.WriteLine(Inverse("Inverse") + " - not Inverse");
 
-        Console.WriteLine();
+        this.Terminal.WriteLine();
 
         AnimateString();
 
         // Make sure the app's output ends with a line break.
-        Console.WriteLine();
+        this.Terminal.WriteLine();
     }
 
-    private static void AnimateString()
+    private void AnimateString()
     {
-        const int MAX_SECONDS = 10;
-
-        // NOTE: Each loop takes about 16 ms.
-        for (int i = 0; i < MAX_SECONDS * 1000 / 16; i++)
+        if (!this.Terminal.IsOutputRedirected && this.Terminal is ITerminalWindow terminalWindow)
         {
-            var rainbowString = Rainbow($"This is a rainbow string (for about {MAX_SECONDS} seconds).", i);
+            const int MAX_SECONDS = 10;
 
-            Console.CursorLeft = 0;
-            Console.Write(rainbowString);
+            // NOTE: Each loop takes about 16 ms.
+            for (int i = 0; i < MAX_SECONDS * 1000 / 16; i++)
+            {
+                var rainbowString = Rainbow($"This is a rainbow string (for about {MAX_SECONDS} seconds).", i);
 
-            Thread.Sleep(10);
+                terminalWindow.CursorLeft = 0;
+                terminalWindow.Write(rainbowString);
+
+                Thread.Sleep(10);
+            }
+        }
+        else
+        {
+            var rainbowString = Rainbow("This is a rainbow string.", offset: 0);
+            this.Terminal.Write(rainbowString);
         }
     }
 

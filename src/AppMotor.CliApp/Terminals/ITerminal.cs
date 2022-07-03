@@ -12,6 +12,10 @@ namespace AppMotor.CliApp.Terminals;
 /// This interface primarily exists for unit testing purposes where no actual terminal/console may be available.
 /// See "TestTerminal" in the "AppMotor.TestCore" package for an implementation.
 /// </remarks>
+/// <remarks>
+/// Instances of this interface may or may not also implement <see cref="ITerminalWindow"/>. You can use an
+/// "is"/"as" conversion to check for this and adopt your code accordingly.
+/// </remarks>
 public interface ITerminal : ITerminalInput, ITerminalOutput
 {
 }
