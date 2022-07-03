@@ -8,8 +8,9 @@ using JetBrains.Annotations;
 namespace AppMotor.CliApp.Terminals;
 
 /// <summary>
-/// Represents the output part of a terminal. For the input part, see <see cref="ITerminalInput"/>.
+/// Represents the output part of a terminal. For the input side, see <see cref="ITerminalInput"/>.
 /// </summary>
+/// <see cref="ITerminal"/>
 public interface ITerminalOutput
 {
     /// <summary>
