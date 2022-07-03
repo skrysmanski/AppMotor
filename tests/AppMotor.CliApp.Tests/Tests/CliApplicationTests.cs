@@ -5,6 +5,7 @@ using System.Text;
 
 using AppMotor.CliApp.Terminals;
 using AppMotor.CliApp.TestUtils;
+using AppMotor.TestCore.Utils;
 
 using Shouldly;
 

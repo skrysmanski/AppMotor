@@ -10,7 +10,10 @@ namespace AppMotor.CliApp.Terminals;
 /// <summary>
 /// Represents the output part of a terminal. For the input side, see <see cref="ITerminalInput"/>.
 /// </summary>
-/// <see cref="ITerminal"/>
+/// <remarks>
+/// This interface exists primarily for unit testing purposes. See <see cref="ITerminal"/> for
+/// more details.
+/// </remarks>
 public interface ITerminalOutput
 {
     /// <summary>

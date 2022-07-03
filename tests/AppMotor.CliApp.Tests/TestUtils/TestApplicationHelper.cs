@@ -2,6 +2,7 @@
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
 using AppMotor.CliApp.CommandLine.Utils;
+using AppMotor.TestCore.Utils;
 
 using JetBrains.Annotations;
 
@@ -32,7 +33,7 @@ internal sealed class TestApplicationHelper
 
     public void Run(string[] args, int expectedExitCode, CancellationToken cancellationToken = default)
     {
-        this._testTerminal.ResetOutput();
+        this._testTerminal.ClearOutput();
         this._caughtException = null;
 
         int exitCode = this._application.Run(args, cancellationToken);
@@ -49,7 +50,7 @@ internal sealed class TestApplicationHelper
     [MustUseReturnValue]
     public Exception RunWithExpectedException(string[] args, int expectedExitCode, CancellationToken cancellationToken = default)
     {
-        this._testTerminal.ResetOutput();
+        this._testTerminal.ClearOutput();
         this._caughtException = null;
 
         int exitCode = this._application.Run(args, cancellationToken);
