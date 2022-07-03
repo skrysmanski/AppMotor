@@ -19,9 +19,17 @@ public interface ITerminalOutput
     ITerminalWriter Out { get; }
 
     /// <summary>
-    /// Whether <see cref="Out"/> is redirected (to a file or the input
-    /// of another process).
+    /// Whether <see cref="Out"/> is redirected (to a file or the input of another process). If <c>false</c>,
+    /// this means that <see cref="Out"/> writes to the "physical" console/terminal.
     /// </summary>
+    /// <remarks>
+    /// Unlike <see cref="ITerminalInput.IsInputRedirected"/>, the value of this property should not have
+    /// any effects on the properties/methods in this interface.
+    /// </remarks>
+    /// <remarks>
+    /// Note to implementers: If <see cref="Out"/> doesn't represent the "physical" console/terminal, you
+    /// should return <c>true</c> here.
+    /// </remarks>
     [PublicAPI]
     bool IsOutputRedirected { get; }
 
@@ -32,9 +40,17 @@ public interface ITerminalOutput
     ITerminalWriter Error { get; }
 
     /// <summary>
-    /// Whether <see cref="Error"/> is redirected (to a file or the input
-    /// of another process).
+    /// Whether <see cref="Error"/> is redirected (to a file or the input of another process). If <c>false</c>,
+    /// this means that <see cref="Error"/> writes to the "physical" console/terminal.
     /// </summary>
+    /// <remarks>
+    /// Unlike <see cref="ITerminalInput.IsInputRedirected"/>, the value of this property should not have
+    /// any effects on the properties/methods in this interface.
+    /// </remarks>
+    /// <remarks>
+    /// Note to implementers: If <see cref="Error"/> doesn't represent the "physical" console/terminal, you
+    /// should return <c>true</c> here.
+    /// </remarks>
     [PublicAPI]
     bool IsErrorRedirected { get; }
 
