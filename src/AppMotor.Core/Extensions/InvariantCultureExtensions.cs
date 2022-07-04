@@ -41,38 +41,8 @@ public static class InvariantCultureExtensions
     /// Returns this values as string with invariant culture formatting.
     /// </summary>
     [MustUseReturnValue]
-    public static string ToStringIC(this float value)
-    {
-        return value.ToString(CultureInfo.InvariantCulture);
-    }
-
-    /// <summary>
-    /// Returns this values as string with invariant culture formatting.
-    /// </summary>
-    [MustUseReturnValue]
-    public static string ToStringIC(this double value)
-    {
-        return value.ToString(CultureInfo.InvariantCulture);
-    }
-
-    /// <summary>
-    /// Returns this values as string with invariant culture formatting.
-    /// </summary>
-    [MustUseReturnValue]
-    public static string ToStringIC(this decimal value)
-    {
-        return value.ToString(CultureInfo.InvariantCulture);
-    }
-
-    /// <summary>
-    /// Returns this values as string with invariant culture formatting.
-    /// </summary>
-    /// <remarks>
-    /// Try not to use this method as the returned date format may be confusing to read for
-    /// non-English speakers.
-    /// </remarks>
-    [MustUseReturnValue]
-    public static string ToStringIC(this DateTime value)
+    [CLSCompliant(false)]
+    public static string ToStringIC<T>(this T value) where T : IConvertible
     {
         return value.ToString(CultureInfo.InvariantCulture);
     }
