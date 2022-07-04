@@ -15,7 +15,6 @@
 #endregion
 
 using System.ComponentModel;
-using System.Globalization;
 
 using AppMotor.Core.Globalization;
 
