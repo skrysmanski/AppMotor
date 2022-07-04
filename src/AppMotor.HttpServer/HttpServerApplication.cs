@@ -50,6 +50,7 @@ public class HttpServerApplication : CliApplicationWithCommand
     /// <param name="startupClass">The ASP.NET Core Startup class to use. If <c>null</c>,
     /// <see cref="MvcStartup"/> will be used.</param>
     [PublicAPI]
+    [CLSCompliant(false)]
     public HttpServerApplication(int port, IAspNetStartup? startupClass = null)
         : this(port, SocketListenAddresses.Loopback, startupClass)
     {
@@ -64,6 +65,7 @@ public class HttpServerApplication : CliApplicationWithCommand
     /// <param name="startupClass">The ASP.NET Core Startup class to use. If <c>null</c>,
     /// <see cref="MvcStartup"/> will be used.</param>
     [PublicAPI]
+    [CLSCompliant(false)]
     public HttpServerApplication(int port, SocketListenAddresses listenAddresses, IAspNetStartup? startupClass = null)
         : this(new HttpServerPort(listenAddresses, port), startupClass)
     {
@@ -76,6 +78,7 @@ public class HttpServerApplication : CliApplicationWithCommand
     /// <param name="startupClass">The ASP.NET Core Startup class to use. If <c>null</c>,
     /// <see cref="MvcStartup"/> will be used.</param>
     [PublicAPI]
+    [CLSCompliant(false)]
     public HttpServerApplication(HttpServerPort port, IAspNetStartup? startupClass = null)
         : this(new HttpServerCommand(port, startupClass))
     {

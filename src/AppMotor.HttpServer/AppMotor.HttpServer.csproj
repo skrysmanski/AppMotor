@@ -14,9 +14,6 @@
 
     <Description>APIs for running a HTTP(S) server (Kestrel).</Description>
 
-    <!-- Must be "false" because some ASP.NET Core APIs are non-compliant. -->
-    <ClsCompliant>false</ClsCompliant>
-
     <!-- This allows a developer to temporarily disable the requirements for documentation more easily during development. -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
