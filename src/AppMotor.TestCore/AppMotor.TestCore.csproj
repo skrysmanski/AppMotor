@@ -11,6 +11,9 @@
     <Version>$(AppMotorTestCoreVersion)</Version>
 
     <Description>Sharable test helper APIs.</Description>
+
+    <!-- This allows a developer to temporarily disable the requirements for documentation more easily during development. -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

@@ -17,6 +17,9 @@
       See: https://docs.microsoft.com/en-us/nuget/reference/errors-and-warnings/nu5104
     -->
     <NoWarn>NU5104</NoWarn>
+
+    <!-- This allows a developer to temporarily disable the requirements for documentation more easily during development. -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
