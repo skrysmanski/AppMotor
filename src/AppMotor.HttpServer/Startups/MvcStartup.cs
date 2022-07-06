@@ -110,7 +110,6 @@ public class MvcStartup : IAspNetStartup
     }
 
     /// <inheritdoc />
-    [CLSCompliant(false)]
     public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
         //

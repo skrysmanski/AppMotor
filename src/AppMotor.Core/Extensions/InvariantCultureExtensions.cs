@@ -41,7 +41,6 @@ public static class InvariantCultureExtensions
     /// Returns this values as string with invariant culture formatting.
     /// </summary>
     [MustUseReturnValue]
-    [CLSCompliant(false)]
     public static string ToStringIC<T>(this T value) where T : IConvertible
     {
         return value.ToString(CultureInfo.InvariantCulture);

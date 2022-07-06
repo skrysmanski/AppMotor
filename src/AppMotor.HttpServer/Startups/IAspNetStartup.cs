@@ -27,7 +27,6 @@ namespace AppMotor.HttpServer.Startups;
 ///
 /// <para>See also: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/startup </para>
 /// </summary>
-[CLSCompliant(false)]
 public interface IAspNetStartup
 {
     /// <summary>
@@ -51,6 +50,5 @@ public interface IAspNetStartup
     /// <para>The name of this method is pre-defined and must not be changed.</para>
     /// </remarks>
     [UsedImplicitly]
-    [CLSCompliant(false)]
     void Configure(IApplicationBuilder app, IWebHostEnvironment env);
 }

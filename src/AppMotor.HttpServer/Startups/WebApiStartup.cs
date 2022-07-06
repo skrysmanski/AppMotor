@@ -62,7 +62,6 @@ public class WebApiStartup : IAspNetStartup
     }
 
     /// <inheritdoc />
-    [CLSCompliant(false)]
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
         if (env.IsDevelopment())
