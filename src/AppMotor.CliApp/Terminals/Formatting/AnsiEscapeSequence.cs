@@ -7,11 +7,20 @@ namespace AppMotor.CliApp.Terminals.Formatting;
 
 public static class AnsiEscapeSequence
 {
+    public const char ESCAPE_CHAR = '\u001B';
+
+    public const char ESCAPE_SEQUENCE_CHAR2 = '[';
+
     public const char END_OF_ESCAPE_SEQUENCE_CHAR = 'm';
 
     public const string ESCAPE_SEQUENCE = "\u001B[";
 
     public const string RESET_SEQUENCE = ESCAPE_SEQUENCE + "0m";
+
+    /// <summary>
+    /// The minimum length of the smallest valid escape sequence: <c>\x1B[Nm</c> with "N" being a character/digit.
+    /// </summary>
+    public const int ESCAPE_SEQUENCE_MIN_LENGTH = 4;
 
     [MustUseReturnValue]
     public static string Create(int content)
