@@ -107,7 +107,7 @@ public sealed class CliApplicationTests
 
         public WaitForKeyTerminal()
         {
-            this.Out = new TerminalWriter(value => this._outWriter.Append(value));
+            this.Out = new SimpleTerminalWriter(value => this._outWriter.Append(value));
         }
 
         /// <inheritdoc />

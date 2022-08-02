@@ -51,8 +51,8 @@ public sealed class TestTerminal : ITerminal
 #pragma warning disable CA2000 // Dispose objects before losing scope -> no need to dispose StringWriter instances
         var threadSafeWriter = TextWriter.Synchronized(new StringWriter(this._outWriter));
 #pragma warning restore CA2000 // Dispose objects before losing scope
-        this.Out = new TerminalWriter(threadSafeWriter.Write);
-        this.Error = new TerminalWriter(threadSafeWriter.Write);
+        this.Out = new SimpleTerminalWriter(threadSafeWriter.Write);
+        this.Error = new SimpleTerminalWriter(threadSafeWriter.Write);
     }
 
     /// <summary>

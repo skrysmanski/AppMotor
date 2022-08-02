@@ -2,7 +2,6 @@
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
 using System.ComponentModel;
-using System.Globalization;
 
 using AppMotor.Core.Globalization;
 
@@ -15,9 +14,30 @@ namespace AppMotor.CliApp.Terminals;
 /// </summary>
 public interface ITerminalWriter
 {
-    string NewLine => Environment.NewLine;
+    /// <summary>
+    /// The newline characters to use.
+    /// </summary>
+    /// <remarks>
+    /// Implementers should default this to <see cref="NewLineTypes.SystemDefault"/>, unless
+    /// another default value is required.
+    /// </remarks>
+    NewLineTypes NewLine { get; set; }
 
-    CultureInfo Culture => UICulture.FormatsAndSorting;
+    /// <summary>
+    /// The <see cref="IFormatProvider"/> to use for formatting "formattable" values (like date times or numbers).
+    /// </summary>
+    /// <remarks>
+    /// Implementers should default this to <see cref="UICulture.FormatsAndSorting"/>, unless
+    /// another default value is required.
+    /// </remarks>
+    IFormatProvider Culture { get; set; }
+
+    /// <summary>
+    /// Whether colors should be supported/enabled or not. Should be <c>false</c>
+    /// by default, if the environment variable "NO_COLOR" has a non empty value;
+    /// see https://no-color.org/ for more details.
+    /// </summary>
+    bool EnableColors { get; set; }
 
     /// <summary>
     /// Writes the specified object to the terminal's standard output.
@@ -70,11 +90,7 @@ public interface ITerminalWriter
     /// Writes the specified string to the terminal's standard output
     /// and appends a line break at the end.
     /// </summary>
-    void WriteLine([Localizable(true)] string? value)
-    {
-        Write(value);
-        WriteLine();
-    }
+    void WriteLine([Localizable(true)] string? value);
 
     /// <summary>
     /// Formats <paramref name="format"/> with <paramref name="args"/> and writes the result
@@ -83,8 +99,7 @@ public interface ITerminalWriter
     [StringFormatMethod("format")]
     void WriteLine([Localizable(true)] string format, params object[] args)
     {
-        Write(format, args);
-        WriteLine();
+        WriteLine(string.Format(this.Culture, format, args));
     }
 
     /// <summary>
@@ -92,6 +107,6 @@ public interface ITerminalWriter
     /// </summary>
     void WriteLine()
     {
-        Write(this.NewLine);
+        WriteLine(null);
     }
 }

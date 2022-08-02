@@ -33,4 +33,10 @@ public static class AnsiEscapeSequence
     {
         return $"{ESCAPE_SEQUENCE}{content}{END_OF_ESCAPE_SEQUENCE_CHAR}";
     }
+
+    [MustUseReturnValue]
+    public static string Create(ReadOnlySpan<char> content)
+    {
+        return $"{ESCAPE_SEQUENCE}{content}{END_OF_ESCAPE_SEQUENCE_CHAR}";
+    }
 }

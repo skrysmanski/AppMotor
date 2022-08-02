@@ -2,7 +2,6 @@
 using System.Text;
 
 using AppMotor.CliApp.Terminals;
-using AppMotor.CliApp.Terminals.Formatting;
 using AppMotor.Core.Colors;
 
 using static AppMotor.CliApp.Terminals.Formatting.TermText;
@@ -19,12 +18,6 @@ public sealed class Program : CliApplication
     // NOTE: This example is adapted from: https://github.com/chalk/chalk/blob/main/readme.md
     private void Execute()
     {
-        if (!AnsiSupportOnWindows.Enable())
-        {
-            this.Terminal.WriteLine("ERROR: ANSI is not supported on your system.");
-            return;
-        }
-
         // Combine styled and normal strings
         this.Terminal.WriteLine(Blue("Hello") + " World" + Red("!"));
 

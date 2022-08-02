@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 
 using AppMotor.CliApp.Terminals.Formatting;
+using AppMotor.Core.Colors;
 using AppMotor.Core.Extensions;
 
 using JetBrains.Annotations;
@@ -58,9 +59,7 @@ public static class Terminal
     /// The standard output stream.
     /// </summary>
     [PublicAPI]
-    // IMPORTANT: Don't use "new TerminalWriter(Console.Out.Write)" here as this would not
-    //   work properly if "Console.Out" is changed after creating the writer.
-    public static ITerminalWriter Out { get; } = new TerminalWriter(value => Console.Out.Write(value));
+    public static ITerminalWriter Out { get; } = new ConsoleTerminalWriter(stdErr: false);
 
     /// <summary>
     /// Whether <see cref="Out"/> is redirected (to a file or the input of another process). If <c>false</c>,
@@ -81,9 +80,7 @@ public static class Terminal
     /// The standard error output stream.
     /// </summary>
     [PublicAPI]
-    // IMPORTANT: Don't use "new TerminalWriter(Console.Error.Write)" here as this would not
-    //   work properly if "Console.Error" is changed after creating the writer.
-    public static ITerminalWriter Error { get; } = new TerminalWriter(value => Console.Error.Write(value));
+    public static ITerminalWriter Error { get; } = new ConsoleTerminalWriter(stdErr: true);
 
     /// <summary>
     /// Whether <see cref="Error"/> is redirected (to a file or the input of another process). If <c>false</c>,
@@ -229,6 +226,7 @@ public static class Terminal
     /// <summary>
     /// Writes the specified object to the terminal's standard output.
     /// </summary>
+    [PublicAPI]
     public static void Write<T>([Localizable(true)] T? value) where T : IConvertible
     {
         Out.Write(value);
@@ -464,5 +462,203 @@ public static class Terminal
 
         /// <inheritdoc />
         public void SetCursorPosition(int left, int top) => Terminal.SetCursorPosition(left, top);
+    }
+
+    private sealed class ConsoleTerminalWriter : TerminalWriterBase
+    {
+        private TextWriter TextWriter { get; }
+
+        private readonly SuppressAnsiColorSequencesStreamParser _noColorStreamParser;
+
+        /// <summary>
+        /// Fallback parser if ANSI is not supported (required only on Windows).
+        /// </summary>
+        private readonly AnsiFallbackStreamParser? _ansiFallbackStreamParser;
+
+        public ConsoleTerminalWriter(bool stdErr)
+        {
+            this.TextWriter = stdErr ? Console.Error : Console.Out;
+            this._noColorStreamParser = new SuppressAnsiColorSequencesStreamParser(this);
+
+            if (!AnsiSupportOnWindows.Enable())
+            {
+                this._ansiFallbackStreamParser = new AnsiFallbackStreamParser(this);
+            }
+        }
+
+        /// <inheritdoc />
+        protected override void WriteCore(string value)
+        {
+            if (this._ansiFallbackStreamParser is not null)
+            {
+                this._ansiFallbackStreamParser.ParseNext(value);
+            }
+            else
+            {
+                if (this.EnableColors)
+                {
+                    this.TextWriter.Write(value);
+                }
+                else
+                {
+                    this._noColorStreamParser.ParseNext(value);
+                }
+            }
+        }
+
+        private sealed class AnsiFallbackStreamParser : AnsiColorStreamParser
+        {
+            /// <summary>
+            /// This lock is required because both <see cref="Console.ForegroundColor"/> and <see cref="Console.BackgroundColor"/>
+            /// affect both <see cref="Console.Out"/> and(!) <see cref="Console.Error"/>. With this lock we make sure that only
+            /// one of the streams is written to at the same time.
+            /// </summary>
+            private static readonly object s_consoleColorLock = new();
+
+            private readonly ConsoleTerminalWriter _consoleTerminalWriter;
+
+            /// <summary>
+            /// The foreground color to use for the next text write operation.
+            /// </summary>
+            /// <remarks>
+            /// We can't use <see cref="Console.ForegroundColor"/> directly to store this value because
+            /// the colors for <see cref="Console.Out"/> and <see cref="Console.Error"/> must be managed
+            /// independently.
+            /// </remarks>
+            private ConsoleColor? _currentForegroundColor;
+
+            /// <summary>
+            /// The background color to use for the next text write operation.
+            /// </summary>
+            /// <remarks>
+            /// We can't use <see cref="Console.BackgroundColor"/> directly to store this value because
+            /// the colors for <see cref="Console.Out"/> and <see cref="Console.Error"/> must be managed
+            /// independently.
+            /// </remarks>
+            private ConsoleColor? _currentBackgroundColor;
+
+            public AnsiFallbackStreamParser(ConsoleTerminalWriter consoleTerminalWriter)
+            {
+                this._consoleTerminalWriter = consoleTerminalWriter;
+            }
+
+            /// <inheritdoc />
+            protected override void OnTextColor(ConsoleColor color)
+            {
+                this._currentForegroundColor = color;
+            }
+
+            /// <inheritdoc />
+            protected override void OnTextColor(int colorIndex)
+            {
+                // Ignore; not supported
+                // While it would technically possible to convert the color index into an RGB color (and then
+                // call "OnTextColor(RgbColor)", the latter won't be able to reduce the color back down to
+                // "ConsoleColor". See remarks there.
+            }
+
+            /// <inheritdoc />
+            protected override void OnTextColor(RgbColor color)
+            {
+                // Ignore; not supported
+                // NOTE: While it would be probably possible to "reduce" the RGB color to one values of "ConsoleColor",
+                //   a short search on the Internet didn't provide any obvious/easy solutions for the problem. You would
+                //   most likely calculate the color difference between the RGB color and each ConsoleColor and use the
+                //   closest one. However, this seems to be a hard a problem - see, for example, the note at the top of
+                //   of this StackOverflow answer: https://stackoverflow.com/a/35114586/614177
+                //
+                //   And since - at the time of writing - the oldest Windows version (that's still supported by Microsoft)
+                //   that (probably) doesn't support ANSI sequences, Windows Server 2012 R2, only has one year left for
+                //   support, it doesn't seem sensible to put effort in making this work.
+            }
+
+            /// <inheritdoc />
+            protected override void OnBackgroundColor(ConsoleColor color)
+            {
+                this._currentBackgroundColor = color;
+            }
+
+            /// <inheritdoc />
+            protected override void OnBackgroundColor(int colorIndex)
+            {
+                // Ignore; not supported
+                // See remarks in "OnForegroundColor(int)".
+            }
+
+            /// <inheritdoc />
+            protected override void OnBackgroundColor(RgbColor color)
+            {
+                // Ignore; not supported
+                // See remarks in "OnForegroundColor(ConsoleColor)".
+            }
+
+            /// <inheritdoc />
+            protected override void OnResetColors(bool resetForegroundColor, bool resetBackgroundColor)
+            {
+                if (resetForegroundColor)
+                {
+                    this._currentForegroundColor = null;
+                }
+
+                if (resetBackgroundColor)
+                {
+                    this._currentBackgroundColor = null;
+                }
+            }
+
+            /// <inheritdoc />
+            protected override void OnText(ReadOnlySpan<char> text)
+            {
+                if (!this._consoleTerminalWriter.EnableColors || (this._currentForegroundColor is null && this._currentBackgroundColor is null))
+                {
+                    this._consoleTerminalWriter.TextWriter.Write(text);
+                    return;
+                }
+
+                lock (s_consoleColorLock)
+                {
+                    if (this._currentForegroundColor != null)
+                    {
+                        Console.ForegroundColor = this._currentForegroundColor.Value;
+                    }
+                    if (this._currentBackgroundColor != null)
+                    {
+                        Console.BackgroundColor = this._currentBackgroundColor.Value;
+                    }
+
+                    this._consoleTerminalWriter.TextWriter.Write(text);
+
+                    Console.ResetColor();
+                }
+            }
+
+            /// <inheritdoc />
+            protected override void OnNonColorAnsiEscapeSequence(ReadOnlySpan<char> escapeSequenceContents)
+            {
+                // Ignore; not supported
+            }
+        }
+
+        private sealed class SuppressAnsiColorSequencesStreamParser : SuppressAnsiColorSequencesStreamParserBase
+        {
+            private readonly ConsoleTerminalWriter _consoleTerminalWriter;
+
+            public SuppressAnsiColorSequencesStreamParser(ConsoleTerminalWriter consoleTerminalWriter)
+            {
+                this._consoleTerminalWriter = consoleTerminalWriter;
+            }
+
+            /// <inheritdoc />
+            protected override void OnText(ReadOnlySpan<char> text)
+            {
+                this._consoleTerminalWriter.TextWriter.Write(text);
+            }
+
+            /// <inheritdoc />
+            protected override void OnNonColorAnsiEscapeSequence(ReadOnlySpan<char> escapeSequenceContents)
+            {
+                this._consoleTerminalWriter.TextWriter.Write(AnsiEscapeSequence.Create(escapeSequenceContents));
+            }
+        }
     }
 }
