@@ -250,7 +250,7 @@ public sealed class TaskListTests
         var taskList = new TaskList<int>();
 
         var task1 = DoSomethingAndReturnSomethingAsync(milliseconds: 5);
-        var task2 = DoSomethingAndReturnSomethingAsync(milliseconds: TestEnvInfo.RunsInCiPipeline ? 1000 : 100);
+        var task2 = DoSomethingAndReturnSomethingAsync(milliseconds: TestEnvInfo.RunsInCiPipeline ? 3000 : 100);
 
         taskList += task1;
         taskList += task2;
