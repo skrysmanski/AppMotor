@@ -491,7 +491,7 @@ public class Base32Encoding : Rfc4648Encoding
                 return ArraySegment<char>.Empty;
             }
 
-            return EncodeGroup(readBuffer.Slice(0, readBytes));
+            return EncodeGroup(readBuffer[0..readBytes]);
         }
 
         [MustUseReturnValue]
@@ -655,7 +655,7 @@ public class Base32Encoding : Rfc4648Encoding
                 return ArraySegment<byte>.Empty;
             }
 
-            return DecodeGroup(readBuffer.Slice(0, readChars));
+            return DecodeGroup(readBuffer[0..readChars]);
         }
 
         [MustUseReturnValue]

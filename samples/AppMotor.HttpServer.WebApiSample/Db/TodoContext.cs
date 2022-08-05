@@ -1,5 +1,7 @@
 ﻿using AppMotor.HttpServer.WebApiSample.Models;
 
+using JetBrains.Annotations;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace AppMotor.HttpServer.WebApiSample.Db;
@@ -11,5 +13,6 @@ public class TodoContext : DbContext
     {
     }
 
+    [UsedImplicitly(ImplicitUseKindFlags.Assign)]
     public DbSet<TodoItem> TodoItems { get; set; } = null!;
 }
