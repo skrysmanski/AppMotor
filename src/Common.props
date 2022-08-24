@@ -19,6 +19,7 @@
     <AppMotorCliAppVersion>0.8.0</AppMotorCliAppVersion>
     <AppMotorHttpServerVersion>0.4.0</AppMotorHttpServerVersion>
     <AppMotorTestCoreVersion>0.2.0</AppMotorTestCoreVersion>
+    <AppMotorNetStandardCompatVersion>0.1.0</AppMotorNetStandardCompatVersion>
   </PropertyGroup>
 
 </Project>

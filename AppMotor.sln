@@ -79,6 +79,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.CliApp.ProgressBar
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.HttpServer.WebApiSample", "samples\AppMotor.HttpServer.WebApiSample\AppMotor.HttpServer.WebApiSample.csproj", "{FAD59A4C-6CFA-4D71-B7DC-480A126C1392}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NetStandardCompat", "NetStandardCompat", "{06FC077C-5DB3-4C0F-A990-7891BD576153}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.NetStandardCompat", "src\AppMotor.NetStandardCompat\AppMotor.NetStandardCompat.csproj", "{5F4F04CF-6FEF-4670-A881-F9F0F4E8B2A2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -145,6 +149,10 @@ Global
 		{FAD59A4C-6CFA-4D71-B7DC-480A126C1392}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FAD59A4C-6CFA-4D71-B7DC-480A126C1392}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FAD59A4C-6CFA-4D71-B7DC-480A126C1392}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F4F04CF-6FEF-4670-A881-F9F0F4E8B2A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F4F04CF-6FEF-4670-A881-F9F0F4E8B2A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F4F04CF-6FEF-4670-A881-F9F0F4E8B2A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F4F04CF-6FEF-4670-A881-F9F0F4E8B2A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -170,6 +178,7 @@ Global
 		{D8624985-4035-4989-BCA5-6224337C8B84} = {625969C5-2EAE-4A6F-B879-3EC7FCA63F56}
 		{8A9084C9-9812-4024-BB76-76A43615BF52} = {625969C5-2EAE-4A6F-B879-3EC7FCA63F56}
 		{FAD59A4C-6CFA-4D71-B7DC-480A126C1392} = {6A287989-1384-4140-AFC8-8CA4B1F52D41}
+		{5F4F04CF-6FEF-4670-A881-F9F0F4E8B2A2} = {06FC077C-5DB3-4C0F-A990-7891BD576153}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FF64C9CC-C599-47C6-892D-FB620795361C}
