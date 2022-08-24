@@ -1,4 +1,7 @@
-﻿using System.Net;
+﻿// SPDX-License-Identifier: MIT
+// Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
+
+using System.Net;
 using System.Security.Cryptography.X509Certificates;
 
 using AppMotor.CliApp.CommandLine;

@@ -1,4 +1,7 @@
-﻿using JetBrains.Annotations;
+﻿// SPDX-License-Identifier: MIT
+// Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
+
+using JetBrains.Annotations;
 
 namespace AppMotor.Core.Utils;
 
