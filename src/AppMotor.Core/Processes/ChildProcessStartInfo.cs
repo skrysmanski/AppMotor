@@ -91,11 +91,11 @@ public sealed class ChildProcessStartInfo
     /// </summary>
     /// <param name="processFileName">The path to the file to execute.</param>
     /// <param name="processArguments">The argument to pass to the process.</param>
-    public ChildProcessStartInfo(string processFileName, ProcessArguments processArguments)
+    public ChildProcessStartInfo(string processFileName, ProcessArguments? processArguments)
     {
         Validate.ArgumentWithName(nameof(processFileName)).IsNotNullOrWhiteSpace(processFileName);
 
         this.ProcessFileName = processFileName;
-        this._arguments = processArguments;
+        this._arguments = processArguments ?? new();
     }
 }
