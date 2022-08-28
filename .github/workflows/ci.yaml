@@ -64,8 +64,11 @@ jobs:
       # NOTE: Without specifying a solution file, "dotnet test" searches for a .sln file in the current directory.
       # NOTE 2: There seems to be no way to name the .trx file as '<project>.trx'. If no 'LogFileName' is specified,
       #   the .trx files will be named something like "_fv-az278-737_2021-08-15_03_50_33.trx".
-      - run: RUNS_IN_CI=true dotnet test --configuration Release --no-restore --no-build --logger "trx;LogFileName=test-results.trx" --nologo
+      - run: dotnet test --configuration Release --no-restore --no-build --logger "trx;LogFileName=test-results.trx" --nologo
         name: Run tests
+        env:
+          # Tells tests that they're running in a (potentially slow) CI environment.
+          RUNS_IN_CI: true
 
       # See: https://github.com/actions/upload-artifact
       - uses: actions/upload-artifact@v3
