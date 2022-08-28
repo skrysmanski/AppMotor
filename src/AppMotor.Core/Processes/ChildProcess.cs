@@ -21,7 +21,9 @@ namespace AppMotor.Core.Processes;
 public static class ChildProcess
 {
     /// <summary>
-    /// Executes the child process synchronously.
+    /// <para>Executes the child process synchronously (for up to 30 seconds).</para>
+    ///
+    /// <para>Note: For more control, use <see cref="Exec(ChildProcessStartInfo)"/> instead.</para>
     /// </summary>
     ///
     /// <param name="processFileName">The program to execute.</param>
@@ -35,7 +37,8 @@ public static class ChildProcess
     ///
     /// <exception cref="ChildProcessErrorException">Thrown if the exit code signals failure or if anything
     /// is written to stderr by the child process.</exception>
-    /// <exception cref="TimeoutException">Thrown when the process runs longer than 30 seconds.</exception>
+    /// <exception cref="TimeoutException">Thrown when the process runs longer than 30 seconds. If you
+    /// need a longer timeout, use <see cref="ExecAsync(ChildProcessStartInfo)"/> instead.</exception>
     [PublicAPI]
     public static ChildProcessResult Exec(
             string processFileName,
@@ -76,7 +79,9 @@ public static class ChildProcess
     }
 
     /// <summary>
-    /// Executes the child process asynchronously.
+    /// <para>Executes the child process asynchronously (for up to 30 seconds).</para>
+    ///
+    /// <para>Note: For more control, use <see cref="ExecAsync(ChildProcessStartInfo)"/> instead.</para>
     /// </summary>
     ///
     /// <param name="processFileName">The program to execute.</param>
@@ -90,7 +95,8 @@ public static class ChildProcess
     ///
     /// <exception cref="ChildProcessErrorException">Thrown if the exit code signals failure or if anything
     /// is written to stderr by the child process.</exception>
-    /// <exception cref="TimeoutException">Thrown when the process runs longer than 30 seconds.</exception>
+    /// <exception cref="TimeoutException">Thrown when the process runs longer than 30 seconds. If you
+    /// need a longer timeout, use <see cref="ExecAsync(ChildProcessStartInfo)"/> instead.</exception>
     [PublicAPI]
     public static async Task<ChildProcessResult> ExecAsync(
             string processFileName,

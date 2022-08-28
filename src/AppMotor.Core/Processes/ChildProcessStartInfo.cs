@@ -1,6 +1,8 @@
 ﻿// SPDX-License-Identifier: MIT
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
+using System.Diagnostics.CodeAnalysis;
+
 using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
@@ -26,7 +28,18 @@ public sealed class ChildProcessStartInfo
     /// <summary>
     /// The arguments to pass to <see cref="ProcessFileName"/>.
     /// </summary>
-    public ProcessArguments Arguments { get; } = new();
+    [SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "By design")]
+    public ProcessArguments Arguments
+    {
+        get => this._arguments;
+        set
+        {
+            Validate.ArgumentWithName(nameof(value)).IsNotNull(value);
+            this._arguments = value;
+        }
+    }
+
+    private ProcessArguments _arguments;
 
     /// <summary>
     /// The working directory. Can be <c>null</c> in which case the runtime picks
@@ -62,7 +75,7 @@ public sealed class ChildProcessStartInfo
     public bool TreatErrorOutputAsFailure { get; set; } = true;
 
     /// <summary>
-    /// Constructor.
+    /// Constructor without arguments.
     /// </summary>
     /// <param name="processFileName">The path to the file to execute.</param>
     public ChildProcessStartInfo(string processFileName)
@@ -70,5 +83,19 @@ public sealed class ChildProcessStartInfo
         Validate.ArgumentWithName(nameof(processFileName)).IsNotNullOrWhiteSpace(processFileName);
 
         this.ProcessFileName = processFileName;
+        this._arguments = new();
+    }
+
+    /// <summary>
+    /// Constructor with arguments.
+    /// </summary>
+    /// <param name="processFileName">The path to the file to execute.</param>
+    /// <param name="processArguments">The argument to pass to the process.</param>
+    public ChildProcessStartInfo(string processFileName, ProcessArguments processArguments)
+    {
+        Validate.ArgumentWithName(nameof(processFileName)).IsNotNullOrWhiteSpace(processFileName);
+
+        this.ProcessFileName = processFileName;
+        this._arguments = processArguments;
     }
 }
