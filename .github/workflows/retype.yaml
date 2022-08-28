@@ -14,6 +14,7 @@ on:
 # Permissions for GITHUB_TOKEN for this workflow.
 #   See: https://docs.github.com/en/actions/reference/authentication-in-a-workflow#permissions-for-the-github_token
 permissions:
+  # This workflow needs permissions to push changes to the "retype" branch. Thus, it needs "write" permission.
   contents: write
 
 jobs:
