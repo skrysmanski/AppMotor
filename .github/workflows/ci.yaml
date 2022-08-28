@@ -66,6 +66,7 @@ jobs:
       #   the .trx files will be named something like "_fv-az278-737_2021-08-15_03_50_33.trx".
       - run: dotnet test --configuration Release --no-restore --no-build --logger "trx;LogFileName=test-results.trx" --nologo
         name: Run tests
+        id: run_tests
         env:
           # Tells tests that they're running in a (potentially slow) CI environment.
           RUNS_IN_CI: true
@@ -73,8 +74,10 @@ jobs:
       # See: https://github.com/actions/upload-artifact
       - uses: actions/upload-artifact@v3
         name: Upload test results
-        # Run this step even if any of the previous steps has failed
-        if: success() || failure()
+        # Run this step even if "run_tests" has failed (but not if any other previous step has failed - which would
+        # be "failure()" - because in this case the tests have not run and thus no .trx files have been generated).
+        # See: https://docs.github.com/en/actions/learn-github-actions/expressions#failure
+        if: success() || steps.run_tests.conclusion == 'failure'
         with:
           # NOTE: To make the downloads of the test results easier to use (i.e. when downloading test results
           #   from different runs), we'll add an id to the name.
