@@ -23,7 +23,7 @@ public sealed class AppendOnlyListTests
         list1.Append("value1");
         list1.Count.ShouldBe(1);
         // This "Append()" call should not have create a new underlying list instance.
-        GetUnderlyingList(list1).ShouldNotBeSameAs(originalUnderlyingList);
+        GetUnderlyingList(list1).ShouldBeSameAs(originalUnderlyingList);
 
         var list2 = list1.CloneShallow();
         // CloneShallow() should not create new copies of the underlying list instance.
