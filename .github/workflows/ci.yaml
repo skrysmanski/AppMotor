@@ -36,44 +36,44 @@ jobs:
 
     steps:
       # See: https://github.com/actions/checkout
-      - uses: actions/checkout@v3
-        name: Clone Git repository
+      - name: Clone Git repository
+        uses: actions/checkout@v3
         with:
           lfs: true
           submodules: true
 
       # This creates ${{ steps.short-sha.outputs.sha }} to be used below.
       # See: https://github.com/marketplace/actions/short-sha
-      - uses: benjlevesque/short-sha@56c9032868f85fc82058ff0793e58ab97bb2b856
-        name: Determine Git short commit hash
+      - name: Determine Git short commit hash
         id: short-sha
+        uses: benjlevesque/short-sha@56c9032868f85fc82058ff0793e58ab97bb2b856
 
       # See: https://github.com/actions/setup-dotnet
-      - uses: actions/setup-dotnet@v2
-        name: Setup .NET build environment
+      - name: Setup .NET build environment
+        uses: actions/setup-dotnet@v2
         with:
           # NOTE: Apparently only the 3rd component can be "x"; i.e. "5.x" is not supported.
           dotnet-version: '6.0.x'
 
       # See: https://docs.microsoft.com/de-de/dotnet/core/tools/dotnet-build
       # NOTE: Without specifying a solution file, "dotnet build" searches for a .sln file in the current directory.
-      - run: dotnet build --configuration Release
-        name: Build code
+      - name: Build code
+        run: dotnet build --configuration Release
 
       # See: https://docs.microsoft.com/de-de/dotnet/core/tools/dotnet-test
       # NOTE: Without specifying a solution file, "dotnet test" searches for a .sln file in the current directory.
       # NOTE 2: There seems to be no way to name the .trx file as '<project>.trx'. If no 'LogFileName' is specified,
       #   the .trx files will be named something like "_fv-az278-737_2021-08-15_03_50_33.trx".
-      - run: dotnet test --configuration Release --no-restore --no-build --logger "trx;LogFileName=test-results.trx" --nologo
-        name: Run tests
+      - name: Run tests
         id: run_tests
+        run: dotnet test --configuration Release --no-restore --no-build --logger "trx;LogFileName=test-results.trx" --nologo
         env:
           # Tells tests that they're running in a (potentially slow) CI environment.
           RUNS_IN_CI: true
 
       # See: https://github.com/actions/upload-artifact
-      - uses: actions/upload-artifact@v3
-        name: Upload test results
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
         # Run this step even if "run_tests" has failed (but not if any other previous step has failed - which would
         # be "failure()" - because in this case the tests have not run and thus no .trx files have been generated).
         # See: https://docs.github.com/en/actions/learn-github-actions/expressions#failure

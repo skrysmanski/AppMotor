@@ -19,16 +19,16 @@ jobs:
 
     steps:
       # See: https://github.com/actions/checkout
-      - uses: actions/checkout@v2
-        name: Clone Git repository
+      - name: Clone Git repository
+        uses: actions/checkout@v2
         with:
           lfs: true
           submodules: false # not needed
 
-      - uses: retypeapp/action-build@v1
-        name: Build HTML files
+      - name: Build HTML files
+        uses: retypeapp/action-build@v1
 
-      - uses: retypeapp/action-github-pages@v1
-        name: Publish HTML files to GitHub Pages
+      - name: Publish HTML files to GitHub Pages
+        uses: retypeapp/action-github-pages@v1
         with:
           update-branch: true
