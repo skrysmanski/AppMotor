@@ -20,15 +20,30 @@ jobs:
     steps:
       # See: https://github.com/actions/checkout
       - name: Clone Git repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           lfs: true
           submodules: false # not needed
 
-      - name: Build HTML files
-        uses: retypeapp/action-build@v1
-
-      - name: Publish HTML files to GitHub Pages
-        uses: retypeapp/action-github-pages@v1
+      # Setting up .NET speeds up the build process (according to the documentation).
+      # See: https://github.com/actions/setup-dotnet
+      - name: Setup .NET build environment
+        uses: actions/setup-dotnet@v2
         with:
+          # NOTE: Apparently only the 3rd component can be "x"; i.e. "5.x" is not supported.
+          dotnet-version: '6.0.x'
+
+      # See: https://github.com/retypeapp/action-build
+      - name: Build HTML files
+        # For pinned versions, see: https://blog.gitguardian.com/github-actions-security-cheat-sheet/#use-specific-action-version-tags
+        uses: retypeapp/action-build@21d0112281be2957ea1231796b5b50292cff5ebc # version 2.4.0
+
+      # See: https://github.com/retypeapp/action-github-pages
+      - name: Publish HTML files to GitHub Pages
+        # For pinned versions, see: https://blog.gitguardian.com/github-actions-security-cheat-sheet/#use-specific-action-version-tags
+        uses: retypeapp/action-github-pages@1207708b843b95c1a96b97a09fc4b2e747a1f0de # version 2.3.0
+        with:
+          # The branch where the results are stored
+          branch: retype
+          # Update the "retype" branch (instead of creating a new branch)
           update-branch: true
