@@ -17,5 +17,5 @@ public static class TestEnvInfo
     /// </remarks>
     public static bool RunsInCiPipeline => s_runsInCiPipelineLazy.Value;
 
-    private static readonly Lazy<bool> s_runsInCiPipelineLazy = new(() => Environment.GetEnvironmentVariable("RUNS_IN_CI") == "true");
+    private static readonly Lazy<bool> s_runsIn CiPipelineLazy = new(() => Environment.GetEnvironmentVariable("RUNS_IN_CI") == "true");
 }
