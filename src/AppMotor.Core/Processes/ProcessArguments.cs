@@ -5,8 +5,6 @@ using System.Diagnostics;
 
 using AppMotor.Core.Utils;
 
-using JetBrains.Annotations;
-
 namespace AppMotor.Core.Processes;
 
 /// <summary>
@@ -14,21 +12,21 @@ namespace AppMotor.Core.Processes;
 /// convenience methods to create the arguments list as well as apply it to an instance
 /// of <see cref="ProcessStartInfo"/>.
 /// </summary>
-[PublicAPI]
 public class ProcessArguments : List<string>
 {
     /// <summary>
     /// Creates an instance of this class and populates it with the specified arguments.
     /// </summary>
-    public ProcessArguments(params string[] args)
-        : base(args)
+    public ProcessArguments(params string[]? args)
+        : base(args ?? Array.Empty<string>())
     {
     }
 
     /// <summary>
     /// Creates an instance of this class and populates it with a copy of the specified collection.
     /// </summary>
-    public ProcessArguments(IEnumerable<string> collection) : base(collection)
+    public ProcessArguments(IEnumerable<string>? args)
+        : base(args ?? Array.Empty<string>())
     {
     }
 
@@ -51,5 +49,11 @@ public class ProcessArguments : List<string>
         {
             startInfoArguments.Add(processArgument);
         }
+    }
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return string.Join(" ", this.Select(arg => arg.Contains(' ') ? '"' + arg + '"' : arg));
     }
 }
