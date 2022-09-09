@@ -80,12 +80,20 @@ public static class AnsiColorConverter
         };
     }
 
+    /// <summary>
+    /// Whether the specified number represents one of the 4 bit foreground/text color ANSI escape sequence numbers.
+    /// </summary>
+    /// <seealso cref="Is4BitBackgroundColor"/>
     [MustUseReturnValue]
     public static bool Is4BitForegroundColor(int number)
     {
         return number is >= 30 and <= 37 or >= 90 and <= 97;
     }
 
+    /// <summary>
+    /// Whether the specified number represents one of the 4 bit background color ANSI escape sequence numbers.
+    /// </summary>
+    /// <seealso cref="Is4BitForegroundColor"/>
     [MustUseReturnValue]
     public static bool Is4BitBackgroundColor(int number)
     {

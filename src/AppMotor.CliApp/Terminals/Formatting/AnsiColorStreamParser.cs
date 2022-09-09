@@ -10,6 +10,13 @@ using JetBrains.Annotations;
 
 namespace AppMotor.CliApp.Terminals.Formatting;
 
+/// <summary>
+/// An <see cref="AnsiStreamParser"/> that converts all color sequences (text color and background color)
+/// into method calls (like <see cref="OnTextColor(ConsoleColor)"/> but leaves any other escape sequence
+/// untouched (reported via <see cref="OnNonColorAnsiEscapeSequence"/>). The primary use cases for class
+/// are the support of https://no-color.org/ (see <see cref="TerminalWriterBase.SuppressAnsiColorSequencesStreamParserBase"/>)
+/// and to support colors on terminals that don't support ANSI escape sequences.
+/// </summary>
 public abstract class AnsiColorStreamParser : AnsiStreamParser
 {
     private bool _useBrightColor;
@@ -74,7 +81,7 @@ public abstract class AnsiColorStreamParser : AnsiStreamParser
     /// <inheritdoc />
     protected sealed override void OnAnsiEscapeSequence(ReadOnlySpan<char> escapeSequence)
     {
-        var escapeSequenceContents = escapeSequence.Slice(start: 2, length: escapeSequence.Length - 3);
+        var escapeSequenceContents = AnsiEscapeSequence.ExtractSequenceContent(escapeSequence);
 
         switch (escapeSequenceContents.Length)
         {

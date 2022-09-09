@@ -32,6 +32,9 @@ public enum NewLineTypes
 /// </summary>
 public static class NewLineTypesExtensions
 {
+    /// <summary>
+    /// Returns the string representation (e.g. "\r\n") for this <see cref="NewLineTypes"/>.
+    /// </summary>
     [MustUseReturnValue]
     public static string GetNewLineCharacters(this NewLineTypes newLineType)
     {

@@ -6,6 +6,11 @@ using AppMotor.Core.Globalization;
 
 namespace AppMotor.CliApp.Terminals.Formatting;
 
+/// <summary>
+/// Abstract base implementation for <see cref="ITerminalWriter"/> - i.e. makes implementing <see cref="ITerminalWriter"/>
+/// easier. Also has basic support for https://no-color.org/ (i.e. sets <see cref="EnableColors"/> to <c>false</c>, if the
+/// "NO_COLOR" environment variable is set).
+/// </summary>
 public abstract class TerminalWriterBase : ITerminalWriter
 {
     /// <inheritdoc />
@@ -31,6 +36,9 @@ public abstract class TerminalWriterBase : ITerminalWriter
 
     private readonly object _lock = new();
 
+    /// <summary>
+    /// Constructor.
+    /// </summary>
     protected TerminalWriterBase()
     {
         // See: https://no-color.org/
@@ -68,8 +76,19 @@ public abstract class TerminalWriterBase : ITerminalWriter
         }
     }
 
+    /// <summary>
+    /// Writes the specified string to the terminal. Note that this implementation should
+    /// respect <see cref="EnableColors"/> to disable colors if this property is <c>false</c>.
+    /// </summary>
+    /// <param name="value">The value to string. Is never null or empty.</param>
     protected abstract void WriteCore(string value);
 
+    /// <summary>
+    /// An <see cref="AnsiStreamParser"/> that discards all ANSI escape sequences (both colors and formatting).
+    /// This is useful for terminals that neither support ANSI escape sequences nor colors (e.g. unit test output).
+    /// If you still want/need escape sequences but no colors (e.g. for: https://no-color.org/), use
+    /// <see cref="SuppressAnsiColorSequencesStreamParserBase"/> instead.
+    /// </summary>
     protected abstract class SuppressAllAnsiSequencesStreamParserBase : AnsiStreamParser
     {
         /// <inheritdoc />
@@ -79,6 +98,11 @@ public abstract class TerminalWriterBase : ITerminalWriter
         }
     }
 
+    /// <summary>
+    /// An <see cref="AnsiStreamParser"/> that discards all colors but keeps any other ANSI
+    /// escape sequence (i.e. formatting like underlined). The primary use case for this class
+    /// is to support https://no-color.org/ .
+    /// </summary>
     protected abstract class SuppressAnsiColorSequencesStreamParserBase : AnsiColorStreamParser
     {
         /// <inheritdoc />
