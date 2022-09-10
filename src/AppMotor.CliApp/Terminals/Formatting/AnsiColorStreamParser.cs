@@ -68,6 +68,10 @@ public abstract class AnsiColorStreamParser : AnsiStreamParser
     /// <summary>
     /// Called when the text/foreground and/or background color should be reset to its default.
     /// </summary>
+    /// <remarks>
+    /// If the ANSI escape sequence is "ESC[0m" (reset all colors and formatting), <see cref="OnNonColorAnsiEscapeSequence"/>
+    /// will be called additionally to this method.
+    /// </remarks>
     protected abstract void OnResetColors(bool resetForegroundColor, bool resetBackgroundColor);
 
     /// <summary>
@@ -76,6 +80,10 @@ public abstract class AnsiColorStreamParser : AnsiStreamParser
     /// </summary>
     /// <param name="escapeSequenceContents">The content/parameter of the ANSI sequence, i.e. without the escape
     /// sequence prefix (<c>\x1B[</c>) and postfix (<c>m</c>).</param>
+    /// <remarks>
+    /// This method will be called for the sequence "ESC[0m" (reset all colors and formatting) additionally to
+    /// <see cref="OnResetColors"/>.
+    /// </remarks>
     protected abstract void OnNonColorAnsiEscapeSequence(ReadOnlySpan<char> escapeSequenceContents);
 
     /// <inheritdoc />
@@ -226,6 +234,7 @@ public abstract class AnsiColorStreamParser : AnsiStreamParser
         {
             case 0:
                 OnResetColors(resetForegroundColor: true, resetBackgroundColor: true);
+                OnNonColorAnsiEscapeSequence("0");
                 return true;
 
             case 39: // default text color

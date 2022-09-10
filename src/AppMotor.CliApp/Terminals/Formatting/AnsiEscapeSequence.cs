@@ -91,7 +91,8 @@ public static class AnsiEscapeSequence
     /// </summary>
     /// <remarks>
     /// This method does not check whether the passed value is actually an escape sequence. It simply
-    /// assumes that it is one.
+    /// assumes that it is one. It also assumes the sequence is long enough (otherwise there will
+    /// be an <see cref="ArgumentOutOfRangeException"/>).
     /// </remarks>
     [MustUseReturnValue]
     public static ReadOnlySpan<char> ExtractSequenceContent(ReadOnlySpan<char> escapeSequence)

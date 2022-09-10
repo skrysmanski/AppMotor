@@ -1,6 +1,7 @@
 ﻿// SPDX-License-Identifier: MIT
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
 namespace AppMotor.CliApp.Terminals.Formatting;
@@ -27,6 +28,7 @@ public static class AnsiSupportOnWindows
     /// and higher. For Windows Server 2016, this method will return <c>true</c> but Windows
     /// will "downgrade" all colors to the default 16 colors.
     /// </remarks>
+    [ExcludeFromCodeCoverage]
     public static bool Enable()
     {
         if (!OperatingSystem.IsWindows())

@@ -2,6 +2,7 @@
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 using JetBrains.Annotations;
 
@@ -58,20 +59,36 @@ public interface ITerminalOutput
     [PublicAPI]
     bool IsErrorRedirected { get; }
 
+    #region Write
+
     /// <summary>
-    /// Writes the specified object to the terminal's standard output.
+    /// Writes the specified value to the terminal's standard output.
     /// </summary>
-    [PublicAPI]
     void Write([Localizable(true)] object? value)
     {
         this.Out.Write(value);
     }
 
     /// <summary>
-    /// Writes the specified string to the terminal's standard output.
+    /// Writes the specified value to the terminal's standard output.
     /// </summary>
-    [PublicAPI]
     void Write([Localizable(true)] string? value)
+    {
+        this.Out.Write(value);
+    }
+
+    /// <summary>
+    /// Writes the specified value to the terminal's standard output.
+    /// </summary>
+    void Write<T>([Localizable(true)] T? value) where T : class, IConvertible
+    {
+        this.Out.Write(value);
+    }
+
+    /// <summary>
+    /// Writes the specified value to the terminal's standard output.
+    /// </summary>
+    void Write<T>([Localizable(true)] T? value) where T : struct, IConvertible
     {
         this.Out.Write(value);
     }
@@ -80,40 +97,54 @@ public interface ITerminalOutput
     /// Formats <paramref name="format"/> with <paramref name="args"/> and writes the result
     /// to the terminal's standard output.
     /// </summary>
-    [PublicAPI]
     [StringFormatMethod("format")]
-    void Write([Localizable(true)] string format, params object[] args)
+    void Write([Localizable(true)] string format, params object?[] args)
     {
         this.Out.Write(format, args);
     }
 
+    #endregion Write
+
+    #region WriteLine
+
     /// <summary>
-    /// Writes the specified object to the terminal's standard output
-    /// and appends a line break at the end.
+    /// Writes the specified value to the terminal's standard output and appends a line break at the end.
     /// </summary>
-    [PublicAPI]
     void WriteLine([Localizable(true)] object? value)
     {
         this.Out.WriteLine(value);
     }
 
     /// <summary>
-    /// Writes the specified string to the terminal's standard output
-    /// and appends a line break at the end.
+    /// Writes the specified value to the terminal's standard output and appends a line break at the end.
     /// </summary>
-    [PublicAPI]
     void WriteLine([Localizable(true)] string? value)
     {
         this.Out.WriteLine(value);
     }
 
     /// <summary>
-    /// Formats <paramref name="format"/> with <paramref name="args"/> and writes the result
-    /// to the terminal's standard output and appends a line break at the end.
+    /// Writes the specified value to the terminal's standard output and appends a line break at the end.
     /// </summary>
-    [PublicAPI]
+    void WriteLine<T>([Localizable(true)] T? value) where T : class, IConvertible
+    {
+        this.Out.WriteLine(value);
+    }
+
+    /// <summary>
+    /// Writes the specified value to the terminal's standard output and appends a line break at the end.
+    /// </summary>
+    void WriteLine<T>([Localizable(true)] T? value) where T : struct, IConvertible
+    {
+        this.Out.WriteLine(value);
+    }
+
+    /// <summary>
+    /// Formats <paramref name="format"/> with <paramref name="args"/>, writes the result
+    /// to the terminal's standard output, and appends a line break at the end.
+    /// </summary>
     [StringFormatMethod("format")]
-    void WriteLine([Localizable(true)] string format, params object[] args)
+    void WriteLine([Localizable(true)] string format, params object?[] args)
     {
         this.Out.WriteLine(format, args);
     }
@@ -121,9 +152,131 @@ public interface ITerminalOutput
     /// <summary>
     /// Writes a line break to the terminal's standard output.
     /// </summary>
-    [PublicAPI]
     void WriteLine()
     {
         this.Out.WriteLine();
     }
+
+    #endregion WriteLine
+}
+
+/// <summary>
+/// Extension methods for <see cref="ITerminalOutput"/>.
+/// </summary>
+/// <remarks>
+/// The primary goal of this class it to give users of concrete implementations of <see cref="ITerminalOutput"/>
+/// access to the default interface implementations (without the need to cast to the interface first).
+/// </remarks>
+public static class ITerminalOutputExtensions
+{
+    #region Write
+
+    /// <summary>
+    /// Writes the specified value to the terminal's standard output.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Write(this ITerminalOutput terminalOutput, [Localizable(true)] object? value)
+    {
+        terminalOutput.Write(value);
+    }
+
+    /// <summary>
+    /// Writes the specified value to the terminal's standard output.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Write(this ITerminalOutput terminalOutput, [Localizable(true)] string? value)
+    {
+        terminalOutput.Write(value);
+    }
+
+    /// <summary>
+    /// Writes the specified value to the terminal's standard output.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Write<T>(this ITerminalOutput terminalOutput, [Localizable(true)] T? value) where T : class, IConvertible
+    {
+        terminalOutput.Write(value);
+    }
+
+    /// <summary>
+    /// Writes the specified value to the terminal's standard output.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Write<T>(this ITerminalOutput terminalOutput, [Localizable(true)] T? value) where T : struct, IConvertible
+    {
+        terminalOutput.Write(value);
+    }
+
+    /// <summary>
+    /// Formats <paramref name="format"/> with <paramref name="args"/> and writes the result
+    /// to the terminal's standard output.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [StringFormatMethod("format")]
+    public static void Write(this ITerminalOutput terminalOutput, [Localizable(true)] string format, params object?[] args)
+    {
+        terminalOutput.Write(format, args);
+    }
+
+    #endregion Write
+
+    #region WriteLine
+
+    /// <summary>
+    /// Writes the specified value to the terminal's standard output and appends a line break at the end.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void WriteLine(this ITerminalOutput terminalOutput, [Localizable(true)] object? value)
+    {
+        terminalOutput.WriteLine(value);
+    }
+
+    /// <summary>
+    /// Writes the specified value to the terminal's standard output and appends a line break at the end.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void WriteLine(this ITerminalOutput terminalOutput, [Localizable(true)] string? value)
+    {
+        terminalOutput.WriteLine(value);
+    }
+
+    /// <summary>
+    /// Writes the specified value to the terminal's standard output and appends a line break at the end.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void WriteLine<T>(this ITerminalOutput terminalOutput, [Localizable(true)] T? value) where T : class, IConvertible
+    {
+        terminalOutput.WriteLine(value);
+    }
+
+    /// <summary>
+    /// Writes the specified value to the terminal's standard output and appends a line break at the end.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void WriteLine<T>(this ITerminalOutput terminalOutput, [Localizable(true)] T? value) where T : struct, IConvertible
+    {
+        terminalOutput.WriteLine(value);
+    }
+
+    /// <summary>
+    /// Formats <paramref name="format"/> with <paramref name="args"/>, writes the result
+    /// to the terminal's standard output, and appends a line break at the end.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [StringFormatMethod("format")]
+    public static void WriteLine(this ITerminalOutput terminalOutput, [Localizable(true)] string format, params object?[] args)
+    {
+        terminalOutput.WriteLine(format, args);
+    }
+
+    /// <summary>
+    /// Writes a line break to the terminal's standard output.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void WriteLine(this ITerminalOutput terminalOutput)
+    {
+        terminalOutput.WriteLine();
+    }
+
+    #endregion WriteLine
 }

@@ -29,6 +29,7 @@ public readonly struct HexColor : IColor, IEquatable<HexColor>
     /// <summary>
     /// Constructor.
     /// </summary>
+    /// <param name="hexColor">The color; for supported format, see <see cref="HexColor"/>.</param>
     public HexColor(string hexColor)
     {
         Validate.ArgumentWithName(nameof(hexColor)).IsNotNullOrEmpty(hexColor);

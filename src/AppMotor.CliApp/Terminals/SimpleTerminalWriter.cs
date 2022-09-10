@@ -10,7 +10,7 @@ namespace AppMotor.CliApp.Terminals;
 /// to a delegate (specified in the constructor).
 /// </summary>
 /// <remarks>
-/// Respects https://no-color.org/
+/// Respects https://no-color.org/ via <see cref="TerminalWriterBase.EnableColors"/>.
 /// </remarks>
 public class SimpleTerminalWriter : TerminalWriterBase
 {

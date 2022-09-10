@@ -1,10 +1,13 @@
 ﻿// SPDX-License-Identifier: MIT
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
+using System.Diagnostics.CodeAnalysis;
+
+using AppMotor.CliApp.Terminals.Formatting;
 using AppMotor.Core.Colors;
 using AppMotor.Core.Globalization;
 
-namespace AppMotor.CliApp.Terminals.Formatting;
+namespace AppMotor.CliApp.Terminals;
 
 /// <summary>
 /// Abstract base implementation for <see cref="ITerminalWriter"/> - i.e. makes implementing <see cref="ITerminalWriter"/>
@@ -14,19 +17,7 @@ namespace AppMotor.CliApp.Terminals.Formatting;
 public abstract class TerminalWriterBase : ITerminalWriter
 {
     /// <inheritdoc />
-    public NewLineTypes NewLine
-    {
-        get => this._newLine;
-        set
-        {
-            this._newLine = value;
-            this._newLineAsString = value.GetNewLineCharacters();
-        }
-    }
-
-    private NewLineTypes _newLine = NewLineTypes.SystemDefault;
-
-    private string _newLineAsString = NewLineTypes.SystemDefault.GetNewLineCharacters();
+    public NewLineTypes NewLine { get; set; } = NewLineTypes.SystemDefault;
 
     /// <inheritdoc />
     public IFormatProvider Culture { get; set; } = UICulture.FormatsAndSorting;
@@ -39,6 +30,7 @@ public abstract class TerminalWriterBase : ITerminalWriter
     /// <summary>
     /// Constructor.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     protected TerminalWriterBase()
     {
         // See: https://no-color.org/
@@ -59,20 +51,6 @@ public abstract class TerminalWriterBase : ITerminalWriter
         lock (this._lock)
         {
             WriteCore(value);
-        }
-    }
-
-    /// <inheritdoc />
-    public void WriteLine(string? value)
-    {
-        lock (this._lock)
-        {
-            if (!string.IsNullOrEmpty(value))
-            {
-                WriteCore(value);
-            }
-
-            WriteCore(this._newLineAsString);
         }
     }
 
@@ -106,42 +84,49 @@ public abstract class TerminalWriterBase : ITerminalWriter
     protected abstract class SuppressAnsiColorSequencesStreamParserBase : AnsiColorStreamParser
     {
         /// <inheritdoc />
+        [ExcludeFromCodeCoverage]
         protected override void OnTextColor(ConsoleColor color)
         {
             // Suppress
         }
 
         /// <inheritdoc />
+        [ExcludeFromCodeCoverage]
         protected override void OnTextColor(int colorIndex)
         {
             // Suppress
         }
 
         /// <inheritdoc />
+        [ExcludeFromCodeCoverage]
         protected override void OnTextColor(RgbColor color)
         {
             // Suppress
         }
 
         /// <inheritdoc />
+        [ExcludeFromCodeCoverage]
         protected override void OnBackgroundColor(ConsoleColor color)
         {
             // Suppress
         }
 
         /// <inheritdoc />
+        [ExcludeFromCodeCoverage]
         protected override void OnBackgroundColor(int colorIndex)
         {
             // Suppress
         }
 
         /// <inheritdoc />
+        [ExcludeFromCodeCoverage]
         protected override void OnBackgroundColor(RgbColor color)
         {
             // Suppress
         }
 
         /// <inheritdoc />
+        [ExcludeFromCodeCoverage]
         protected override void OnResetColors(bool resetForegroundColor, bool resetBackgroundColor)
         {
             // Suppress

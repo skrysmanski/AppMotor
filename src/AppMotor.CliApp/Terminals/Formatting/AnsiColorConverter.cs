@@ -104,6 +104,10 @@ public static class AnsiColorConverter
     /// Converts an 8 bit ANSI color index to its <see cref="ConsoleColor"/> equivalent.
     /// Only works for color index values from 0 to 15. Any other index will return <c>null</c>.
     /// </summary>
+    /// <remarks>
+    /// For values outside of the 0 - 255 range this method will also return <c>null</c> (and
+    /// not throw an exception).
+    /// </remarks>
     [MustUseReturnValue]
     public static ConsoleColor? Convert8BitColorToConsoleColor(int colorIndex)
     {

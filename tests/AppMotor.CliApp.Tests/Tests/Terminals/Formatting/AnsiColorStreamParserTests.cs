@@ -320,10 +320,10 @@ public sealed class AnsiColorStreamParserTests
     }
 
     [Theory]
-    [InlineData("\u001B[0m", true, true)]
-    [InlineData("\u001B[39m", true, false)]
-    [InlineData("\u001B[49m", false, true)]
-    public void Test_ResetColorEscapeSequence(string escapeSequence, bool expectedForegroundColorReset, bool expectedBackgroundColorReset)
+    [InlineData("\u001B[0m", true, true, true)]
+    [InlineData("\u001B[39m", true, false, false)]
+    [InlineData("\u001B[49m", false, true, false)]
+    public void Test_ResetColorEscapeSequence(string escapeSequence, bool expectedForegroundColorReset, bool expectedBackgroundColorReset, bool expectResetSequence)
     {
         // Setup
         var streamParser = new TestStreamParser();
@@ -331,6 +331,10 @@ public sealed class AnsiColorStreamParserTests
         var expectedParsedItems = new List<IParsedItem>();
         expectedParsedItems.Add(new ParsedTextItem(isEscapeSequence: false, "abc"));
         expectedParsedItems.Add(new ParsedResetColorsItem(expectedForegroundColorReset, expectedBackgroundColorReset));
+        if (expectResetSequence)
+        {
+            expectedParsedItems.Add(new ParsedTextItem(isEscapeSequence: true, "0"));
+        }
         expectedParsedItems.Add(new ParsedTextItem(isEscapeSequence: false, "def"));
 
         // Test
@@ -434,9 +438,9 @@ public sealed class AnsiColorStreamParserTests
 
     private sealed class ParsedTextItem : IParsedItem, IEquatable<ParsedTextItem>
     {
-        public bool IsEscapeSequence { get; }
+        private bool IsEscapeSequence { get; }
 
-        public string Value { get; }
+        private string Value { get; }
 
         public ParsedTextItem(bool isEscapeSequence, ReadOnlySpan<char> value)
         {
@@ -491,9 +495,9 @@ public sealed class AnsiColorStreamParserTests
 
     private sealed class ParsedColorItem : IParsedItem, IEquatable<ParsedColorItem>
     {
-        public bool ForegroundColor { get; }
+        private bool ForegroundColor { get; }
 
-        public object Color { get; }
+        private object Color { get; }
 
         public ParsedColorItem(bool foregroundColor, object color)
         {
@@ -548,9 +552,9 @@ public sealed class AnsiColorStreamParserTests
 
     private sealed class ParsedResetColorsItem : IParsedItem, IEquatable<ParsedResetColorsItem>
     {
-        public bool ResetForegroundColor { get; }
+        private bool ResetForegroundColor { get; }
 
-        public bool ResetBackgroundColor { get; }
+        private bool ResetBackgroundColor { get; }
 
         public ParsedResetColorsItem(bool resetForegroundColor, bool resetBackgroundColor)
         {
