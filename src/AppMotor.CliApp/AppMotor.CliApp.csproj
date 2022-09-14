@@ -24,6 +24,10 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+    <PackageReference Include="Mustache.MSBuild" Version="0.2.0">
+      <!-- This is a dev dependency. -->
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
   </ItemGroup>
 
@@ -44,6 +48,21 @@
       <LastGenOutput>LocalizableResources.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Terminals\Formatting\AnsiTextFormatter.4BitColors.cs">
+      <DependentUpon>AnsiTextFormatter.4BitColors.cs.mustache</DependentUpon>
+    </Compile>
+    <None Update="Terminals\Formatting\AnsiTextFormatter.4BitColors.cs.json">
+      <DependentUpon>AnsiTextFormatter.4BitColors.cs.mustache</DependentUpon>
+    </None>
+    <Compile Update="Terminals\Formatting\TermText.4BitColors.cs">
+      <DependentUpon>TermText.4BitColors.cs.mustache</DependentUpon>
+    </Compile>
+    <None Update="Terminals\Formatting\TermText.4BitColors.cs.json">
+      <DependentUpon>TermText.4BitColors.cs.mustache</DependentUpon>
+    </None>
   </ItemGroup>
 
 </Project>

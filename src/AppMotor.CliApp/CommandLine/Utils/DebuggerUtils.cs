@@ -42,7 +42,7 @@ internal static class DebuggerUtils
     /// <summary>
     /// Should be used instead of <see cref="Debugger.Launch"/>.
     /// </summary>
-    public static void LaunchDebugger(IStdOutTerminal terminal)
+    public static void LaunchDebugger(ITerminalOutput terminal)
     {
         if (IsDebuggerAttached)
         {

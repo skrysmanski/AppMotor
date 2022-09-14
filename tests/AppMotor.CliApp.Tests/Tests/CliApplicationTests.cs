@@ -5,6 +5,7 @@ using System.Text;
 
 using AppMotor.CliApp.Terminals;
 using AppMotor.CliApp.TestUtils;
+using AppMotor.TestCore.Utils;
 
 using Shouldly;
 
@@ -78,29 +79,22 @@ public sealed class CliApplicationTests
     private sealed class WaitForKeyTerminal : ITerminal
     {
         /// <inheritdoc />
-        public TextReader Input => throw new NotSupportedException();
+        public TextReader In => throw new NotSupportedException();
 
         /// <inheritdoc />
         public bool IsInputRedirected => false;
 
         /// <inheritdoc />
-        public TextWriter Out { get; }
+        public ITerminalWriter Out { get; }
 
         /// <inheritdoc />
         public bool IsOutputRedirected => throw new NotSupportedException();
 
         /// <inheritdoc />
-        public TextWriter Error => throw new NotSupportedException();
+        public ITerminalWriter Error => throw new NotSupportedException();
 
         /// <inheritdoc />
         public bool IsErrorRedirected => throw new NotSupportedException();
-
-        /// <inheritdoc />
-        public ConsoleColor BackgroundColor
-        {
-            get => throw new NotSupportedException();
-            set => throw new NotSupportedException();
-        }
 
         /// <inheritdoc />
         public bool IsKeyAvailable => true;
@@ -113,8 +107,7 @@ public sealed class CliApplicationTests
 
         public WaitForKeyTerminal()
         {
-            var threadSafeWriter = TextWriter.Synchronized(new StringWriter(this._outWriter));
-            this.Out = threadSafeWriter;
+            this.Out = new SimpleTerminalWriter(value => this._outWriter.Append(value));
         }
 
         /// <inheritdoc />
@@ -126,12 +119,6 @@ public sealed class CliApplicationTests
 
         /// <inheritdoc />
         public string ReadLine() => throw new NotSupportedException();
-
-        /// <inheritdoc />
-        public void Write(ColoredString? coloredString)
-        {
-            this.Out.Write(coloredString);
-        }
     }
 
     private sealed class TestApplicationForExceptionHandling : TestCliApplicationBase
@@ -139,7 +126,7 @@ public sealed class CliApplicationTests
         /// <inheritdoc />
         protected override CliApplicationExecutor MainExecutor => new(Execute);
 
-        private void Execute()
+        private static void Execute()
         {
             try
             {

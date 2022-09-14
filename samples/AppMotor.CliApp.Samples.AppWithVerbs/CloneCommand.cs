@@ -1,5 +1,6 @@
 ﻿using AppMotor.CliApp.CommandLine;
-using AppMotor.CliApp.Terminals;
+
+using static AppMotor.CliApp.Terminals.Formatting.TermText;
 
 namespace AppMotor.CliApp.Samples.AppWithVerbs;
 
@@ -38,27 +39,27 @@ internal sealed class CloneCommand : GitCommandBase
     {
         if (this.QuietParam.Value)
         {
-            this.Terminal.WriteLine((TextInDarkGray)"This command would run quite.");
+            this.Terminal.WriteLine(DarkGray("This command would run quite."));
             this.Terminal.WriteLine();
         }
 
         if (this.VerboseParam.Value)
         {
-            this.Terminal.WriteLine((TextInDarkGray)"This command would run verbose.");
+            this.Terminal.WriteLine(DarkGray("This command would run verbose."));
             this.Terminal.WriteLine();
         }
 
         this.Terminal.WriteLine("This command would clone the repository:");
         this.Terminal.WriteLine();
-        this.Terminal.WriteLine((TextInCyan)$"  {this.RepositoryParam.Value}");
+        this.Terminal.WriteLine(Cyan($"  {this.RepositoryParam.Value}"));
         this.Terminal.WriteLine();
         this.Terminal.WriteLine("To: ");
         this.Terminal.WriteLine();
-        this.Terminal.WriteLine((TextInCyan)$"  {this.DirectoryParam.Value}");
+        this.Terminal.WriteLine(Cyan($"  {this.DirectoryParam.Value}"));
         this.Terminal.WriteLine();
         this.Terminal.WriteLine("With the selected branch:");
         this.Terminal.WriteLine();
-        this.Terminal.WriteLine((TextInCyan)$"  {this.BranchParam.Value ?? "<the default branch>"}");
+        this.Terminal.WriteLine(Cyan($"  {this.BranchParam.Value ?? "<the default branch>"}"));
         this.Terminal.WriteLine();
 
         foreach (var configPair in this.ConfigParam.Value)

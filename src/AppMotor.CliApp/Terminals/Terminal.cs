@@ -3,8 +3,9 @@
 
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
 
+using AppMotor.CliApp.Terminals.Formatting;
+using AppMotor.Core.Colors;
 using AppMotor.Core.Extensions;
 
 using JetBrains.Annotations;
@@ -12,7 +13,7 @@ using JetBrains.Annotations;
 namespace AppMotor.CliApp.Terminals;
 
 /// <summary>
-/// Replacement for <see cref="Console"/> that supports <see cref="ColoredString"/>.
+/// Replacement for <see cref="Console"/> that supports <see cref="TermText"/>.
 /// </summary>
 [ExcludeFromCodeCoverage]
 public static class Terminal
@@ -27,44 +28,30 @@ public static class Terminal
     /// The standard input stream.
     /// </summary>
     [PublicAPI]
-    public static TextReader Input => Console.In;
+    public static TextReader In => Console.In;
 
     /// <summary>
-    /// The encoding used for <see cref="Input"/>.
+    /// Whether <see cref="In"/> is redirected (to a file or the output of another process). If this property
+    /// is <c>true</c>, some members of this class won't work anymore (<see cref="IsKeyAvailable"/>, <see cref="ReadKey"/>).
+    /// Also, <see cref="ReadLine"/> can return <c>null</c> in this case.
     /// </summary>
     /// <remarks>
-    /// For details and defaults, see <see cref="Console.InputEncoding"/>.
-    /// </remarks>
-    [PublicAPI]
-    public static Encoding InputEncoding
-    {
-        get => Console.InputEncoding;
-        set => Console.InputEncoding = value;
-    }
-
-    /// <summary>
-    /// Whether <see cref="Input"/> is redirected (to a file or the output
-    /// of another process). If this property is <c>true</c>, some members
-    /// of this class won't work anymore (<see cref="IsKeyAvailable"/>,
-    /// <see cref="ReadKey"/>). Also, <see cref="ReadLine"/> can return
-    /// <c>null</c> in this case.
-    /// </summary>
-    /// <remarks>
-    /// You MAY interpret a value of <c>true</c> as "the process is non-interactive".
-    /// It's not 100% correct (because the input source may still be interactive)
-    /// but it could be a good estimation if you have no other way of figuring out
-    /// whether the process runs interactively or not.
+    /// You MAY interpret a value of <c>true</c> as "the process is non-interactive". It's not 100% correct (because the
+    /// input source may still be interactive) but it could be a good estimation if you have no other way of figuring out
+    /// whether the process runs interactively or not. See also <see cref="ReadKey"/> for more details.
     /// </remarks>
     [PublicAPI]
     public static bool IsInputRedirected => Console.IsInputRedirected;
 
     /// <summary>
-    /// Whether a key press is available to be read by <see cref="ReadKey"/>. If
-    /// this property is <c>true</c>, <see cref="ReadKey"/> will return immediately.
-    /// If this is <c>false</c>, <see cref="ReadKey"/> will block until a key is pressed.
+    /// Whether a key press is available to be read by <see cref="ReadKey"/>. If this property is <c>true</c>,
+    /// <see cref="ReadKey"/> will return immediately. If this is <c>false</c>, <see cref="ReadKey"/> will block
+    /// until a key is pressed.
     /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown if <see cref="IsInputRedirected"/>
-    /// is <c>true</c>.</exception>
+    /// <remarks>
+    /// Note that this property differs from using <c>In.Peek()</c>; see <see cref="ReadKey"/> for more details.
+    /// </remarks>
+    /// <exception cref="InvalidOperationException">Thrown if <see cref="IsInputRedirected"/> is <c>true</c>.</exception>
     [PublicAPI]
     public static bool IsKeyAvailable => Console.KeyAvailable;
 
@@ -72,12 +59,20 @@ public static class Terminal
     /// The standard output stream.
     /// </summary>
     [PublicAPI]
-    public static TextWriter Out => Console.Out;
+    public static ITerminalWriter Out { get; } = new ConsoleTerminalWriter(stdErr: false);
 
     /// <summary>
-    /// Whether <see cref="Out"/> is redirected (to a file or the input
-    /// of another process).
+    /// Whether <see cref="Out"/> is redirected (to a file or the input of another process). If <c>false</c>,
+    /// this means that <see cref="Out"/> writes to the "physical" console/terminal.
     /// </summary>
+    /// <remarks>
+    /// Unlike <see cref="IsInputRedirected"/>, the value of this property should not have
+    /// any effects on the properties/methods in this interface.
+    /// </remarks>
+    /// <remarks>
+    /// Note to implementers: If <see cref="Out"/> doesn't represent the "physical" console/terminal, you
+    /// should return <c>true</c> here.
+    /// </remarks>
     [PublicAPI]
     public static bool IsOutputRedirected => Console.IsOutputRedirected;
 
@@ -85,42 +80,22 @@ public static class Terminal
     /// The standard error output stream.
     /// </summary>
     [PublicAPI]
-    public static TextWriter Error => Console.Error;
+    public static ITerminalWriter Error { get; } = new ConsoleTerminalWriter(stdErr: true);
 
     /// <summary>
-    /// Whether <see cref="Error"/> is redirected (to a file or the input
-    /// of another process).
+    /// Whether <see cref="Error"/> is redirected (to a file or the input of another process). If <c>false</c>,
+    /// this means that <see cref="Error"/> writes to the "physical" console/terminal.
     /// </summary>
+    /// <remarks>
+    /// Unlike <see cref="IsInputRedirected"/>, the value of this property should not have
+    /// any effects on the properties/methods in this interface.
+    /// </remarks>
+    /// <remarks>
+    /// Note to implementers: If <see cref="Error"/> doesn't represent the "physical" console/terminal, you
+    /// should return <c>true</c> here.
+    /// </remarks>
     [PublicAPI]
     public static bool IsErrorRedirected => Console.IsErrorRedirected;
-
-    /// <summary>
-    /// The encoding used for the various <c>Write()</c> and <c>WriteLine()</c> methods
-    /// and for <see cref="Error"/>.
-    /// </summary>
-    /// <remarks>
-    /// For details and defaults, see <see cref="Console.OutputEncoding"/>.
-    /// </remarks>
-    [PublicAPI]
-    public static Encoding OutputEncoding
-    {
-        get => Console.OutputEncoding;
-        set => Console.OutputEncoding = value;
-    }
-
-    /// <summary>
-    /// The background color of the terminal.
-    /// </summary>
-    /// <remarks>
-    /// To set the foreground (text) color, use <see cref="Write(ColoredString)"/>
-    /// or <see cref="WriteLine(ColoredString)"/>.
-    /// </remarks>
-    [PublicAPI]
-    public static ConsoleColor BackgroundColor
-    {
-        get => Console.BackgroundColor;
-        set => Console.BackgroundColor = value;
-    }
 
     /// <summary>
     /// The width of the terminal window; i.e. how many characters can be displayed
@@ -252,6 +227,15 @@ public static class Terminal
     /// Writes the specified object to the terminal's standard output.
     /// </summary>
     [PublicAPI]
+    public static void Write<T>([Localizable(true)] T? value) where T : IConvertible
+    {
+        Out.Write(value);
+    }
+
+    /// <summary>
+    /// Writes the specified object to the terminal's standard output.
+    /// </summary>
+    [PublicAPI]
     public static void Write([Localizable(true)] object? value)
     {
         Out.Write(value);
@@ -275,34 +259,6 @@ public static class Terminal
     public static void Write([Localizable(true)] string format, params object[] args)
     {
         Write(format.With(args));
-    }
-
-    /// <summary>
-    /// Writes the specified colored string to the terminal's standard output.
-    /// </summary>
-    [PublicAPI]
-    public static void Write(ColoredString? coloredString)
-    {
-        if (coloredString == null || coloredString.Count == 0)
-        {
-            return;
-        }
-
-        var originalColor = Console.ForegroundColor;
-
-        try
-        {
-            foreach (var coloredSubstring in coloredString)
-            {
-                Console.ForegroundColor = coloredSubstring.Color ?? originalColor;
-
-                Out.Write(coloredSubstring.Text);
-            }
-        }
-        finally
-        {
-            Console.ForegroundColor = originalColor;
-        }
     }
 
     /// <summary>
@@ -337,17 +293,6 @@ public static class Terminal
     }
 
     /// <summary>
-    /// Writes the specified colored string to the terminal's standard output
-    /// and appends a line break at the end.
-    /// </summary>
-    [PublicAPI]
-    public static void WriteLine(ColoredString? coloredString)
-    {
-        Write(coloredString);
-        WriteLine();
-    }
-
-    /// <summary>
     /// Writes a line break to the terminal's standard output.
     /// </summary>
     [PublicAPI]
@@ -357,14 +302,22 @@ public static class Terminal
     }
 
     /// <summary>
-    /// Obtains the next character or function key pressed by the user. Note that
-    /// this call will block until the user presses a key. To avoid this, check
-    /// <see cref="IsKeyAvailable"/>.
+    /// Obtains the next character or function key pressed by the user. Note that this call will block until the user
+    /// presses a key. To avoid this, check <see cref="IsKeyAvailable"/>.
     /// </summary>
-    /// <param name="displayPressedKey">Whether the pressed key should be displayed
-    /// on the terminal or not. Default to <c>true</c>.</param>
-    /// <exception cref="InvalidOperationException">Thrown if <see cref="IsInputRedirected"/>
-    /// is <c>true</c>.</exception>
+    /// <param name="displayPressedKey">Whether the pressed key should be displayed on the terminal or not. Default to
+    /// <c>true</c>.</param>
+    /// <remarks>
+    /// Note that this method differs from using <c>In.Read()</c> as <see cref="In"/> can only contain key presses for
+    /// keys that can be mapped to a <c>char</c>; for example, the keys F1-F12, insert, delete, home, end, and the arrow
+    /// keys can be read through this method but not through <see cref="In"/>. This is why <see cref="IsInputRedirected"/>
+    /// does have an effect on the members of this type whereas its output equivalents (e.g.
+    /// <see cref="IsOutputRedirected"/>) are only informational.
+    /// </remarks>
+    /// <remarks>
+    /// This method doesn't return modifier key presses (i.e. ctrl, alt, shift, ...).
+    /// </remarks>
+    /// <exception cref="InvalidOperationException">Thrown if <see cref="IsInputRedirected"/> is <c>true</c>.</exception>
     [PublicAPI]
     public static ConsoleKeyInfo ReadKey(bool displayPressedKey = true)
     {
@@ -375,9 +328,11 @@ public static class Terminal
     /// Reads the next line of characters from the standard input stream.
     /// </summary>
     /// <returns>
-    /// The read line (without the end-of-line characters). Returns <c>null</c>
-    /// if the input stream has been redirected (<see cref="IsInputRedirected"/>)
-    /// and no more lines are available - or if the user hits <c>Ctrl+C</c>.
+    /// The read line (without the end-of-line characters). Returns <c>null</c> if the input stream has been redirected
+    /// (<see cref="IsInputRedirected"/>) and no more lines are available - or if the user hits <c>Ctrl+C</c>.
+    ///
+    /// <para>If the input stream has not been redirected, this method will block until to user presses either Enter or
+    /// <c>Ctrl+C</c>.</para>
     /// </returns>
     [PublicAPI]
     public static string? ReadLine()
@@ -447,7 +402,7 @@ public static class Terminal
     private sealed class TerminalAsInstance : ITerminalWindow
     {
         /// <inheritdoc />
-        public TextReader Input => Terminal.Input;
+        public TextReader In => Terminal.In;
 
         /// <inheritdoc />
         public bool IsInputRedirected => Terminal.IsInputRedirected;
@@ -456,37 +411,16 @@ public static class Terminal
         public bool IsKeyAvailable => Terminal.IsKeyAvailable;
 
         /// <inheritdoc />
-        public TextWriter Out => Terminal.Out;
+        public ITerminalWriter Out => Terminal.Out;
 
         /// <inheritdoc />
         public bool IsOutputRedirected => Terminal.IsOutputRedirected;
 
         /// <inheritdoc />
-        public TextWriter Error => Terminal.Error;
+        public ITerminalWriter Error => Terminal.Error;
 
         /// <inheritdoc />
         public bool IsErrorRedirected => Terminal.IsErrorRedirected;
-
-        /// <inheritdoc />
-        public Encoding InputEncoding
-        {
-            get => Terminal.InputEncoding;
-            set => Terminal.InputEncoding = value;
-        }
-
-        /// <inheritdoc />
-        public Encoding OutputEncoding
-        {
-            get => Terminal.OutputEncoding;
-            set => Terminal.OutputEncoding = value;
-        }
-
-        /// <inheritdoc />
-        public ConsoleColor BackgroundColor
-        {
-            get => Terminal.BackgroundColor;
-            set => Terminal.BackgroundColor = value;
-        }
 
         /// <inheritdoc />
         public int TerminalWidth => Terminal.TerminalWidth;
@@ -512,9 +446,6 @@ public static class Terminal
         }
 
         /// <inheritdoc />
-        public void Write(ColoredString? coloredString) => Terminal.Write(coloredString);
-
-        /// <inheritdoc />
         public ConsoleKeyInfo ReadKey(bool displayPressedKey = true) => Terminal.ReadKey(displayPressedKey);
 
         /// <inheritdoc />
@@ -531,5 +462,203 @@ public static class Terminal
 
         /// <inheritdoc />
         public void SetCursorPosition(int left, int top) => Terminal.SetCursorPosition(left, top);
+    }
+
+    private sealed class ConsoleTerminalWriter : TerminalWriterBase
+    {
+        private TextWriter TextWriter { get; }
+
+        private readonly SuppressAnsiColorSequencesStreamParser _noColorStreamParser;
+
+        /// <summary>
+        /// Fallback parser if ANSI is not supported (required only on Windows).
+        /// </summary>
+        private readonly AnsiFallbackStreamParser? _ansiFallbackStreamParser;
+
+        public ConsoleTerminalWriter(bool stdErr)
+        {
+            this.TextWriter = stdErr ? Console.Error : Console.Out;
+            this._noColorStreamParser = new SuppressAnsiColorSequencesStreamParser(this);
+
+            if (!AnsiSupportOnWindows.Enable())
+            {
+                this._ansiFallbackStreamParser = new AnsiFallbackStreamParser(this);
+            }
+        }
+
+        /// <inheritdoc />
+        protected override void WriteCore(string value)
+        {
+            if (this._ansiFallbackStreamParser is not null)
+            {
+                this._ansiFallbackStreamParser.ParseNext(value);
+            }
+            else
+            {
+                if (this.EnableColors)
+                {
+                    this.TextWriter.Write(value);
+                }
+                else
+                {
+                    this._noColorStreamParser.ParseNext(value);
+                }
+            }
+        }
+
+        private sealed class AnsiFallbackStreamParser : AnsiColorStreamParser
+        {
+            /// <summary>
+            /// This lock is required because both <see cref="Console.ForegroundColor"/> and <see cref="Console.BackgroundColor"/>
+            /// affect both <see cref="Console.Out"/> and(!) <see cref="Console.Error"/>. With this lock we make sure that only
+            /// one of the streams is written to at the same time.
+            /// </summary>
+            private static readonly object s_consoleColorLock = new();
+
+            private readonly ConsoleTerminalWriter _consoleTerminalWriter;
+
+            /// <summary>
+            /// The foreground color to use for the next text write operation.
+            /// </summary>
+            /// <remarks>
+            /// We can't use <see cref="Console.ForegroundColor"/> directly to store this value because
+            /// the colors for <see cref="Console.Out"/> and <see cref="Console.Error"/> must be managed
+            /// independently.
+            /// </remarks>
+            private ConsoleColor? _currentForegroundColor;
+
+            /// <summary>
+            /// The background color to use for the next text write operation.
+            /// </summary>
+            /// <remarks>
+            /// We can't use <see cref="Console.BackgroundColor"/> directly to store this value because
+            /// the colors for <see cref="Console.Out"/> and <see cref="Console.Error"/> must be managed
+            /// independently.
+            /// </remarks>
+            private ConsoleColor? _currentBackgroundColor;
+
+            public AnsiFallbackStreamParser(ConsoleTerminalWriter consoleTerminalWriter)
+            {
+                this._consoleTerminalWriter = consoleTerminalWriter;
+            }
+
+            /// <inheritdoc />
+            protected override void OnTextColor(ConsoleColor color)
+            {
+                this._currentForegroundColor = color;
+            }
+
+            /// <inheritdoc />
+            protected override void OnTextColor(int colorIndex)
+            {
+                // Ignore; not supported
+                // While it would technically possible to convert the color index into an RGB color (and then
+                // call "OnTextColor(RgbColor)", the latter won't be able to reduce the color back down to
+                // "ConsoleColor". See remarks there.
+            }
+
+            /// <inheritdoc />
+            protected override void OnTextColor(RgbColor color)
+            {
+                // Ignore; not supported
+                // NOTE: While it would be probably possible to "reduce" the RGB color to one values of "ConsoleColor",
+                //   a short search on the Internet didn't provide any obvious/easy solutions for the problem. You would
+                //   most likely calculate the color difference between the RGB color and each ConsoleColor and use the
+                //   closest one. However, this seems to be a hard a problem - see, for example, the note at the top of
+                //   of this StackOverflow answer: https://stackoverflow.com/a/35114586/614177
+                //
+                //   And since - at the time of writing - the oldest Windows version (that's still supported by Microsoft)
+                //   that (probably) doesn't support ANSI sequences, Windows Server 2012 R2, only has one year left for
+                //   support, it doesn't seem sensible to put effort in making this work.
+            }
+
+            /// <inheritdoc />
+            protected override void OnBackgroundColor(ConsoleColor color)
+            {
+                this._currentBackgroundColor = color;
+            }
+
+            /// <inheritdoc />
+            protected override void OnBackgroundColor(int colorIndex)
+            {
+                // Ignore; not supported
+                // See remarks in "OnForegroundColor(int)".
+            }
+
+            /// <inheritdoc />
+            protected override void OnBackgroundColor(RgbColor color)
+            {
+                // Ignore; not supported
+                // See remarks in "OnForegroundColor(ConsoleColor)".
+            }
+
+            /// <inheritdoc />
+            protected override void OnResetColors(bool resetForegroundColor, bool resetBackgroundColor)
+            {
+                if (resetForegroundColor)
+                {
+                    this._currentForegroundColor = null;
+                }
+
+                if (resetBackgroundColor)
+                {
+                    this._currentBackgroundColor = null;
+                }
+            }
+
+            /// <inheritdoc />
+            protected override void OnText(ReadOnlySpan<char> text)
+            {
+                if (!this._consoleTerminalWriter.EnableColors || (this._currentForegroundColor is null && this._currentBackgroundColor is null))
+                {
+                    this._consoleTerminalWriter.TextWriter.Write(text);
+                    return;
+                }
+
+                lock (s_consoleColorLock)
+                {
+                    if (this._currentForegroundColor != null)
+                    {
+                        Console.ForegroundColor = this._currentForegroundColor.Value;
+                    }
+                    if (this._currentBackgroundColor != null)
+                    {
+                        Console.BackgroundColor = this._currentBackgroundColor.Value;
+                    }
+
+                    this._consoleTerminalWriter.TextWriter.Write(text);
+
+                    Console.ResetColor();
+                }
+            }
+
+            /// <inheritdoc />
+            protected override void OnNonColorAnsiEscapeSequence(ReadOnlySpan<char> escapeSequenceContents)
+            {
+                // Ignore; not supported
+            }
+        }
+
+        private sealed class SuppressAnsiColorSequencesStreamParser : SuppressAnsiColorSequencesStreamParserBase
+        {
+            private readonly ConsoleTerminalWriter _consoleTerminalWriter;
+
+            public SuppressAnsiColorSequencesStreamParser(ConsoleTerminalWriter consoleTerminalWriter)
+            {
+                this._consoleTerminalWriter = consoleTerminalWriter;
+            }
+
+            /// <inheritdoc />
+            protected override void OnText(ReadOnlySpan<char> text)
+            {
+                this._consoleTerminalWriter.TextWriter.Write(text);
+            }
+
+            /// <inheritdoc />
+            protected override void OnNonColorAnsiEscapeSequence(ReadOnlySpan<char> escapeSequenceContents)
+            {
+                this._consoleTerminalWriter.TextWriter.Write(AnsiEscapeSequence.Create(escapeSequenceContents));
+            }
+        }
     }
 }

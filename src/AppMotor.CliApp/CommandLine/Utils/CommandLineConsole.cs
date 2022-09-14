@@ -35,8 +35,8 @@ internal sealed class CommandLineConsole : IConsole
     {
         this._terminal = terminal;
 
-        this.Out = StandardStreamWriter.Create(terminal.Out);
-        this.Error = StandardStreamWriter.Create(terminal.Error);
+        this.Out = new TerminalStreamWriter(terminal.Out);
+        this.Error = new TerminalStreamWriter(terminal.Error);
     }
 
     /// <summary>
@@ -58,4 +58,19 @@ internal sealed class CommandLineConsole : IConsole
         }
     }
 
+    private sealed class TerminalStreamWriter : IStandardStreamWriter
+    {
+        private readonly ITerminalWriter _terminalWriter;
+
+        public TerminalStreamWriter(ITerminalWriter terminalWriter)
+        {
+            this._terminalWriter = terminalWriter;
+        }
+
+        /// <inheritdoc />
+        public void Write(string? value)
+        {
+            this._terminalWriter.Write(value);
+        }
+    }
 }

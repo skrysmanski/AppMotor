@@ -8,6 +8,14 @@ namespace AppMotor.CliApp.Terminals;
 /// no interaction with the terminal window - like setting the terminal's title, cursor position or obtaining
 /// the terminal's width. For advanced features, see <see cref="ITerminalWindow"/>.
 /// </summary>
-public interface ITerminal : IOutputTerminal, IInputTerminal
+/// <remarks>
+/// This interface primarily exists for unit testing purposes where no actual terminal/console may be available.
+/// See "TestTerminal" in the "AppMotor.TestCore" package for an implementation.
+/// </remarks>
+/// <remarks>
+/// Instances of this interface may or may not also implement <see cref="ITerminalWindow"/>. You can use an
+/// "is"/"as" conversion to check for this and adopt your code accordingly.
+/// </remarks>
+public interface ITerminal : ITerminalInput, ITerminalOutput
 {
 }
