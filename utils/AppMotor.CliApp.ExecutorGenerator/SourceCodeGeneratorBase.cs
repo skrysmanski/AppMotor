@@ -13,7 +13,7 @@ internal abstract class SourceCodeGeneratorBase
 {
     protected static readonly string INDENTATION_LEVEL = new(' ', 4);
 
-    private static readonly string BASE_INDENTATION = INDENTATION_LEVEL + INDENTATION_LEVEL;
+    private static readonly string BASE_INDENTATION = INDENTATION_LEVEL;
 
     public const string LINE_BREAK = "\r\n";
 
