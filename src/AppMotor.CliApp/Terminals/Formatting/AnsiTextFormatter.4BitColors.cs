@@ -1,6 +1,6 @@
 ﻿//
-// NOTE: This file has been automatically generated from 'AnsiTextFormatter.4BitColors.cs.mustache'. Any changes made to
-//   this file will be lost on the next build.
+// NOTE: This file has been AUTOMATICALLY GENERATED from 'AnsiTextFormatter.4BitColors.cs.mustache'. Any changes made to
+//   this file will be LOST on the next build.
 //
 
 // SPDX-License-Identifier: MIT
