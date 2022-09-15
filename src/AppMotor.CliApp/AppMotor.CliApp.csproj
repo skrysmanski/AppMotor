@@ -57,6 +57,12 @@
     <None Update="CliApplicationExecutor.cs.json">
       <DependentUpon>CliApplicationExecutor.cs.mustache</DependentUpon>
     </None>
+    <Compile Update="CommandLine\CliCommandExecutor.cs">
+      <DependentUpon>CliCommandExecutor.cs.mustache</DependentUpon>
+    </Compile>
+    <None Update="CommandLine\CliCommandExecutor.cs.json">
+      <DependentUpon>CliCommandExecutor.cs.mustache</DependentUpon>
+    </None>
     <Compile Update="Terminals\Formatting\AnsiTextFormatter.4BitColors.cs">
       <DependentUpon>AnsiTextFormatter.4BitColors.cs.mustache</DependentUpon>
     </Compile>
