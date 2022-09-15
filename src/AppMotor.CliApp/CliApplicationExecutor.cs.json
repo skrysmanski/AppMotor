@@ -1,0 +1,150 @@
+{
+	"constructors": [
+		// sync, no exit code
+		{
+		},
+		{
+			"hasActionArgs": true,
+			"useArgs": true
+		},
+		{
+			"hasActionArgs": true,
+			"useCancellationToken": true
+		},
+		{
+			"hasActionArgs": true,
+			"useArgs": true,
+			"useCancellationToken": true
+		},
+
+		// sync, int exit code
+		{
+			"returnsExitCode": true,
+			"exitCodeIsInt": true
+		},
+		{
+			"hasActionArgs": true,
+			"useArgs": true,
+			"returnsExitCode": true,
+			"exitCodeIsInt": true
+		},
+		{
+			"hasActionArgs": true,
+			"useCancellationToken": true,
+			"returnsExitCode": true,
+			"exitCodeIsInt": true
+		},
+		{
+			"hasActionArgs": true,
+			"useArgs": true,
+			"useCancellationToken": true,
+			"returnsExitCode": true,
+			"exitCodeIsInt": true
+		},
+
+		// sync, bool exit code
+		{
+			"returnsExitCode": true,
+			"exitCodeIsBool": true
+		},
+		{
+			"hasActionArgs": true,
+			"useArgs": true,
+			"returnsExitCode": true,
+			"exitCodeIsBool": true
+		},
+		{
+			"hasActionArgs": true,
+			"useCancellationToken": true,
+			"returnsExitCode": true,
+			"exitCodeIsBool": true
+		},
+		{
+			"hasActionArgs": true,
+			"useArgs": true,
+			"useCancellationToken": true,
+			"returnsExitCode": true,
+			"exitCodeIsBool": true
+		},
+
+		// async, no exit code
+		{
+			"isAsync": true
+		},
+		{
+			"isAsync": true,
+			"hasActionArgs": true,
+			"useArgs": true
+		},
+		{
+			"isAsync": true,
+			"hasActionArgs": true,
+			"useCancellationToken": true
+		},
+		{
+			"isAsync": true,
+			"hasActionArgs": true,
+			"useArgs": true,
+			"useCancellationToken": true
+		},
+
+		// async, int exit code
+		{
+			"isAsync": true,
+			"returnsExitCode": true,
+			"exitCodeIsInt": true
+		},
+		{
+			"isAsync": true,
+			"hasActionArgs": true,
+			"useArgs": true,
+			"returnsExitCode": true,
+			"exitCodeIsInt": true
+		},
+		{
+			"isAsync": true,
+			"hasActionArgs": true,
+			"useCancellationToken": true,
+			"returnsExitCode": true,
+			"exitCodeIsInt": true
+		},
+		{
+			"isAsync": true,
+			"hasActionArgs": true,
+			"useArgs": true,
+			"useCancellationToken": true,
+			"returnsExitCode": true,
+			"exitCodeIsInt": true,
+			"directAssign": true
+		},
+
+		// async, bool exit code
+		{
+			"isAsync": true,
+			"returnsExitCode": true,
+			"exitCodeIsBool": true
+		},
+		{
+			"isAsync": true,
+			"hasActionArgs": true,
+			"useArgs": true,
+			"returnsExitCode": true,
+			"exitCodeIsBool": true
+		},
+		{
+			"isAsync": true,
+			"hasActionArgs": true,
+			"useCancellationToken": true,
+			"returnsExitCode": true,
+			"exitCodeIsBool": true
+		},
+		{
+			"isAsync": true,
+			"hasActionArgs": true,
+			"useArgs": true,
+			"useCancellationToken": true,
+			"returnsExitCode": true,
+			"exitCodeIsBool": true
+		}
+	]
+}

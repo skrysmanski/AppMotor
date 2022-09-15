@@ -1,0 +1,62 @@
+﻿//
+// NOTE: This file has been AUTOMATICALLY GENERATED from '{{TemplateFile}}'. Any changes made to
+//   this file will be LOST on the next build.
+//
+
+// SPDX-License-Identifier: MIT
+// Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
+
+using JetBrains.Annotations;
+
+namespace AppMotor.CliApp;
+
+/// <summary>
+/// Represents the main/execute method of a <see cref="CliApplication"/> (via <see cref="CliApplication.MainExecutor"/>).
+/// The main purpose of this class is to give the user the freedom to choose between a synchronous or <c>async</c>
+/// method and to choose between <c>void</c>, <c>bool</c>, and <c>int</c> as return type.
+/// </summary>
+public class CliApplicationExecutor
+{
+    private readonly Func<string[], CancellationToken, Task<int>> _action;
+
+{{#constructors}}
+    /// <summary>
+    /// Creates an executor for a method that: is {{#isAsync}}asynchronous{{/isAsync}}{{^isAsync}}synchronous{{/isAsync}}{{#hasActionArgs}}, takes in {{#useArgs}}the command line params{{#useCancellationToken}} and {{/useCancellationToken}}{{/useArgs}}{{#useCancellationToken}}the application cancellation token{{/useCancellationToken}}{{/hasActionArgs}}, and returns {{#exitCodeIsInt}}an exit code{{/exitCodeIsInt}}{{#exitCodeIsBool}}a success <c>bool</c>{{/exitCodeIsBool}}{{^returnsExitCode}}no exit code ({{#isAsync}}<c>Task</c>/{{/isAsync}}<c>void</c>){{/returnsExitCode}}.
+{{#exitCodeIsBool}}
+    ///
+    /// <para>The return value of <c>true</c> is translated into the exit code 0; <c>false</c> is translated into 1.</para>
+{{/exitCodeIsBool}}
+{{^returnsExitCode}}
+    ///
+    /// <para>The exit code is always 0.</para>
+{{/returnsExitCode}}
+    /// </summary>
+    [PublicAPI]
+{{^hasActionArgs}}
+    public CliApplicationExecutor({{#returnsExitCode}}Func<{{#isAsync}}Task<{{/isAsync}}{{#exitCodeIsInt}}int{{/exitCodeIsInt}}{{#exitCodeIsBool}}bool{{/exitCodeIsBool}}{{#isAsync}}>{{/isAsync}}>{{/returnsExitCode}}{{^returnsExitCode}}{{#isAsync}}Func<Task>{{/isAsync}}{{^isAsync}}Action{{/isAsync}}{{/returnsExitCode}} action)
+{{/hasActionArgs}}
+{{#hasActionArgs}}
+    public CliApplicationExecutor({{#returnsExitCode}}Func{{/returnsExitCode}}{{^returnsExitCode}}{{#isAsync}}Func{{/isAsync}}{{^isAsync}}Action{{/isAsync}}{{/returnsExitCode}}<{{#useArgs}}string[]{{#useCancellationToken}}, {{/useCancellationToken}}{{/useArgs}}{{#useCancellationToken}}CancellationToken{{/useCancellationToken}}{{#returnsExitCode}}, {{#isAsync}}Task<{{/isAsync}}{{#exitCodeIsInt}}int{{/exitCodeIsInt}}{{#exitCodeIsBool}}bool{{/exitCodeIsBool}}{{#isAsync}}>{{/isAsync}}{{/returnsExitCode}}{{^returnsExitCode}}{{#isAsync}}, Task{{/isAsync}}{{/returnsExitCode}}> action)
+{{/hasActionArgs}}
+    {
+{{#directAssign}}
+        this._action = action;
+{{/directAssign}}
+{{^directAssign}}
+        this._action = {{#isAsync}}async {{/isAsync}}({{#useArgs}}args{{/useArgs}}{{^useArgs}}_{{/useArgs}}, {{#useCancellationToken}}cancellationToken{{/useCancellationToken}}{{^useCancellationToken}}_{{/useCancellationToken}}) =>
+        {
+            {{#returnsExitCode}}{{#exitCodeIsInt}}int{{/exitCodeIsInt}}{{#exitCodeIsBool}}bool{{/exitCodeIsBool}} retVal = {{/returnsExitCode}}{{#isAsync}}await {{/isAsync}}action({{#useArgs}}args{{#useCancellationToken}}, {{/useCancellationToken}}{{/useArgs}}{{#useCancellationToken}}cancellationToken{{/useCancellationToken}}){{#isAsync}}.ConfigureAwait(continueOnCapturedContext: false){{/isAsync}};
+            return {{^isAsync}}Task.FromResult({{/isAsync}}{{#returnsExitCode}}retVal{{#exitCodeIsBool}} ? 0 : 1{{/exitCodeIsBool}}{{/returnsExitCode}}{{^returnsExitCode}}0{{/returnsExitCode}}{{^isAsync}}){{/isAsync}};
+        };
+{{/directAssign}}
+    }
+
+{{/constructors}}
+    /// <summary>
+    /// Executes this executor and returns the exit code.
+    /// </summary>
+    public async Task<int> Execute(string[] args, CancellationToken cancellationToken)
+    {
+        return await this._action(args, cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+    }
+}
