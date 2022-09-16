@@ -67,31 +67,31 @@ public sealed class TerminalWriterBaseTests
     }
 
     [Theory]
-    [InlineData(NewLineTypes.SystemDefault)]
-    [InlineData(NewLineTypes.CrLf)]
-    [InlineData(NewLineTypes.Lf)]
+    [InlineData(LineTerminators.SystemDefault)]
+    [InlineData(LineTerminators.CrLf)]
+    [InlineData(LineTerminators.Lf)]
     [InlineData(null)]
-    public void Test_NewLine(NewLineTypes? newLineType)
+    public void Test_LineTerminator(LineTerminators? lineTerminator)
     {
         // Setup
         var terminalWriterMock = new Mock<TerminalWriterBase>(MockBehavior.Loose);
 
         // Test
-        if (newLineType != null)
+        if (lineTerminator != null)
         {
-            terminalWriterMock.Object.NewLine = newLineType.Value;
-            terminalWriterMock.Object.NewLine.ShouldBe(newLineType.Value);
+            terminalWriterMock.Object.LineTerminator = lineTerminator.Value;
+            terminalWriterMock.Object.LineTerminator.ShouldBe(lineTerminator.Value);
         }
         else
         {
-            terminalWriterMock.Object.NewLine.ShouldBe(NewLineTypes.SystemDefault);
+            terminalWriterMock.Object.LineTerminator.ShouldBe(LineTerminators.SystemDefault);
         }
 
         terminalWriterMock.Object.WriteLine("");
 
         // Verify
         terminalWriterMock.Protected().Verify(TestTerminalWriter.NAME_FOR_WRITE_CORE_METHOD, Times.Once(), ItExpr.IsAny<string>());
-        terminalWriterMock.Protected().Verify(TestTerminalWriter.NAME_FOR_WRITE_CORE_METHOD, Times.Once(), newLineType?.GetNewLineCharacters() ?? Environment.NewLine);
+        terminalWriterMock.Protected().Verify(TestTerminalWriter.NAME_FOR_WRITE_CORE_METHOD, Times.Once(), lineTerminator?.AsString() ?? Environment.NewLine);
     }
 
     [Fact]

@@ -18,7 +18,7 @@ namespace AppMotor.CliApp.Terminals;
 public abstract class TerminalWriterBase : ITerminalWriter
 {
     /// <inheritdoc />
-    public NewLineTypes NewLine { get; set; } = NewLineTypes.SystemDefault;
+    public LineTerminators LineTerminator { get; set; } = LineTerminators.SystemDefault;
 
     /// <inheritdoc />
     public IFormatProvider Culture { get; set; } = UICulture.FormatsAndSorting;

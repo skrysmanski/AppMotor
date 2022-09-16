@@ -20,11 +20,11 @@ public interface ITerminalWriter
     /// The newline characters to use.
     /// </summary>
     /// <remarks>
-    /// Implementers should default this to <see cref="NewLineTypes.SystemDefault"/>, unless
+    /// Implementers should default this to <see cref="LineTerminators.SystemDefault"/>, unless
     /// another default value is required/desired.
     /// </remarks>
     [PublicAPI]
-    NewLineTypes NewLine { get; set; }
+    LineTerminators LineTerminator { get; set; }
 
     /// <summary>
     /// The <see cref="IFormatProvider"/> to use for formatting "formattable" values (like date times or numbers).
@@ -97,22 +97,22 @@ public interface ITerminalWriter
     #region WriteLine
 
     /// <summary>
-    /// Writes the specified value to this writer's output and appends a line break (see <see cref="NewLine"/>) at the end.
+    /// Writes the specified value to this writer's output and appends a line break (see <see cref="LineTerminator"/>) at the end.
     /// </summary>
     void WriteLine([Localizable(true)] string? value)
     {
         if (string.IsNullOrEmpty(value))
         {
-            Write(this.NewLine.GetNewLineCharacters());
+            Write(this.LineTerminator.AsString());
         }
         else
         {
-            Write(value + this.NewLine.GetNewLineCharacters());
+            Write(value + this.LineTerminator.AsString());
         }
     }
 
     /// <summary>
-    /// Writes the specified value to this writer's output and appends a line break (see <see cref="NewLine"/>) at the end.
+    /// Writes the specified value to this writer's output and appends a line break (see <see cref="LineTerminator"/>) at the end.
     /// </summary>
     void WriteLine([Localizable(true)] object? value)
     {
@@ -127,7 +127,7 @@ public interface ITerminalWriter
     }
 
     /// <summary>
-    /// Writes the specified value to this writer's output and appends a line break (see <see cref="NewLine"/>) at the end.
+    /// Writes the specified value to this writer's output and appends a line break (see <see cref="LineTerminator"/>) at the end.
     /// </summary>
     void WriteLine<T>([Localizable(true)] T? value) where T : class, IConvertible
     {
@@ -135,7 +135,7 @@ public interface ITerminalWriter
     }
 
     /// <summary>
-    /// Writes the specified value to this writer's output and appends a line break (see <see cref="NewLine"/>) at the end.
+    /// Writes the specified value to this writer's output and appends a line break (see <see cref="LineTerminator"/>) at the end.
     /// </summary>
     void WriteLine<T>([Localizable(true)] T? value) where T : struct, IConvertible
     {
@@ -144,7 +144,7 @@ public interface ITerminalWriter
 
     /// <summary>
     /// Formats <paramref name="format"/> with <paramref name="args"/>, writes the result
-    /// to this writer's output, and appends a line break (see <see cref="NewLine"/>) at the end.
+    /// to this writer's output, and appends a line break (see <see cref="LineTerminator"/>) at the end.
     /// </summary>
     [StringFormatMethod("format")]
     void WriteLine([Localizable(true)] string format, params object?[] args)
@@ -153,7 +153,7 @@ public interface ITerminalWriter
     }
 
     /// <summary>
-    /// Writes a line break (see <see cref="NewLine"/>) to this writer's output.
+    /// Writes a line break (see <see cref="LineTerminator"/>) to this writer's output.
     /// </summary>
     void WriteLine()
     {
@@ -217,7 +217,7 @@ public static class ITerminalWriterExtensions
     #region WriteLine
 
     /// <summary>
-    /// Writes the specified value to this writer's output and appends a line break (see <see cref="ITerminalWriter.NewLine"/>) at the end.
+    /// Writes the specified value to this writer's output and appends a line break (see <see cref="ITerminalWriter.LineTerminator"/>) at the end.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WriteLine(this ITerminalWriter terminalWriter, [Localizable(true)] string? value)
@@ -226,7 +226,7 @@ public static class ITerminalWriterExtensions
     }
 
     /// <summary>
-    /// Writes the specified value to this writer's output and appends a line break (see <see cref="ITerminalWriter.NewLine"/>) at the end.
+    /// Writes the specified value to this writer's output and appends a line break (see <see cref="ITerminalWriter.LineTerminator"/>) at the end.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WriteLine(this ITerminalWriter terminalWriter, [Localizable(true)] object? value)
@@ -235,7 +235,7 @@ public static class ITerminalWriterExtensions
     }
 
     /// <summary>
-    /// Writes the specified value to this writer's output and appends a line break (see <see cref="ITerminalWriter.NewLine"/>) at the end.
+    /// Writes the specified value to this writer's output and appends a line break (see <see cref="ITerminalWriter.LineTerminator"/>) at the end.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WriteLine<T>(this ITerminalWriter terminalWriter, [Localizable(true)] T? value) where T : class, IConvertible
@@ -244,7 +244,7 @@ public static class ITerminalWriterExtensions
     }
 
     /// <summary>
-    /// Writes the specified value to this writer's output and appends a line break (see <see cref="ITerminalWriter.NewLine"/>) at the end.
+    /// Writes the specified value to this writer's output and appends a line break (see <see cref="ITerminalWriter.LineTerminator"/>) at the end.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WriteLine<T>(this ITerminalWriter terminalWriter, [Localizable(true)] T? value) where T : struct, IConvertible
@@ -254,7 +254,7 @@ public static class ITerminalWriterExtensions
 
     /// <summary>
     /// Formats <paramref name="format"/> with <paramref name="args"/>, writes the result
-    /// to this writer's output, and appends a line break (see <see cref="ITerminalWriter.NewLine"/>) at the end.
+    /// to this writer's output, and appends a line break (see <see cref="ITerminalWriter.LineTerminator"/>) at the end.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [StringFormatMethod("format")]
@@ -264,7 +264,7 @@ public static class ITerminalWriterExtensions
     }
 
     /// <summary>
-    /// Writes a line break (see <see cref="ITerminalWriter.NewLine"/>) to this writer's output.
+    /// Writes a line break (see <see cref="ITerminalWriter.LineTerminator"/>) to this writer's output.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WriteLine(this ITerminalWriter terminalWriter)

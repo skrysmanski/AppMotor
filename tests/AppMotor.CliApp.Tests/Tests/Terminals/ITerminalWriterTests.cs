@@ -281,7 +281,7 @@ public sealed class ITerminalWriterTests
     private sealed class TestTerminalWriter : ITerminalWriter
     {
         /// <inheritdoc />
-        public NewLineTypes NewLine { get; set; } = NewLineTypes.Lf;
+        public LineTerminators LineTerminator { get; set; } = LineTerminators.Lf;
 
         /// <inheritdoc />
         public IFormatProvider Culture { get; set; } = UICulture.FormatsAndSorting;
