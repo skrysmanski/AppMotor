@@ -18,7 +18,6 @@ public static class CliParamNameValidation
     /// <summary>
     /// Validation method to be used with <see cref="Validate"/>. See <see cref="CheckIfNameIsValid"/> for more details.
     /// </summary>
-    [PublicAPI]
     public static void IsValidParameterName(this NamedValidator validator, [NotNullOnExit] string? paramName, CliParamTypes paramType, bool allowReservedParamName = false)
     {
         validator.IsNotNullOrWhiteSpace(paramName);
@@ -64,7 +63,7 @@ public static class CliParamNameValidation
     /// by default.</param>
     /// <returns>The result of the check.</returns>
     /// <seealso cref="IsValidParameterName"/>
-    [PublicAPI, MustUseReturnValue]
+    [MustUseReturnValue]
     public static CliParamNameValidityCheckResults CheckIfNameIsValid(string? paramName, CliParamTypes paramType, bool allowReservedParamName = false)
     {
         if (string.IsNullOrWhiteSpace(paramName))

@@ -8,8 +8,6 @@ using AppMotor.CliApp.CommandLine.Utils;
 using AppMotor.CliApp.Properties;
 using AppMotor.CliApp.Terminals;
 
-using JetBrains.Annotations;
-
 namespace AppMotor.CliApp.CommandLine;
 
 /// <summary>
@@ -25,7 +23,6 @@ public abstract class CliCommand
     /// <summary>
     /// The help text for this command.
     /// </summary>
-    [PublicAPI]
     public virtual string? HelpText => null;
 
     /// <summary>
@@ -45,7 +42,6 @@ public abstract class CliCommand
     /// This property mainly exists for unit testing purposes where you need to obtain
     /// everything written to the terminal.
     /// </remarks>
-    [PublicAPI]
     public ITerminal Terminal => this._terminal ?? throw new InvalidOperationException("The terminal is not available in this command state.");
 
     private ITerminal? _terminal;
@@ -65,7 +61,6 @@ public abstract class CliCommand
     /// and fields of type <see cref="CliParamBase"/>. Inheritors may override this method either to filter its result or provide
     /// their own list.
     /// </summary>
-    [PublicAPI]
     protected virtual IEnumerable<CliParamBase> GetAllParams()
     {
         return CliParamUtils.GetAllParamsFor(this);

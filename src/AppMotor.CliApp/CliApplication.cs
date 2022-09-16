@@ -73,7 +73,7 @@ public abstract class CliApplication
     /// <typeparamref name="TApp"/> will be created by this method.
     /// </summary>
     /// <returns>The exit code to use.</returns>
-    [PublicAPI, MustUseReturnValue]
+    [MustUseReturnValue]
     public static int Run<TApp>(string[] args, ITerminal? terminal = null) where TApp : CliApplication, new()
     {
         return Task.Run(() => RunAsync<TApp>(args, terminal)).Result;
@@ -84,7 +84,7 @@ public abstract class CliApplication
     /// <typeparamref name="TApp"/> will be created by this method.
     /// </summary>
     /// <returns>The exit code to use.</returns>
-    [PublicAPI, MustUseReturnValue]
+    [MustUseReturnValue]
     public static async Task<int> RunAsync<TApp>(string[] args, ITerminal? terminal = null) where TApp : CliApplication, new()
     {
         var app = new TApp();
@@ -101,7 +101,7 @@ public abstract class CliApplication
     /// Runs this application.
     /// </summary>
     /// <returns>The exit code to use.</returns>
-    [PublicAPI, MustUseReturnValue]
+    [MustUseReturnValue]
     public int Run(params string[] args)
     {
         return Task.Run(() => RunAsync(args)).Result;
@@ -113,7 +113,7 @@ public abstract class CliApplication
     /// <param name="cancellationToken">A cancellation token to be used to cancel/stop long running
     /// applications (e.g. server applications).</param>
     /// <returns>The exit code to use.</returns>
-    [PublicAPI, MustUseReturnValue]
+    [MustUseReturnValue]
     public int Run(CancellationToken cancellationToken)
     {
         return Task.Run(() => RunAsync(cancellationToken), cancellationToken).Result;
@@ -126,7 +126,7 @@ public abstract class CliApplication
     /// <param name="cancellationToken">A cancellation token to be used to cancel/stop long running
     /// applications (e.g. server applications).</param>
     /// <returns>The exit code to use.</returns>
-    [PublicAPI, MustUseReturnValue]
+    [MustUseReturnValue]
     public int Run(string[] args, CancellationToken cancellationToken)
     {
         return Task.Run(() => RunAsync(args, cancellationToken), cancellationToken).Result;
@@ -136,7 +136,7 @@ public abstract class CliApplication
     /// Runs this application.
     /// </summary>
     /// <returns>The exit code to use.</returns>
-    [PublicAPI, MustUseReturnValue]
+    [MustUseReturnValue]
     public Task<int> RunAsync(params string[] args)
     {
         return RunAsync(args, CancellationToken.None);
@@ -148,7 +148,7 @@ public abstract class CliApplication
     /// <param name="cancellationToken">A cancellation token to be used to cancel/stop long running
     /// applications (e.g. server applications).</param>
     /// <returns>The exit code to use.</returns>
-    [PublicAPI, MustUseReturnValue]
+    [MustUseReturnValue]
     public Task<int> RunAsync(CancellationToken cancellationToken)
     {
         return RunAsync(Array.Empty<string>(), cancellationToken);
@@ -161,7 +161,7 @@ public abstract class CliApplication
     /// <param name="cancellationToken">A cancellation token to be used to cancel/stop long running
     /// applications (e.g. server applications).</param>
     /// <returns>The exit code to use.</returns>
-    [PublicAPI, MustUseReturnValue]
+    [MustUseReturnValue]
     public async Task<int> RunAsync(string[] args, CancellationToken cancellationToken)
     {
         int exitCode;
@@ -191,7 +191,6 @@ public abstract class CliApplication
     /// </summary>
     /// <param name="exception">The unhandled exception</param>
     /// <returns>The exit code to be used.</returns>
-    [PublicAPI]
     protected int ProcessUnhandledException(Exception exception)
     {
         int exitCode;

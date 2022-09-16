@@ -3,8 +3,6 @@
 
 using AppMotor.CliApp.CommandLine.Utils;
 
-using JetBrains.Annotations;
-
 namespace AppMotor.CliApp.CommandLine;
 
 /// <summary>
@@ -39,7 +37,6 @@ public abstract class CliApplicationWithParams : CliApplicationWithCommand
     /// and fields of type <see cref="CliParamBase"/>. Inheritors may override this method either to filter its result or provide
     /// their own list.
     /// </summary>
-    [PublicAPI]
     protected virtual IEnumerable<CliParamBase> GetAllParams()
     {
         return CliParamUtils.GetAllParamsFor(this);

@@ -6,8 +6,6 @@
 // SPDX-License-Identifier: MIT
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
-using JetBrains.Annotations;
-
 namespace AppMotor.CliApp;
 
 /// <summary>
@@ -24,7 +22,6 @@ public class CliApplicationExecutor
     ///
     /// <para>The exit code is always 0.</para>
     /// </summary>
-    [PublicAPI]
     public CliApplicationExecutor(Action action)
     {
         this._action = (_, _) =>
@@ -39,7 +36,6 @@ public class CliApplicationExecutor
     ///
     /// <para>The exit code is always 0.</para>
     /// </summary>
-    [PublicAPI]
     public CliApplicationExecutor(Action<string[]> action)
     {
         this._action = (args, _) =>
@@ -54,7 +50,6 @@ public class CliApplicationExecutor
     ///
     /// <para>The exit code is always 0.</para>
     /// </summary>
-    [PublicAPI]
     public CliApplicationExecutor(Action<CancellationToken> action)
     {
         this._action = (_, cancellationToken) =>
@@ -69,7 +64,6 @@ public class CliApplicationExecutor
     ///
     /// <para>The exit code is always 0.</para>
     /// </summary>
-    [PublicAPI]
     public CliApplicationExecutor(Action<string[], CancellationToken> action)
     {
         this._action = (args, cancellationToken) =>
@@ -82,7 +76,6 @@ public class CliApplicationExecutor
     /// <summary>
     /// Creates an executor for a method that: is synchronous, and returns an exit code.
     /// </summary>
-    [PublicAPI]
     public CliApplicationExecutor(Func<int> action)
     {
         this._action = (_, _) =>
@@ -95,7 +88,6 @@ public class CliApplicationExecutor
     /// <summary>
     /// Creates an executor for a method that: is synchronous, takes in the command line params, and returns an exit code.
     /// </summary>
-    [PublicAPI]
     public CliApplicationExecutor(Func<string[], int> action)
     {
         this._action = (args, _) =>
@@ -108,7 +100,6 @@ public class CliApplicationExecutor
     /// <summary>
     /// Creates an executor for a method that: is synchronous, takes in the application cancellation token, and returns an exit code.
     /// </summary>
-    [PublicAPI]
     public CliApplicationExecutor(Func<CancellationToken, int> action)
     {
         this._action = (_, cancellationToken) =>
@@ -121,7 +112,6 @@ public class CliApplicationExecutor
     /// <summary>
     /// Creates an executor for a method that: is synchronous, takes in the command line params and the application cancellation token, and returns an exit code.
     /// </summary>
-    [PublicAPI]
     public CliApplicationExecutor(Func<string[], CancellationToken, int> action)
     {
         this._action = (args, cancellationToken) =>
@@ -136,7 +126,6 @@ public class CliApplicationExecutor
     ///
     /// <para>The return value of <c>true</c> is translated into the exit code 0; <c>false</c> is translated into 1.</para>
     /// </summary>
-    [PublicAPI]
     public CliApplicationExecutor(Func<bool> action)
     {
         this._action = (_, _) =>
@@ -151,7 +140,6 @@ public class CliApplicationExecutor
     ///
     /// <para>The return value of <c>true</c> is translated into the exit code 0; <c>false</c> is translated into 1.</para>
     /// </summary>
-    [PublicAPI]
     public CliApplicationExecutor(Func<string[], bool> action)
     {
         this._action = (args, _) =>
@@ -166,7 +154,6 @@ public class CliApplicationExecutor
     ///
     /// <para>The return value of <c>true</c> is translated into the exit code 0; <c>false</c> is translated into 1.</para>
     /// </summary>
-    [PublicAPI]
     public CliApplicationExecutor(Func<CancellationToken, bool> action)
     {
         this._action = (_, cancellationToken) =>
@@ -181,7 +168,6 @@ public class CliApplicationExecutor
     ///
     /// <para>The return value of <c>true</c> is translated into the exit code 0; <c>false</c> is translated into 1.</para>
     /// </summary>
-    [PublicAPI]
     public CliApplicationExecutor(Func<string[], CancellationToken, bool> action)
     {
         this._action = (args, cancellationToken) =>
@@ -196,7 +182,6 @@ public class CliApplicationExecutor
     ///
     /// <para>The exit code is always 0.</para>
     /// </summary>
-    [PublicAPI]
     public CliApplicationExecutor(Func<Task> action)
     {
         this._action = async (_, _) =>
@@ -211,7 +196,6 @@ public class CliApplicationExecutor
     ///
     /// <para>The exit code is always 0.</para>
     /// </summary>
-    [PublicAPI]
     public CliApplicationExecutor(Func<string[], Task> action)
     {
         this._action = async (args, _) =>
@@ -226,7 +210,6 @@ public class CliApplicationExecutor
     ///
     /// <para>The exit code is always 0.</para>
     /// </summary>
-    [PublicAPI]
     public CliApplicationExecutor(Func<CancellationToken, Task> action)
     {
         this._action = async (_, cancellationToken) =>
@@ -241,7 +224,6 @@ public class CliApplicationExecutor
     ///
     /// <para>The exit code is always 0.</para>
     /// </summary>
-    [PublicAPI]
     public CliApplicationExecutor(Func<string[], CancellationToken, Task> action)
     {
         this._action = async (args, cancellationToken) =>
@@ -254,7 +236,6 @@ public class CliApplicationExecutor
     /// <summary>
     /// Creates an executor for a method that: is asynchronous, and returns an exit code.
     /// </summary>
-    [PublicAPI]
     public CliApplicationExecutor(Func<Task<int>> action)
     {
         this._action = async (_, _) =>
@@ -267,7 +248,6 @@ public class CliApplicationExecutor
     /// <summary>
     /// Creates an executor for a method that: is asynchronous, takes in the command line params, and returns an exit code.
     /// </summary>
-    [PublicAPI]
     public CliApplicationExecutor(Func<string[], Task<int>> action)
     {
         this._action = async (args, _) =>
@@ -280,7 +260,6 @@ public class CliApplicationExecutor
     /// <summary>
     /// Creates an executor for a method that: is asynchronous, takes in the application cancellation token, and returns an exit code.
     /// </summary>
-    [PublicAPI]
     public CliApplicationExecutor(Func<CancellationToken, Task<int>> action)
     {
         this._action = async (_, cancellationToken) =>
@@ -293,7 +272,6 @@ public class CliApplicationExecutor
     /// <summary>
     /// Creates an executor for a method that: is asynchronous, takes in the command line params and the application cancellation token, and returns an exit code.
     /// </summary>
-    [PublicAPI]
     public CliApplicationExecutor(Func<string[], CancellationToken, Task<int>> action)
     {
         this._action = action;
@@ -304,7 +282,6 @@ public class CliApplicationExecutor
     ///
     /// <para>The return value of <c>true</c> is translated into the exit code 0; <c>false</c> is translated into 1.</para>
     /// </summary>
-    [PublicAPI]
     public CliApplicationExecutor(Func<Task<bool>> action)
     {
         this._action = async (_, _) =>
@@ -319,7 +296,6 @@ public class CliApplicationExecutor
     ///
     /// <para>The return value of <c>true</c> is translated into the exit code 0; <c>false</c> is translated into 1.</para>
     /// </summary>
-    [PublicAPI]
     public CliApplicationExecutor(Func<string[], Task<bool>> action)
     {
         this._action = async (args, _) =>
@@ -334,7 +310,6 @@ public class CliApplicationExecutor
     ///
     /// <para>The return value of <c>true</c> is translated into the exit code 0; <c>false</c> is translated into 1.</para>
     /// </summary>
-    [PublicAPI]
     public CliApplicationExecutor(Func<CancellationToken, Task<bool>> action)
     {
         this._action = async (_, cancellationToken) =>
@@ -349,7 +324,6 @@ public class CliApplicationExecutor
     ///
     /// <para>The return value of <c>true</c> is translated into the exit code 0; <c>false</c> is translated into 1.</para>
     /// </summary>
-    [PublicAPI]
     public CliApplicationExecutor(Func<string[], CancellationToken, Task<bool>> action)
     {
         this._action = async (args, cancellationToken) =>
