@@ -58,7 +58,7 @@ public class CliApplicationWithVerbs : CliApplication
             throw new InvalidOperationException($"No verbs have be defined in property '{nameof(this.Verbs)}'.");
         }
 
-        return await RootCommandInvoker.InvokeRootCommand(
+        return await RootCommandInvoker.InvokeRootCommandAsync(
             this.AppDescription,
             this.Verbs.Select(verb => verb.ToUnderlyingImplementation(enableDebugParam: this.EnableGlobalDebugParam, this.Terminal, cancellationToken)),
             commandHandler: null,

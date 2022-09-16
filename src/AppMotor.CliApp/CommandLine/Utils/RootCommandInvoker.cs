@@ -7,13 +7,15 @@ using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
 
 using AppMotor.CliApp.Terminals;
-using AppMotor.Core.Exceptions;
+
+using JetBrains.Annotations;
 
 namespace AppMotor.CliApp.CommandLine.Utils;
 
 internal static class RootCommandInvoker
 {
-    public static async Task<int> InvokeRootCommand(
+    [MustUseReturnValue]
+    public static async Task<int> InvokeRootCommandAsync(
             string? appDescription,
             IEnumerable<Symbol> rootSymbols,
             ICommandHandler? commandHandler,
@@ -46,7 +48,8 @@ internal static class RootCommandInvoker
                     break;
 
                 default:
-                    throw new UnexpectedSwitchValueException("underlying implementation", symbol.GetType());
+                    // NOTE: Can't be reached by code coverage because we can't create our own "Symbol" implementation.
+                    throw new NotSupportedException($"The 'Symbol' child type '{symbol.GetType()}' is not supported.");
             }
         }
 

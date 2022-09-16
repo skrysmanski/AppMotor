@@ -69,7 +69,7 @@ public class CliApplicationWithCommand : CliApplication
     {
         var commandHandler = new CliCommand.CliCommandHandler(this.Command, this.EnableGlobalDebugParam, this.Terminal, cancellationToken);
 
-        return await RootCommandInvoker.InvokeRootCommand(
+        return await RootCommandInvoker.InvokeRootCommandAsync(
             this.AppDescription,
             commandHandler.AllParams.Select(p => p.UnderlyingImplementation),
             commandHandler,
