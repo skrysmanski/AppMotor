@@ -139,6 +139,7 @@ public class CliVerb
                             break;
 
                         default:
+                            // NOTE: Can't be reached by code coverage.
                             throw new UnexpectedSwitchValueException("underlying implementation", cliParam.UnderlyingImplementation.GetType());
                     }
                 }

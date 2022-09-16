@@ -48,6 +48,7 @@ public static class CliParamNameValidation
                 throw validator.CreateRootException($"The name '{paramName}' is reserved and can't be used.");
 
             default:
+                // NOTE: Can't be reached by code coverage.
                 throw new UnexpectedSwitchValueException(nameof(checkResult), checkResult);
         }
     }
