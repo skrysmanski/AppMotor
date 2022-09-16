@@ -26,6 +26,12 @@
     <None Update="Tests\CliApplicationExecutorTests.cs.json">
       <DependentUpon>CliApplicationExecutorTests.cs.mustache</DependentUpon>
     </None>
+    <Compile Update="Tests\CommandLine\CliCommandExecutorTests.cs">
+      <DependentUpon>CliCommandExecutorTests.cs.mustache</DependentUpon>
+    </Compile>
+    <None Update="Tests\CommandLine\CliCommandExecutorTests.cs.json">
+      <DependentUpon>CliCommandExecutorTests.cs.mustache</DependentUpon>
+    </None>
   </ItemGroup>
 
 </Project>
