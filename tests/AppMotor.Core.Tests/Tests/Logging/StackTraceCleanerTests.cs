@@ -10,6 +10,9 @@ using Xunit;
 
 namespace AppMotor.Core.Tests.Logging;
 
+/// <summary>
+/// Tests for <see cref="StackTraceCleaner"/>.
+/// </summary>
 public sealed class StackTraceCleanerTests
 {
     public static IEnumerable<object[]> Data

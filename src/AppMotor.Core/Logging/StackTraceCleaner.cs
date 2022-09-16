@@ -29,6 +29,7 @@ internal static class StackTraceCleaner
             if (!match.Success)
             {
                 yield return stackTraceLineAsString;
+                continue;
             }
 
             string whiteSpaceAtBeginningOfLine = match.Groups[1].Value;
