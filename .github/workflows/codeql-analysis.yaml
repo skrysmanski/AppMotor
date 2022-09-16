@@ -65,7 +65,7 @@ jobs:
       # See: https://docs.microsoft.com/de-de/dotnet/core/tools/dotnet-build
       # NOTE: Without specifying a solution file, "dotnet build" searches for a .sln file in the current directory.
       - name: Build code
-        run: dotnet build --configuration Release
+        run: dotnet build --configuration Release_CodeQL
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
