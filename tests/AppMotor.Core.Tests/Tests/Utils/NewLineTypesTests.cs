@@ -1,13 +1,13 @@
 ﻿// SPDX-License-Identifier: MIT
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
-using AppMotor.CliApp.Terminals;
+using AppMotor.Core.Utils;
 
 using Shouldly;
 
 using Xunit;
 
-namespace AppMotor.CliApp.Tests.Terminals;
+namespace AppMotor.Core.Tests.Utils;
 
 /// <summary>
 /// Tests for <see cref="NewLineTypes"/> and <see cref="NewLineTypesExtensions"/>.

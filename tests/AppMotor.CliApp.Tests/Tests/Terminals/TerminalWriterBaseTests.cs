@@ -5,6 +5,7 @@ using System.Text;
 
 using AppMotor.CliApp.Terminals;
 using AppMotor.CliApp.Terminals.Formatting;
+using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 

@@ -8,6 +8,9 @@ using Moq;
 
 using Shouldly;
 using System.Globalization;
+
+using AppMotor.Core.Utils;
+
 using Xunit;
 
 namespace AppMotor.CliApp.Tests.Terminals;

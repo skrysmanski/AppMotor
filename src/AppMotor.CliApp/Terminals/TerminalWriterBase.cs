@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using AppMotor.CliApp.Terminals.Formatting;
 using AppMotor.Core.Colors;
 using AppMotor.Core.Globalization;
+using AppMotor.Core.Utils;
 
 namespace AppMotor.CliApp.Terminals;
 

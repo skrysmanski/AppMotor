@@ -3,7 +3,7 @@
 
 using JetBrains.Annotations;
 
-namespace AppMotor.CliApp.Terminals;
+namespace AppMotor.Core.Utils;
 
 /// <summary>
 /// The various new line types. Use <see cref="NewLineTypesExtensions.GetNewLineCharacters"/> to
