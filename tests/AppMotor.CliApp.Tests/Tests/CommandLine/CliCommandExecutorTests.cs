@@ -1,4 +1,9 @@
-﻿// SPDX-License-Identifier: MIT
+﻿//
+// NOTE: This file has been AUTOMATICALLY GENERATED from 'CliCommandExecutorTests.cs.mustache'. Any changes made to
+//   this file will be LOST on the next build.
+//
+
+// SPDX-License-Identifier: MIT
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
 using AppMotor.CliApp.CommandLine;
@@ -16,14 +21,6 @@ namespace AppMotor.CliApp.Tests.CommandLine;
 public sealed class CliCommandExecutorTests
 {
     private const string COMMAND_NAME = "test";
-
-    // START MARKER: Generated code
-
-    //
-    // NOTE: The code of this class has been generated with the 'ExecutorGenerator' tool. Do
-    //   not make manual changes to this class or they may get lost (by accident) when the code
-    //   for this class is generated the next time!!!
-    //
 
     [Fact]
     public void Test_Sync_Void_NoCancellationToken()
@@ -343,9 +340,6 @@ public sealed class CliCommandExecutorTests
         called.ShouldBe(true);
         testApplication.ShouldHaveNoOutput();
     }
-
-
-    // END MARKER: Generated code
 
     private sealed class TestApplication : TestApplicationWithVerbsBase
     {

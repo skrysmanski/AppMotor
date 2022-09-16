@@ -1,4 +1,9 @@
-﻿// SPDX-License-Identifier: MIT
+﻿//
+// NOTE: This file has been AUTOMATICALLY GENERATED from 'CliCommandExecutor.cs.mustache'. Any changes made to
+//   this file will be LOST on the next build.
+//
+
+// SPDX-License-Identifier: MIT
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
 using JetBrains.Annotations;
@@ -12,14 +17,6 @@ namespace AppMotor.CliApp.CommandLine;
 /// </summary>
 public class CliCommandExecutor
 {
-    // START MARKER: Generated code
-
-    //
-    // NOTE: The code of this class has been generated with the 'ExecutorGenerator' tool. Do
-    //   not make manual changes to this class or they may get lost (by accident) when the code
-    //   for this class is generated the next time!!!
-    //
-
     private readonly Func<CancellationToken, Task<int>> _action;
 
     /// <summary>
@@ -54,8 +51,6 @@ public class CliCommandExecutor
 
     /// <summary>
     /// Creates an executor for a method that: is synchronous, and returns an exit code.
-    ///
-    /// <para>The return value is directly taken as exit code.</para>
     /// </summary>
     [PublicAPI]
     public CliCommandExecutor(Func<int> action)
@@ -69,8 +64,6 @@ public class CliCommandExecutor
 
     /// <summary>
     /// Creates an executor for a method that: is synchronous, takes in the application cancellation token, and returns an exit code.
-    ///
-    /// <para>The return value is directly taken as exit code.</para>
     /// </summary>
     [PublicAPI]
     public CliCommandExecutor(Func<CancellationToken, int> action)
@@ -144,8 +137,6 @@ public class CliCommandExecutor
 
     /// <summary>
     /// Creates an executor for a method that: is asynchronous, and returns an exit code.
-    ///
-    /// <para>The return value is directly taken as exit code.</para>
     /// </summary>
     [PublicAPI]
     public CliCommandExecutor(Func<Task<int>> action)
@@ -159,8 +150,6 @@ public class CliCommandExecutor
 
     /// <summary>
     /// Creates an executor for a method that: is asynchronous, takes in the application cancellation token, and returns an exit code.
-    ///
-    /// <para>The return value is directly taken as exit code.</para>
     /// </summary>
     [PublicAPI]
     public CliCommandExecutor(Func<CancellationToken, Task<int>> action)
@@ -205,6 +194,4 @@ public class CliCommandExecutor
     {
         return await this._action(cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
     }
-
-    // END MARKER: Generated code
 }

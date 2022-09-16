@@ -1,4 +1,9 @@
-﻿// SPDX-License-Identifier: MIT
+﻿//
+// NOTE: This file has been AUTOMATICALLY GENERATED from 'CliApplicationExecutor.cs.mustache'. Any changes made to
+//   this file will be LOST on the next build.
+//
+
+// SPDX-License-Identifier: MIT
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
 using JetBrains.Annotations;
@@ -12,14 +17,6 @@ namespace AppMotor.CliApp;
 /// </summary>
 public class CliApplicationExecutor
 {
-    // START MARKER: Generated code
-
-    //
-    // NOTE: The code of this class has been generated with the 'ExecutorGenerator' tool. Do
-    //   not make manual changes to this class or they may get lost (by accident) when the code
-    //   for this class is generated the next time!!!
-    //
-
     private readonly Func<string[], CancellationToken, Task<int>> _action;
 
     /// <summary>
@@ -68,7 +65,7 @@ public class CliApplicationExecutor
     }
 
     /// <summary>
-    /// Creates an executor for a method that: is synchronous, takes in the command line params, and the application cancellation token, and returns no exit code (<c>void</c>).
+    /// Creates an executor for a method that: is synchronous, takes in the command line params and the application cancellation token, and returns no exit code (<c>void</c>).
     ///
     /// <para>The exit code is always 0.</para>
     /// </summary>
@@ -84,8 +81,6 @@ public class CliApplicationExecutor
 
     /// <summary>
     /// Creates an executor for a method that: is synchronous, and returns an exit code.
-    ///
-    /// <para>The return value is directly taken as exit code.</para>
     /// </summary>
     [PublicAPI]
     public CliApplicationExecutor(Func<int> action)
@@ -99,8 +94,6 @@ public class CliApplicationExecutor
 
     /// <summary>
     /// Creates an executor for a method that: is synchronous, takes in the command line params, and returns an exit code.
-    ///
-    /// <para>The return value is directly taken as exit code.</para>
     /// </summary>
     [PublicAPI]
     public CliApplicationExecutor(Func<string[], int> action)
@@ -114,8 +107,6 @@ public class CliApplicationExecutor
 
     /// <summary>
     /// Creates an executor for a method that: is synchronous, takes in the application cancellation token, and returns an exit code.
-    ///
-    /// <para>The return value is directly taken as exit code.</para>
     /// </summary>
     [PublicAPI]
     public CliApplicationExecutor(Func<CancellationToken, int> action)
@@ -128,9 +119,7 @@ public class CliApplicationExecutor
     }
 
     /// <summary>
-    /// Creates an executor for a method that: is synchronous, takes in the command line params, and the application cancellation token, and returns an exit code.
-    ///
-    /// <para>The return value is directly taken as exit code.</para>
+    /// Creates an executor for a method that: is synchronous, takes in the command line params and the application cancellation token, and returns an exit code.
     /// </summary>
     [PublicAPI]
     public CliApplicationExecutor(Func<string[], CancellationToken, int> action)
@@ -188,7 +177,7 @@ public class CliApplicationExecutor
     }
 
     /// <summary>
-    /// Creates an executor for a method that: is synchronous, takes in the command line params, and the application cancellation token, and returns a success <c>bool</c>.
+    /// Creates an executor for a method that: is synchronous, takes in the command line params and the application cancellation token, and returns a success <c>bool</c>.
     ///
     /// <para>The return value of <c>true</c> is translated into the exit code 0; <c>false</c> is translated into 1.</para>
     /// </summary>
@@ -248,7 +237,7 @@ public class CliApplicationExecutor
     }
 
     /// <summary>
-    /// Creates an executor for a method that: is asynchronous, takes in the command line params, and the application cancellation token, and returns no exit code (<c>Task</c>/<c>void</c>).
+    /// Creates an executor for a method that: is asynchronous, takes in the command line params and the application cancellation token, and returns no exit code (<c>Task</c>/<c>void</c>).
     ///
     /// <para>The exit code is always 0.</para>
     /// </summary>
@@ -264,8 +253,6 @@ public class CliApplicationExecutor
 
     /// <summary>
     /// Creates an executor for a method that: is asynchronous, and returns an exit code.
-    ///
-    /// <para>The return value is directly taken as exit code.</para>
     /// </summary>
     [PublicAPI]
     public CliApplicationExecutor(Func<Task<int>> action)
@@ -279,8 +266,6 @@ public class CliApplicationExecutor
 
     /// <summary>
     /// Creates an executor for a method that: is asynchronous, takes in the command line params, and returns an exit code.
-    ///
-    /// <para>The return value is directly taken as exit code.</para>
     /// </summary>
     [PublicAPI]
     public CliApplicationExecutor(Func<string[], Task<int>> action)
@@ -294,8 +279,6 @@ public class CliApplicationExecutor
 
     /// <summary>
     /// Creates an executor for a method that: is asynchronous, takes in the application cancellation token, and returns an exit code.
-    ///
-    /// <para>The return value is directly taken as exit code.</para>
     /// </summary>
     [PublicAPI]
     public CliApplicationExecutor(Func<CancellationToken, Task<int>> action)
@@ -308,9 +291,7 @@ public class CliApplicationExecutor
     }
 
     /// <summary>
-    /// Creates an executor for a method that: is asynchronous, takes in the command line params, and the application cancellation token, and returns an exit code.
-    ///
-    /// <para>The return value is directly taken as exit code.</para>
+    /// Creates an executor for a method that: is asynchronous, takes in the command line params and the application cancellation token, and returns an exit code.
     /// </summary>
     [PublicAPI]
     public CliApplicationExecutor(Func<string[], CancellationToken, Task<int>> action)
@@ -364,7 +345,7 @@ public class CliApplicationExecutor
     }
 
     /// <summary>
-    /// Creates an executor for a method that: is asynchronous, takes in the command line params, and the application cancellation token, and returns a success <c>bool</c>.
+    /// Creates an executor for a method that: is asynchronous, takes in the command line params and the application cancellation token, and returns a success <c>bool</c>.
     ///
     /// <para>The return value of <c>true</c> is translated into the exit code 0; <c>false</c> is translated into 1.</para>
     /// </summary>
@@ -385,6 +366,4 @@ public class CliApplicationExecutor
     {
         return await this._action(args, cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
     }
-
-    // END MARKER: Generated code
 }

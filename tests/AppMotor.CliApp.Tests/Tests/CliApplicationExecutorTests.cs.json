@@ -1,0 +1,131 @@
+{
+	"tests": [
+		// sync, no exit code
+		{
+		},
+		{
+			"useArgs": true
+		},
+		{
+			"useCancellationToken": true
+		},
+		{
+			"useArgs": true,
+			"useCancellationToken": true
+		},
+
+		// sync, bool exit code
+		{
+			"returnsExitCode": true,
+			"exitCodeIsBool": true
+		},
+		{
+			"returnsExitCode": true,
+			"exitCodeIsBool": true,
+			"useArgs": true
+		},
+		{
+			"returnsExitCode": true,
+			"exitCodeIsBool": true,
+			"useCancellationToken": true
+		},
+		{
+			"returnsExitCode": true,
+			"exitCodeIsBool": true,
+			"useArgs": true,
+			"useCancellationToken": true
+		},
+
+		// sync, int exit code
+		{
+			"returnsExitCode": true,
+			"exitCodeIsInt": true
+		},
+		{
+			"returnsExitCode": true,
+			"exitCodeIsInt": true,
+			"useArgs": true
+		},
+		{
+			"returnsExitCode": true,
+			"exitCodeIsInt": true,
+			"useCancellationToken": true
+		},
+		{
+			"returnsExitCode": true,
+			"exitCodeIsInt": true,
+			"useArgs": true,
+			"useCancellationToken": true
+		},
+
+		// async, no exit code
+		{
+			"isAsync": true
+		},
+		{
+			"isAsync": true,
+			"useArgs": true
+		},
+		{
+			"isAsync": true,
+			"useCancellationToken": true
+		},
+		{
+			"isAsync": true,
+			"useArgs": true,
+			"useCancellationToken": true
+		},
+
+		// async, bool exit code
+		{
+			"isAsync": true,
+			"returnsExitCode": true,
+			"exitCodeIsBool": true
+		},
+		{
+			"isAsync": true,
+			"returnsExitCode": true,
+			"exitCodeIsBool": true,
+			"useArgs": true
+		},
+		{
+			"isAsync": true,
+			"returnsExitCode": true,
+			"exitCodeIsBool": true,
+			"useCancellationToken": true
+		},
+		{
+			"isAsync": true,
+			"returnsExitCode": true,
+			"exitCodeIsBool": true,
+			"useArgs": true,
+			"useCancellationToken": true
+		},
+
+		// async, int exit code
+		{
+			"isAsync": true,
+			"returnsExitCode": true,
+			"exitCodeIsInt": true
+		},
+		{
+			"isAsync": true,
+			"returnsExitCode": true,
+			"exitCodeIsInt": true,
+			"useArgs": true
+		},
+		{
+			"isAsync": true,
+			"returnsExitCode": true,
+			"exitCodeIsInt": true,
+			"useCancellationToken": true
+		},
+		{
+			"isAsync": true,
+			"returnsExitCode": true,
+			"exitCodeIsInt": true,
+			"useArgs": true,
+			"useCancellationToken": true
+		}
+	]
+}

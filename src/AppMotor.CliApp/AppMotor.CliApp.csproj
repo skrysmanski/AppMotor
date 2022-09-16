@@ -24,7 +24,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
-    <PackageReference Include="Mustache.MSBuild" Version="0.2.0">
+    <PackageReference Include="Mustache.MSBuild" Version="0.3.1">
       <!-- This is a dev dependency. -->
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -51,6 +51,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="CliApplicationExecutor.cs">
+      <DependentUpon>CliApplicationExecutor.cs.mustache</DependentUpon>
+    </Compile>
+    <None Update="CliApplicationExecutor.cs.json">
+      <DependentUpon>CliApplicationExecutor.cs.mustache</DependentUpon>
+    </None>
+    <Compile Update="CommandLine\CliCommandExecutor.cs">
+      <DependentUpon>CliCommandExecutor.cs.mustache</DependentUpon>
+    </Compile>
+    <None Update="CommandLine\CliCommandExecutor.cs.json">
+      <DependentUpon>CliCommandExecutor.cs.mustache</DependentUpon>
+    </None>
     <Compile Update="Terminals\Formatting\AnsiTextFormatter.4BitColors.cs">
       <DependentUpon>AnsiTextFormatter.4BitColors.cs.mustache</DependentUpon>
     </Compile>
