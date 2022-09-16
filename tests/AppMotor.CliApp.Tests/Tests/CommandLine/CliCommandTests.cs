@@ -10,6 +10,9 @@ using Xunit;
 
 namespace AppMotor.CliApp.Tests.CommandLine;
 
+/// <summary>
+/// Tests for <see cref="CliCommand"/>.
+/// </summary>
 public sealed class CliCommandTests
 {
     [Fact]
@@ -131,6 +134,21 @@ public sealed class CliCommandTests
     public void TestHelpNames_Alias(string name)
     {
         Should.Throw<ArgumentException>(() => new VariableNameVerb("mycommand", name));
+    }
+
+    [Fact]
+    public void Test_Terminal()
+    {
+        // Setup
+        var testVerb = new TestVerb();
+        var testApp = new TestApplicationWithVerbs(testVerb);
+
+        // Test
+        Should.Throw<InvalidOperationException>(() => testVerb.TestCommand.Terminal); // not yet initialized
+
+        testApp.Run("test", "--value", "42");
+
+        testVerb.TestCommand.Terminal.ShouldBeSameAs(testApp.Terminal);
     }
 
     private sealed class TestCommand : CliCommand

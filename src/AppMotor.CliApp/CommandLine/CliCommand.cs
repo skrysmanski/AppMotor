@@ -3,6 +3,7 @@
 
 using System.Collections.Immutable;
 using System.CommandLine.Invocation;
+using System.Diagnostics.CodeAnalysis;
 
 using AppMotor.CliApp.CommandLine.Utils;
 using AppMotor.CliApp.Properties;
@@ -120,6 +121,7 @@ public abstract class CliCommand
         }
 
         /// <inheritdoc />
+        [ExcludeFromCodeCoverage]
         public int Invoke(InvocationContext context)
         {
             throw new NotSupportedException("This call is not implemented as it's not needed.");
