@@ -13,33 +13,180 @@ using Xunit;
 
 namespace AppMotor.CliApp.Tests;
 
+/// <summary>
+/// Tests for <see cref="CliApplication"/>.
+/// </summary>
 public sealed class CliApplicationTests
 {
     [Fact]
-    public void TestRun()
+    public void Test_Run_Static()
     {
+        // Setup
         var testTerminal = new TestTerminal();
-        CliApplication.Run<TestApplication>(new[] { "abc", "def" }, testTerminal).ShouldBe(0, testTerminal.CurrentOutput);
 
+        // Test
+        int exitCode = CliApplication.Run<TestApplication>(new[] { "abc", "def" }, testTerminal);
+
+        // Verify
+        exitCode.ShouldBe(42, testTerminal.CurrentOutput);
         testTerminal.CurrentOutput.Trim().ShouldBe("Hello, app with 2 args!");
     }
 
     [Fact]
-    public void TestWaitForKey()
+    public async Task Test_RunAsync_Static()
     {
+        // Setup
+        var testTerminal = new TestTerminal();
+
+        //  Test
+        int exitCode = await CliApplication.RunAsync<TestApplication>(new[] { "abc", "def" }, testTerminal);
+
+        // Verify
+        exitCode.ShouldBe(42, testTerminal.CurrentOutput);
+        testTerminal.CurrentOutput.Trim().ShouldBe("Hello, app with 2 args!");
+    }
+
+    [Fact]
+    public void Test_Run_Args()
+    {
+        // Setup
+        var testTerminal = new TestTerminal();
+        var testApp = new TestApplication()
+        {
+            Terminal = testTerminal,
+        };
+
+        // Test
+        int exitCode = testApp.Run("abc", "def");
+
+        // Verify
+        exitCode.ShouldBe(42, testTerminal.CurrentOutput);
+        testTerminal.CurrentOutput.Trim().ShouldBe("Hello, app with 2 args!");
+    }
+
+    [Fact]
+    public void Test_Run_CancellationToken()
+    {
+        // Setup
+        var testTerminal = new TestTerminal();
+        var testApp = new TestApplication()
+        {
+            Terminal = testTerminal,
+        };
+
+        using var cts = new CancellationTokenSource();
+
+        // Test
+        int exitCode = testApp.Run(cts.Token);
+
+        // Verify
+        exitCode.ShouldBe(42, testTerminal.CurrentOutput);
+        testTerminal.CurrentOutput.Trim().ShouldBe("Hello, app with 0 args!");
+        testApp.CancellationToken.ShouldBe(cts.Token);
+    }
+
+    [Fact]
+    public void Test_Run_ArgsAndCancellationToken()
+    {
+        // Setup
+        var testTerminal = new TestTerminal();
+        var testApp = new TestApplication()
+        {
+            Terminal = testTerminal,
+        };
+
+        using var cts = new CancellationTokenSource();
+
+        // Test
+        int exitCode = testApp.Run(new[] { "abc", "def" }, cts.Token);
+
+        // Verify
+        exitCode.ShouldBe(42, testTerminal.CurrentOutput);
+        testTerminal.CurrentOutput.Trim().ShouldBe("Hello, app with 2 args!");
+        testApp.CancellationToken.ShouldBe(cts.Token);
+    }
+
+    [Fact]
+    public async Task Test_RunAsync_Args()
+    {
+        // Setup
+        var testTerminal = new TestTerminal();
+        var testApp = new TestApplication()
+        {
+            Terminal = testTerminal,
+        };
+
+        // Test
+        int exitCode = await testApp.RunAsync("abc", "def");
+
+        // Verify
+        exitCode.ShouldBe(42, testTerminal.CurrentOutput);
+        testTerminal.CurrentOutput.Trim().ShouldBe("Hello, app with 2 args!");
+    }
+
+    [Fact]
+    public async Task Test_RunAsync_CancellationToken()
+    {
+        // Setup
+        var testTerminal = new TestTerminal();
+        var testApp = new TestApplication()
+        {
+            Terminal = testTerminal,
+        };
+
+        using var cts = new CancellationTokenSource();
+
+        // Test
+        int exitCode = await testApp.RunAsync(cts.Token);
+
+        // Verify
+        exitCode.ShouldBe(42, testTerminal.CurrentOutput);
+        testTerminal.CurrentOutput.Trim().ShouldBe("Hello, app with 0 args!");
+        testApp.CancellationToken.ShouldBe(cts.Token);
+    }
+
+    [Fact]
+    public async Task Test_RunAsync_ArgsAndCancellationToken()
+    {
+        // Setup
+        var testTerminal = new TestTerminal();
+        var testApp = new TestApplication()
+        {
+            Terminal = testTerminal,
+        };
+
+        using var cts = new CancellationTokenSource();
+
+        // Test
+        int exitCode = await testApp.RunAsync(new[] { "abc", "def" }, cts.Token);
+
+        // Verify
+        exitCode.ShouldBe(42, testTerminal.CurrentOutput);
+        testTerminal.CurrentOutput.Trim().ShouldBe("Hello, app with 2 args!");
+        testApp.CancellationToken.ShouldBe(cts.Token);
+    }
+
+    [Fact]
+    public void Test_WaitForKey()
+    {
+        // Setup
         var testTerminal = new WaitForKeyTerminal();
         var testApp = new TestApplication(waitForKeyPressOnExit: true)
         {
             Terminal = testTerminal,
         };
-        testApp.Run().ShouldBe(0, testTerminal.CurrentOutput);
 
+        // Test
+        int exitCode = testApp.Run();
+
+        // Verify
+        exitCode.ShouldBe(42, testTerminal.CurrentOutput);
         testTerminal.CurrentOutput.Trim().ShouldBe("Hello, app with 0 args!" + Environment.NewLine + Environment.NewLine + "Press any key to exit...");
         testTerminal.ReadKeyCalled.ShouldBe(true);
     }
 
     [Fact]
-    public void TestUnhandledExceptionHandling()
+    public void Test_UnhandledExceptionHandling()
     {
         // Setup
         var testApp = new TestApplicationForExceptionHandling();
@@ -60,6 +207,8 @@ public sealed class CliApplicationTests
         /// <inheritdoc />
         protected override CliApplicationExecutor MainExecutor => new(Execute);
 
+        public CancellationToken? CancellationToken { get; private set; }
+
         /// <inheritdoc />
         public TestApplication()
         {
@@ -70,9 +219,12 @@ public sealed class CliApplicationTests
             this.WaitForKeyPressOnExit = waitForKeyPressOnExit;
         }
 
-        private void Execute(string[] args)
+        private int Execute(string[] args, CancellationToken cancellationToken)
         {
             this.Terminal.WriteLine($"Hello, app with {args.Length} args!");
+            this.CancellationToken = cancellationToken;
+
+            return 42;
         }
     }
 
