@@ -1,4 +1,9 @@
-﻿// SPDX-License-Identifier: MIT
+﻿//
+// NOTE: This file has been AUTOMATICALLY GENERATED from 'CliApplicationExecutorTests.cs.mustache'. Any changes made to
+//   this file will be LOST on the next build.
+//
+
+// SPDX-License-Identifier: MIT
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
 using AppMotor.CliApp.TestUtils;
@@ -15,14 +20,6 @@ namespace AppMotor.CliApp.Tests;
 public sealed class CliApplicationExecutorTests
 {
     private static readonly string[] TEST_ARGS = { "abc", "def" };
-
-    // START MARKER: Generated code
-
-    //
-    // NOTE: The code of this class has been generated with the 'ExecutorGenerator' tool. Do
-    //   not make manual changes to this class or they may get lost (by accident) when the code
-    //   for this class is generated the next time!!!
-    //
 
     [Fact]
     public void Test_Sync_Void_NoArgs_NoCancellationToken()
@@ -674,9 +671,6 @@ public sealed class CliApplicationExecutorTests
         testApplication.ShouldHaveNoOutput();
     }
 
-
-    // END MARKER: Generated code
-
     private sealed class TestApplication : TestCliApplicationBase
     {
         /// <inheritdoc />
@@ -687,6 +681,5 @@ public sealed class CliApplicationExecutorTests
         {
             this.MainExecutor = executor;
         }
-
     }
 }

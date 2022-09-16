@@ -1,0 +1,93 @@
+﻿//
+// NOTE: This file has been AUTOMATICALLY GENERATED from '{{TemplateFile}}'. Any changes made to
+//   this file will be LOST on the next build.
+//
+
+// SPDX-License-Identifier: MIT
+// Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
+
+using AppMotor.CliApp.TestUtils;
+
+using Shouldly;
+
+using Xunit;
+
+namespace AppMotor.CliApp.Tests;
+
+/// <summary>
+/// Tests <see cref="CliApplicationExecutor"/>.
+/// </summary>
+public sealed class CliApplicationExecutorTests
+{
+    private static readonly string[] TEST_ARGS = { "abc", "def" };
+
+{{#tests}}
+{{#returnsExitCode}}
+    [Theory]
+{{#exitCodeIsBool}}
+    [InlineData(true)]
+    [InlineData(false)]
+{{/exitCodeIsBool}}
+{{#exitCodeIsInt}}
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(42)]
+{{/exitCodeIsInt}}
+{{/returnsExitCode}}
+{{^returnsExitCode}}
+    [Fact]
+{{/returnsExitCode}}
+    public void Test_{{^isAsync}}Sync{{/isAsync}}{{#isAsync}}Async{{/isAsync}}_{{^returnsExitCode}}Void{{/returnsExitCode}}{{#exitCodeIsBool}}Bool{{/exitCodeIsBool}}{{#exitCodeIsInt}}Int{{/exitCodeIsInt}}_{{#useArgs}}WithArgs{{/useArgs}}{{^useArgs}}NoArgs{{/useArgs}}_{{#useCancellationToken}}WithCancellationToken{{/useCancellationToken}}{{^useCancellationToken}}NoCancellationToken{{/useCancellationToken}}({{#exitCodeIsBool}}bool retVal{{/exitCodeIsBool}}{{#exitCodeIsInt}}int retVal{{/exitCodeIsInt}})
+    {
+        // Setup
+        bool called = false;
+
+{{#useCancellationToken}}
+        using var cts = new CancellationTokenSource();
+
+{{/useCancellationToken}}
+        {{^isAsync}}{{^returnsExitCode}}void{{/returnsExitCode}}{{#exitCodeIsBool}}bool{{/exitCodeIsBool}}{{#exitCodeIsInt}}int{{/exitCodeIsInt}}{{/isAsync}}{{#isAsync}}async {{^returnsExitCode}}Task{{/returnsExitCode}}{{#exitCodeIsBool}}Task<bool>{{/exitCodeIsBool}}{{#exitCodeIsInt}}Task<int>{{/exitCodeIsInt}}{{/isAsync}} Execute({{#useArgs}}string[] args{{#useCancellationToken}}, {{/useCancellationToken}}{{/useArgs}}{{#useCancellationToken}}CancellationToken cancellationToken{{/useCancellationToken}})
+        {
+{{#isAsync}}
+{{#useCancellationToken}}
+            // ReSharper disable once MethodSupportsCancellation
+{{/useCancellationToken}}
+            await Task.Delay(1);
+{{/isAsync}}
+            called = true;
+{{#useArgs}}
+            args.ShouldBe(TEST_ARGS);
+{{/useArgs}}
+{{#useCancellationToken}}
+            cancellationToken.IsCancellationRequested.ShouldBe(false);
+            cts.Cancel();
+            cancellationToken.IsCancellationRequested.ShouldBe(true); // Validates we actually got the token from "cts"
+{{/useCancellationToken}}
+{{#returnsExitCode}}
+            return retVal;
+{{/returnsExitCode}}
+        }
+
+        var testApplication = new TestApplication(new CliApplicationExecutor(Execute));
+
+        // Test
+        testApplication.AppHelper.Run(TEST_ARGS, expectedExitCode: {{^returnsExitCode}}0{{/returnsExitCode}}{{#exitCodeIsBool}}retVal ? 0 : 1{{/exitCodeIsBool}}{{#exitCodeIsInt}}retVal{{/exitCodeIsInt}}{{#useCancellationToken}}, cts.Token{{/useCancellationToken}});
+
+        // Verify
+        called.ShouldBe(true);
+        testApplication.ShouldHaveNoOutput();
+    }
+
+{{/tests}}
+    private sealed class TestApplication : TestCliApplicationBase
+    {
+        /// <inheritdoc />
+        protected override CliApplicationExecutor MainExecutor { get; }
+
+        /// <inheritdoc />
+        public TestApplication(CliApplicationExecutor executor)
+        {
+            this.MainExecutor = executor;
+        }
+    }
+}
