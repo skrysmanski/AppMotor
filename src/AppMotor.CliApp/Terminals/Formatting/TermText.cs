@@ -81,7 +81,7 @@ public static partial class TermText
     /// See <see href="TermText"/> for more details.
     /// </remarks>
     [MustUseReturnValue]
-    public static AnsiTextFormatter In(ConsoleColor color) => new AnsiTextFormatter().In(color);
+    public static AnsiTextFormatter In(ConsoleColor? color) => new AnsiTextFormatter().In(color);
 
     /// <summary>
     /// Chains style: text color
@@ -99,7 +99,7 @@ public static partial class TermText
     /// See <see href="TermText"/> for more details.
     /// </remarks>
     [MustUseReturnValue]
-    public static AnsiTextFormatter Rgb(RgbColor color) => new AnsiTextFormatter().Rgb(color);
+    public static AnsiTextFormatter Rgb(RgbColor? color) => new AnsiTextFormatter().Rgb(color);
 
     /// <summary>
     /// Chains style: text color
@@ -108,7 +108,7 @@ public static partial class TermText
     /// See <see href="TermText"/> for more details.
     /// </remarks>
     [MustUseReturnValue]
-    public static AnsiTextFormatter Rgb<TColor>(TColor color) where TColor : IColor => new AnsiTextFormatter().Rgb(color);
+    public static AnsiTextFormatter Rgb<TColor>(TColor? color) where TColor : IColor => new AnsiTextFormatter().Rgb(color);
 
     /// <summary>
     /// Chains style: text color
@@ -117,7 +117,16 @@ public static partial class TermText
     /// See <see href="TermText"/> for more details.
     /// </remarks>
     [MustUseReturnValue]
-    public static AnsiTextFormatter Hex(string hexColor) => new AnsiTextFormatter().Hex(hexColor);
+    public static AnsiTextFormatter Rgb<TColor>(TColor? color) where TColor : struct, IColor => new AnsiTextFormatter().Rgb(color);
+
+    /// <summary>
+    /// Chains style: text color
+    /// </summary>
+    /// <remarks>
+    /// See <see href="TermText"/> for more details.
+    /// </remarks>
+    [MustUseReturnValue]
+    public static AnsiTextFormatter Hex(string? hexColor) => new AnsiTextFormatter().Hex(hexColor);
 
     #endregion Text Color
 
@@ -130,7 +139,7 @@ public static partial class TermText
     /// See <see href="TermText"/> for more details.
     /// </remarks>
     [MustUseReturnValue]
-    public static AnsiTextFormatter Bg(ConsoleColor color) => new AnsiTextFormatter().Bg(color);
+    public static AnsiTextFormatter Bg(ConsoleColor? color) => new AnsiTextFormatter().Bg(color);
 
     /// <summary>
     /// Chains style: background color
@@ -148,7 +157,7 @@ public static partial class TermText
     /// See <see href="TermText"/> for more details.
     /// </remarks>
     [MustUseReturnValue]
-    public static AnsiTextFormatter BgRgb(RgbColor color) => new AnsiTextFormatter().BgRgb(color);
+    public static AnsiTextFormatter BgRgb(RgbColor? color) => new AnsiTextFormatter().BgRgb(color);
 
     /// <summary>
     /// Chains style: background color
@@ -157,7 +166,7 @@ public static partial class TermText
     /// See <see href="TermText"/> for more details.
     /// </remarks>
     [MustUseReturnValue]
-    public static AnsiTextFormatter BgRgb<TColor>(TColor color) where TColor : IColor => new AnsiTextFormatter().BgRgb(color);
+    public static AnsiTextFormatter BgRgb<TColor>(TColor? color) where TColor : IColor => new AnsiTextFormatter().BgRgb(color);
 
     /// <summary>
     /// Chains style: background color
@@ -166,7 +175,16 @@ public static partial class TermText
     /// See <see href="TermText"/> for more details.
     /// </remarks>
     [MustUseReturnValue]
-    public static AnsiTextFormatter BgHex(string hexColor) => new AnsiTextFormatter().BgHex(hexColor);
+    public static AnsiTextFormatter BgRgb<TColor>(TColor? color) where TColor : struct, IColor => new AnsiTextFormatter().BgRgb(color);
+
+    /// <summary>
+    /// Chains style: background color
+    /// </summary>
+    /// <remarks>
+    /// See <see href="TermText"/> for more details.
+    /// </remarks>
+    [MustUseReturnValue]
+    public static AnsiTextFormatter BgHex(string? hexColor) => new AnsiTextFormatter().BgHex(hexColor);
 
     #endregion Background Color
 }

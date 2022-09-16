@@ -1,6 +1,8 @@
 ﻿// SPDX-License-Identifier: MIT
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
+using System.Drawing;
+
 using AppMotor.CliApp.Terminals.Formatting;
 using AppMotor.Core.Colors;
 
@@ -54,13 +56,27 @@ public sealed class TermTextTests
     }
 
     [Fact]
-    public void Test_Rgb_Color()
+    public void Test_Rgb_RgbColor()
     {
         const string SEQUENCE_CONTENT = "38;2;12;34;56";
         const string EXPECTED_TEXT = $"\u001b[{SEQUENCE_CONTENT}mmy_text\u001b[0m";
 
         TermText.Rgb(new RgbColor(12, 34, 56)).Text("my_text").ShouldBe(EXPECTED_TEXT);
         new AnsiTextFormatter().Rgb(new RgbColor(12, 34, 56)).Text("my_text").ShouldBe(EXPECTED_TEXT);
+
+        RgbColor? nullColor = null;
+        TermText.Rgb(nullColor).Text("my_text").ShouldBe("my_text");
+        new AnsiTextFormatter().Rgb(nullColor).Text("my_text").ShouldBe("my_text");
+    }
+
+    [Fact]
+    public void Test_Rgb_Color()
+    {
+        const string SEQUENCE_CONTENT = "38;2;0;0;255";
+        const string EXPECTED_TEXT = $"\u001b[{SEQUENCE_CONTENT}mmy_text\u001b[0m";
+
+        TermText.Rgb(Color.Blue).Text("my_text").ShouldBe(EXPECTED_TEXT);
+        new AnsiTextFormatter().Rgb(Color.Blue).Text("my_text").ShouldBe(EXPECTED_TEXT);
     }
 
     [Fact]
@@ -71,6 +87,9 @@ public sealed class TermTextTests
 
         TermText.Rgb(new HexColor("#0C2238")).Text("my_text").ShouldBe(EXPECTED_TEXT);
         new AnsiTextFormatter().Rgb(new HexColor("#0C2238")).Text("my_text").ShouldBe(EXPECTED_TEXT);
+
+        TermText.Rgb((HexColor?)null).Text("my_text").ShouldBe("my_text");
+        new AnsiTextFormatter().Rgb((HexColor?)null).Text("my_text").ShouldBe("my_text");
     }
 
     [Fact]
@@ -81,6 +100,9 @@ public sealed class TermTextTests
 
         TermText.Hex("#0C2238").Text("my_text").ShouldBe(EXPECTED_TEXT);
         new AnsiTextFormatter().Hex("#0C2238").Text("my_text").ShouldBe(EXPECTED_TEXT);
+
+        TermText.Hex(null).Text("my_text").ShouldBe("my_text");
+        new AnsiTextFormatter().Hex(null).Text("my_text").ShouldBe("my_text");
     }
 
     [Fact]
@@ -94,13 +116,27 @@ public sealed class TermTextTests
     }
 
     [Fact]
-    public void Test_BgRgb_Color()
+    public void Test_BgRgb_RgbColor()
     {
         const string SEQUENCE_CONTENT = "48;2;12;34;56";
         const string EXPECTED_TEXT = $"\u001b[{SEQUENCE_CONTENT}mmy_text\u001b[0m";
 
         TermText.BgRgb(new RgbColor(12, 34, 56)).Text("my_text").ShouldBe(EXPECTED_TEXT);
         new AnsiTextFormatter().BgRgb(new RgbColor(12, 34, 56)).Text("my_text").ShouldBe(EXPECTED_TEXT);
+
+        RgbColor? nullColor = null;
+        TermText.BgRgb(nullColor).Text("my_text").ShouldBe("my_text");
+        new AnsiTextFormatter().BgRgb(nullColor).Text("my_text").ShouldBe("my_text");
+    }
+
+    [Fact]
+    public void Test_BgRgb_Color()
+    {
+        const string SEQUENCE_CONTENT = "48;2;0;0;255";
+        const string EXPECTED_TEXT = $"\u001b[{SEQUENCE_CONTENT}mmy_text\u001b[0m";
+
+        TermText.BgRgb(Color.Blue).Text("my_text").ShouldBe(EXPECTED_TEXT);
+        new AnsiTextFormatter().BgRgb(Color.Blue).Text("my_text").ShouldBe(EXPECTED_TEXT);
     }
 
     [Fact]
@@ -111,6 +147,9 @@ public sealed class TermTextTests
 
         TermText.BgRgb(new HexColor("#0C2238")).Text("my_text").ShouldBe(EXPECTED_TEXT);
         new AnsiTextFormatter().BgRgb(new HexColor("#0C2238")).Text("my_text").ShouldBe(EXPECTED_TEXT);
+
+        TermText.BgRgb((HexColor?)null).Text("my_text").ShouldBe("my_text");
+        new AnsiTextFormatter().BgRgb((HexColor?)null).Text("my_text").ShouldBe("my_text");
     }
 
     [Fact]
@@ -121,11 +160,40 @@ public sealed class TermTextTests
 
         TermText.BgHex("#0C2238").Text("my_text").ShouldBe(EXPECTED_TEXT);
         new AnsiTextFormatter().BgHex("#0C2238").Text("my_text").ShouldBe(EXPECTED_TEXT);
+
+        TermText.BgHex(null).Text("my_text").ShouldBe("my_text");
+        new AnsiTextFormatter().BgHex(null).Text("my_text").ShouldBe("my_text");
     }
 
     #endregion RGB colors
 
     #region 4 bit colors
+
+    [Fact]
+    public void Test_In()
+    {
+        const string SEQUENCE_CONTENT = "30";
+        const string EXPECTED_TEXT = $"\u001b[{SEQUENCE_CONTENT}mmy_text\u001b[0m";
+
+        TermText.In(ConsoleColor.Black).Text("my_text").ShouldBe(EXPECTED_TEXT);
+        new AnsiTextFormatter().In(ConsoleColor.Black).Text("my_text").ShouldBe(EXPECTED_TEXT);
+
+        TermText.In(null).Text("my_text").ShouldBe("my_text");
+        new AnsiTextFormatter().In(null).Text("my_text").ShouldBe("my_text");
+    }
+
+    [Fact]
+    public void Test_Bg()
+    {
+        const string SEQUENCE_CONTENT = "40";
+        const string EXPECTED_TEXT = $"\u001b[{SEQUENCE_CONTENT}mmy_text\u001b[0m";
+
+        TermText.Bg(ConsoleColor.Black).Text("my_text").ShouldBe(EXPECTED_TEXT);
+        new AnsiTextFormatter().Bg(ConsoleColor.Black).Text("my_text").ShouldBe(EXPECTED_TEXT);
+
+        TermText.Bg(null).Text("my_text").ShouldBe("my_text");
+        new AnsiTextFormatter().Bg(null).Text("my_text").ShouldBe("my_text");
+    }
 
     [Fact]
     public void Test_Black()

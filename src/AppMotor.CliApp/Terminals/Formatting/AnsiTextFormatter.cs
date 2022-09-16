@@ -63,9 +63,13 @@ public readonly partial struct AnsiTextFormatter : IEquatable<AnsiTextFormatter>
             // our own formatting after them. Otherwise, something like "Green("green" + Blue("blue") + "also green")
             // wouldn't work.
             text = text.Replace(AnsiEscapeSequence.RESET_SEQUENCE, AnsiEscapeSequence.RESET_SEQUENCE + this._format);
-        }
 
-        return this._format + text + AnsiEscapeSequence.RESET_SEQUENCE;
+            return this._format + text + AnsiEscapeSequence.RESET_SEQUENCE;
+        }
+        else
+        {
+            return text;
+        }
     }
 
     /// <summary>
@@ -121,9 +125,14 @@ public readonly partial struct AnsiTextFormatter : IEquatable<AnsiTextFormatter>
     /// See <see href="TermText"/> for more details.
     /// </remarks>
     [MustUseReturnValue]
-    public AnsiTextFormatter In(ConsoleColor color)
+    public AnsiTextFormatter In(ConsoleColor? color)
     {
-        int ansiColor = AnsiColorConverter.ConvertToAnsiColor(color);
+        if (color is null)
+        {
+            return this;
+        }
+
+        int ansiColor = AnsiColorConverter.ConvertToAnsiColor(color.Value);
         return new AnsiTextFormatter(this._format + AnsiEscapeSequence.Create(content: ansiColor));
     }
 
@@ -134,7 +143,10 @@ public readonly partial struct AnsiTextFormatter : IEquatable<AnsiTextFormatter>
     /// See <see href="TermText"/> for more details.
     /// </remarks>
     [MustUseReturnValue]
-    public AnsiTextFormatter Rgb(int r, int g, int b) => new(this._format + AnsiEscapeSequence.Create(content: $"38;2;{r};{g};{b}"));
+    public AnsiTextFormatter Rgb(int r, int g, int b)
+    {
+        return new AnsiTextFormatter(this._format + AnsiEscapeSequence.Create(content: $"38;2;{r};{g};{b}"));
+    }
 
     /// <summary>
     /// Chains style: text color
@@ -143,7 +155,15 @@ public readonly partial struct AnsiTextFormatter : IEquatable<AnsiTextFormatter>
     /// See <see href="TermText"/> for more details.
     /// </remarks>
     [MustUseReturnValue]
-    public AnsiTextFormatter Rgb(RgbColor color) => Rgb(color.R, color.G, color.B);
+    public AnsiTextFormatter Rgb(RgbColor? color)
+    {
+        if (color is null)
+        {
+            return this;
+        }
+
+        return Rgb(color.Value.R, color.Value.G, color.Value.B);
+    }
 
     /// <summary>
     /// Chains style: text color
@@ -152,7 +172,10 @@ public readonly partial struct AnsiTextFormatter : IEquatable<AnsiTextFormatter>
     /// See <see href="TermText"/> for more details.
     /// </remarks>
     [MustUseReturnValue]
-    public AnsiTextFormatter Rgb<TColor>(TColor color) where TColor : IColor => Rgb(color.ToRgb());
+    public AnsiTextFormatter Rgb<TColor>(TColor? color) where TColor : IColor
+    {
+        return Rgb(color?.ToRgb());
+    }
 
     /// <summary>
     /// Chains style: text color
@@ -161,7 +184,27 @@ public readonly partial struct AnsiTextFormatter : IEquatable<AnsiTextFormatter>
     /// See <see href="TermText"/> for more details.
     /// </remarks>
     [MustUseReturnValue]
-    public AnsiTextFormatter Hex(string hexColor) => Rgb(new HexColor(hexColor));
+    public AnsiTextFormatter Rgb<TColor>(TColor? color) where TColor : struct, IColor
+    {
+        return Rgb(color?.ToRgb());
+    }
+
+    /// <summary>
+    /// Chains style: text color
+    /// </summary>
+    /// <remarks>
+    /// See <see href="TermText"/> for more details.
+    /// </remarks>
+    [MustUseReturnValue]
+    public AnsiTextFormatter Hex(string? hexColor)
+    {
+        if (hexColor is null)
+        {
+            return this;
+        }
+
+        return Rgb(new HexColor(hexColor));
+    }
 
     #endregion Text Color
 
@@ -174,9 +217,14 @@ public readonly partial struct AnsiTextFormatter : IEquatable<AnsiTextFormatter>
     /// See <see href="TermText"/> for more details.
     /// </remarks>
     [MustUseReturnValue]
-    public AnsiTextFormatter Bg(ConsoleColor color)
+    public AnsiTextFormatter Bg(ConsoleColor? color)
     {
-        int ansiColor = AnsiColorConverter.ConvertToAnsiColor(color) + AnsiColorConverter.BACKGROUND_COLOR_OFFSET;
+        if (color is null)
+        {
+            return this;
+        }
+
+        int ansiColor = AnsiColorConverter.ConvertToAnsiColor(color.Value) + AnsiColorConverter.BACKGROUND_COLOR_OFFSET;
 
         return new AnsiTextFormatter(this._format + AnsiEscapeSequence.Create(content: ansiColor));
     }
@@ -188,7 +236,10 @@ public readonly partial struct AnsiTextFormatter : IEquatable<AnsiTextFormatter>
     /// See <see href="TermText"/> for more details.
     /// </remarks>
     [MustUseReturnValue]
-    public AnsiTextFormatter BgRgb(int r, int g, int b) => new(this._format + AnsiEscapeSequence.Create(content: $"48;2;{r};{g};{b}"));
+    public AnsiTextFormatter BgRgb(int r, int g, int b)
+    {
+        return new AnsiTextFormatter(this._format + AnsiEscapeSequence.Create(content: $"48;2;{r};{g};{b}"));
+    }
 
     /// <summary>
     /// Chains style: background color
@@ -197,7 +248,15 @@ public readonly partial struct AnsiTextFormatter : IEquatable<AnsiTextFormatter>
     /// See <see href="TermText"/> for more details.
     /// </remarks>
     [MustUseReturnValue]
-    public AnsiTextFormatter BgRgb(RgbColor color) => BgRgb(color.R, color.G, color.B);
+    public AnsiTextFormatter BgRgb(RgbColor? color)
+    {
+        if (color is null)
+        {
+            return this;
+        }
+
+        return BgRgb(color.Value.R, color.Value.G, color.Value.B);
+    }
 
     /// <summary>
     /// Chains style: background color
@@ -206,7 +265,10 @@ public readonly partial struct AnsiTextFormatter : IEquatable<AnsiTextFormatter>
     /// See <see href="TermText"/> for more details.
     /// </remarks>
     [MustUseReturnValue]
-    public AnsiTextFormatter BgRgb<TColor>(TColor color) where TColor : IColor => BgRgb(color.ToRgb());
+    public AnsiTextFormatter BgRgb<TColor>(TColor? color) where TColor : IColor
+    {
+        return BgRgb(color?.ToRgb());
+    }
 
     /// <summary>
     /// Chains style: background color
@@ -215,7 +277,27 @@ public readonly partial struct AnsiTextFormatter : IEquatable<AnsiTextFormatter>
     /// See <see href="TermText"/> for more details.
     /// </remarks>
     [MustUseReturnValue]
-    public AnsiTextFormatter BgHex(string hexColor) => BgRgb(new HexColor(hexColor));
+    public AnsiTextFormatter BgRgb<TColor>(TColor? color) where TColor : struct, IColor
+    {
+        return BgRgb(color?.ToRgb());
+    }
+
+    /// <summary>
+    /// Chains style: background color
+    /// </summary>
+    /// <remarks>
+    /// See <see href="TermText"/> for more details.
+    /// </remarks>
+    [MustUseReturnValue]
+    public AnsiTextFormatter BgHex(string? hexColor)
+    {
+        if (hexColor is null)
+        {
+            return this;
+        }
+
+        return BgRgb(new HexColor(hexColor));
+    }
 
     #endregion Background Color
 
