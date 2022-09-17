@@ -5,7 +5,6 @@ using System.Text;
 
 using AppMotor.CliApp.Terminals;
 using AppMotor.CliApp.Terminals.Formatting;
-using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
@@ -64,34 +63,6 @@ public sealed class TerminalWriterBaseTests
         // Verify
         terminalWriterMock.Protected().Verify(TestTerminalWriter.NAME_FOR_WRITE_CORE_METHOD, Times.Once(), ItExpr.IsAny<string>());
         terminalWriterMock.Protected().Verify(TestTerminalWriter.NAME_FOR_WRITE_CORE_METHOD, Times.Once(), input + Environment.NewLine);
-    }
-
-    [Theory]
-    [InlineData(LineTerminators.SystemDefault)]
-    [InlineData(LineTerminators.CrLf)]
-    [InlineData(LineTerminators.Lf)]
-    [InlineData(null)]
-    public void Test_LineTerminator(LineTerminators? lineTerminator)
-    {
-        // Setup
-        var terminalWriterMock = new Mock<TerminalWriterBase>(MockBehavior.Loose);
-
-        // Test
-        if (lineTerminator != null)
-        {
-            terminalWriterMock.Object.LineTerminator = lineTerminator.Value;
-            terminalWriterMock.Object.LineTerminator.ShouldBe(lineTerminator.Value);
-        }
-        else
-        {
-            terminalWriterMock.Object.LineTerminator.ShouldBe(LineTerminators.SystemDefault);
-        }
-
-        terminalWriterMock.Object.WriteLine("");
-
-        // Verify
-        terminalWriterMock.Protected().Verify(TestTerminalWriter.NAME_FOR_WRITE_CORE_METHOD, Times.Once(), ItExpr.IsAny<string>());
-        terminalWriterMock.Protected().Verify(TestTerminalWriter.NAME_FOR_WRITE_CORE_METHOD, Times.Once(), lineTerminator?.AsString() ?? Environment.NewLine);
     }
 
     [Fact]

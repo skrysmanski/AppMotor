@@ -9,8 +9,6 @@ using Moq;
 using Shouldly;
 using System.Globalization;
 
-using AppMotor.Core.Utils;
-
 using Xunit;
 
 namespace AppMotor.CliApp.Tests.Terminals;
@@ -160,7 +158,7 @@ public sealed class ITerminalOutputTests
         terminalOutput.WriteLine();
 
         // Verify
-        terminalWriter.WriteCalls.ShouldBe(new[] { "\n" });
+        terminalWriter.WriteCalls.ShouldBe(new[] { Environment.NewLine });
     }
 
     [Fact]
@@ -174,7 +172,7 @@ public sealed class ITerminalOutputTests
         terminalOutput.WriteLine("abc");
 
         // Verify
-        terminalWriter.WriteCalls.ShouldBe(new[] { "abc\n" });
+        terminalWriter.WriteCalls.ShouldBe(new[] { "abc" + Environment.NewLine });
     }
 
     [Theory]
@@ -194,7 +192,7 @@ public sealed class ITerminalOutputTests
         terminalOutput.WriteLine(convertibleValue);
 
         // Verify
-        terminalWriter.WriteCalls.ShouldBe(new[] { expectedOutput + "\n" });
+        terminalWriter.WriteCalls.ShouldBe(new[] { expectedOutput + Environment.NewLine });
     }
 
     [Theory]
@@ -219,7 +217,7 @@ public sealed class ITerminalOutputTests
         terminalOutput.WriteLine(convertibleMock.Object);
 
         // Verify
-        terminalWriter.WriteCalls.ShouldBe(new[] { culture.Name + "\n" });
+        terminalWriter.WriteCalls.ShouldBe(new[] { culture.Name + Environment.NewLine });
     }
 
     [Theory]
@@ -241,7 +239,7 @@ public sealed class ITerminalOutputTests
         terminalOutput.WriteLine(valueAsObject);
 
         // Verify
-        terminalWriter.WriteCalls.ShouldBe(new[] { expectedOutput + "\n" });
+        terminalWriter.WriteCalls.ShouldBe(new[] { expectedOutput + Environment.NewLine });
     }
 
     [Fact]
@@ -262,7 +260,7 @@ public sealed class ITerminalOutputTests
         terminalOutput.WriteLine(valueAsObject);
 
         // Verify
-        terminalWriter.WriteCalls.ShouldBe(new[] { "abcdef\n" });
+        terminalWriter.WriteCalls.ShouldBe(new[] { "abcdef" + Environment.NewLine });
     }
 
     [Theory]
@@ -282,7 +280,7 @@ public sealed class ITerminalOutputTests
         terminalOutput.WriteLine("abc: {0}", convertibleValue);
 
         // Verify
-        terminalWriter.WriteCalls.ShouldBe(new[] { $"abc: {expectedOutput}\n" });
+        terminalWriter.WriteCalls.ShouldBe(new[] { $"abc: {expectedOutput}{Environment.NewLine}" });
     }
 
     #endregion WriteLine
@@ -309,9 +307,6 @@ public sealed class ITerminalOutputTests
 
     private sealed class TestTerminalWriter : ITerminalWriter
     {
-        /// <inheritdoc />
-        public LineTerminators LineTerminator { get; set; } = LineTerminators.Lf;
-
         /// <inheritdoc />
         public IFormatProvider Culture { get; set; } = UICulture.FormatsAndSorting;
 

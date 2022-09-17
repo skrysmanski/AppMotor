@@ -6,7 +6,6 @@ using System.Diagnostics.CodeAnalysis;
 using AppMotor.CliApp.Terminals.Formatting;
 using AppMotor.Core.Colors;
 using AppMotor.Core.Globalization;
-using AppMotor.Core.Utils;
 
 namespace AppMotor.CliApp.Terminals;
 
@@ -17,9 +16,6 @@ namespace AppMotor.CliApp.Terminals;
 /// </summary>
 public abstract class TerminalWriterBase : ITerminalWriter
 {
-    /// <inheritdoc />
-    public LineTerminators LineTerminator { get; set; } = LineTerminators.SystemDefault;
-
     /// <inheritdoc />
     public IFormatProvider Culture { get; set; } = UICulture.FormatsAndSorting;
 
