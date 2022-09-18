@@ -1,6 +1,7 @@
 ﻿// SPDX-License-Identifier: MIT
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
+using AppMotor.CliApp.Terminals;
 using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
@@ -100,9 +101,8 @@ public abstract class GenericHostCliCommand : CliCommand
             // ReSharper disable once AccessToDisposedClosure
             services.AddSingleton<IGenericHostCliCommandLifetimeEvents>(this._lifetimeEvents);
 
-            // NOTE: Don't add "Terminal" to the services here. Giving access to the terminal
-            //   to all services may not be what the user wants and it's easy enough for them
-            //   to add them theirselves.
+            // Required for the terminal logger
+            services.AddSingleton<ITerminalOutput>(this.Terminal);
         });
 
         hostBuilder.ConfigureServices(ConfigureServices);

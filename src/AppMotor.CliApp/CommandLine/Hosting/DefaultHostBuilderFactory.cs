@@ -1,6 +1,7 @@
 ﻿// SPDX-License-Identifier: MIT
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
+using AppMotor.CliApp.Logging;
 using AppMotor.Core.IO;
 
 using JetBrains.Annotations;
@@ -212,6 +213,6 @@ public class DefaultHostBuilderFactory : IHostBuilderFactory
     [PublicAPI]
     public static void ApplyDefaultLoggingConfiguration(HostBuilderContext context, ILoggingBuilder loggingBuilder)
     {
-        loggingBuilder.AddConsole();
+        loggingBuilder.AddTerminalLogger();
     }
 }
