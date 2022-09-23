@@ -225,7 +225,7 @@ public abstract class CliApplication
             exitCode = ProcessUnhandledException(exception);
         }
 
-        if ((DebuggerUtils.IsDebuggerAttached || this.WaitForKeyPressOnExit) && !this.Terminal.IsInputRedirected)
+        if (this.WaitForKeyPressOnExit && !this.Terminal.IsInputRedirected)
         {
             this.Terminal.WriteLine();
             this.Terminal.WriteLine(LocalizableResources.PressAnyKeyToExit);
