@@ -5,8 +5,8 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 
+using AppMotor.CliApp.AppBuilding;
 using AppMotor.CliApp.CommandLine;
-using AppMotor.CliApp.CommandLine.Hosting;
 using AppMotor.Core.Exceptions;
 using AppMotor.Core.Logging;
 using AppMotor.Core.Net;

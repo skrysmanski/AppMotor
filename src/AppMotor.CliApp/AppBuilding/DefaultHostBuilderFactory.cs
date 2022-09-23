@@ -1,6 +1,7 @@
 ﻿// SPDX-License-Identifier: MIT
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
+using AppMotor.CliApp.CommandLine.Hosting;
 using AppMotor.CliApp.Logging;
 using AppMotor.Core.IO;
 
@@ -12,7 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace AppMotor.CliApp.CommandLine.Hosting;
+namespace AppMotor.CliApp.AppBuilding;
 
 /// <summary>
 /// <para>A default <see cref="IHostBuilder"/> factory implementation for AppMotor applications. Lets you customize the

@@ -1,6 +1,7 @@
 ﻿// SPDX-License-Identifier: MIT
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
+using AppMotor.CliApp.AppBuilding;
 using AppMotor.CliApp.CommandLine;
 using AppMotor.CliApp.CommandLine.Hosting;
 using AppMotor.CliApp.TestUtils;
