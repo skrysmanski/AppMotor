@@ -110,7 +110,14 @@ public sealed class IpVersionTests : TestBase
 
             cts.Cancel();
 
-            await appTask.OrTimeoutAfter(TimeSpan.FromSeconds(10));
+            if (TestEnvInfo.RunsInCiPipeline)
+            {
+                await appTask.OrTimeoutAfter(TimeSpan.FromSeconds(10));
+            }
+            else
+            {
+                await appTask;
+            }
         }
     }
 
