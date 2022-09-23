@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   Contains NuGet information for this project.
 
   NOTE: This file is automatically imported by MSBuild.
@@ -23,7 +23,7 @@
     <CommonlyUsedTypes Include="AppMotor.CliApp.CommandLine.Hosting.DefaultHostBuilderFactory" />
 
     <CommonlyUsedTypes Include="AppMotor.CliApp.Terminals.Terminal" />
-    <CommonlyUsedTypes Include="AppMotor.CliApp.Terminals.ColoredString" />
+    <CommonlyUsedTypes Include="AppMotor.CliApp.Terminals.Formatting.TermText" />
   </ItemGroup>
 
 </Project>
