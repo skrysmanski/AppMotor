@@ -9,8 +9,8 @@ This library contains various APIs for building command line apps.
 
 The `Terminals` namespace provides access to:
 
-* `ColorString`: A `string` that supports colors.
-* `Terminal`: An alternative to `System.Console` that only contains cross-platform APIs and supports `ColorString`.
+* `TermText`: A `string` that supports colors.
+* `Terminal`: An alternative to `System.Console` that only contains cross-platform APIs and supports `TermText`.
 
 ## Command Line Parsing
 
