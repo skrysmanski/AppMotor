@@ -193,6 +193,11 @@ public abstract class GenericHostCliCommand : CliCommand
     /// <see cref="Host.CreateDefaultBuilder()"/>.
     /// </summary>
     /// <remarks>
+    /// Note to implementers: DO NOT configure any required services/features here (use <see cref="ConfigureApplication"/> for that).
+    /// Reason: If this method is overridden, the override often does NOT call the base implementation but creates its own
+    /// <see cref="IHostBuilder"/>.
+    /// </remarks>
+    /// <remarks>
     /// Since <see cref="CliCommand"/>s have their own command line parameter parsing, this method doesn't
     /// get the command line parameters as parameter (for example to pass to <see cref="Host.CreateDefaultBuilder(string[])"/>).
     /// You can still get them via <see cref="Environment.GetCommandLineArgs"/> if you really want.
@@ -222,9 +227,12 @@ public abstract class GenericHostCliCommand : CliCommand
     /// Adds additional configuration to the application itself (other than registering services with is done
     /// by <see cref="ConfigureServices"/> instead) - via extension methods to <paramref name="hostBuilder"/>.
     ///
-    /// <para>The default implementation does nothing by itself and you may not even need to override this
-    /// method.</para>
+    /// <para>The default implementation does nothing by itself.</para>
     /// </summary>
+    /// <remarks>
+    /// Note to implementers: Use this method instead of <see cref="CreateHostBuilder"/> to configure required
+    /// features. See remarks <see cref="CreateHostBuilder"/> for more details.
+    /// </remarks>
     [PublicAPI]
     protected virtual void ConfigureApplication(IHostBuilder hostBuilder)
     {
