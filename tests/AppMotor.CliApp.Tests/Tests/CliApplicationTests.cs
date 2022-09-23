@@ -19,6 +19,78 @@ namespace AppMotor.CliApp.Tests;
 public sealed class CliApplicationTests
 {
     [Fact]
+    public void Test_Run_Static_Delegate_WithoutExitCode()
+    {
+        // Setup
+        bool executed = false;
+
+        // Test
+        int exitCode = CliApplication.Run(() =>
+        {
+            executed = true;
+        });
+
+        // Verify
+        exitCode.ShouldBe(0);
+        executed.ShouldBe(true);
+    }
+
+    [Fact]
+    public void Test_Run_Static_Delegate_WithExitCode()
+    {
+        // Setup
+        bool executed = false;
+
+        // Test
+        int exitCode = CliApplication.Run(() =>
+        {
+            executed = true;
+            return 42;
+        });
+
+        // Verify
+        exitCode.ShouldBe(42);
+        executed.ShouldBe(true);
+    }
+
+    [Fact]
+    public async Task Test_RunAsync_Static_Delegate_WithoutExitCode()
+    {
+        // Setup
+        bool executed = false;
+
+        // Test
+        int exitCode = await CliApplication.RunAsync(async () =>
+        {
+            await Task.Delay(1);
+            executed = true;
+        });
+
+        // Verify
+        exitCode.ShouldBe(0);
+        executed.ShouldBe(true);
+    }
+
+    [Fact]
+    public async Task Test_RunAsync_Static_Delegate_WithExitCode()
+    {
+        // Setup
+        bool executed = false;
+
+        // Test
+        int exitCode = await CliApplication.RunAsync(async () =>
+        {
+            await Task.Delay(1);
+            executed = true;
+            return 42;
+        });
+
+        // Verify
+        exitCode.ShouldBe(42);
+        executed.ShouldBe(true);
+    }
+
+    [Fact]
     public void Test_Run_Static()
     {
         // Setup

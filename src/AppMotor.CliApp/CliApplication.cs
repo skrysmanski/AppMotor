@@ -103,6 +103,46 @@ public abstract class CliApplication
         return await app.RunAsync(args).ConfigureAwait(continueOnCapturedContext: false);
     }
 
+    /// <summary>
+    /// Executes <paramref name="mainFunc"/> as an <see cref="CliApplication"/>.
+    /// </summary>
+    /// <returns>The exit code to use.</returns>
+    [MustUseReturnValue]
+    public static int Run(Action mainFunc)
+    {
+        return new MiniApp(new(mainFunc)).Run();
+    }
+
+    /// <summary>
+    /// Executes <paramref name="mainFunc"/> as an <see cref="CliApplication"/>.
+    /// </summary>
+    /// <returns>The exit code to use.</returns>
+    [MustUseReturnValue]
+    public static int Run(Func<int> mainFunc)
+    {
+        return new MiniApp(new(mainFunc)).Run();
+    }
+
+    /// <summary>
+    /// Executes <paramref name="mainFunc"/> as an <see cref="CliApplication"/>.
+    /// </summary>
+    /// <returns>The exit code to use.</returns>
+    [MustUseReturnValue]
+    public static Task<int> RunAsync(Func<Task> mainFunc)
+    {
+        return new MiniApp(new(mainFunc)).RunAsync();
+    }
+
+    /// <summary>
+    /// Executes <paramref name="mainFunc"/> as an <see cref="CliApplication"/>.
+    /// </summary>
+    /// <returns>The exit code to use.</returns>
+    [MustUseReturnValue]
+    public static Task<int> RunAsync(Func<Task<int>> mainFunc)
+    {
+        return new MiniApp(new(mainFunc)).RunAsync();
+    }
+
     #endregion Static Run Methods
 
     #region Instance Run Methods
@@ -300,5 +340,17 @@ public abstract class CliApplication
         }
 
         return printSupportMessage;
+    }
+
+    private sealed class MiniApp : CliApplication
+    {
+        /// <inheritdoc />
+        protected override CliApplicationExecutor MainExecutor { get; }
+
+        /// <inheritdoc />
+        public MiniApp(CliApplicationExecutor mainExecutor)
+        {
+            this.MainExecutor = mainExecutor;
+        }
     }
 }
