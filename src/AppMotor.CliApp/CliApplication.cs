@@ -15,7 +15,11 @@ using JetBrains.Annotations;
 namespace AppMotor.CliApp;
 
 /// <summary>
-/// Base class for .NET console applications. Use <see cref="Run{TApp}"/> or <see cref="RunAsync{TApp}"/> as entry point.
+/// Base class for .NET console applications. Provides basic exception handling (via <see cref="OnUnhandledException"/>),
+/// exit code configuration (<see cref="ExitCodeOnException"/>), access to an <see cref="ITerminal"/> instance, and
+/// support for <see cref="WaitForKeyPressOnExit"/>.
+///
+/// <para>Use <see cref="Run{TApp}"/>, <see cref="RunAsync{TApp}"/>, or any of the other <c>Run</c> methods as entry point.</para>
 ///
 /// <para>You may consider using <see cref="CliApplicationWithVerbs"/>, <see cref="CliApplicationWithParams"/>, or
 /// <see cref="CliApplicationWithCommand"/> instead - for convenience reasons.</para>
@@ -68,6 +72,8 @@ public abstract class CliApplication
         }
     }
 
+    #region Static Run Methods
+
     /// <summary>
     /// Executes the application specified by <typeparamref name="TApp"/>. A new instance of
     /// <typeparamref name="TApp"/> will be created by this method.
@@ -96,6 +102,10 @@ public abstract class CliApplication
 
         return await app.RunAsync(args).ConfigureAwait(continueOnCapturedContext: false);
     }
+
+    #endregion Static Run Methods
+
+    #region Instance Run Methods
 
     /// <summary>
     /// Runs this application.
@@ -185,6 +195,8 @@ public abstract class CliApplication
         return exitCode;
     }
 
+    #endregion Instance Run Methods
+
     /// <summary>
     /// Does the default processing for unhandled exceptions. Implementers may use this method
     /// in places where there is additional unhandled exception handling (e.g. for frameworks).
@@ -212,7 +224,8 @@ public abstract class CliApplication
     }
 
     /// <summary>
-    /// Called for any unhandled exception that is thrown by the <see cref="MainExecutor"/>.
+    /// Called for any unhandled exception that is thrown by the <see cref="MainExecutor"/>. Calls <see cref="GetSupportMessage"/>
+    /// to get any custom support message.
     /// </summary>
     /// <param name="exception">The unhandled exception</param>
     /// <param name="exitCode">The exit code to be used; may be modified by implementations
