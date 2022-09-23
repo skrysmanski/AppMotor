@@ -67,11 +67,6 @@ public class DefaultHostBuilderFactory : IHostBuilderFactory
     public Action<HostBuilderContext, IConfigurationBuilder>? AppConfigurationProvider { get; init; } = ApplyDefaultAppConfiguration;
 
     /// <summary>
-    /// The default value for <see cref="LoggingConfigurationSectionName"/>.
-    /// </summary>
-    internal const string DEFAULT_LOGGING_CONFIGURATION_SECTION_NAME = "Logging";
-
-    /// <summary>
     /// The name of the configuration section (<see cref="IConfiguration.GetSection"/>) used to configure log levels, etc. for
     /// all loggers that are enabled via <see cref="LoggingConfigurationProvider"/>. Defaults to "Logging" (the .NET default).
     /// Can be set to <c>null</c> to completely disable the ability to configure logging.
@@ -80,7 +75,7 @@ public class DefaultHostBuilderFactory : IHostBuilderFactory
     /// For more details, see: https://docs.microsoft.com/en-us/dotnet/core/extensions/logging#configure-logging
     /// </remarks>
     [PublicAPI]
-    public string? LoggingConfigurationSectionName { get; init; } = DEFAULT_LOGGING_CONFIGURATION_SECTION_NAME;
+    public string? LoggingConfigurationSectionName { get; init; } = LogLevelConfiguration.DEFAULT_LOGGING_CONFIGURATION_SECTION_NAME;
 
     /// <summary>
     /// Allows you to programatically set the log levels for the application. If <c>null</c>, the application's

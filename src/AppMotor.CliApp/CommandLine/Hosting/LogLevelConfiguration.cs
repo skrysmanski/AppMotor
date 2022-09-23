@@ -19,6 +19,12 @@ public sealed class LogLevelConfiguration
     private const string DEFAULT_CATEGORY_NAME = "Default";
 
     /// <summary>
+    /// The default name for the logging configuration section.
+    /// </summary>
+    /// <seealso cref="DefaultHostBuilderFactory.LoggingConfigurationSectionName"/>
+    public const string DEFAULT_LOGGING_CONFIGURATION_SECTION_NAME = "Logging";
+
+    /// <summary>
     /// The default log level to use.
     /// </summary>
     [PublicAPI]
@@ -45,7 +51,7 @@ public sealed class LogLevelConfiguration
     /// <param name="context">The context of a host builder</param>
     /// <param name="loggingConfigurationSectionName">The configuration section name for the logging section; see
     /// <see cref="DefaultHostBuilderFactory.LoggingConfigurationSectionName"/> for more details.</param>
-    public void ApplyToHostBuilder(HostBuilderContext context, string loggingConfigurationSectionName = DefaultHostBuilderFactory.DEFAULT_LOGGING_CONFIGURATION_SECTION_NAME)
+    public void ApplyToHostBuilder(HostBuilderContext context, string loggingConfigurationSectionName = DEFAULT_LOGGING_CONFIGURATION_SECTION_NAME)
     {
         Validate.ArgumentWithName(nameof(loggingConfigurationSectionName)).IsNotNullOrWhiteSpace(loggingConfigurationSectionName);
 
