@@ -15,6 +15,7 @@ using AppMotor.TestCore.Networking;
 using AppMotor.TestCore.Utils;
 
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 using Shouldly;
 
@@ -67,21 +68,26 @@ public sealed class HttpsTests : TestBase
 
         private readonly TlsCertificate _testCertificate;
 
-        /// <inheritdoc />
-        protected override IHostBuilderFactory HostBuilderFactory { get; }
+        private readonly IHostBuilderFactory _hostBuilderFactory;
 
         public TestServerCommand(int port, TlsCertificate testCertificate, ITestOutputHelper testOutputHelper)
         {
             this._port = port;
             this._testCertificate = testCertificate;
 
-            this.HostBuilderFactory = new DefaultHostBuilderFactory()
+            this._hostBuilderFactory = new DefaultHostBuilderFactory()
             {
                 LoggingConfigurationProvider = (_, builder) =>
                 {
                     builder.AddXUnitLogger(testOutputHelper);
                 },
             };
+        }
+
+        /// <inheritdoc />
+        protected override IHostBuilder CreateHostBuilder()
+        {
+            return this._hostBuilderFactory.CreateHostBuilder();
         }
 
         /// <inheritdoc />

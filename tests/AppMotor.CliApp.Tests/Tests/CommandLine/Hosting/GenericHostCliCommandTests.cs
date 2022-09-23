@@ -103,21 +103,25 @@ public sealed class GenericHostCliCommandTests : TestBase
 
     private class GenericHostTestCommand : GenericHostCliCommand
     {
-        /// <inheritdoc />
-        protected sealed override IHostBuilderFactory HostBuilderFactory { get; }
-
         public IServiceProvider ServicesAsPublic => this.Services;
 
-        /// <inheritdoc />
+        private readonly DefaultHostBuilderFactory _hostBuilderFactory;
+
         public GenericHostTestCommand(ITestOutputHelper testOutputHelper)
         {
-            this.HostBuilderFactory = new DefaultHostBuilderFactory()
+            this._hostBuilderFactory = new DefaultHostBuilderFactory()
             {
                 LoggingConfigurationProvider = (_, builder) =>
                 {
                     builder.AddXUnitLogger(testOutputHelper);
                 },
             };
+        }
+
+        /// <inheritdoc />
+        protected override IHostBuilder CreateHostBuilder()
+        {
+            return this._hostBuilderFactory.CreateHostBuilder();
         }
     }
 
@@ -247,10 +251,10 @@ public sealed class GenericHostCliCommandTests : TestBase
     }
 
     [Fact]
-    public void TestCustomHostBuilderFactory()
+    public void Test_CustomHostBuilder()
     {
         // Setup
-        var command = new CommandWithCustomHostBuilderFactory();
+        var command = new CommandWithCustomHostBuilder();
         var testApp = new TestApplicationWithCommand(command);
 
         command.LifetimeEvents.Started.RegisterEventHandler(() => command.Stop()).ShouldNotBeNull();
@@ -259,26 +263,18 @@ public sealed class GenericHostCliCommandTests : TestBase
         testApp.Run();
 
         // Verify
-        command.CustomHostBuilderFactoryCalled.ShouldBe(true);
+        command.CreateHostBuilderCalled.ShouldBe(true);
     }
 
-    private sealed class CommandWithCustomHostBuilderFactory : GenericHostCliCommand
+    private sealed class CommandWithCustomHostBuilder : GenericHostCliCommand
     {
-        public bool CustomHostBuilderFactoryCalled { get; private set; }
+        public bool CreateHostBuilderCalled { get; private set; }
 
         /// <inheritdoc />
-        protected override IHostBuilderFactory HostBuilderFactory { get; }
-
-        /// <inheritdoc />
-        public CommandWithCustomHostBuilderFactory()
+        protected override IHostBuilder CreateHostBuilder()
         {
-            this.HostBuilderFactory = new MethodHostBuilderFactory(
-                () =>
-                {
-                    this.CustomHostBuilderFactoryCalled = true;
-                    return new HostBuilder();
-                }
-            );
+            this.CreateHostBuilderCalled = true;
+            return new HostBuilder();
         }
     }
 }

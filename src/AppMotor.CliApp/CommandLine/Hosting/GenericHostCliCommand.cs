@@ -38,20 +38,6 @@ public abstract class GenericHostCliCommand : CliCommand
     protected sealed override CliCommandExecutor Executor => new(Execute);
 
     /// <summary>
-    /// Returns the <see cref="IHostBuilderFactory"/> to be used for this command. The
-    /// default implementation uses <see cref="DefaultHostBuilderFactory"/>.
-    /// </summary>
-    /// <remarks>
-    /// The default implementation does not use <see cref="Host.CreateDefaultBuilder()"/>. This is
-    /// because <c>CreateDefaultBuilder()</c> adds lots of services to the host builder - services
-    /// that the user did not request. We want the user to explicitly choose services and dependencies.
-    ///
-    /// <para>If you want all the features provided by <c>CreateDefaultBuilder()</c>, simply wrap
-    /// <see cref="Host.CreateDefaultBuilder()"/> in an instance of <see cref="MethodHostBuilderFactory"/>.</para>
-    /// </remarks>
-    protected virtual IHostBuilderFactory HostBuilderFactory => DefaultHostBuilderFactory.Instance;
-
-    /// <summary>
     /// Action that configures <see cref="Microsoft.Extensions.Hosting.Internal.ConsoleLifetime"/> (via
     /// <see cref="ConsoleLifetimeOptions"/>). Primarily useful if you want to suppress status messages
     /// like "Press Ctrl+C to shut down.". If <c>null</c> and <see cref="ExplicitExecutor"/> is set,
@@ -94,7 +80,7 @@ public abstract class GenericHostCliCommand : CliCommand
 
     private async Task<int> Execute(CancellationToken cancellationToken)
     {
-        IHostBuilder hostBuilder = this.HostBuilderFactory.CreateHostBuilder();
+        IHostBuilder hostBuilder = CreateHostBuilder();
 
         hostBuilder.ConfigureServices(services =>
         {
@@ -198,6 +184,22 @@ public abstract class GenericHostCliCommand : CliCommand
     {
         var applicationLifetime = this.Services.GetRequiredService<IHostApplicationLifetime>();
         applicationLifetime.StopApplication();
+    }
+
+    /// <summary>
+    /// Creates the <see cref="IHostBuilder"/> to be used by this command. The default implementation
+    /// uses <see cref="DefaultHostBuilderFactory.CreateHostBuilder"/> but you could also use
+    /// <see cref="Host.CreateDefaultBuilder()"/>.
+    /// </summary>
+    /// <remarks>
+    /// Since <see cref="CliCommand"/>s have their own command line parameter parsing, this method doesn't
+    /// get the command line parameters as parameter (for example to pass to <see cref="Host.CreateDefaultBuilder(string[])"/>).
+    /// You can still get them via <see cref="Environment.GetCommandLineArgs"/> if you really want.
+    /// </remarks>
+    [MustUseReturnValue]
+    protected virtual IHostBuilder CreateHostBuilder()
+    {
+        return DefaultHostBuilderFactory.Instance.CreateHostBuilder();
     }
 
     /// <summary>

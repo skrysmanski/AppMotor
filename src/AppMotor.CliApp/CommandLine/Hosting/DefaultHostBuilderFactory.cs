@@ -18,7 +18,7 @@ namespace AppMotor.CliApp.CommandLine.Hosting;
 /// <para>The default <see cref="IHostBuilderFactory"/> implementation for AppMotor applications. Lets you customize the
 /// host by setting the various properties in this class (or even by overriding <see cref="CreateHostBuilder"/>).</para>
 ///
-/// <para>Usually used for the <see cref="GenericHostCliCommand.HostBuilderFactory"/> property.</para>
+/// <para>Usually used for the <see cref="GenericHostCliCommand.CreateHostBuilder"/> property.</para>
 ///
 /// <para>By default, this factory creates hosts with the following features enabled:</para>
 ///

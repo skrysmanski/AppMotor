@@ -123,8 +123,7 @@ public sealed class LogLevelConfigurationTests : TestBase
     {
         private readonly Action<ILoggerFactory, TestLoggerStatistics> _mainAction;
 
-        /// <inheritdoc />
-        protected override IHostBuilderFactory HostBuilderFactory { get; }
+        private readonly IHostBuilderFactory _hostBuilderFactory;
 
         /// <inheritdoc />
         protected override CliCommandExecutor ExplicitExecutor => new(Run);
@@ -134,7 +133,7 @@ public sealed class LogLevelConfigurationTests : TestBase
         {
             this._mainAction = mainAction;
 
-            this.HostBuilderFactory = new DefaultHostBuilderFactory()
+            this._hostBuilderFactory = new DefaultHostBuilderFactory()
             {
                 LogLevelConfiguration = logLevelConfiguration,
                 LoggingConfigurationProvider = (_, builder) =>
@@ -142,6 +141,12 @@ public sealed class LogLevelConfigurationTests : TestBase
                     builder.AddXUnitLogger(testOutputHelper);
                 },
             };
+        }
+
+        /// <inheritdoc />
+        protected override IHostBuilder CreateHostBuilder()
+        {
+            return this._hostBuilderFactory.CreateHostBuilder();
         }
 
         private void Run()
