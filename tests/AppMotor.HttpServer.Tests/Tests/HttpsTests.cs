@@ -68,7 +68,7 @@ public sealed class HttpsTests : TestBase
 
         private readonly TlsCertificate _testCertificate;
 
-        private readonly IHostBuilderFactory _hostBuilderFactory;
+        private readonly DefaultHostBuilderFactory _hostBuilderFactory;
 
         public TestServerCommand(int port, TlsCertificate testCertificate, ITestOutputHelper testOutputHelper)
         {

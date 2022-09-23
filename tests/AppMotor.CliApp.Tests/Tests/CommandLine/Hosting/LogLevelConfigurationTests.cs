@@ -123,7 +123,7 @@ public sealed class LogLevelConfigurationTests : TestBase
     {
         private readonly Action<ILoggerFactory, TestLoggerStatistics> _mainAction;
 
-        private readonly IHostBuilderFactory _hostBuilderFactory;
+        private readonly DefaultHostBuilderFactory _hostBuilderFactory;
 
         /// <inheritdoc />
         protected override CliCommandExecutor ExplicitExecutor => new(Run);

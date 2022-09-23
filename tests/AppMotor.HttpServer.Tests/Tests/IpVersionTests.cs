@@ -232,7 +232,7 @@ public sealed class IpVersionTests : TestBase
     {
         private readonly HttpServerPort _testPort;
 
-        private readonly IHostBuilderFactory _hostBuilderFactory;
+        private readonly DefaultHostBuilderFactory _hostBuilderFactory;
 
         public TestHttpServerCommand(HttpServerPort testPort, ITestOutputHelper testOutputHelper)
         {

@@ -15,7 +15,7 @@ using Microsoft.Extensions.Logging;
 namespace AppMotor.CliApp.CommandLine.Hosting;
 
 /// <summary>
-/// <para>The default <see cref="IHostBuilderFactory"/> implementation for AppMotor applications. Lets you customize the
+/// <para>A default <see cref="IHostBuilder"/> factory implementation for AppMotor applications. Lets you customize the
 /// host by setting the various properties in this class (or even by overriding <see cref="CreateHostBuilder"/>).</para>
 ///
 /// <para>Usually used for the <see cref="GenericHostCliCommand.CreateHostBuilder"/> property.</para>
@@ -33,8 +33,7 @@ namespace AppMotor.CliApp.CommandLine.Hosting;
 /// <remarks>
 /// For more possibilities, see <see cref="Host.CreateDefaultBuilder(string[])"/>.
 /// </remarks>
-/// <seealso cref="MethodHostBuilderFactory"/>
-public class DefaultHostBuilderFactory : IHostBuilderFactory
+public class DefaultHostBuilderFactory
 {
     /// <summary>
     /// An instance of this class with all the default settings (can't be changed afterwards).
@@ -113,7 +112,10 @@ public class DefaultHostBuilderFactory : IHostBuilderFactory
     [PublicAPI]
     public DirectoryPath? ContentRoot { get; init; } = DirectoryPath.GetCurrentDirectory();
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Creates a new <see cref="IHostBuilder"/> instance.
+    /// </summary>
+    [MustUseReturnValue]
     public virtual IHostBuilder CreateHostBuilder()
     {
         var hostBuilder = new HostBuilder();

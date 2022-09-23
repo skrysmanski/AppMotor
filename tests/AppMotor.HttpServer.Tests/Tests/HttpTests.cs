@@ -61,7 +61,7 @@ public sealed class HttpTests : TestBase
     {
         private readonly int _testPort;
 
-        private readonly IHostBuilderFactory _hostBuilderFactory;
+        private readonly DefaultHostBuilderFactory _hostBuilderFactory;
 
         public TestHttpServerCommand(int testPort, ITestOutputHelper testOutputHelper)
         {
