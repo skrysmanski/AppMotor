@@ -5,9 +5,17 @@ using System.Collections.Immutable;
 using System.CommandLine.Invocation;
 using System.Diagnostics.CodeAnalysis;
 
+using AppMotor.CliApp.AppBuilding;
+using AppMotor.CliApp.CommandLine.Hosting;
 using AppMotor.CliApp.CommandLine.Utils;
 using AppMotor.CliApp.Properties;
 using AppMotor.CliApp.Terminals;
+using AppMotor.Core.Utils;
+
+using JetBrains.Annotations;
+
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace AppMotor.CliApp.CommandLine;
 
@@ -36,16 +44,25 @@ public abstract class CliCommand
     protected abstract CliCommandExecutor Executor { get; }
 
     /// <summary>
-    /// The terminal to use within this application. Inherited from the <see cref="CliApplication"/> this
-    /// command runs in.
+    /// The terminal to use within this application. "Inherited" from the <see cref="CliApplication"/> this
+    /// command runs in. Only available from within <see cref="Executor"/>. (This is also why this property is <c>protected</c>
+    /// rather than <c>public</c>.)
     /// </summary>
     /// <remarks>
     /// This property mainly exists for unit testing purposes where you need to obtain
     /// everything written to the terminal.
     /// </remarks>
-    public ITerminal Terminal => this._terminal ?? throw new InvalidOperationException("The terminal is not available in this command state.");
+    protected ITerminal Terminal => this._terminal ?? throw new InvalidOperationException("The terminal is not available in this command state.");
 
     private ITerminal? _terminal;
+
+    /// <summary>
+    /// The registered services (i.e. dependency injection). Only available from within <see cref="Executor"/>.
+    /// (This is also why this property is <c>protected</c> rather than <c>public</c>.)
+    /// </summary>
+    protected IServiceProvider Services => this._serviceProvider ?? throw new InvalidOperationException("This ServiceProvider is not available in this command state.");
+
+    private IServiceProvider? _serviceProvider;
 
     /// <summary>
     /// Runs this command.
@@ -53,8 +70,43 @@ public abstract class CliCommand
     /// <returns>The exit code for the running program.</returns>
     private async Task<int> Execute(ITerminal terminal, CancellationToken cancellationToken)
     {
+        IHostBuilder hostBuilder = CreateHostBuilder();
+
+        hostBuilder.ConfigureServices(services =>
+        {
+            services.AddSingleton<IHostLifetime, NullLifetime>();
+
+            // Required for the terminal logger
+            services.AddSingleton<ITerminalOutput>(terminal);
+        });
+
+        hostBuilder.ConfigureServices(ConfigureServices);
+
+        ConfigureApplication(hostBuilder);
+
+        IHost host = hostBuilder.Build();
+
         this._terminal = terminal;
-        return await this.Executor.Execute(cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+        this._serviceProvider = host.Services;
+
+        try
+        {
+            await host.StartAsync(cancellationToken).ConfigureAwait(false);
+
+            var exitCode = await this.Executor.Execute(cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+
+            // IMPORTANT: Don't pass "cancellationToken" here because it may have already been canceled and we don't
+            //   want to cancel "StopAsync" in this case.
+            await host.StopAsync(CancellationToken.None).ConfigureAwait(false);
+
+            return exitCode;
+        }
+        finally
+        {
+            await DisposeHelper.DisposeWithAsyncSupport(host).ConfigureAwait(false);
+            this._terminal = null;
+            this._serviceProvider = null;
+        }
     }
 
     /// <summary>
@@ -65,6 +117,59 @@ public abstract class CliCommand
     protected virtual IEnumerable<CliParamBase> GetAllParams()
     {
         return CliParamUtils.GetAllParamsFor(this);
+    }
+
+
+    /// <summary>
+    /// Creates the <see cref="IHostBuilder"/> to be used by this command. The default implementation
+    /// uses <see cref="DefaultHostBuilderFactory.CreateHostBuilder"/> but you could also use
+    /// <see cref="Host.CreateDefaultBuilder()"/>.
+    /// </summary>
+    /// <remarks>
+    /// Note to implementers: DO NOT configure any required services/features here (use <see cref="ConfigureApplication"/> for that).
+    /// Reason: If this method is overridden, the override often does NOT call the base implementation but creates its own
+    /// <see cref="IHostBuilder"/>.
+    /// </remarks>
+    /// <remarks>
+    /// Since <see cref="CliCommand"/>s have their own command line parameter parsing, this method doesn't
+    /// get the command line parameters as parameter (for example to pass to <see cref="Host.CreateDefaultBuilder(string[])"/>).
+    /// You can still get them via <see cref="Environment.GetCommandLineArgs"/> if you really want.
+    /// </remarks>
+    [MustUseReturnValue]
+    protected virtual IHostBuilder CreateHostBuilder()
+    {
+        return DefaultHostBuilderFactory.Instance.CreateHostBuilder();
+    }
+
+    /// <summary>
+    /// Registers all services with the dependency injection framework.
+    ///
+    /// <para>Note: <see cref="IHostedService"/> (registered via <see cref="ServiceCollectionHostedServiceExtensions.AddHostedService{THostedService}(IServiceCollection)"/>)
+    /// are the primary way to run workloads in this application type (unless it's an ASP.NET Core application).</para>
+    /// </summary>
+    /// <remarks>
+    /// If you need to configure the application itself, you can use <see cref="ConfigureApplication"/>.
+    /// </remarks>
+    [PublicAPI]
+    protected virtual void ConfigureServices(HostBuilderContext context, IServiceCollection services)
+    {
+        // Does nothing by default.
+    }
+
+    /// <summary>
+    /// Adds additional configuration to the application itself (other than registering services with is done
+    /// by <see cref="ConfigureServices"/> instead) - via extension methods to <paramref name="hostBuilder"/>.
+    ///
+    /// <para>The default implementation does nothing by itself.</para>
+    /// </summary>
+    /// <remarks>
+    /// Note to implementers: Use this method instead of <see cref="CreateHostBuilder"/> to configure required
+    /// features. See remarks <see cref="CreateHostBuilder"/> for more details.
+    /// </remarks>
+    [PublicAPI]
+    protected virtual void ConfigureApplication(IHostBuilder hostBuilder)
+    {
+        // Does nothing by default.
     }
 
     internal sealed class CliCommandHandler : ICommandHandler
@@ -141,6 +246,27 @@ public abstract class CliCommand
             }
 
             return await this._command.Execute(this._terminal, this._cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+        }
+    }
+
+    /// <summary>
+    /// This implementation replaces <see cref="Microsoft.Extensions.Hosting.Internal.ConsoleLifetime"/>
+    /// which is usually used by <see cref="HostBuilder"/>. This lifetime prints the various log messages and
+    /// registers the Ctrl+C handler. This NullLifetime doesn't do anything of this. Note
+    /// that <see cref="GenericHostCliCommand"/> still uses <c>ConsoleLifetime</c>.
+    /// </summary>
+    private sealed class NullLifetime : IHostLifetime
+    {
+        /// <inheritdoc />
+        public Task WaitForStartAsync(CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc />
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
         }
     }
 }

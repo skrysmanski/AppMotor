@@ -1,15 +1,14 @@
 ﻿using AppMotor.CliApp.CommandLine;
-using AppMotor.CliApp.CommandLine.Hosting;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace AppMotor.CliApp.HostBuilder.Sample;
 
-internal sealed class MyCliCommand : GenericHostCliCommand
+internal sealed class MyCliCommand : CliCommand
 {
     /// <inheritdoc />
-    protected override CliCommandExecutor ExplicitExecutor => new(Execute);
+    protected override CliCommandExecutor Executor => new(Execute);
 
     /// <inheritdoc />
     protected override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
@@ -17,9 +16,9 @@ internal sealed class MyCliCommand : GenericHostCliCommand
         services.AddHostedService<MyTestServer>();
     }
 
-    private void Execute()
+    private void Execute(CancellationToken cancellationToken)
     {
-        while (!this.LifetimeEvents.Stopping.HasBeenRaised)
+        while (true)
         {
             this.Terminal.Write("Enter something: ");
             var text = this.Terminal.ReadLine();

@@ -1,7 +1,7 @@
 ﻿// SPDX-License-Identifier: MIT
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
-using AppMotor.CliApp.CommandLine.Hosting;
+using AppMotor.CliApp.CommandLine;
 using AppMotor.CliApp.Logging;
 using AppMotor.Core.IO;
 
@@ -19,7 +19,7 @@ namespace AppMotor.CliApp.AppBuilding;
 /// <para>A default <see cref="IHostBuilder"/> factory implementation for AppMotor applications. Lets you customize the
 /// host by setting the various properties in this class (or even by overriding <see cref="CreateHostBuilder"/>).</para>
 ///
-/// <para>Usually used for the <see cref="GenericHostCliCommand.CreateHostBuilder"/> property.</para>
+/// <para>Usually used for the <see cref="CliCommand.CreateHostBuilder"/> property.</para>
 ///
 /// <para>By default, this factory creates hosts with the following features enabled:</para>
 ///

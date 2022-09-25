@@ -2,7 +2,6 @@
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
 using AppMotor.CliApp.AppBuilding;
-using AppMotor.CliApp.CommandLine;
 using AppMotor.CliApp.CommandLine.Hosting;
 using AppMotor.CliApp.TestUtils;
 using AppMotor.TestCore;
@@ -190,64 +189,6 @@ public sealed class GenericHostCliCommandTests : TestBase
             {
                 return value;
             }
-        }
-    }
-
-    [Fact]
-    public void Test_ExplicitExecutor()
-    {
-        const int WAIT_SECONDS_INSIDE_COMMAND = 1;
-
-        // Setup
-        var command = new GenericHostCommandWithExplicitExecutor(waitInsideExecute: TimeSpan.FromSeconds(WAIT_SECONDS_INSIDE_COMMAND), this.TestConsole);
-        var testApp = new TestApplicationWithCommand(command);
-
-        using var startedEvent = new ManualResetEventSlim();
-        using var stoppingEvent = new ManualResetEventSlim();
-        using var stoppedEvent = new ManualResetEventSlim();
-
-        // ReSharper disable once AccessToDisposedClosure
-        command.LifetimeEvents.Started.RegisterEventHandler(() => startedEvent.Set()).ShouldNotBeNull();
-        // ReSharper disable once AccessToDisposedClosure
-        command.LifetimeEvents.Stopping.RegisterEventHandler(() =>
-            {
-                command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(true);
-                stoppingEvent.Set();
-            }
-        ).ShouldNotBeNull();
-        // ReSharper disable once AccessToDisposedClosure
-        command.LifetimeEvents.Stopped.RegisterEventHandler(() => stoppedEvent.Set()).ShouldNotBeNull();
-
-        command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(false);
-
-        var appTask = testApp.RunAsync();
-
-        startedEvent.Wait(TimeSpan.FromSeconds(10)).ShouldBe(true);
-
-        // Test
-        appTask.Wait(TimeSpan.FromSeconds(WAIT_SECONDS_INSIDE_COMMAND * 3)).ShouldBe(true);
-
-        // Verify
-        stoppingEvent.IsSet.ShouldBe(true);
-        stoppedEvent.IsSet.ShouldBe(true);
-    }
-
-    private sealed class GenericHostCommandWithExplicitExecutor : GenericHostTestCommand
-    {
-        /// <inheritdoc />
-        protected override CliCommandExecutor ExplicitExecutor => new(Execute);
-
-        private readonly TimeSpan _waitInsideExecute;
-
-        public GenericHostCommandWithExplicitExecutor(TimeSpan waitInsideExecute, ITestOutputHelper testOutputHelper)
-            : base(testOutputHelper)
-        {
-            this._waitInsideExecute = waitInsideExecute;
-        }
-
-        private void Execute()
-        {
-            Thread.Sleep(this._waitInsideExecute);
         }
     }
 
