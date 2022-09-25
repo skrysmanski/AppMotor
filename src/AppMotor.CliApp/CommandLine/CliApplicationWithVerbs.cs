@@ -51,6 +51,15 @@ public class CliApplicationWithVerbs : CliApplication
     /// <inheritdoc />
     protected sealed override CliApplicationExecutor MainExecutor => new(Execute);
 
+    /// <inheritdoc />
+    public CliApplicationWithVerbs(IReadOnlyCollection<CliVerb>? verbs = null)
+    {
+        if (verbs?.Count > 0)
+        {
+            this._verbs = verbs.ToImmutableArray();
+        }
+    }
+
     private async Task<int> Execute(string[] args, CancellationToken cancellationToken)
     {
         if (this.Verbs.Count == 0)

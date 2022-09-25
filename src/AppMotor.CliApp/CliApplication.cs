@@ -143,6 +143,54 @@ public abstract class CliApplication
         return new MiniApp(new(mainFunc)).RunAsync();
     }
 
+    /// <summary>
+    /// Executes <paramref name="mainCommand"/> as an <see cref="CliApplication"/> (via
+    /// <see cref="CliApplicationWithCommand"/>).
+    /// </summary>
+    /// <returns>The exit code to use.</returns>
+    [MustUseReturnValue]
+    public static int Run(string[] args, CliCommand mainCommand)
+    {
+        return new CliApplicationWithCommand(mainCommand).Run(args);
+    }
+
+    /// <summary>
+    /// Executes <paramref name="mainCommand"/> as an <see cref="CliApplication"/> (via
+    /// <see cref="CliApplicationWithCommand"/>).
+    /// </summary>
+    /// <returns>The exit code to use.</returns>
+    [MustUseReturnValue]
+    public static Task<int> RunAsync(string[] args, CliCommand mainCommand)
+    {
+        return new CliApplicationWithCommand(mainCommand).RunAsync(args);
+    }
+
+    /// <summary>
+    /// Executes the specified <paramref name="verbs"/> as an <see cref="CliApplication"/> (via
+    /// <see cref="CliApplicationWithVerbs"/>).
+    /// </summary>
+    /// <returns>The exit code to use.</returns>
+    [MustUseReturnValue]
+    public static int Run(string[] args, params CliVerb[] verbs)
+    {
+        Validate.ArgumentWithName(nameof(verbs)).IsNotNullOrEmpty(verbs);
+
+        return new CliApplicationWithVerbs(verbs).Run(args);
+    }
+
+    /// <summary>
+    /// Executes the specified <paramref name="verbs"/> as an <see cref="CliApplication"/> (via
+    /// <see cref="CliApplicationWithVerbs"/>).
+    /// </summary>
+    /// <returns>The exit code to use.</returns>
+    [MustUseReturnValue]
+    public static Task<int> RunAsync(string[] args, params CliVerb[] verbs)
+    {
+        Validate.ArgumentWithName(nameof(verbs)).IsNotNullOrEmpty(verbs);
+
+        return new CliApplicationWithVerbs(verbs).RunAsync(args);
+    }
+
     #endregion Static Run Methods
 
     #region Instance Run Methods

@@ -15,6 +15,46 @@ namespace AppMotor.CliApp.Tests.CommandLine;
 public sealed class CliApplicationWithVerbsTests
 {
     [Fact]
+    public void Test_ViaCliApplication_Run()
+    {
+        // Test 1
+        int exitCode1 = CliApplication.Run(
+            new[] { "do1", "--value1", "42" },
+            new CliVerb("do1", new Test1Command()),
+            new CliVerb("do2", new Test2Command())
+        );
+        exitCode1.ShouldBe(42);
+
+        // Test 1
+        int exitCode2 = CliApplication.Run(
+            new[] { "do2", "--value2", "43" },
+            new CliVerb("do1", new Test1Command()),
+            new CliVerb("do2", new Test2Command())
+        );
+        exitCode2.ShouldBe(43);
+    }
+
+    [Fact]
+    public async Task Test_ViaCliApplication_RunAsync()
+    {
+        // Test 1
+        int exitCode1 = await CliApplication.RunAsync(
+            new[] { "do1", "--value1", "42" },
+            new CliVerb("do1", new Test1Command()),
+            new CliVerb("do2", new Test2Command())
+        );
+        exitCode1.ShouldBe(42);
+
+        // Test 1
+        int exitCode2 = await CliApplication.RunAsync(
+            new[] { "do2", "--value2", "43" },
+            new CliVerb("do1", new Test1Command()),
+            new CliVerb("do2", new Test2Command())
+        );
+        exitCode2.ShouldBe(43);
+    }
+
+    [Fact]
     public void TestExceptionHandling_Regular()
     {
         var app = new ExceptionTestApplication(throwErrorMessageException: false);
@@ -120,6 +160,32 @@ public sealed class CliApplicationWithVerbsTests
                     throw new InvalidOperationException("This is a test");
                 }
             }
+        }
+    }
+
+    private sealed class Test1Command : CliCommand
+    {
+        /// <inheritdoc />
+        protected override CliCommandExecutor Executor => new(Execute);
+
+        private readonly CliParam<int> _value = new("--value1");
+
+        private int Execute()
+        {
+            return this._value.Value;
+        }
+    }
+
+    private sealed class Test2Command : CliCommand
+    {
+        /// <inheritdoc />
+        protected override CliCommandExecutor Executor => new(Execute);
+
+        private readonly CliParam<int> _value = new("--value2");
+
+        private int Execute()
+        {
+            return this._value.Value;
         }
     }
 }

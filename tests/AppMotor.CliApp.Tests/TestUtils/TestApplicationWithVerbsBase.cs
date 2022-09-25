@@ -14,7 +14,8 @@ internal class TestApplicationWithVerbsBase : CliApplicationWithVerbs, ITestAppl
     /// <inheritdoc />
     public string TerminalOutput => this.AppHelper.TerminalOutput;
 
-    public TestApplicationWithVerbsBase()
+    public TestApplicationWithVerbsBase(IReadOnlyCollection<CliVerb>? verbs = null)
+        : base(verbs)
     {
         this.AppHelper = new TestApplicationHelper(this);
     }

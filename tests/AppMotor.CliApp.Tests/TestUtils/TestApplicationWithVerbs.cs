@@ -7,9 +7,8 @@ namespace AppMotor.CliApp.TestUtils;
 
 internal class TestApplicationWithVerbs : TestApplicationWithVerbsBase
 {
-    /// <inheritdoc />
     public TestApplicationWithVerbs(params CliVerb[] verbs)
+        : base(verbs)
     {
-        this.Verbs = verbs;
     }
 }
