@@ -1,6 +1,7 @@
 ﻿// SPDX-License-Identifier: MIT
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
+using AppMotor.CliApp.CommandLine;
 using AppMotor.CliApp.Logging;
 using AppMotor.Core.IO;
 
@@ -12,18 +13,18 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace AppMotor.CliApp.CommandLine.Hosting;
+namespace AppMotor.CliApp.AppBuilding;
 
 /// <summary>
-/// <para>The default <see cref="IHostBuilderFactory"/> implementation for AppMotor applications. Lets you customize the
+/// <para>A default <see cref="IHostBuilder"/> factory implementation for AppMotor applications. Lets you customize the
 /// host by setting the various properties in this class (or even by overriding <see cref="CreateHostBuilder"/>).</para>
 ///
-/// <para>Usually used for the <see cref="GenericHostCliCommand.HostBuilderFactory"/> property.</para>
+/// <para>Usually used for the <see cref="CliCommand.CreateHostBuilder"/> property.</para>
 ///
 /// <para>By default, this factory creates hosts with the following features enabled:</para>
 ///
 /// <list type="bullet">
-///     <item><description>Dependency injection (via <see cref="ServiceProviderConfigurationProvider"/>)</description></item>
+///     <item><description>Dependency injection (via <see cref="CreateServiceProviderFactory"/>)</description></item>
 ///     <item><description>Configuration values loaded from "appsettings.json", "appsettings.{Env}.json" and the environment variables (via <see cref="AppConfigurationProvider"/>)</description></item>
 ///     <item><description>Logging to the Console (via <see cref="LoggingConfigurationProvider"/>)</description></item>
 ///     <item><description>Logging configuration via the "Logging" section (via <see cref="LoggingConfigurationSectionName"/>)</description></item>
@@ -33,28 +34,12 @@ namespace AppMotor.CliApp.CommandLine.Hosting;
 /// <remarks>
 /// For more possibilities, see <see cref="Host.CreateDefaultBuilder(string[])"/>.
 /// </remarks>
-/// <seealso cref="MethodHostBuilderFactory"/>
-public class DefaultHostBuilderFactory : IHostBuilderFactory
+public class DefaultHostBuilderFactory
 {
     /// <summary>
     /// An instance of this class with all the default settings (can't be changed afterwards).
     /// </summary>
     internal static DefaultHostBuilderFactory Instance { get; } = new();
-
-    /// <summary>
-    /// The configures the <see cref="IServiceProviderFactory{TContainerBuilder}"/> (i.e. the dependency injection system) by
-    /// calling one of the <c>UseServiceProviderFactory()</c> methods on the provided <see cref="IHostBuilder"/> instance.
-    /// Defaults to <see cref="ApplyDefaultServiceProviderConfiguration"/>.
-    /// </summary>
-    /// <remarks>
-    /// <para>For more details, see: https://docs.microsoft.com/en-us/dotnet/core/extensions/dependency-injection </para>
-    ///
-    /// <para>This is an action (rather than a function that returns the service provider) because <see cref="IServiceProviderFactory{TContainerBuilder}"/>
-    /// is generic and its type parameter may not always be <see cref="IServiceCollection"/> for all service providers - and we could
-    /// not provide this flexibility with a function (because then we would need to hard code the type of <c>TContainerBuilder</c>).</para>
-    /// </remarks>
-    [PublicAPI]
-    public Action<IHostBuilder> ServiceProviderConfigurationProvider { get; init; } = ApplyDefaultServiceProviderConfiguration;
 
     /// <summary>
     /// Configures the configuration providers (e.g. settings files) that provide configuration values for the application. Defaults to
@@ -113,7 +98,10 @@ public class DefaultHostBuilderFactory : IHostBuilderFactory
     [PublicAPI]
     public DirectoryPath? ContentRoot { get; init; } = DirectoryPath.GetCurrentDirectory();
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Creates a new <see cref="IHostBuilder"/> instance.
+    /// </summary>
+    [MustUseReturnValue]
     public virtual IHostBuilder CreateHostBuilder()
     {
         var hostBuilder = new HostBuilder();
@@ -124,7 +112,7 @@ public class DefaultHostBuilderFactory : IHostBuilderFactory
             hostBuilder.UseContentRoot(contentRoot.Value.Value);
         }
 
-        this.ServiceProviderConfigurationProvider(hostBuilder);
+        hostBuilder.UseServiceProviderFactory(CreateServiceProviderFactory);
 
         if (this.AppConfigurationProvider is not null)
         {
@@ -161,12 +149,19 @@ public class DefaultHostBuilderFactory : IHostBuilderFactory
     }
 
     /// <summary>
-    /// Creates a <see cref="DefaultServiceProviderFactory"/> with all scope validations enabled (see <see cref="ServiceProviderOptions.ValidateScopes"/>)
-    /// and sets it as service provider.
+    /// Creates the <see cref="IServiceProviderFactory{TContainerBuilder}"/> (i.e. the dependency injection system) to be used.
+    /// The default implementation uses <see cref="DefaultServiceProviderFactory"/> with all scope validations enabled
+    /// (see <see cref="ServiceProviderOptions.ValidateScopes"/>).
     /// </summary>
-    /// <seealso cref="ServiceProviderConfigurationProvider"/>
-    [PublicAPI]
-    public static void ApplyDefaultServiceProviderConfiguration(IHostBuilder hostBuilder)
+    /// <remarks>
+    /// <para>For more details, see: https://docs.microsoft.com/en-us/dotnet/core/extensions/dependency-injection </para>
+    ///
+    /// <para>This implementation is fixed on <see cref="IServiceCollection"/> as DI container. If you need a different
+    /// DI container, call <see cref="IHostBuilder.UseServiceProviderFactory{TContainerBuilder}(IServiceProviderFactory{TContainerBuilder})"/>
+    /// after the builder has been created by <see cref="CreateHostBuilder"/>.</para>
+    /// </remarks>
+    [PublicAPI, MustUseReturnValue]
+    protected virtual IServiceProviderFactory<IServiceCollection> CreateServiceProviderFactory(HostBuilderContext hostBuilderContext)
     {
         var options = new ServiceProviderOptions()
         {
@@ -175,7 +170,7 @@ public class DefaultHostBuilderFactory : IHostBuilderFactory
             ValidateOnBuild = true,
         };
 
-        hostBuilder.UseServiceProviderFactory(new DefaultServiceProviderFactory(options));
+        return new DefaultServiceProviderFactory(options);
     }
 
     /// <summary>

@@ -1,8 +1,8 @@
 ﻿// SPDX-License-Identifier: MIT
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
+using AppMotor.CliApp.AppBuilding;
 using AppMotor.CliApp.CommandLine;
-using AppMotor.CliApp.CommandLine.Hosting;
 using AppMotor.CliApp.TestUtils;
 using AppMotor.TestCore;
 using AppMotor.TestCore.Logging;
@@ -119,22 +119,21 @@ public sealed class LogLevelConfigurationTests : TestBase
         ex.Message.ShouldContain("log category");
     }
 
-    private sealed class TestCommand : GenericHostCliCommand
+    private sealed class TestCommand : CliCommand
     {
         private readonly Action<ILoggerFactory, TestLoggerStatistics> _mainAction;
 
-        /// <inheritdoc />
-        protected override IHostBuilderFactory HostBuilderFactory { get; }
+        private readonly DefaultHostBuilderFactory _hostBuilderFactory;
 
         /// <inheritdoc />
-        protected override CliCommandExecutor ExplicitExecutor => new(Run);
+        protected override CliCommandExecutor Executor => new(Run);
 
         /// <inheritdoc />
         public TestCommand(LogLevelConfiguration logLevelConfiguration, ITestOutputHelper testOutputHelper, Action<ILoggerFactory, TestLoggerStatistics> mainAction)
         {
             this._mainAction = mainAction;
 
-            this.HostBuilderFactory = new DefaultHostBuilderFactory()
+            this._hostBuilderFactory = new DefaultHostBuilderFactory()
             {
                 LogLevelConfiguration = logLevelConfiguration,
                 LoggingConfigurationProvider = (_, builder) =>
@@ -142,6 +141,12 @@ public sealed class LogLevelConfigurationTests : TestBase
                     builder.AddXUnitLogger(testOutputHelper);
                 },
             };
+        }
+
+        /// <inheritdoc />
+        protected override IHostBuilder CreateHostBuilder()
+        {
+            return this._hostBuilderFactory.CreateHostBuilder();
         }
 
         private void Run()

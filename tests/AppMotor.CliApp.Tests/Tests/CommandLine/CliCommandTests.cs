@@ -2,6 +2,7 @@
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
 using AppMotor.CliApp.CommandLine;
+using AppMotor.CliApp.Terminals;
 using AppMotor.CliApp.TestUtils;
 
 using Shouldly;
@@ -144,11 +145,14 @@ public sealed class CliCommandTests
         var testApp = new TestApplicationWithVerbs(testVerb);
 
         // Test
-        Should.Throw<InvalidOperationException>(() => testVerb.TestCommand.Terminal); // not yet initialized
+        Should.Throw<InvalidOperationException>(() => testVerb.TestCommand.TerminalAsPublic); // not yet initialized
 
         testApp.Run("test", "--value", "42");
 
-        testVerb.TestCommand.Terminal.ShouldBeSameAs(testApp.Terminal);
+        Should.Throw<InvalidOperationException>(() => testVerb.TestCommand.TerminalAsPublic); // uninitialized
+
+        // Verify
+        testVerb.TestCommand.TerminalDuringExecution.ShouldBeSameAs(testApp.Terminal);
     }
 
     private sealed class TestCommand : CliCommand
@@ -158,6 +162,10 @@ public sealed class CliCommandTests
 
         public bool Executed { get; set; }
 
+        public ITerminal TerminalAsPublic => this.Terminal;
+
+        public ITerminal? TerminalDuringExecution { get; private set; }
+
         private readonly CliParam<int> _value = new("--value");
 
         private void Execute()
@@ -165,6 +173,7 @@ public sealed class CliCommandTests
             this.Executed.ShouldBe(false);
             this.Executed = true;
             this._value.Value.ShouldBe(42);
+            this.TerminalDuringExecution = this.Terminal;
         }
     }
 

@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace AppMotor.CliApp.CommandLine.Hosting;
+namespace AppMotor.CliApp.AppBuilding;
 
 /// <summary>
 /// Configures the log levels of an application. Instances of this class are usually used with

@@ -1,7 +1,7 @@
 ﻿// SPDX-License-Identifier: MIT
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
-using AppMotor.CliApp.CommandLine;
+using AppMotor.CliApp.AppBuilding;
 using AppMotor.CliApp.CommandLine.Hosting;
 using AppMotor.CliApp.TestUtils;
 using AppMotor.TestCore;
@@ -103,21 +103,25 @@ public sealed class GenericHostCliCommandTests : TestBase
 
     private class GenericHostTestCommand : GenericHostCliCommand
     {
-        /// <inheritdoc />
-        protected sealed override IHostBuilderFactory HostBuilderFactory { get; }
-
         public IServiceProvider ServicesAsPublic => this.Services;
 
-        /// <inheritdoc />
+        private readonly DefaultHostBuilderFactory _hostBuilderFactory;
+
         public GenericHostTestCommand(ITestOutputHelper testOutputHelper)
         {
-            this.HostBuilderFactory = new DefaultHostBuilderFactory()
+            this._hostBuilderFactory = new DefaultHostBuilderFactory()
             {
                 LoggingConfigurationProvider = (_, builder) =>
                 {
                     builder.AddXUnitLogger(testOutputHelper);
                 },
             };
+        }
+
+        /// <inheritdoc />
+        protected override IHostBuilder CreateHostBuilder()
+        {
+            return this._hostBuilderFactory.CreateHostBuilder();
         }
     }
 
@@ -189,68 +193,10 @@ public sealed class GenericHostCliCommandTests : TestBase
     }
 
     [Fact]
-    public void Test_ExplicitExecutor()
-    {
-        const int WAIT_SECONDS_INSIDE_COMMAND = 1;
-
-        // Setup
-        var command = new GenericHostCommandWithExplicitExecutor(waitInsideExecute: TimeSpan.FromSeconds(WAIT_SECONDS_INSIDE_COMMAND), this.TestConsole);
-        var testApp = new TestApplicationWithCommand(command);
-
-        using var startedEvent = new ManualResetEventSlim();
-        using var stoppingEvent = new ManualResetEventSlim();
-        using var stoppedEvent = new ManualResetEventSlim();
-
-        // ReSharper disable once AccessToDisposedClosure
-        command.LifetimeEvents.Started.RegisterEventHandler(() => startedEvent.Set()).ShouldNotBeNull();
-        // ReSharper disable once AccessToDisposedClosure
-        command.LifetimeEvents.Stopping.RegisterEventHandler(() =>
-            {
-                command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(true);
-                stoppingEvent.Set();
-            }
-        ).ShouldNotBeNull();
-        // ReSharper disable once AccessToDisposedClosure
-        command.LifetimeEvents.Stopped.RegisterEventHandler(() => stoppedEvent.Set()).ShouldNotBeNull();
-
-        command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(false);
-
-        var appTask = testApp.RunAsync();
-
-        startedEvent.Wait(TimeSpan.FromSeconds(10)).ShouldBe(true);
-
-        // Test
-        appTask.Wait(TimeSpan.FromSeconds(WAIT_SECONDS_INSIDE_COMMAND * 3)).ShouldBe(true);
-
-        // Verify
-        stoppingEvent.IsSet.ShouldBe(true);
-        stoppedEvent.IsSet.ShouldBe(true);
-    }
-
-    private sealed class GenericHostCommandWithExplicitExecutor : GenericHostTestCommand
-    {
-        /// <inheritdoc />
-        protected override CliCommandExecutor ExplicitExecutor => new(Execute);
-
-        private readonly TimeSpan _waitInsideExecute;
-
-        public GenericHostCommandWithExplicitExecutor(TimeSpan waitInsideExecute, ITestOutputHelper testOutputHelper)
-            : base(testOutputHelper)
-        {
-            this._waitInsideExecute = waitInsideExecute;
-        }
-
-        private void Execute()
-        {
-            Thread.Sleep(this._waitInsideExecute);
-        }
-    }
-
-    [Fact]
-    public void TestCustomHostBuilderFactory()
+    public void Test_CustomHostBuilder()
     {
         // Setup
-        var command = new CommandWithCustomHostBuilderFactory();
+        var command = new CommandWithCustomHostBuilder();
         var testApp = new TestApplicationWithCommand(command);
 
         command.LifetimeEvents.Started.RegisterEventHandler(() => command.Stop()).ShouldNotBeNull();
@@ -259,26 +205,18 @@ public sealed class GenericHostCliCommandTests : TestBase
         testApp.Run();
 
         // Verify
-        command.CustomHostBuilderFactoryCalled.ShouldBe(true);
+        command.CreateHostBuilderCalled.ShouldBe(true);
     }
 
-    private sealed class CommandWithCustomHostBuilderFactory : GenericHostCliCommand
+    private sealed class CommandWithCustomHostBuilder : GenericHostCliCommand
     {
-        public bool CustomHostBuilderFactoryCalled { get; private set; }
+        public bool CreateHostBuilderCalled { get; private set; }
 
         /// <inheritdoc />
-        protected override IHostBuilderFactory HostBuilderFactory { get; }
-
-        /// <inheritdoc />
-        public CommandWithCustomHostBuilderFactory()
+        protected override IHostBuilder CreateHostBuilder()
         {
-            this.HostBuilderFactory = new MethodHostBuilderFactory(
-                () =>
-                {
-                    this.CustomHostBuilderFactoryCalled = true;
-                    return new HostBuilder();
-                }
-            );
+            this.CreateHostBuilderCalled = true;
+            return new HostBuilder();
         }
     }
 }

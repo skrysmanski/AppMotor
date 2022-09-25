@@ -5,8 +5,8 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 
+using AppMotor.CliApp.AppBuilding;
 using AppMotor.CliApp.CommandLine;
-using AppMotor.CliApp.CommandLine.Hosting;
 using AppMotor.Core.Exceptions;
 using AppMotor.Core.Logging;
 using AppMotor.Core.Net;
@@ -25,6 +25,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 using Shouldly;
@@ -231,14 +232,13 @@ public sealed class IpVersionTests : TestBase
     {
         private readonly HttpServerPort _testPort;
 
-        /// <inheritdoc />
-        protected override IHostBuilderFactory HostBuilderFactory { get; }
+        private readonly DefaultHostBuilderFactory _hostBuilderFactory;
 
         public TestHttpServerCommand(HttpServerPort testPort, ITestOutputHelper testOutputHelper)
         {
             this._testPort = testPort;
 
-            this.HostBuilderFactory = new DefaultHostBuilderFactory()
+            this._hostBuilderFactory = new DefaultHostBuilderFactory()
             {
                 LogLevelConfiguration = new LogLevelConfiguration(defaultLogLevel: LogLevel.Debug),
 
@@ -247,6 +247,12 @@ public sealed class IpVersionTests : TestBase
                     builder.AddXUnitLogger(testOutputHelper);
                 },
             };
+        }
+
+        /// <inheritdoc />
+        protected override IHostBuilder CreateHostBuilder()
+        {
+            return this._hostBuilderFactory.CreateHostBuilder();
         }
 
         /// <inheritdoc />

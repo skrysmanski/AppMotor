@@ -1,8 +1,8 @@
 ﻿// SPDX-License-Identifier: MIT
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
+using AppMotor.CliApp.AppBuilding;
 using AppMotor.CliApp.CommandLine;
-using AppMotor.CliApp.CommandLine.Hosting;
 using AppMotor.CliApp.HttpServer.TestUtils;
 using AppMotor.Core.Net;
 using AppMotor.Core.Net.Http;
@@ -14,6 +14,7 @@ using AppMotor.TestCore.Networking;
 using AppMotor.TestCore.Utils;
 
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 using Shouldly;
 
@@ -60,20 +61,25 @@ public sealed class HttpTests : TestBase
     {
         private readonly int _testPort;
 
-        /// <inheritdoc />
-        protected override IHostBuilderFactory HostBuilderFactory { get; }
+        private readonly DefaultHostBuilderFactory _hostBuilderFactory;
 
         public TestHttpServerCommand(int testPort, ITestOutputHelper testOutputHelper)
         {
             this._testPort = testPort;
 
-            this.HostBuilderFactory = new DefaultHostBuilderFactory()
+            this._hostBuilderFactory = new DefaultHostBuilderFactory()
             {
                 LoggingConfigurationProvider = (_, builder) =>
                 {
                     builder.AddXUnitLogger(testOutputHelper);
                 },
             };
+        }
+
+        /// <inheritdoc />
+        protected override IHostBuilder CreateHostBuilder()
+        {
+            return this._hostBuilderFactory.CreateHostBuilder();
         }
 
         /// <inheritdoc />

@@ -27,7 +27,7 @@ namespace AppMotor.HttpServer;
 /// command with <see cref="CliApplicationWithCommand"/> or as a verb with <see cref="CliApplicationWithVerbs"/>.
 /// See <see cref="CliCommand"/> and <see cref="GenericHostCliCommand"/> for more details.
 ///
-/// <para>You may want to override <see cref="GenericHostCliCommand.ConfigureServices"/> to register
+/// <para>You may want to override <see cref="CliCommand.ConfigureServices"/> to register
 /// your own services with the dependency injection system. You can also override <see cref="CreateStartupClass"/>
 /// to use another startup class than the default <see cref="MvcStartup"/> class.</para>
 /// </summary>
