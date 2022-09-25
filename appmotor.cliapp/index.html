@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/AppMotor">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="2.4.0.717411505512">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="2.4.0.717414359081">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 2.4.0">
@@ -12,7 +12,7 @@
     <!-- Primary Meta Tags -->
     <title>APIs for Command Line Apps | AppMotor</title>
     <meta name="title" content="APIs for Command Line Apps | AppMotor">
-    <meta name="description" content="This library contains various APIs for building command line apps." />
+    <meta name="description" content="This library contains various building blocks for command line applications." />
 
     <!-- Canonical -->
     <link rel="canonical" href="https://skrysmanski.github.io/AppMotor/appmotor.cliapp/" />
@@ -21,21 +21,21 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://skrysmanski.github.io/AppMotor/appmotor.cliapp/">
     <meta property="og:title" content="APIs for Command Line Apps | AppMotor">
-    <meta property="og:description" content="This library contains various APIs for building command line apps.">
+    <meta property="og:description" content="This library contains various building blocks for command line applications.">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://skrysmanski.github.io/AppMotor/appmotor.cliapp/">
     <meta property="twitter:title" content="APIs for Command Line Apps | AppMotor">
-    <meta property="twitter:description" content="This library contains various APIs for building command line apps.">
+    <meta property="twitter:description" content="This library contains various building blocks for command line applications.">
 
     <script>(function () { var el = document.documentElement, m = localStorage.getItem("/AppMotor/doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
 
-    <link href="../resources/css/retype.css?v=2.4.0.717411505512" rel="stylesheet" />
+    <link href="../resources/css/retype.css?v=2.4.0.717414359081" rel="stylesheet" />
 
-    <script type="text/javascript" src="../resources/js/config.js?v=2.4.0.717411505512" data-turbo-eval="false" defer></script>
+    <script type="text/javascript" src="../resources/js/config.js?v=2.4.0.717414359081" data-turbo-eval="false" defer></script>
     <script type="text/javascript" src="../resources/js/retype.js?v=2.4.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" type="text/javascript" src="../resources/js/lunr.js?v=2.4.0.717411505512" data-turbo-eval="false" defer></script>
+    <script id="lunr-js" type="text/javascript" src="../resources/js/lunr.js?v=2.4.0.717414359081" data-turbo-eval="false" defer></script>
 </head>
 <body>
     <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
@@ -227,18 +227,15 @@
         <span>APIs for Command Line Apps</span>
     </h1>
 </doc-anchor-target>
-<p>This library contains various APIs for building command line apps.</p>
-<doc-anchor-target id="terminals">
+<p>This library contains various building blocks for command line applications.</p>
+<doc-anchor-target id="terminalconsole-apis">
     <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#terminals">#</doc-anchor-trigger>
-        <span>Terminals</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#terminalconsole-apis">#</doc-anchor-trigger>
+        <span>Terminal/Console APIs</span>
     </h2>
 </doc-anchor-target>
-<p>The <code v-pre>Terminals</code> namespace provides access to:</p>
-<ul>
-<li><code v-pre>TermText</code>: A <code v-pre>string</code> that supports colors.</li>
-<li><code v-pre>Terminal</code>: An alternative to <code v-pre>System.Console</code> that only contains cross-platform APIs and supports <code v-pre>TermText</code>.</li>
-</ul>
+<p>The <code v-pre>Terminal</code> class is an alternative to <code v-pre>System.Console</code> that only supports cross-platform APIs. It also provides support for <code v-pre>TermText</code> (or any &quot;raw&quot; string ANSI escape sequences) by making sure they work on Windows automatically.</p>
+<p><code v-pre>TermText</code> is a <code v-pre>string</code> for the Console that supports colors. See <a href="terminals/readme.termtext/">README.TermText.md</a> for more details.</p>
 <doc-anchor-target id="command-line-parsing">
     <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#command-line-parsing">#</doc-anchor-trigger>
