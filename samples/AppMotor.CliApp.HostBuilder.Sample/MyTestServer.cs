@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace AppMotor.CliApp.Hosting.Sample;
+namespace AppMotor.CliApp.HostBuilder.Sample;
 
 internal sealed class MyTestServer : IHostedService
 {

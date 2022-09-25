@@ -49,7 +49,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.HttpServer.Tests",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.HttpServer.MvcSample", "samples\AppMotor.HttpServer.MvcSample\AppMotor.HttpServer.MvcSample.csproj", "{DF00176B-0C36-4F74-826C-687236B1A7C6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.CliApp.Hosting.Sample", "samples\AppMotor.CliApp.Hosting.Sample\AppMotor.CliApp.Hosting.Sample.csproj", "{3CE0C1D8-870B-49A9-86E9-FF61B82A99F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMotor.CliApp.HostBuilder.Sample", "samples\AppMotor.CliApp.HostBuilder.Sample\AppMotor.CliApp.HostBuilder.Sample.csproj", "{3CE0C1D8-870B-49A9-86E9-FF61B82A99F1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AC7F8FF0-BAB9-4F25-B51A-06EC1721643E}"
 	ProjectSection(SolutionItems) = preProject

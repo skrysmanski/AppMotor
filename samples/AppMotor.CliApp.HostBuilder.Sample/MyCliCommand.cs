@@ -4,9 +4,9 @@ using AppMotor.CliApp.CommandLine.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace AppMotor.CliApp.Hosting.Sample;
+namespace AppMotor.CliApp.HostBuilder.Sample;
 
-internal sealed class MyGenericHostCliCommand : GenericHostCliCommand
+internal sealed class MyCliCommand : GenericHostCliCommand
 {
     /// <inheritdoc />
     protected override CliCommandExecutor ExplicitExecutor => new(Execute);
