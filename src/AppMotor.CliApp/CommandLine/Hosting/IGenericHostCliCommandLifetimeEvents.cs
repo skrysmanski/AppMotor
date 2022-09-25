@@ -16,19 +16,13 @@ public interface IGenericHostCliCommandLifetimeEvents
     public OneTimeEvent Started { get; }
 
     /// <summary>
-    /// Triggered when the <see cref="GenericHostCliCommand"/> is starting a graceful shutdown.
-    /// Shutdown will block until all event handlers registered on this event have completed.
-    /// </summary>
-    public OneTimeEvent Stopping { get; }
-
-    /// <summary>
     /// Triggered when the <see cref="GenericHostCliCommand"/> has completed a graceful shutdown.
     /// The application will not exit until all event handlers registered on this event have completed.
     /// </summary>
     public OneTimeEvent Stopped { get; }
 
     /// <summary>
-    /// This token is canceled when the <see cref="Stopping"/> event is triggered.
+    /// This token is canceled just before the <see cref="Stopped"/> event is triggered.
     ///
     /// <para>Note: This token can no longer be obtained once <see cref="Stopped"/> has been
     /// triggered (because the underlying <see cref="CancellationTokenSource"/> will be disposed

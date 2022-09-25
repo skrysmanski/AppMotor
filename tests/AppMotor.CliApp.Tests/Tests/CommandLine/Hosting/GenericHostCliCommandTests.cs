@@ -59,12 +59,12 @@ public sealed class GenericHostCliCommandTests : TestBase
         var testApp = new TestApplicationWithCommand(command);
 
         using var startedEvent = new ManualResetEventSlim();
-        using var stoppingEvent = new ManualResetEventSlim();
+        using var tokenCanceledEvent = new ManualResetEventSlim();
         using var stoppedEvent = new ManualResetEventSlim();
 
         // ReSharper disable AccessToDisposedClosure
         command.LifetimeEvents.Started.RegisterEventHandler(() => startedEvent.Set()).ShouldNotBeNull();
-        command.LifetimeEvents.Stopping.RegisterEventHandler(() => stoppingEvent.Set()).ShouldNotBeNull();
+        command.LifetimeEvents.CancellationToken.Register(() => tokenCanceledEvent.Set());
         command.LifetimeEvents.Stopped.RegisterEventHandler(() => stoppedEvent.Set()).ShouldNotBeNull();
         // ReSharper restore AccessToDisposedClosure
 
@@ -79,10 +79,8 @@ public sealed class GenericHostCliCommandTests : TestBase
 
             loggerStatistics = command.ServicesAsPublic.GetRequiredService<TestLoggerStatistics>();
 
-            command.LifetimeEvents.Stopping.RegisterEventHandler(() => command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(true)).ShouldNotBeNull();
-
             // Test
-            stoppingEvent.Wait(TimeSpan.FromSeconds(MAX_WAIT_SECONDS_FOR_CONFIRMATION)).ShouldBe(false); // Stopping event was not triggered within 2 seconds
+            tokenCanceledEvent.Wait(TimeSpan.FromSeconds(MAX_WAIT_SECONDS_FOR_CONFIRMATION)).ShouldBe(false); // Stopping event was not triggered within 2 seconds
         }
         finally
         {
@@ -90,7 +88,7 @@ public sealed class GenericHostCliCommandTests : TestBase
             stopAction();
 
             // Verify
-            stoppingEvent.Wait(TimeSpan.FromSeconds(10)).ShouldBe(true);
+            tokenCanceledEvent.Wait(TimeSpan.FromSeconds(10)).ShouldBe(true);
 
             await TestTimeout.TimeoutAfter(appTask, TimeSpan.FromSeconds(10));
 
@@ -144,8 +142,6 @@ public sealed class GenericHostCliCommandTests : TestBase
         startedEvent.Wait(TimeSpan.FromSeconds(10)).ShouldBe(true);
 
         var loggerStatistics = command.ServicesAsPublic.GetRequiredService<TestLoggerStatistics>();
-
-        command.LifetimeEvents.Stopping.RegisterEventHandler(() => command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(true)).ShouldNotBeNull();
 
         // Test
         var testService = command.ServicesAsPublic.GetRequiredService<GenericHostCommandWithServiceProvider.ITestService>();

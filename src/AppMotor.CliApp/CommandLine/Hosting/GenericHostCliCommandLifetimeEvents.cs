@@ -17,11 +17,6 @@ internal sealed class GenericHostCliCommandLifetimeEvents : Disposable, IGeneric
     internal readonly OneTimeEventSource StartedEventSource = new();
 
     /// <inheritdoc />
-    public OneTimeEvent Stopping => this._stoppingEventSource.Event;
-
-    private readonly OneTimeEventSource _stoppingEventSource = new();
-
-    /// <inheritdoc />
     public OneTimeEvent Stopped => this.StoppedEventSource.Event;
 
     internal readonly OneTimeEventSource StoppedEventSource = new();
@@ -37,9 +32,8 @@ internal sealed class GenericHostCliCommandLifetimeEvents : Disposable, IGeneric
         this._cts.Dispose();
     }
 
-    internal void RaiseStoppingEvent()
+    internal void CancelCancellationToken()
     {
         this._cts.Cancel();
-        this._stoppingEventSource.RaiseEvent();
     }
 }

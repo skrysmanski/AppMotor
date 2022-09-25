@@ -52,7 +52,7 @@ public abstract class GenericHostCliCommand : CliCommand
             // Wait for the stopping event.
             await WaitForShutdownAsync(applicationLifetime, cancellationToken).ConfigureAwait(false);
 
-            this._lifetimeEvents.RaiseStoppingEvent();
+            this._lifetimeEvents.CancelCancellationToken();
 
             // Signal that the application has stopped.
             await this._lifetimeEvents.StoppedEventSource.RaiseEventAsync().ConfigureAwait(false);
@@ -76,7 +76,7 @@ public abstract class GenericHostCliCommand : CliCommand
 
         var waitForStop = new TaskCompletionSource<object?>(TaskCreationOptions.RunContinuationsAsynchronously);
         // NOTE: If "ApplicationStopping" has already been raised/fired, the callback will be called immediately.
-        // IMPORTANT: Do NOT use "this._lifetimeEvent.Stopping" here as this could mean that other ApplicationStopping
+        // IMPORTANT: Do NOT use "this._lifetimeEvent.Stopped" here as this could mean that other ApplicationStopped
         //   event handlers still execute while the lifetime is already disposed in Execute() (since we would not(!) be
         //   waiting for the completion of the other event handlers here).
         applicationLifetime.ApplicationStopping.Register(() => waitForStop.TrySetResult(null));
