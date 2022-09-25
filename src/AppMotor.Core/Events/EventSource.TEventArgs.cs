@@ -22,10 +22,11 @@ namespace AppMotor.Core.Events;
 /// easier not to require such a parameter.)</para>
 ///
 /// <para>This class represents the "event owner"-part of the event (i.e. the ability to raise the event) while the <see cref="Event"/>
-/// property represents the public part. This means, you should instances of this class private while exposing <see cref="Event"/>
+/// property represents the public part. This means, you should keep instances of this class private while exposing <see cref="Event"/>
 /// as a public property.</para>
 /// </summary>
 /// <typeparam name="TEventArgs">The type of the event args to pass to each event handler</typeparam>
+/// <seealso cref="EventSource"/>
 public class EventSource<TEventArgs>
 {
     /// <summary>

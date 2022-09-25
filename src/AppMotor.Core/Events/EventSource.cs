@@ -6,7 +6,8 @@ using System.Diagnostics.CodeAnalysis;
 namespace AppMotor.Core.Events;
 
 /// <summary>
-/// <see cref="EventSource{TEventArgs}"/> without event args.
+/// Same as <see cref="EventSource{TEventArgs}"/> but without event args. See <see cref="EventSource{TEventArgs}"/>
+/// for more details on the concept.
 /// </summary>
 public class EventSource
 {
