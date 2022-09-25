@@ -23,49 +23,51 @@ public sealed class OneTimeEvent
     }
 
     /// <summary>
-    /// Registers a synchronous event handler and returns its registration. Returns <c>null</c> if the event has
-    /// already been raised/fired.
+    /// Registers a synchronous event handler and returns its registration.
+    ///
+    /// <para>Note: If the event has already been raised/fired, the <paramref name="eventHandler"/> will be
+    /// executed immediately and <c>null</c> will be returned.</para>
     /// </summary>
     /// <param name="eventHandler">The event handler</param>
     /// <returns>The event handler registration. Dispose this instance to remove the registration.</returns>
-    /// <seealso cref="RegisterEventHandler(Func{Task})"/>
+    /// <seealso cref="RegisterEventHandlerAsync"/>
     public IEventHandlerRegistration? RegisterEventHandler(Action eventHandler)
     {
         lock (this._eventRaiseLock)
         {
-            if (this.HasBeenRaised)
-            {
-                // Event has been raised
-                return null;
-            }
-            else
+            if (!this.HasBeenRaised)
             {
                 return this._eventSource.Event.RegisterEventHandler(eventHandler);
             }
         }
+
+        // Event has been raised
+        eventHandler();
+        return null;
     }
 
     /// <summary>
-    /// Registers an <c>async</c> event handler and returns its registration. Returns <c>null</c> if the event has
-    /// already been raised/fired.
+    /// Registers an <c>async</c> event handler and returns its registration.
+    ///
+    /// <para>Note: If the event has already been raised/fired, the <paramref name="eventHandler"/> will be
+    /// executed immediately and <c>null</c> will be returned.</para>
     /// </summary>
     /// <param name="eventHandler">The event handler</param>
     /// <returns>The event handler registration. Dispose this instance to remove the registration.</returns>
-    /// <seealso cref="RegisterEventHandler(Action)"/>
-    public IEventHandlerRegistration? RegisterEventHandler(Func<Task> eventHandler)
+    /// <seealso cref="RegisterEventHandler"/>
+    public async Task<IEventHandlerRegistration?> RegisterEventHandlerAsync(Func<Task> eventHandler)
     {
         lock (this._eventRaiseLock)
         {
-            if (this.HasBeenRaised)
-            {
-                // Event has been raised
-                return null;
-            }
-            else
+            if (!this.HasBeenRaised)
             {
                 return this._eventSource.Event.RegisterEventHandler(eventHandler);
             }
         }
+
+        // Event has been raised
+        await eventHandler().ConfigureAwait(false);
+        return null;
     }
 
     internal async Task RaiseEvent()

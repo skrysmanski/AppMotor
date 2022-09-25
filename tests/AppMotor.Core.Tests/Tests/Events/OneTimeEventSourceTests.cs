@@ -26,7 +26,7 @@ public sealed class OneTimeEventSourceTests
 
         var syncRegistration = eventSource.Event.RegisterEventHandler(OnTestEvent);
         syncRegistration.ShouldNotBeNull();
-        var asyncRegistration = eventSource.Event.RegisterEventHandler(OnTestEventAsync);
+        var asyncRegistration = eventSource.Event.RegisterEventHandlerAsync(OnTestEventAsync).Result;
         asyncRegistration.ShouldNotBeNull();
 
         eventSource.RaiseEvent();
@@ -42,7 +42,7 @@ public sealed class OneTimeEventSourceTests
         eventSource.Event.HasBeenRaised.ShouldBe(true);
 
         eventSource.Event.RegisterEventHandler(OnTestEvent).ShouldBeNull();
-        eventSource.Event.RegisterEventHandler(OnTestEventAsync).ShouldBeNull();
+        eventSource.Event.RegisterEventHandlerAsync(OnTestEventAsync).Result.ShouldBeNull();
     }
 
     [Fact]
@@ -82,7 +82,7 @@ public sealed class OneTimeEventSourceTests
 
         var syncRegistration = eventSource.Event.RegisterEventHandler(OnTestEvent);
         syncRegistration.ShouldNotBeNull();
-        var asyncRegistration = eventSource.Event.RegisterEventHandler(OnTestEventAsync);
+        var asyncRegistration = await eventSource.Event.RegisterEventHandlerAsync(OnTestEventAsync);
         asyncRegistration.ShouldNotBeNull();
 
         await eventSource.RaiseEventAsync();
@@ -98,7 +98,7 @@ public sealed class OneTimeEventSourceTests
         eventSource.Event.HasBeenRaised.ShouldBe(true);
 
         eventSource.Event.RegisterEventHandler(OnTestEvent).ShouldBeNull();
-        eventSource.Event.RegisterEventHandler(OnTestEventAsync).ShouldBeNull();
+        (await eventSource.Event.RegisterEventHandlerAsync(OnTestEventAsync)).ShouldBeNull();
     }
 
     [Fact]
