@@ -108,9 +108,16 @@ public abstract class CliApplication
     /// </summary>
     /// <returns>The exit code to use.</returns>
     [MustUseReturnValue]
-    public static int Run(Action mainFunc)
+    public static int Run(Action mainFunc, ITerminal? terminal = null)
     {
-        return new MiniApp(new(mainFunc)).Run();
+        var app = new MiniApp(new(mainFunc));
+
+        if (terminal is not null)
+        {
+            app.Terminal = terminal;
+        }
+
+        return app.Run();
     }
 
     /// <summary>
@@ -118,9 +125,16 @@ public abstract class CliApplication
     /// </summary>
     /// <returns>The exit code to use.</returns>
     [MustUseReturnValue]
-    public static int Run(Func<int> mainFunc)
+    public static int Run(Func<int> mainFunc, ITerminal? terminal = null)
     {
-        return new MiniApp(new(mainFunc)).Run();
+        var app = new MiniApp(new(mainFunc));
+
+        if (terminal is not null)
+        {
+            app.Terminal = terminal;
+        }
+
+        return app.Run();
     }
 
     /// <summary>
@@ -128,9 +142,16 @@ public abstract class CliApplication
     /// </summary>
     /// <returns>The exit code to use.</returns>
     [MustUseReturnValue]
-    public static Task<int> RunAsync(Func<Task> mainFunc)
+    public static Task<int> RunAsync(Func<Task> mainFunc, ITerminal? terminal = null)
     {
-        return new MiniApp(new(mainFunc)).RunAsync();
+        var app = new MiniApp(new(mainFunc));
+
+        if (terminal is not null)
+        {
+            app.Terminal = terminal;
+        }
+
+        return app.RunAsync();
     }
 
     /// <summary>
@@ -138,9 +159,16 @@ public abstract class CliApplication
     /// </summary>
     /// <returns>The exit code to use.</returns>
     [MustUseReturnValue]
-    public static Task<int> RunAsync(Func<Task<int>> mainFunc)
+    public static Task<int> RunAsync(Func<Task<int>> mainFunc, ITerminal? terminal = null)
     {
-        return new MiniApp(new(mainFunc)).RunAsync();
+        var app = new MiniApp(new(mainFunc));
+
+        if (terminal is not null)
+        {
+            app.Terminal = terminal;
+        }
+
+        return app.RunAsync();
     }
 
     /// <summary>
@@ -149,9 +177,16 @@ public abstract class CliApplication
     /// </summary>
     /// <returns>The exit code to use.</returns>
     [MustUseReturnValue]
-    public static int Run(string[] args, CliCommand mainCommand)
+    public static int Run(string[] args, CliCommand mainCommand, ITerminal? terminal = null)
     {
-        return new CliApplicationWithCommand(mainCommand).Run(args);
+        var app = new CliApplicationWithCommand(mainCommand);
+
+        if (terminal is not null)
+        {
+            app.Terminal = terminal;
+        }
+
+        return app.Run(args);
     }
 
     /// <summary>
@@ -160,9 +195,16 @@ public abstract class CliApplication
     /// </summary>
     /// <returns>The exit code to use.</returns>
     [MustUseReturnValue]
-    public static Task<int> RunAsync(string[] args, CliCommand mainCommand)
+    public static Task<int> RunAsync(string[] args, CliCommand mainCommand, ITerminal? terminal = null)
     {
-        return new CliApplicationWithCommand(mainCommand).RunAsync(args);
+        var app = new CliApplicationWithCommand(mainCommand);
+
+        if (terminal is not null)
+        {
+            app.Terminal = terminal;
+        }
+
+        return app.RunAsync(args);
     }
 
     /// <summary>
