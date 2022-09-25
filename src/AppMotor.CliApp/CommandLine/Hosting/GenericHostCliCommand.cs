@@ -136,11 +136,14 @@ public abstract class GenericHostCliCommand : CliCommand
         {
             await host.StartAsync(cancellationToken).ConfigureAwait(false);
 
+            // Signal that the application has started.
             await this._lifetimeEvents.StartedEventSource.RaiseEventAsync().ConfigureAwait(false);
 
+            // Register event handler for underlying stop event.
             var applicationLifetime = host.Services.GetRequiredService<IHostApplicationLifetime>();
+            // NOTE: If "ApplicationStopping" has already been raised/fired, the callback will be called immediately.
             applicationLifetime.ApplicationStopping.Register(
-                state =>
+                static state =>
                 {
                     var lifetimeEvents = (GenericHostCliCommandLifetimeEvents)state!;
                     lifetimeEvents.RaiseStoppingEvent();
@@ -152,6 +155,7 @@ public abstract class GenericHostCliCommand : CliCommand
 
             if (explicitExecutor is null)
             {
+                // Wait for the stopping event.
                 await host.WaitForShutdownAsync(cancellationToken).ConfigureAwait(false);
 
                 exitCode = 0;
@@ -170,6 +174,7 @@ public abstract class GenericHostCliCommand : CliCommand
                 await host.StopAsync(CancellationToken.None).ConfigureAwait(false);
             }
 
+            // Signal that the application has stopped.
             await this._lifetimeEvents.StoppedEventSource.RaiseEventAsync().ConfigureAwait(false);
 
             return exitCode;
