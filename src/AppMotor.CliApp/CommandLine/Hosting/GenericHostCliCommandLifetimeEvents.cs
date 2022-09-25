@@ -11,21 +11,22 @@ namespace AppMotor.CliApp.CommandLine.Hosting;
 /// </summary>
 internal sealed class GenericHostCliCommandLifetimeEvents : Disposable, IGenericHostCliCommandLifetimeEvents
 {
+    /// <inheritdoc />
     public OneTimeEvent Started => this.StartedEventSource.Event;
 
     internal readonly OneTimeEventSource StartedEventSource = new();
 
+    /// <inheritdoc />
     public OneTimeEvent Stopping => this._stoppingEventSource.Event;
 
     private readonly OneTimeEventSource _stoppingEventSource = new();
 
+    /// <inheritdoc />
     public OneTimeEvent Stopped => this.StoppedEventSource.Event;
 
     internal readonly OneTimeEventSource StoppedEventSource = new();
 
-    /// <summary>
-    /// This token is canceled when the <see cref="Stopping"/> event is triggered.
-    /// </summary>
+    /// <inheritdoc />
     public CancellationToken CancellationToken => this._cts.Token;
 
     private readonly CancellationTokenSource _cts = new();
