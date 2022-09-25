@@ -79,7 +79,7 @@ public sealed class Event
         }
     }
 
-    internal async Task RaiseEvent()
+    internal async Task RaiseEventAsync()
     {
         // ReSharper disable once InconsistentlySynchronizedField
         ImmutableArray<EventHandlerRegistration> eventHandlers = this._eventHandlers;
