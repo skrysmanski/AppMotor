@@ -27,29 +27,48 @@ public sealed class GenericHostCliCommandTests : TestBase
     }
 
     [Fact]
-    public async Task Test_DefaultGenericHost_NotStoppingOnItsOwn()
+    public async Task Test_Stop_ViaStopMethod()
+    {
+        // Setup
+        var command = new GenericHostTestCommand(this.TestConsole);
+
+        // Test
+        await Test_Stop(command, command.Stop);
+    }
+
+    [Fact]
+    public async Task Test_Stop_ViaCancellationToken()
+    {
+        // Setup
+        using var cts = new CancellationTokenSource();
+
+        var command = new GenericHostTestCommand(this.TestConsole);
+
+        // Test
+        await Test_Stop(command, cts.Cancel, cts.Token);
+    }
+
+    private static async Task Test_Stop(GenericHostTestCommand command, Action stopAction, CancellationToken cancellationToken = default)
     {
         // The number of seconds to wait for the stopping event not to happen to "deduce"
         // that it would not fire on its own. (This test is not 100% reliable but it's better
         // than nothing.)
-        const int MAX_WAIT_SECONDS_FOR_CONFIRMATION = 2;
+        const double MAX_WAIT_SECONDS_FOR_CONFIRMATION = 1.2;
 
         // Setup
-        var command = new GenericHostTestCommand(this.TestConsole);
         var testApp = new TestApplicationWithCommand(command);
 
         using var startedEvent = new ManualResetEventSlim();
         using var stoppingEvent = new ManualResetEventSlim();
         using var stoppedEvent = new ManualResetEventSlim();
 
-        // ReSharper disable once AccessToDisposedClosure
+        // ReSharper disable AccessToDisposedClosure
         command.LifetimeEvents.Started.RegisterEventHandler(() => startedEvent.Set()).ShouldNotBeNull();
-        // ReSharper disable once AccessToDisposedClosure
         command.LifetimeEvents.Stopping.RegisterEventHandler(() => stoppingEvent.Set()).ShouldNotBeNull();
-        // ReSharper disable once AccessToDisposedClosure
         command.LifetimeEvents.Stopped.RegisterEventHandler(() => stoppedEvent.Set()).ShouldNotBeNull();
+        // ReSharper restore AccessToDisposedClosure
 
-        var appTask = testApp.RunAsync();
+        var appTask = testApp.RunAsync(cancellationToken);
 
         TestLoggerStatistics loggerStatistics;
         try
@@ -67,12 +86,11 @@ public sealed class GenericHostCliCommandTests : TestBase
         }
         finally
         {
-            // Cleanup
-            command.Stop();
+            // Test stop
+            stopAction();
 
             // Verify
             stoppingEvent.IsSet.ShouldBe(true);
-            command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(true);
 
             await TestTimeout.TimeoutAfter(appTask, TimeSpan.FromSeconds(10));
 
