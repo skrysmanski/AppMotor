@@ -90,7 +90,7 @@ public sealed class GenericHostCliCommandTests : TestBase
             stopAction();
 
             // Verify
-            stoppingEvent.IsSet.ShouldBe(true);
+            stoppingEvent.Wait(TimeSpan.FromSeconds(10)).ShouldBe(true);
 
             await TestTimeout.TimeoutAfter(appTask, TimeSpan.FromSeconds(10));
 
