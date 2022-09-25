@@ -6,6 +6,7 @@ using AppMotor.CliApp.CommandLine.Hosting;
 using AppMotor.CliApp.TestUtils;
 using AppMotor.TestCore;
 using AppMotor.TestCore.Logging;
+using AppMotor.TestCore.Utils;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,7 +27,7 @@ public sealed class GenericHostCliCommandTests : TestBase
     }
 
     [Fact]
-    public void Test_DefaultGenericHost_NotStoppingOnItsOwn()
+    public async Task Test_DefaultGenericHost_NotStoppingOnItsOwn()
     {
         // The number of seconds to wait for the stopping event not to happen to "deduce"
         // that it would not fire on its own. (This test is not 100% reliable but it's better
@@ -73,7 +74,7 @@ public sealed class GenericHostCliCommandTests : TestBase
             stoppingEvent.IsSet.ShouldBe(true);
             command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(true);
 
-            appTask.Wait(TimeSpan.FromSeconds(30)).ShouldBe(true);
+            await TestTimeout.TimeoutAfter(appTask, TimeSpan.FromSeconds(10));
 
             // Verify
             stoppedEvent.IsSet.ShouldBe(true);
@@ -103,7 +104,7 @@ public sealed class GenericHostCliCommandTests : TestBase
     }
 
     [Fact]
-    public void Test_ServiceProvider()
+    public async Task Test_ServiceProvider()
     {
         // Setup
         var command = new GenericHostCommandWithServiceProvider(this.TestConsole);
@@ -135,7 +136,7 @@ public sealed class GenericHostCliCommandTests : TestBase
 
         // Shutdown
         command.Stop();
-        appTask.Wait(TimeSpan.FromSeconds(30)).ShouldBe(true);
+        await TestTimeout.TimeoutAfter(appTask, TimeSpan.FromSeconds(10));
 
         loggerStatistics.ShouldHaveNoErrors();
     }

@@ -9,9 +9,9 @@ using AppMotor.Core.Net.Http;
 using AppMotor.HttpServer;
 using AppMotor.HttpServer.Startups;
 using AppMotor.TestCore;
-using AppMotor.TestCore.Extensions;
 using AppMotor.TestCore.Logging;
 using AppMotor.TestCore.Networking;
+using AppMotor.TestCore.Utils;
 
 using Microsoft.AspNetCore.Hosting;
 
@@ -53,7 +53,7 @@ public sealed class HttpTests : TestBase
 
         cts.Cancel();
 
-        await appTask.OrTimeoutAfter(TimeSpan.FromSeconds(10));
+        await TestTimeout.TimeoutAfter(appTask, TimeSpan.FromSeconds(10));
     }
 
     private sealed class TestHttpServerCommand : HttpServerCommandBase

@@ -17,6 +17,7 @@ using AppMotor.TestCore;
 using AppMotor.TestCore.Extensions;
 using AppMotor.TestCore.Logging;
 using AppMotor.TestCore.Networking;
+using AppMotor.TestCore.Utils;
 
 using JetBrains.Annotations;
 
@@ -110,14 +111,7 @@ public sealed class IpVersionTests : TestBase
 
             cts.Cancel();
 
-            if (TestEnvInfo.RunsInCiPipeline)
-            {
-                await appTask.OrTimeoutAfter(TimeSpan.FromSeconds(10));
-            }
-            else
-            {
-                await appTask;
-            }
+            await TestTimeout.TimeoutAfter(appTask, TimeSpan.FromSeconds(10));
         }
     }
 
