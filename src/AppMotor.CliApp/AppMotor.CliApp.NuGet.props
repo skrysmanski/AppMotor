@@ -20,11 +20,12 @@
     <CommonlyUsedTypes Include="AppMotor.CliApp.CommandLine.CliCommand" />
     <CommonlyUsedTypes Include="AppMotor.CliApp.CommandLine.CliParam" />
     <CommonlyUsedTypes Include="AppMotor.CliApp.CommandLine.Hosting.GenericHostCliCommand" />
-    <CommonlyUsedTypes Include="AppMotor.CliApp.CommandLine.AppBuilding.DefaultHostBuilderFactory" />
-    <CommonlyUsedTypes Include="AppMotor.CliApp.CommandLine.CliApplication" />
 
     <CommonlyUsedTypes Include="AppMotor.CliApp.Terminals.Terminal" />
     <CommonlyUsedTypes Include="AppMotor.CliApp.Terminals.Formatting.TermText" />
+
+    <CommonlyUsedTypes Include="AppMotor.CliApp.CliApplication" />
+    <CommonlyUsedTypes Include="AppMotor.CliApp.AppBuilding.DefaultHostBuilderFactory" />
   </ItemGroup>
 
 </Project>
