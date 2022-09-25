@@ -49,7 +49,11 @@ internal sealed class CommandLineConsole : IConsole
             // IMPORTANT: We must return "null" here so that we can get properly aligned
             //   help texts. Unfortunately, alignment is only supported if "IConsole"
             //   is "null".
-            //   See: https://github.com/dotnet/command-line-api/issues/1174#issuecomment-770774549
+            //
+            //   Note, however, that despite https://github.com/dotnet/command-line-api/issues/1174#issuecomment-770774549
+            //   and https://github.com/dotnet/command-line-api/issues/1184#issuecomment-822001709
+            //   returning "null" here is still the best solution (and it doesn't need to be fixed
+            //   with using "HelpBuilder" somehow).
             return null;
         }
         else
