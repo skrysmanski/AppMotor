@@ -48,18 +48,11 @@ public abstract class GenericHostCliCommand : CliCommand
 
             // Register event handler for underlying stop event.
             var applicationLifetime = this.Services.GetRequiredService<IHostApplicationLifetime>();
-            // NOTE: If "ApplicationStopping" has already been raised/fired, the callback will be called immediately.
-            applicationLifetime.ApplicationStopping.Register(
-                static state =>
-                {
-                    var lifetimeEvents = (GenericHostCliCommandLifetimeEvents)state!;
-                    lifetimeEvents.RaiseStoppingEvent();
-                },
-                state: this._lifetimeEvents
-            );
 
             // Wait for the stopping event.
             await WaitForShutdownAsync(applicationLifetime, cancellationToken).ConfigureAwait(false);
+
+            this._lifetimeEvents.RaiseStoppingEvent();
 
             // Signal that the application has stopped.
             await this._lifetimeEvents.StoppedEventSource.RaiseEventAsync().ConfigureAwait(false);
@@ -70,7 +63,7 @@ public abstract class GenericHostCliCommand : CliCommand
         }
     }
 
-    private async Task WaitForShutdownAsync(IHostApplicationLifetime applicationLifetime, CancellationToken cancellationToken)
+    private static async Task WaitForShutdownAsync(IHostApplicationLifetime applicationLifetime, CancellationToken cancellationToken)
     {
         // NOTE: If this cancellation token has already been canceled, the callback will be called immediately.
         cancellationToken.Register(
@@ -82,8 +75,11 @@ public abstract class GenericHostCliCommand : CliCommand
         );
 
         var waitForStop = new TaskCompletionSource<object?>(TaskCreationOptions.RunContinuationsAsynchronously);
-        // NOTE: If "Stopping" has already been raised/fired, the callback will be called immediately.
-        this._lifetimeEvents.Stopping.RegisterEventHandler(() => waitForStop.TrySetResult(null));
+        // NOTE: If "ApplicationStopping" has already been raised/fired, the callback will be called immediately.
+        // IMPORTANT: Do NOT use "this._lifetimeEvent.Stopping" here as this could mean that other ApplicationStopping
+        //   event handlers still execute while the lifetime is already disposed in Execute() (since we would not(!) be
+        //   waiting for the completion of the other event handlers here).
+        applicationLifetime.ApplicationStopping.Register(() => waitForStop.TrySetResult(null));
 
         await waitForStop.Task.ConfigureAwait(false);
     }
