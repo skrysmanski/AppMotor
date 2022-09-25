@@ -2,6 +2,8 @@
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
 using AppMotor.Core.Exceptions;
+using AppMotor.Core.Extensions;
+using AppMotor.Core.Logging;
 
 using JetBrains.Annotations;
 
@@ -44,9 +46,19 @@ internal sealed class XUnitLogger : ILogger
     /// <inheritdoc />
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
+        const string INDENTATION = "      ";
+
         var now = DateTime.Now;
         var message = formatter(state, exception);
-        this._testOutputHelper.WriteLine($"[{now:HH:mm:ss.fff}] [{GetLogLevelString(logLevel)}] {this._categoryName}{Environment.NewLine}      {message}");
+        this._testOutputHelper.WriteLine($"[{now:HH:mm:ss.fff}] [{GetLogLevelString(logLevel)}] {this._categoryName}{Environment.NewLine}{INDENTATION}{message}");
+
+        if (exception is not null)
+        {
+            this._testOutputHelper.WriteLine(
+                Environment.NewLine + INDENTATION
+              + string.Join(Environment.NewLine + INDENTATION, exception.ToStringExtended().SplitLines())
+            );
+        }
 
         this._loggerStatistics.OnLogMessage(logLevel);
     }
