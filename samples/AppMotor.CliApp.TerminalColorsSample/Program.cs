@@ -16,7 +16,7 @@ return CliApplication.Run(() =>
     // Compose multiple styles using the chainable API
     Terminal.WriteLine(BgRed().Black().Underline("Hello world!"));
 
-    // Nest styles of the same type even (color, underline, background)
+    // Nest styles of the same type even (color, underline)
     Terminal.WriteLine(Green(
         "I am a green line " +
         Blue().Underline("with a blue substring") +

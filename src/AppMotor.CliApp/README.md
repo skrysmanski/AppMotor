@@ -3,14 +3,13 @@ icon: terminal
 ---
 # APIs for Command Line Apps
 
-This library contains various APIs for building command line apps.
+This library contains various building blocks for command line applications.
 
-## Terminals
+## Terminal/Console APIs
 
-The `Terminals` namespace provides access to:
+The `Terminal` class is an alternative to `System.Console` that only supports cross-platform APIs. It also provides support for `TermText` (or any "raw" string ANSI escape sequences) by making sure they work on Windows automatically.
 
-* `TermText`: A `string` that supports colors.
-* `Terminal`: An alternative to `System.Console` that only contains cross-platform APIs and supports `TermText`.
+`TermText` is a `string` for the Console that supports colors. See [README.TermText.md](Terminals/README.TermText.md) for more details.
 
 ## Command Line Parsing
 
