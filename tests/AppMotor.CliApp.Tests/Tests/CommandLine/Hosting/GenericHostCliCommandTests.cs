@@ -57,7 +57,7 @@ public sealed class GenericHostCliCommandTests : TestBase
 
             startedEvent.Wait(TimeSpan.FromSeconds(10)).ShouldBe(true);
 
-            loggerStatistics = command.ServiceProvider.GetRequiredService<TestLoggerStatistics>();
+            loggerStatistics = command.ServicesAsPublic.GetRequiredService<TestLoggerStatistics>();
 
             command.LifetimeEvents.Stopping.RegisterEventHandler(() => command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(true)).ShouldNotBeNull();
 
@@ -87,7 +87,7 @@ public sealed class GenericHostCliCommandTests : TestBase
         /// <inheritdoc />
         protected sealed override IHostBuilderFactory HostBuilderFactory { get; }
 
-        public IServiceProvider ServiceProvider => this.Services;
+        public IServiceProvider ServicesAsPublic => this.Services;
 
         /// <inheritdoc />
         public GenericHostTestCommand(ITestOutputHelper testOutputHelper)
@@ -120,18 +120,18 @@ public sealed class GenericHostCliCommandTests : TestBase
 
         startedEvent.Wait(TimeSpan.FromSeconds(10)).ShouldBe(true);
 
-        var loggerStatistics = command.ServiceProvider.GetRequiredService<TestLoggerStatistics>();
+        var loggerStatistics = command.ServicesAsPublic.GetRequiredService<TestLoggerStatistics>();
 
         command.LifetimeEvents.Stopping.RegisterEventHandler(() => command.LifetimeEvents.CancellationToken.IsCancellationRequested.ShouldBe(true)).ShouldNotBeNull();
 
         // Test
-        var testService = command.ServiceProvider.GetRequiredService<GenericHostCommandWithServiceProvider.ITestService>();
+        var testService = command.ServicesAsPublic.GetRequiredService<GenericHostCommandWithServiceProvider.ITestService>();
         testService.DoSomething(42).ShouldBe(42);
 
-        var logger = command.ServiceProvider.GetRequiredService<ILogger<GenericHostCommandWithServiceProvider>>();
+        var logger = command.ServicesAsPublic.GetRequiredService<ILogger<GenericHostCommandWithServiceProvider>>();
         logger.LogInformation("abc");
 
-        command.ServiceProvider.GetRequiredService<IGenericHostCliCommandLifetimeEvents>().ShouldBeSameAs(command.LifetimeEvents);
+        command.ServicesAsPublic.GetRequiredService<IGenericHostCliCommandLifetimeEvents>().ShouldBeSameAs(command.LifetimeEvents);
 
         // Shutdown
         command.Stop();
