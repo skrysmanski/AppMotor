@@ -3,21 +3,11 @@ icon: terminal
 ---
 # APIs for Command Line Apps
 
-This library contains various building blocks for command line applications.
+This library contains various building blocks for command line applications:
 
-## Terminal/Console APIs
-
-The `Terminal` class is an alternative to `System.Console` that only supports cross-platform APIs. It also provides support for `TermText` (or any "raw" string ANSI escape sequences) by making sure they work on Windows automatically.
-
-`TermText` is a `string` for the Console that supports colors. See [README.TermText.md](Terminals/README.TermText.md) for more details.
-
-## Command Line Parsing
-
-For details, [README.md](CommandLine/README.md).
-
-## Generic Host
-
-If you want to use .NET's Generic Host, see [AppMotor.CliApp.Hosting](CommandLine/Hosting/README.md).
+* [**TermText**](Terminals/README.TermText.md): a `string` that supports colors and some formatting (like: underline).
+* **`Terminal`**: An alternative to `System.Console` that only supports cross-platform APIs (and thus make writing Console/Terminal code less error-prone). It also provides direct support for `TermText` (or any "raw" string ANSI escape sequences) by making sure they automatically work on Windows.
+* [**CLI Application Framework**](README.CliAppFramework.md): Types to make hosting/running CLI applications easier, including proper exception handling, command line parsing and Generic Host support.
 
 ## Code Documentation
 
