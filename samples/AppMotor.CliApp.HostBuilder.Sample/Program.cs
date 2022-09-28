@@ -1,7 +1,4 @@
-﻿using AppMotor.CliApp.CommandLine;
+﻿using AppMotor.CliApp;
 using AppMotor.CliApp.HostBuilder.Sample;
 
-var command = new MyCliCommand();
-var app = new CliApplicationWithCommand(command);
-
-return app.Run();
+return CliApplication.Run(args, new MyCliCommand());
