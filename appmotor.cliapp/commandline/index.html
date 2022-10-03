@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/AppMotor">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="2.4.0.717660620480">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="2.4.0.718088685972">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 2.4.0">
@@ -12,7 +12,7 @@
     <!-- Primary Meta Tags -->
     <title>Command Line Parsing | AppMotor</title>
     <meta name="title" content="Command Line Parsing | AppMotor">
-    <meta name="description" content="The base classes CliApplicationWithCommands and CliApplicationWithoutCommands give you access to typed and named command line parameters." />
+    <meta name="description" content="The base classes CliCommand and CliApplicationWithParams give you access to typed and named command line parameters" />
 
     <!-- Canonical -->
     <link rel="canonical" href="https://skrysmanski.github.io/AppMotor/appmotor.cliapp/commandline/" />
@@ -21,22 +21,22 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://skrysmanski.github.io/AppMotor/appmotor.cliapp/commandline/">
     <meta property="og:title" content="Command Line Parsing | AppMotor">
-    <meta property="og:description" content="The base classes CliApplicationWithCommands and CliApplicationWithoutCommands give you access to typed and named command line parameters.">
+    <meta property="og:description" content="The base classes CliCommand and CliApplicationWithParams give you access to typed and named command line parameters">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://skrysmanski.github.io/AppMotor/appmotor.cliapp/commandline/">
     <meta property="twitter:title" content="Command Line Parsing | AppMotor">
-    <meta property="twitter:description" content="The base classes CliApplicationWithCommands and CliApplicationWithoutCommands give you access to typed and named command line parameters.">
+    <meta property="twitter:description" content="The base classes CliCommand and CliApplicationWithParams give you access to typed and named command line parameters">
 
     <script>(function () { var el = document.documentElement, m = localStorage.getItem("/AppMotor/doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
 
-    <link href="../../resources/css/retype.css?v=2.4.0.717660620480" rel="stylesheet" />
+    <link href="../../resources/css/retype.css?v=2.4.0.718088685972" rel="stylesheet" />
 
-    <script type="text/javascript" src="../../resources/js/config.js?v=2.4.0.717660620480" data-turbo-eval="false" defer></script>
+    <script type="text/javascript" src="../../resources/js/config.js?v=2.4.0.718088685972" data-turbo-eval="false" defer></script>
     <script type="text/javascript" src="../../resources/js/retype.js?v=2.4.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" type="text/javascript" src="../../resources/js/lunr.js?v=2.4.0.717660620480" data-turbo-eval="false" defer></script>
-    <script id="prism-js" type="text/javascript" src="../../resources/js/prism.js?v=2.4.0.717660620480" defer></script>
+    <script id="lunr-js" type="text/javascript" src="../../resources/js/lunr.js?v=2.4.0.718088685972" data-turbo-eval="false" defer></script>
+    <script id="prism-js" type="text/javascript" src="../../resources/js/prism.js?v=2.4.0.718088685972" defer></script>
 </head>
 <body>
     <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
@@ -228,8 +228,8 @@
         <span>Command Line Parsing</span>
     </h1>
 </doc-anchor-target>
-<p>The base classes <code v-pre>CliApplicationWithCommands</code> and <code v-pre>CliApplicationWithoutCommands</code> give you access to typed and named command line parameters. You no longer get access to <code v-pre>string[] args</code> in your main method - instead you create instances of <code v-pre>CliCommand</code> and <code v-pre>CliParam&lt;T&gt;</code> to define your command line interface. This also allows for automatic help page generation.</p>
-<p>A command line interface definition contains of parameters, commands, and verb groups.</p>
+<p>The base classes <code v-pre>CliCommand</code> and <code v-pre>CliApplicationWithParams</code> give you access to <strong>typed and named command line parameters</strong>. You no longer get access to <code v-pre>string[] args</code> in your main method - instead you create instances <code v-pre>CliParam&lt;T&gt;</code> (and, optionally <code v-pre>CliVerb</code>) to define your command line interface. This also allows for <strong>automatic help page generation</strong>.</p>
+<p>A command line interface definition consists of parameters and verbs (which are either named command or groups of verbs).</p>
 <p><em>Side note:</em> For additional details, see <a href="design-notes/">DESIGN-NOTES.md</a>.</p>
 <doc-anchor-target id="quick-start">
     <h2>
@@ -292,6 +292,14 @@
         return app.Run(args);
     }
 }</code></pre>
+</doc-codeblock></div>
+<p>or:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-csharp"><code v-pre class="language-csharp">return CliApplication.Run(
+    args,
+    new CliVerb(&quot;add&quot;, new AddCommand()),
+    new CliVerb(&quot;remove&quot;, new RemoveCommand())
+);</code></pre>
 </doc-codeblock></div>
 <p>The <code v-pre>AddCommand</code> can look like this:</p>
 <div class="codeblock-wrapper"><doc-codeblock>
@@ -384,7 +392,7 @@
 <p>There are a few parameter types that are <strong>optional by default</strong>:</p>
 <ul>
 <li>Named parameters of type <code v-pre>CliParam&lt;bool&gt;</code>: the default value is set to <code v-pre>false</code>; these parameters usually represent &quot;flags&quot; (e.g. <code v-pre>--verbose</code>)</li>
-<li>Parameters with a nullable value type (e.g. <code v-pre>CliParam&lt;int?&gt;</code>): the default value is set to <code v-pre>null</code></li>
+<li>Parameters with a nullable <em>value</em> type (e.g. <code v-pre>CliParam&lt;int?&gt;</code>): the default value is set to <code v-pre>null</code></li>
 </ul>
 <doc-anchor-target id="verbs-and-commands">
     <h2>
@@ -392,7 +400,7 @@
         <span>Verbs and Commands</span>
     </h2>
 </doc-anchor-target>
-<p>Verbs let you have multiple functions within your application. For example, in <code v-pre>git add myfile.cs</code> the word <code v-pre>add</code> is a verb.</p>
+<p>Verbs let you have multiple functions within your application. For example, in <code v-pre>git add myfile.cs</code> the word <code v-pre>add</code> is such a verb.</p>
 <p>Verbs - represented by the <code v-pre>CliVerb</code> class - always have a name and usually a command:</p>
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre class="language-csharp"><code v-pre class="language-csharp">var verb = new CliVerb(&quot;benchmark&quot;, new BenchmarkCommand());</code></pre>
@@ -420,7 +428,7 @@
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre class="language-none"><code v-pre class="language-none">myapp benchmark --duration 20</code></pre>
 </doc-codeblock></div>
-<p>Verbs can also have alias names (like named parameters), a help text, and sub verbs.</p>
+<p>Verbs can also have alias names (like named parameters), a help text, and sub/child verbs.</p>
 <doc-anchor-target id="verb-groups-verbs-without-command">
     <h3>
         <doc-anchor-trigger class="header-anchor-trigger" to="#verb-groups-verbs-without-command">#</doc-anchor-trigger>
@@ -434,7 +442,7 @@
 ssh-env keys install
 ssh-env keys delete</code></pre>
 </doc-codeblock></div>
-<p>... then <code v-pre>keys</code> would be a verb group.</p>
+<p>... then <code v-pre>keys</code> would be a verb group (i.e. it doesn&#x27;t do anything on its own)</p>
 <p>Verb groups are simply <strong>verbs without a command</strong>:</p>
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre class="language-csharp"><code v-pre class="language-csharp">var verbGroup = new CliVerb(&quot;keys&quot;)
@@ -491,7 +499,7 @@ ssh-env keys delete</code></pre>
         <span>Application with a Single Function</span>
     </h3>
 </doc-anchor-target>
-<p><code v-pre>CliApplicationWithParams</code> and <code v-pre>CliApplicationWithCommand</code> on the other hand cannot have verbs but only parameters. These applications only provide <em>one</em> function. Examples for this application type are <code v-pre>cd</code>, <code v-pre>rm</code>, or <code v-pre>dir</code>. As such, they require an &quot;executor&quot; method and usually have parameters (you can think of them as single-command applications).</p>
+<p><code v-pre>CliApplicationWithParams</code> on the other hand cannot have verbs but only parameters. These applications only provide <em>one</em> function. Examples for this application type are <code v-pre>cd</code>, <code v-pre>rm</code>, or <code v-pre>dir/</code>ls&#x60;. As such, they require an &quot;executor&quot; method and usually have parameters (you can think of them as single-command applications).</p>
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre class="language-csharp"><code v-pre class="language-csharp">internal sealed class MoveApplication : CliApplicationWithParams
 {
@@ -507,7 +515,7 @@ ssh-env keys delete</code></pre>
     }
 }</code></pre>
 </doc-codeblock></div>
-<p>The same application can be written as an application with a command:</p>
+<p>The same application can be written as an application with a command (with <code v-pre>CliApplicationWithCommand</code>):</p>
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre class="language-csharp"><code v-pre class="language-csharp">internal sealed class MoveCommand : CliCommand
 {
@@ -555,19 +563,10 @@ var app = new CliApplicationWithCommand(new MoveCommand());</code></pre>
     }
 }</code></pre>
 </doc-codeblock></div>
-<doc-anchor-target id="executors">
-    <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#executors">#</doc-anchor-trigger>
-        <span>Executors</span>
-    </h2>
-</doc-anchor-target>
-<p>Executors exist to give you the freedom to implement your command or application main method however you like: synchronous or <code v-pre>async</code>, with or without return value.</p>
-<p>To create an instance of an executor, you simply pass a fitting delegate to one of its constructors.</p>
-<p>There are two types of executors: <code v-pre>CliApplicationExecutor</code> and <code v-pre>CliCommandExecutor</code></p>
-<p>Both support (parameter-less) methods/delegates with the following return types: <code v-pre>void</code>, <code v-pre>Task</code>, <code v-pre>bool</code>, <code v-pre>Task&lt;bool&gt;</code>, <code v-pre>int</code>, <code v-pre>Task&lt;int&gt;</code></p>
-<p>The <code v-pre>CliApplicationExecutor</code> also supports methods/delegates that take a single <code v-pre>string[]</code> parameter (the command line args).</p>
-<p>The class <code v-pre>CliCommandExecutor</code> is used by <code v-pre>CliCommand</code> and <code v-pre>CliApplicationWithParams</code>. This is the only executor you need if you want to work with the command line parsing functionality of this library.</p>
-<p>The class <code v-pre>CliApplicationExecutor</code> is used by <code v-pre>CliApplication</code> (which is an application base class that does not do any command line argument parsing).</p>
+<p>Or use one of the static <code v-pre>Run()</code>/<code v-pre>RunAsync()</code> convenience methods:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-csharp"><code v-pre class="language-csharp">return CliApplication.Run(args, new MyCliCommand());</code></pre>
+</doc-codeblock></div>
 
                                 
                                 <!-- Required only on API pages -->
