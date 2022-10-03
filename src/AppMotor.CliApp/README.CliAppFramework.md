@@ -111,3 +111,19 @@ return app.Run(args);
 For more details and examples on **Command Line Parameter Parsing**, see [here](CommandLine/README.md).
 
 For more details and examples on the **GenericHost (`IHostBuilder`) Support**, see [here](CommandLine/Hosting/README.md).
+
+## Executors
+
+Executors exist to give you the freedom to implement your command's or application's main method however you like: synchronous or `async`, with or without return value.
+
+To create an instance of an executor, you simply pass a fitting delegate to one of its constructors.
+
+There are two types of executors: `CliApplicationExecutor` and `CliCommandExecutor`
+
+Both support (parameter-less) methods/delegates with the following return types: `void`, `Task`, `bool`, `Task<bool>`, `int`, `Task<int>`
+
+The `CliApplicationExecutor` also supports methods/delegates that take a single `string[]` parameter (the command line args).
+
+The class `CliCommandExecutor` is used by `CliCommand` and `CliApplicationWithParams`. This is the only executor you need if you want to work with the command line parsing functionality of this library.
+
+The class `CliApplicationExecutor` is used by `CliApplication` (which is an application base class that does not do any command line argument parsing).

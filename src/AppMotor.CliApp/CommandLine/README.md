@@ -1,8 +1,8 @@
 ﻿# Command Line Parsing
 
-The base classes `CliApplicationWithCommands` and `CliApplicationWithoutCommands` give you access to typed and named command line parameters. You no longer get access to `string[] args` in your main method - instead you create instances of `CliCommand` and `CliParam<T>` to define your command line interface. This also allows for automatic help page generation.
+The base classes `CliCommand` and `CliApplicationWithParams` give you access to **typed and named command line parameters**. You no longer get access to `string[] args` in your main method - instead you create instances `CliParam<T>` (and, optionally `CliVerb`) to define your command line interface. This also allows for **automatic help page generation**.
 
-A command line interface definition contains of parameters, commands, and verb groups.
+A command line interface definition consists of parameters and verbs (which are either named command or groups of verbs).
 
 *Side note:* For additional details, see [DESIGN-NOTES.md](DESIGN-NOTES.md).
 
@@ -67,6 +67,16 @@ internal static class Program
         return app.Run(args);
     }
 }
+```
+
+or:
+
+```c#
+return CliApplication.Run(
+    args,
+    new CliVerb("add", new AddCommand()),
+    new CliVerb("remove", new RemoveCommand())
+);
 ```
 
 The `AddCommand` can look like this:
@@ -177,11 +187,11 @@ Note that the type of the parameter needs to be nullable (e.g. `FileInfo?` - not
 There are a few parameter types that are **optional by default**:
 
 * Named parameters of type `CliParam<bool>`: the default value is set to `false`; these parameters usually represent "flags" (e.g. `--verbose`)
-* Parameters with a nullable value type (e.g. `CliParam<int?>`): the default value is set to `null`
+* Parameters with a nullable *value* type (e.g. `CliParam<int?>`): the default value is set to `null`
 
 ## Verbs and Commands
 
-Verbs let you have multiple functions within your application. For example, in `git add myfile.cs` the word `add` is a verb.
+Verbs let you have multiple functions within your application. For example, in `git add myfile.cs` the word `add` is such a verb.
 
 Verbs - represented by the `CliVerb` class - always have a name and usually a command:
 
@@ -214,7 +224,7 @@ The user would execute this command via something like this:
 
     myapp benchmark --duration 20
 
-Verbs can also have alias names (like named parameters), a help text, and sub verbs.
+Verbs can also have alias names (like named parameters), a help text, and sub/child verbs.
 
 ### Verb Groups (Verbs without Command)
 
@@ -228,7 +238,7 @@ ssh-env keys install
 ssh-env keys delete
 ```
 
-... then `keys` would be a verb group.
+... then `keys` would be a verb group (i.e. it doesn't do anything on its own)
 
 Verb groups are simply **verbs without a command**:
 
@@ -272,7 +282,7 @@ var gitApplication = new CliApplicationWithVerbs()
 
 ### Application with a Single Function
 
-`CliApplicationWithParams` and `CliApplicationWithCommand` on the other hand cannot have verbs but only parameters. These applications only provide *one* function. Examples for this application type are `cd`, `rm`, or `dir`. As such, they require an "executor" method and usually have parameters (you can think of them as single-command applications).
+`CliApplicationWithParams` on the other hand cannot have verbs but only parameters. These applications only provide *one* function. Examples for this application type are `cd`, `rm`, or `dir/`ls`. As such, they require an "executor" method and usually have parameters (you can think of them as single-command applications).
 
 ```c#
 internal sealed class MoveApplication : CliApplicationWithParams
@@ -290,7 +300,7 @@ internal sealed class MoveApplication : CliApplicationWithParams
 }
 ```
 
-The same application can be written as an application with a command:
+The same application can be written as an application with a command (with `CliApplicationWithCommand`):
 
 ```c#
 internal sealed class MoveCommand : CliCommand
@@ -341,18 +351,8 @@ internal static class Program : CliApplicationWithParams
 }
 ```
 
-## Executors
+Or use one of the static `Run()`/`RunAsync()` convenience methods:
 
-Executors exist to give you the freedom to implement your command or application main method however you like: synchronous or `async`, with or without return value.
-
-To create an instance of an executor, you simply pass a fitting delegate to one of its constructors.
-
-There are two types of executors: `CliApplicationExecutor` and `CliCommandExecutor`
-
-Both support (parameter-less) methods/delegates with the following return types: `void`, `Task`, `bool`, `Task<bool>`, `int`, `Task<int>`
-
-The `CliApplicationExecutor` also supports methods/delegates that take a single `string[]` parameter (the command line args).
-
-The class `CliCommandExecutor` is used by `CliCommand` and `CliApplicationWithParams`. This is the only executor you need if you want to work with the command line parsing functionality of this library.
-
-The class `CliApplicationExecutor` is used by `CliApplication` (which is an application base class that does not do any command line argument parsing).
+```c#
+return CliApplication.Run(args, new MyCliCommand());
+```
