@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/AppMotor">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="2.4.0.718611369077">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="2.4.0.718611921269">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 2.4.0">
@@ -31,12 +31,12 @@
 
     <script>(function () { var el = document.documentElement, m = localStorage.getItem("/AppMotor/doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
 
-    <link href="../../resources/css/retype.css?v=2.4.0.718611369077" rel="stylesheet" />
+    <link href="../../resources/css/retype.css?v=2.4.0.718611921269" rel="stylesheet" />
 
-    <script type="text/javascript" src="../../resources/js/config.js?v=2.4.0.718611369077" data-turbo-eval="false" defer></script>
+    <script type="text/javascript" src="../../resources/js/config.js?v=2.4.0.718611921269" data-turbo-eval="false" defer></script>
     <script type="text/javascript" src="../../resources/js/retype.js?v=2.4.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" type="text/javascript" src="../../resources/js/lunr.js?v=2.4.0.718611369077" data-turbo-eval="false" defer></script>
-    <script id="prism-js" type="text/javascript" src="../../resources/js/prism.js?v=2.4.0.718611369077" defer></script>
+    <script id="lunr-js" type="text/javascript" src="../../resources/js/lunr.js?v=2.4.0.718611921269" data-turbo-eval="false" defer></script>
+    <script id="prism-js" type="text/javascript" src="../../resources/js/prism.js?v=2.4.0.718611921269" defer></script>
 </head>
 <body>
     <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
@@ -232,7 +232,7 @@
 <ul>
 <li>Exception Handling</li>
 <li><a href="../commandline/">Command Line Parameter Parsing</a> including an automatically generated help page (optional)</li>
-<li><a href="../commandline/hosting/">GenericHost (<code v-pre>IHostBuilder</code>) Support</a> (optional)</li>
+<li><a href="../commandline/readme.generichost/">Generic Host (<code v-pre>IHostBuilder</code>) Integration</a> (optional)</li>
 </ul>
 <doc-anchor-target id="application-classes">
     <h2>
@@ -248,7 +248,7 @@
 <th>Class</th>
 <th>Exception Handling</th>
 <th>CLI Parameter Parsing</th>
-<th>GenericHost Support</th>
+<th>Generic Host Integration</th>
 <th>Multi Command Support</th>
 </tr>
 </thead>
@@ -286,9 +286,9 @@
 </div>
 <p>All these class inherit from <code v-pre>CliApplication</code> and thus inherit all its features.</p>
 <p><strong>CLI Parameter Parsing</strong> means that you use properties (like <code v-pre>string TargetDir { get; set; }</code>) to get the parameters passed by the user on the command line - instead of simply <code v-pre>string[] args</code>.</p>
-<p><strong>GenericHost Support</strong> means that you get access to all the features that <code v-pre>IHostBuilder</code>/<code v-pre>IHost</code> provide; e.g. dependency injection, configuration, logging.</p>
+<p><strong>Generic Host Integration</strong> means that you get access to all the features that <code v-pre>IHostBuilder</code>/<code v-pre>IHost</code> provide; e.g. dependency injection, configuration, logging.</p>
 <p><strong>Multi Command Support</strong> means that your application can support multiple commands where each command has its own CLI parameters. For example, the <code v-pre>git</code> command is a multi command application (with commands being <code v-pre>checkout</code>, <code v-pre>commit</code>, <code v-pre>push</code>, ...) whereas <code v-pre>mv</code>/<code v-pre>move</code> are single command applications (and thus would be modeled with <code v-pre>CliApplicationWithParams</code>).</p>
-<p>The class <code v-pre>CliApplicationWithCommand</code> is basically the same as <code v-pre>CliApplicationWithParams</code> but you specify the parameters and main method on a command instead of the application itself. This class is useful, if you want to use <code v-pre>GenericHostCliCommand</code> (<a href="../commandline/hosting/">details</a>).</p>
+<p>The class <code v-pre>CliApplicationWithCommand</code> is basically the same as <code v-pre>CliApplicationWithParams</code> but you specify the parameters and main method on a command instead of the application itself. This class is useful, if you want to use <code v-pre>GenericHostCliCommand</code> (<a href="commandline/hosting/readme.md">details</a>).</p>
 <doc-anchor-target id="commands">
     <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#commands">#</doc-anchor-trigger>
@@ -385,7 +385,7 @@
 return app.Run(args);</code></pre>
 </doc-codeblock></div>
 <p>For more details and examples on <strong>Command Line Parameter Parsing</strong>, see <a href="../commandline/">here</a>.</p>
-<p>For more details and examples on the <strong>GenericHost (<code v-pre>IHostBuilder</code>) Support</strong>, see <a href="../commandline/hosting/">here</a>.</p>
+<p>For more details and examples on the <strong>Generic Host (<code v-pre>IHostBuilder</code>) Integration</strong>, see <a href="../commandline/readme.generichost/">here</a>.</p>
 <doc-anchor-target id="executors">
     <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#executors">#</doc-anchor-trigger>
