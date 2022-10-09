@@ -5,6 +5,7 @@ using AppMotor.CliApp.AppBuilding;
 using AppMotor.CliApp.CommandLine;
 using AppMotor.CliApp.TestUtils;
 using AppMotor.TestCore;
+using AppMotor.TestCore.AppBuilding;
 using AppMotor.TestCore.Logging;
 
 using Microsoft.Extensions.Configuration;
@@ -136,13 +137,9 @@ public sealed class LogLevelConfigurationTests : TestBase
         {
             this._mainAction = mainAction;
 
-            this._hostBuilderFactory = new DefaultHostBuilderFactory()
+            this._hostBuilderFactory = new XUnitHostBuilderFactory(testOutputHelper)
             {
                 LogLevelConfiguration = logLevelConfiguration,
-                LoggingConfigurationProvider = (_, builder) =>
-                {
-                    builder.AddXUnitLogger(testOutputHelper);
-                },
             };
         }
 

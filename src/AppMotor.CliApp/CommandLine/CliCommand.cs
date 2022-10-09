@@ -6,7 +6,6 @@ using System.CommandLine.Invocation;
 using System.Diagnostics.CodeAnalysis;
 
 using AppMotor.CliApp.AppBuilding;
-using AppMotor.CliApp.CommandLine.Hosting;
 using AppMotor.CliApp.CommandLine.Utils;
 using AppMotor.CliApp.Properties;
 using AppMotor.CliApp.Terminals;
@@ -20,13 +19,21 @@ using Microsoft.Extensions.Hosting;
 namespace AppMotor.CliApp.CommandLine;
 
 /// <summary>
-/// Represents a command (or executable verb; see <see cref="CliVerb"/>) in a command line call; e.g.
-/// in "git add ." the word "add" is the command.
+/// <para>Represents a command in a command line call; e.g. in <c>git add file.txt</c> the word "add" is the command.
+/// The command's name is defined by wrapping the command instance in a <see cref="CliVerb"/> instance.</para>
 ///
-/// <para>Commands can be nested like "myapp command1 subcommmand --some-option".</para>
+/// <para>This class also provides access to .NET's Generic Host functionality (for more details, see
+/// https://learn.microsoft.com/en-us/dotnet/core/extensions/generic-host) - via
+/// <see cref="ConfigureServices"/>, <see cref="ConfigureApplication"/>, <see cref="CreateHostBuilder"/>,
+/// and <see cref="Services"/>.</para>
 ///
-/// <para>Can also be used as root command with <see cref="CliApplicationWithCommand"/>.</para>
+/// <para>If you need a command that *just* runs one or more services but doesn't need a "main" method
+/// (i.e. <see cref="Executor"/>), use <see cref="ServiceHostCliCommand"/> instead.</para>
 /// </summary>
+/// <remarks>
+/// You can use this class as root command with <see cref="CliApplicationWithCommand"/> or as a verb with
+/// <see cref="CliApplicationWithVerbs"/>.
+/// </remarks>
 public abstract class CliCommand
 {
     /// <summary>
@@ -119,11 +126,9 @@ public abstract class CliCommand
         return CliParamUtils.GetAllParamsFor(this);
     }
 
-
     /// <summary>
     /// Creates the <see cref="IHostBuilder"/> to be used by this command. The default implementation
-    /// uses <see cref="DefaultHostBuilderFactory.CreateHostBuilder"/> but you could also use
-    /// <see cref="Host.CreateDefaultBuilder()"/>.
+    /// uses <see cref="DefaultHostBuilderFactory.CreateHostBuilder"/>.
     /// </summary>
     /// <remarks>
     /// Note to implementers: DO NOT configure any required services/features here (use <see cref="ConfigureApplication"/> for that).
@@ -138,17 +143,25 @@ public abstract class CliCommand
     [MustUseReturnValue]
     protected virtual IHostBuilder CreateHostBuilder()
     {
-        return DefaultHostBuilderFactory.Instance.CreateHostBuilder();
+        var hostBuilderFactory = new DefaultHostBuilderFactory()
+        {
+            DefaultLogger = DefaultLogger.Terminal,
+        };
+
+        return hostBuilderFactory.CreateHostBuilder();
     }
 
     /// <summary>
     /// Registers all services with the dependency injection framework.
     ///
-    /// <para>Note: <see cref="IHostedService"/> (registered via <see cref="ServiceCollectionHostedServiceExtensions.AddHostedService{THostedService}(IServiceCollection)"/>)
-    /// are the primary way to run workloads in this application type (unless it's an ASP.NET Core application).</para>
+    /// <para>Note: Use <see cref="ServiceCollectionHostedServiceExtensions.AddHostedService{THostedService}(IServiceCollection)"/>
+    /// to register server class (that implement <see cref="IHostedService"/>).</para>
     /// </summary>
     /// <remarks>
     /// If you need to configure the application itself, you can use <see cref="ConfigureApplication"/>.
+    /// </remarks>
+    /// <remarks>
+    /// For more details, see: https://learn.microsoft.com/en-us/dotnet/core/extensions/dependency-injection
     /// </remarks>
     [PublicAPI]
     protected virtual void ConfigureServices(HostBuilderContext context, IServiceCollection services)
@@ -159,9 +172,15 @@ public abstract class CliCommand
     /// <summary>
     /// Adds additional configuration to the application itself (other than registering services with is done
     /// by <see cref="ConfigureServices"/> instead) - via extension methods to <paramref name="hostBuilder"/>.
-    ///
-    /// <para>The default implementation does nothing by itself.</para>
     /// </summary>
+    /// <remarks>
+    /// Use this method to register additional configuration providers. For more details, see:
+    /// https://github.com/skrysmanski/dotnet-docs/blob/main/README.Configuration.md
+    /// </remarks>
+    /// <remarks>
+    /// Use this method to configure logging for your application. For more details, see:
+    /// https://learn.microsoft.com/en-us/dotnet/core/extensions/logging
+    /// </remarks>
     /// <remarks>
     /// Note to implementers: Use this method instead of <see cref="CreateHostBuilder"/> to configure required
     /// features. See remarks <see cref="CreateHostBuilder"/> for more details.
@@ -253,7 +272,7 @@ public abstract class CliCommand
     /// This implementation replaces <see cref="Microsoft.Extensions.Hosting.Internal.ConsoleLifetime"/>
     /// which is usually used by <see cref="HostBuilder"/>. This lifetime prints the various log messages and
     /// registers the Ctrl+C handler. This NullLifetime doesn't do anything of this. Note
-    /// that <see cref="GenericHostCliCommand"/> still uses <c>ConsoleLifetime</c>.
+    /// that <see cref="ServiceHostCliCommand"/> still uses <c>ConsoleLifetime</c>.
     /// </summary>
     private sealed class NullLifetime : IHostLifetime
     {

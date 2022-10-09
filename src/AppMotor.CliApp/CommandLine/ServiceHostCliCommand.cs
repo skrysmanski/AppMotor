@@ -4,30 +4,26 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace AppMotor.CliApp.CommandLine.Hosting;
+namespace AppMotor.CliApp.CommandLine;
 
 /// <summary>
-/// <para>A <see cref="CliCommand"/> that integrates .NET's Generic Host functionality - i.e. <see cref="IHost"/> and its builder
-/// <see cref="IHostBuilder"/>. This is .NET's new standard way of configuring applications (see
-/// https://docs.microsoft.com/en-us/dotnet/core/extensions/generic-host for more details).</para>
+/// <para>A command that just runs one or more servers.</para>
 ///
-/// <para>The main benefit here is that you get access to .NET's dependency injection system (i.e. <see cref="IServiceProvider"/>)
-/// and its associated services (like logging and configuration). You also get support for running services via
-/// <see cref="IHostedService"/>.</para>
-///
-/// <para>To register your own services with the dependency injection system, override <see cref="CliCommand.ConfigureServices"/>.</para>
+/// <para>These servers must implement <see cref="IHostedService"/> and be registered in <see cref="ConfigureServices"/> via
+/// <see cref="ServiceCollectionHostedServiceExtensions.AddHostedService{THostedService}(IServiceCollection)"/>.</para>
 ///
 /// <para>This command runs indefinitely until it's stopped manually. This can be done by canceling the <see cref="CancellationToken"/>
 /// provided to the <c>application.Run()</c> call (if one was provided), or by calling either <see cref="Stop"/> or
 /// <see cref="IHostApplicationLifetime.StopApplication"/>. If this commands runs "interactively", the user can also hit "Ctrl+C".</para>
-///
-/// <para>You can use this class as root command with <see cref="CliApplicationWithCommand"/> or as a verb with
-/// <see cref="CliApplicationWithVerbs"/>.</para>
-///
-/// <para>This class provides access to the Generic Host functionality for non ASP.NET Core (console) application. For ASP.NET
-/// Core applications, use <c>HttpServerCommandBase</c> (from the "AppMotor.HttpServer" NuGet package) instead.</para>
 /// </summary>
-public abstract class GenericHostCliCommand : CliCommand
+/// <remarks>
+/// You can use this class as root command with <see cref="CliApplicationWithCommand"/> or as a verb with
+/// <see cref="CliApplicationWithVerbs"/>.
+/// </remarks>
+/// <remarks>
+/// For ASP.NET Core applications, use <c>HttpServerCommandBase</c> (from the "AppMotor.HttpServer" NuGet package) instead.
+/// </remarks>
+public abstract class ServiceHostCliCommand : CliCommand
 {
     /// <inheritdoc />
     protected sealed override CliCommandExecutor Executor => new(Execute);
@@ -35,9 +31,9 @@ public abstract class GenericHostCliCommand : CliCommand
     /// <summary>
     /// The lifetime events for this command.
     /// </summary>
-    public IGenericHostCliCommandLifetimeEvents LifetimeEvents => this._lifetimeEvents;
+    public IServiceHostLifetimeEvents LifetimeEvents => this._lifetimeEvents;
 
-    private readonly GenericHostCliCommandLifetimeEvents _lifetimeEvents = new();
+    private readonly ServiceHostLifetimeEvents _lifetimeEvents = new();
 
     private async Task Execute(CancellationToken cancellationToken)
     {
@@ -101,7 +97,7 @@ public abstract class GenericHostCliCommand : CliCommand
     {
         base.ConfigureServices(context, services);
 
-        services.AddSingleton<IGenericHostCliCommandLifetimeEvents>(this._lifetimeEvents);
+        services.AddSingleton<IServiceHostLifetimeEvents>(this._lifetimeEvents);
     }
 
     /// <inheritdoc />

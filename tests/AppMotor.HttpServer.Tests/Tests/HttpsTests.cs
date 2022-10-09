@@ -10,7 +10,7 @@ using AppMotor.Core.Net.Http;
 using AppMotor.HttpServer;
 using AppMotor.HttpServer.Startups;
 using AppMotor.TestCore;
-using AppMotor.TestCore.Logging;
+using AppMotor.TestCore.AppBuilding;
 using AppMotor.TestCore.Networking;
 using AppMotor.TestCore.Utils;
 
@@ -75,13 +75,7 @@ public sealed class HttpsTests : TestBase
             this._port = port;
             this._testCertificate = testCertificate;
 
-            this._hostBuilderFactory = new DefaultHostBuilderFactory()
-            {
-                LoggingConfigurationProvider = (_, builder) =>
-                {
-                    builder.AddXUnitLogger(testOutputHelper);
-                },
-            };
+            this._hostBuilderFactory = new XUnitHostBuilderFactory(testOutputHelper);
         }
 
         /// <inheritdoc />

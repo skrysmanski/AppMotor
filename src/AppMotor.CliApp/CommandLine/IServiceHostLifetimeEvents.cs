@@ -3,20 +3,20 @@
 
 using AppMotor.Core.Events;
 
-namespace AppMotor.CliApp.CommandLine.Hosting;
+namespace AppMotor.CliApp.CommandLine;
 
 /// <summary>
-/// The lifetime events for a <see cref="GenericHostCliCommand"/>.
+/// The lifetime events for a <see cref="ServiceHostCliCommand"/>.
 /// </summary>
-public interface IGenericHostCliCommandLifetimeEvents
+public interface IServiceHostLifetimeEvents
 {
     /// <summary>
-    /// Triggered when the <see cref="GenericHostCliCommand"/> has fully started.
+    /// Triggered when the <see cref="ServiceHostCliCommand"/> has fully started.
     /// </summary>
     public OneTimeEvent Started { get; }
 
     /// <summary>
-    /// Triggered when the <see cref="GenericHostCliCommand"/> has completed a graceful shutdown.
+    /// Triggered when the <see cref="ServiceHostCliCommand"/> has completed a graceful shutdown.
     /// The application will not exit until all event handlers registered on this event have completed.
     /// </summary>
     public OneTimeEvent Stopped { get; }

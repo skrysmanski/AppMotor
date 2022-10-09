@@ -5,7 +5,6 @@ using System.Net;
 using System.Security.Cryptography.X509Certificates;
 
 using AppMotor.CliApp.CommandLine;
-using AppMotor.CliApp.CommandLine.Hosting;
 using AppMotor.Core.Certificates;
 using AppMotor.Core.Exceptions;
 using AppMotor.Core.Net;
@@ -25,7 +24,7 @@ namespace AppMotor.HttpServer;
 /// <summary>
 /// A <see cref="CliCommand"/> for running an HTTP(S) server (Kestrel). You can use it as root
 /// command with <see cref="CliApplicationWithCommand"/> or as a verb with <see cref="CliApplicationWithVerbs"/>.
-/// See <see cref="CliCommand"/> and <see cref="GenericHostCliCommand"/> for more details.
+/// See <see cref="CliCommand"/> and <see cref="ServiceHostCliCommand"/> for more details.
 ///
 /// <para>You may want to override <see cref="CliCommand.ConfigureServices"/> to register
 /// your own services with the dependency injection system. You can also override <see cref="CreateStartupClass"/>
@@ -35,7 +34,7 @@ namespace AppMotor.HttpServer;
 /// See also: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/generic-host
 /// </remarks>
 [PublicAPI]
-public abstract class HttpServerCommandBase : GenericHostCliCommand
+public abstract class HttpServerCommandBase : ServiceHostCliCommand
 {
     /// <summary>
     /// Returns the server port definitions this HTTP service should listen on.

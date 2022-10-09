@@ -4,12 +4,12 @@
 using AppMotor.Core.Events;
 using AppMotor.Core.Utils;
 
-namespace AppMotor.CliApp.CommandLine.Hosting;
+namespace AppMotor.CliApp.CommandLine;
 
 /// <summary>
-/// Implementation of <see cref="IGenericHostCliCommandLifetimeEvents"/>.
+/// Implementation of <see cref="IServiceHostLifetimeEvents"/>.
 /// </summary>
-internal sealed class GenericHostCliCommandLifetimeEvents : Disposable, IGenericHostCliCommandLifetimeEvents
+internal sealed class ServiceHostLifetimeEvents : Disposable, IServiceHostLifetimeEvents
 {
     /// <inheritdoc />
     public OneTimeEvent Started => this.StartedEventSource.Event;
