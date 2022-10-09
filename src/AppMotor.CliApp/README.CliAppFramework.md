@@ -4,24 +4,24 @@ The AppMotor CLI Application Framework provides you with:
 
 * Exception Handling
 * [Command Line Parameter Parsing](CommandLine/README.md) including an automatically generated help page (optional)
-* [GenericHost (`IHostBuilder`) Support](CommandLine/Hosting/README.md) (optional)
+* [Generic Host (`IHostBuilder`) Integration](CommandLine/README.GenericHost.md) (optional)
 
 ## Application Classes
 
 The following application classes are available:
 
-| Class                         | Exception Handling | CLI Parameter Parsing | GenericHost Support | Multi Command Support
-| ----------------------------- | ------------------ | --------------------- | ------------------- | ---------------------
-| `CliApplication`              | yes                | no                    | no                  | no
-| `CliApplicationWithParams`    | yes                | yes                   | yes                 | no
-| `CliApplicationWithCommand`   | yes                | yes                   | yes                 | no
-| `CliApplicationWithVerbs`     | yes                | yes                   | yes                 | yes
+| Class                         | Exception Handling | CLI Parameter Parsing | Generic Host Integration | Multi Command Support
+| ----------------------------- | ------------------ | --------------------- | ------------------------ | ---------------------
+| `CliApplication`              | yes                | no                    | no                       | no
+| `CliApplicationWithParams`    | yes                | yes                   | yes                      | no
+| `CliApplicationWithCommand`   | yes                | yes                   | yes                      | no
+| `CliApplicationWithVerbs`     | yes                | yes                   | yes                      | yes
 
 All these class inherit from `CliApplication` and thus inherit all its features.
 
 **CLI Parameter Parsing** means that you use properties (like `string TargetDir { get; set; }`) to get the parameters passed by the user on the command line - instead of simply `string[] args`.
 
-**GenericHost Support** means that you get access to all the features that `IHostBuilder`/`IHost` provide; e.g. dependency injection, configuration, logging.
+**Generic Host Integration** means that you get access to all the features that `IHostBuilder`/`IHost` provide; e.g. dependency injection, configuration, logging.
 
 **Multi Command Support** means that your application can support multiple commands where each command has its own CLI parameters. For example, the `git` command is a multi command application (with commands being `checkout`, `commit`, `push`, ...) whereas `mv`/`move` are single command applications (and thus would be modeled with `CliApplicationWithParams`).
 
@@ -110,7 +110,7 @@ return app.Run(args);
 
 For more details and examples on **Command Line Parameter Parsing**, see [here](CommandLine/README.md).
 
-For more details and examples on the **GenericHost (`IHostBuilder`) Support**, see [here](CommandLine/Hosting/README.md).
+For more details and examples on the **Generic Host (`IHostBuilder`) Integration**, see [here](CommandLine/README.GenericHost.md).
 
 ## Executors
 
