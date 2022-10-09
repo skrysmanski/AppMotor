@@ -17,8 +17,11 @@ using Shouldly;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace AppMotor.CliApp.Tests.CommandLine.Hosting;
+namespace AppMotor.CliApp.Tests.AppBuilding;
 
+/// <summary>
+/// Tests for <see cref="LogLevelConfiguration"/>.
+/// </summary>
 public sealed class LogLevelConfigurationTests : TestBase
 {
     public LogLevelConfigurationTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
