@@ -68,6 +68,16 @@ public sealed class TerminalLoggerTests
         await host.StopAsync();
 
         // Verify
+        Should.CompleteIn(
+            () =>
+            {
+                while (!testTerminal.CurrentOutput.Contains("This is just a test."))
+                {
+                    Thread.Sleep(50);
+                }
+            },
+            TimeSpan.FromSeconds(2)
+        );
         testTerminal.CurrentOutput.ShouldContain("This is just a test.");
     }
 }
