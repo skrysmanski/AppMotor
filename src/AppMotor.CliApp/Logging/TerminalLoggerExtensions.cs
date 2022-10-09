@@ -27,23 +27,23 @@ public static class TerminalLoggerExtensions
     /// Adds a terminal logger named 'Terminal' to the factory.
     /// </summary>
     [PublicAPI]
-    public static ILoggingBuilder AddTerminalLogger(this ILoggingBuilder builder)
+    public static ILoggingBuilder AddTerminalLogger(this ILoggingBuilder loggingBuilder)
     {
         // Register basic logging configuration.
-        builder.AddConfiguration();
+        loggingBuilder.AddConfiguration();
 
         // Register default formatters.
-        builder.AddTerminalLogEntryFormatter<JsonTerminalFormatter, JsonConsoleFormatterOptions>();
-        builder.AddTerminalLogEntryFormatter<SystemdTerminalFormatter, ConsoleFormatterOptions>();
-        builder.AddTerminalLogEntryFormatter<SimpleTerminalFormatter, SimpleConsoleFormatterOptions>();
+        loggingBuilder.AddTerminalLogEntryFormatter<JsonTerminalFormatter, JsonConsoleFormatterOptions>();
+        loggingBuilder.AddTerminalLogEntryFormatter<SystemdTerminalFormatter, ConsoleFormatterOptions>();
+        loggingBuilder.AddTerminalLogEntryFormatter<SimpleTerminalFormatter, SimpleConsoleFormatterOptions>();
 
         // Register TerminalLoggerProvider as logger provider.
-        builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider, TerminalLoggerProvider>());
+        loggingBuilder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider, TerminalLoggerProvider>());
 
         // Make logging options available.
-        LoggerProviderOptions.RegisterProviderOptions<ConsoleLoggerOptions, TerminalLoggerProvider>(builder.Services);
+        LoggerProviderOptions.RegisterProviderOptions<ConsoleLoggerOptions, TerminalLoggerProvider>(loggingBuilder.Services);
 
-        return builder;
+        return loggingBuilder;
     }
 
     /// <summary>
@@ -51,21 +51,21 @@ public static class TerminalLoggerExtensions
     /// options.
     /// </summary>
     [PublicAPI]
-    public static ILoggingBuilder AddTerminalLogEntryFormatter<TFormatter, TOptions>(this ILoggingBuilder builder)
+    public static ILoggingBuilder AddTerminalLogEntryFormatter<TFormatter, TOptions>(this ILoggingBuilder loggingBuilder)
         where TOptions : ConsoleFormatterOptions
         where TFormatter : class, ITerminalLogEntryFormatter
     {
         // Register basic logging configuration.
-        builder.AddConfiguration();
+        loggingBuilder.AddConfiguration();
 
         // Register "TFormatter" as an additional "ITerminalLogEntryFormatter"
-        builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ITerminalLogEntryFormatter, TFormatter>());
+        loggingBuilder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ITerminalLogEntryFormatter, TFormatter>());
 
         // Make formatter options available for the formatter.
-        builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IConfigureOptions<TOptions>, FormatterOptionsProvider<TOptions>>());
-        builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IOptionsChangeTokenSource<TOptions>, FormatterOptionsChangeTokenSource<TOptions>>());
+        loggingBuilder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IConfigureOptions<TOptions>, FormatterOptionsProvider<TOptions>>());
+        loggingBuilder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IOptionsChangeTokenSource<TOptions>, FormatterOptionsChangeTokenSource<TOptions>>());
 
-        return builder;
+        return loggingBuilder;
     }
 
     /// <summary>
