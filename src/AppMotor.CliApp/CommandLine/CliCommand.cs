@@ -143,7 +143,12 @@ public abstract class CliCommand
     [MustUseReturnValue]
     protected virtual IHostBuilder CreateHostBuilder()
     {
-        return DefaultHostBuilderFactory.Instance.CreateHostBuilder();
+        var hostBuilderFactory = new DefaultHostBuilderFactory()
+        {
+            DefaultLogger = DefaultLogger.Terminal,
+        };
+
+        return hostBuilderFactory.CreateHostBuilder();
     }
 
     /// <summary>

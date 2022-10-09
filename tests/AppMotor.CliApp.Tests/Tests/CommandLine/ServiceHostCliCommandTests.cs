@@ -5,6 +5,7 @@ using AppMotor.CliApp.AppBuilding;
 using AppMotor.CliApp.CommandLine;
 using AppMotor.CliApp.TestUtils;
 using AppMotor.TestCore;
+using AppMotor.TestCore.AppBuilding;
 using AppMotor.TestCore.Logging;
 using AppMotor.TestCore.Utils;
 
@@ -110,13 +111,7 @@ public sealed class ServiceHostCliCommandTests : TestBase
 
         public ServiceHostTestCommand(ITestOutputHelper testOutputHelper)
         {
-            this._hostBuilderFactory = new DefaultHostBuilderFactory()
-            {
-                LoggingConfigurationProvider = (_, builder) =>
-                {
-                    builder.AddXUnitLogger(testOutputHelper);
-                },
-            };
+            this._hostBuilderFactory = new XUnitHostBuilderFactory(testOutputHelper);
         }
 
         /// <inheritdoc />
