@@ -6,7 +6,6 @@ using System.CommandLine.Invocation;
 using System.Diagnostics.CodeAnalysis;
 
 using AppMotor.CliApp.AppBuilding;
-using AppMotor.CliApp.CommandLine.Hosting;
 using AppMotor.CliApp.CommandLine.Utils;
 using AppMotor.CliApp.Properties;
 using AppMotor.CliApp.Terminals;
@@ -253,7 +252,7 @@ public abstract class CliCommand
     /// This implementation replaces <see cref="Microsoft.Extensions.Hosting.Internal.ConsoleLifetime"/>
     /// which is usually used by <see cref="HostBuilder"/>. This lifetime prints the various log messages and
     /// registers the Ctrl+C handler. This NullLifetime doesn't do anything of this. Note
-    /// that <see cref="GenericHostCliCommand"/> still uses <c>ConsoleLifetime</c>.
+    /// that <see cref="ServiceHostCliCommand"/> still uses <c>ConsoleLifetime</c>.
     /// </summary>
     private sealed class NullLifetime : IHostLifetime
     {

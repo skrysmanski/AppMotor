@@ -4,7 +4,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace AppMotor.CliApp.CommandLine.Hosting;
+namespace AppMotor.CliApp.CommandLine;
 
 /// <summary>
 /// <para>A <see cref="CliCommand"/> that integrates .NET's Generic Host functionality - i.e. <see cref="IHost"/> and its builder
@@ -27,7 +27,7 @@ namespace AppMotor.CliApp.CommandLine.Hosting;
 /// <para>This class provides access to the Generic Host functionality for non ASP.NET Core (console) application. For ASP.NET
 /// Core applications, use <c>HttpServerCommandBase</c> (from the "AppMotor.HttpServer" NuGet package) instead.</para>
 /// </summary>
-public abstract class GenericHostCliCommand : CliCommand
+public abstract class ServiceHostCliCommand : CliCommand
 {
     /// <inheritdoc />
     protected sealed override CliCommandExecutor Executor => new(Execute);
@@ -35,9 +35,9 @@ public abstract class GenericHostCliCommand : CliCommand
     /// <summary>
     /// The lifetime events for this command.
     /// </summary>
-    public IGenericHostCliCommandLifetimeEvents LifetimeEvents => this._lifetimeEvents;
+    public IServiceHostLifetimeEvents LifetimeEvents => this._lifetimeEvents;
 
-    private readonly GenericHostCliCommandLifetimeEvents _lifetimeEvents = new();
+    private readonly ServiceHostLifetimeEvents _lifetimeEvents = new();
 
     private async Task Execute(CancellationToken cancellationToken)
     {
@@ -101,7 +101,7 @@ public abstract class GenericHostCliCommand : CliCommand
     {
         base.ConfigureServices(context, services);
 
-        services.AddSingleton<IGenericHostCliCommandLifetimeEvents>(this._lifetimeEvents);
+        services.AddSingleton<IServiceHostLifetimeEvents>(this._lifetimeEvents);
     }
 
     /// <inheritdoc />

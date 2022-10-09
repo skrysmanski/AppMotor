@@ -2,7 +2,7 @@
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
 using AppMotor.CliApp.AppBuilding;
-using AppMotor.CliApp.CommandLine.Hosting;
+using AppMotor.CliApp.CommandLine;
 using AppMotor.CliApp.TestUtils;
 using AppMotor.TestCore;
 using AppMotor.TestCore.Logging;
@@ -17,11 +17,14 @@ using Shouldly;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace AppMotor.CliApp.Tests.CommandLine.Hosting;
+namespace AppMotor.CliApp.Tests.CommandLine;
 
-public sealed class GenericHostCliCommandTests : TestBase
+/// <summary>
+/// Tests for <see cref="ServiceHostCliCommand"/>.
+/// </summary>
+public sealed class ServiceHostCliCommandTests : TestBase
 {
-    public GenericHostCliCommandTests(ITestOutputHelper testOutputHelper)
+    public ServiceHostCliCommandTests(ITestOutputHelper testOutputHelper)
         : base(testOutputHelper)
     {
     }
@@ -30,7 +33,7 @@ public sealed class GenericHostCliCommandTests : TestBase
     public async Task Test_Stop_ViaStopMethod()
     {
         // Setup
-        var command = new GenericHostTestCommand(this.TestConsole);
+        var command = new ServiceHostTestCommand(this.TestConsole);
 
         // Test
         await Test_Stop(command, command.Stop);
@@ -42,13 +45,13 @@ public sealed class GenericHostCliCommandTests : TestBase
         // Setup
         using var cts = new CancellationTokenSource();
 
-        var command = new GenericHostTestCommand(this.TestConsole);
+        var command = new ServiceHostTestCommand(this.TestConsole);
 
         // Test
         await Test_Stop(command, cts.Cancel, cts.Token);
     }
 
-    private static async Task Test_Stop(GenericHostTestCommand command, Action stopAction, CancellationToken cancellationToken = default)
+    private static async Task Test_Stop(ServiceHostTestCommand command, Action stopAction, CancellationToken cancellationToken = default)
     {
         // The number of seconds to wait for the stopping event not to happen to "deduce"
         // that it would not fire on its own. (This test is not 100% reliable but it's better
@@ -99,13 +102,13 @@ public sealed class GenericHostCliCommandTests : TestBase
         loggerStatistics.ShouldHaveNoErrors();
     }
 
-    private class GenericHostTestCommand : GenericHostCliCommand
+    private class ServiceHostTestCommand : ServiceHostCliCommand
     {
         public IServiceProvider ServicesAsPublic => this.Services;
 
         private readonly DefaultHostBuilderFactory _hostBuilderFactory;
 
-        public GenericHostTestCommand(ITestOutputHelper testOutputHelper)
+        public ServiceHostTestCommand(ITestOutputHelper testOutputHelper)
         {
             this._hostBuilderFactory = new DefaultHostBuilderFactory()
             {
@@ -127,7 +130,7 @@ public sealed class GenericHostCliCommandTests : TestBase
     public async Task Test_ServiceProvider()
     {
         // Setup
-        var command = new GenericHostCommandWithServiceProvider(this.TestConsole);
+        var command = new ServiceHostCommandWithServiceProvider(this.TestConsole);
         var testApp = new TestApplicationWithCommand(command);
 
         using var startedEvent = new ManualResetEventSlim();
@@ -144,13 +147,13 @@ public sealed class GenericHostCliCommandTests : TestBase
         var loggerStatistics = command.ServicesAsPublic.GetRequiredService<TestLoggerStatistics>();
 
         // Test
-        var testService = command.ServicesAsPublic.GetRequiredService<GenericHostCommandWithServiceProvider.ITestService>();
+        var testService = command.ServicesAsPublic.GetRequiredService<ServiceHostCommandWithServiceProvider.ITestService>();
         testService.DoSomething(42).ShouldBe(42);
 
-        var logger = command.ServicesAsPublic.GetRequiredService<ILogger<GenericHostCommandWithServiceProvider>>();
+        var logger = command.ServicesAsPublic.GetRequiredService<ILogger<ServiceHostCommandWithServiceProvider>>();
         logger.LogInformation("abc");
 
-        command.ServicesAsPublic.GetRequiredService<IGenericHostCliCommandLifetimeEvents>().ShouldBeSameAs(command.LifetimeEvents);
+        command.ServicesAsPublic.GetRequiredService<IServiceHostLifetimeEvents>().ShouldBeSameAs(command.LifetimeEvents);
 
         // Shutdown
         command.Stop();
@@ -159,9 +162,9 @@ public sealed class GenericHostCliCommandTests : TestBase
         loggerStatistics.ShouldHaveNoErrors();
     }
 
-    private sealed class GenericHostCommandWithServiceProvider : GenericHostTestCommand
+    private sealed class ServiceHostCommandWithServiceProvider : ServiceHostTestCommand
     {
-        public GenericHostCommandWithServiceProvider(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
+        public ServiceHostCommandWithServiceProvider(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
         {
         }
 
@@ -204,7 +207,7 @@ public sealed class GenericHostCliCommandTests : TestBase
         command.CreateHostBuilderCalled.ShouldBe(true);
     }
 
-    private sealed class CommandWithCustomHostBuilder : GenericHostCliCommand
+    private sealed class CommandWithCustomHostBuilder : ServiceHostCliCommand
     {
         public bool CreateHostBuilderCalled { get; private set; }
 
