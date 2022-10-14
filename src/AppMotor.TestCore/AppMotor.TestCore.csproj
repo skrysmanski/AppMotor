@@ -8,7 +8,7 @@
     <TargetFramework>net6.0</TargetFramework>
 
     <!-- See also: https://docs.microsoft.com/en-us/nuget/create-packages/prerelease-packages -->
-    <Version>$(AppMotorTestCoreVersion)</Version>
+    <Version>0.3.0</Version>
 
     <Description>Sharable test helper APIs.</Description>
 

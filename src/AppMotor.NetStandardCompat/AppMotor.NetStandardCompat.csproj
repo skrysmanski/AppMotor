@@ -10,7 +10,7 @@
     <LangVersion>latest</LangVersion>
 
     <!-- See also: https://docs.microsoft.com/en-us/nuget/create-packages/prerelease-packages -->
-    <Version>$(AppMotorNetStandardCompatVersion)</Version>
+    <Version>0.1.0</Version>
 
     <Description>Compatibility package for using modern C# features with .NET Standard 2.0 compatible projects.</Description>
 
