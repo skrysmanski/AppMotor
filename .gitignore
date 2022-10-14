@@ -15,6 +15,9 @@
 *.log
 # Temporary files
 *.tmp
+# User files
+# See: https://en.wikipedia.org/wiki/.DS_Store
+.DS_Store
 
 
 #
@@ -31,7 +34,8 @@
 **/bin/Release/
 # Build intermediate directories
 **/obj/
-# Test results from dotnet test
+
+# Test results from 'dotnet test'
 **/TestResults/*.trx
 
 # ReSharper cache
