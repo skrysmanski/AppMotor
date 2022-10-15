@@ -17,8 +17,13 @@ public static class StringBuilderExtensions
     /// </summary>
     /// <seealso cref="AppendLineLf"/>
     /// <see cref="AppendLineCrLf"/>
-    public static StringBuilder AppendLine(this StringBuilder stringBuilder, LineTerminators lineTerminator)
+    public static StringBuilder AppendLine(this StringBuilder stringBuilder, LineTerminators lineTerminator, string? value = null)
     {
+        if (value is not null)
+        {
+            stringBuilder.Append(value);
+        }
+
         return stringBuilder.Append(lineTerminator.AsString());
     }
 
@@ -27,8 +32,13 @@ public static class StringBuilderExtensions
     /// </summary>
     /// <seealso cref="AppendLineCrLf"/>
     /// <see cref="AppendLine"/>
-    public static StringBuilder AppendLineLf(this StringBuilder stringBuilder)
+    public static StringBuilder AppendLineLf(this StringBuilder stringBuilder, string? value = null)
     {
+        if (value is not null)
+        {
+            stringBuilder.Append(value);
+        }
+
         return stringBuilder.Append('\n');
     }
 
@@ -37,8 +47,13 @@ public static class StringBuilderExtensions
     /// </summary>
     /// <seealso cref="AppendLineLf"/>
     /// <seealso cref="AppendLine"/>
-    public static StringBuilder AppendLineCrLf(this StringBuilder stringBuilder)
+    public static StringBuilder AppendLineCrLf(this StringBuilder stringBuilder, string? value = null)
     {
+        if (value is not null)
+        {
+            stringBuilder.Append(value);
+        }
+
         return stringBuilder.Append("\r\n");
     }
 }
