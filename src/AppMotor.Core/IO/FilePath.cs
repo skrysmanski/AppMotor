@@ -148,7 +148,7 @@ public readonly struct FilePath : IEquatable<FilePath>
     [Pure]
     public long GetSize(IFileSystem? fileSystem = null)
     {
-        return (fileSystem ?? RealFileSystem.Instance).FileInfo.FromFileName(this.Value).Length;
+        return (fileSystem ?? RealFileSystem.Instance).FileInfo.New(this.Value).Length;
     }
 
     /// <summary>
@@ -156,9 +156,9 @@ public readonly struct FilePath : IEquatable<FilePath>
     /// </summary>
     /// <param name="fileSystem">The file system to use; if <c>null</c>, <see cref="RealFileSystem.Instance"/> will be used.</param>
     [Pure]
-    public DirectoryPath GetDirectory(IFileSystem? fileSystem = null)
+    public DirectoryPath? GetDirectory(IFileSystem? fileSystem = null)
     {
-        return (fileSystem ?? RealFileSystem.Instance).FileInfo.FromFileName(this.Value).DirectoryName;
+        return (fileSystem ?? RealFileSystem.Instance).FileInfo.New(this.Value).DirectoryName;
     }
 
     /// <inheritdoc cref="File.Create(string)"/>

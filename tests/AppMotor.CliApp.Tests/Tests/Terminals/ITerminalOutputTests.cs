@@ -114,7 +114,7 @@ public sealed class ITerminalOutputTests
             .Setup(m => m.ToString())
             .Returns("abcdef");
 
-        object? valueAsObject = testValueMock.Object;
+        object valueAsObject = testValueMock.Object;
 
         // Test
         terminalOutput.Write(valueAsObject);
@@ -254,7 +254,7 @@ public sealed class ITerminalOutputTests
             .Setup(m => m.ToString())
             .Returns("abcdef");
 
-        object? valueAsObject = testValueMock.Object;
+        object valueAsObject = testValueMock.Object;
 
         // Test
         terminalOutput.WriteLine(valueAsObject);

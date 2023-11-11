@@ -69,10 +69,9 @@ public abstract class AbstractTerminalLogEntryFormatter<TOptions> : Disposable, 
     /// <inheritdoc />
     public void Write<TState>(LogEntry<TState> logEntry, IExternalScopeProvider scopeProvider, TextWriter textWriter)
     {
-        // NOTE: In our implementation, "Formatter" is always set. But just in case...
-        var message = logEntry.Formatter?.Invoke(logEntry.State, logEntry.Exception);
+        var message = logEntry.Formatter.Invoke(logEntry.State, logEntry.Exception);
 
-        if (logEntry.Exception == null && message == null)
+        if (string.IsNullOrEmpty(message) && logEntry.Exception == null)
         {
             // Nothing to log.
             return;

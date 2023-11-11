@@ -39,7 +39,7 @@ public sealed class TerminalWriterBaseTests
         if (shouldBeCalled)
         {
             terminalWriterMock.Protected().Verify(TestTerminalWriter.NAME_FOR_WRITE_CORE_METHOD, Times.Once(), ItExpr.IsAny<string>());
-            terminalWriterMock.Protected().Verify(TestTerminalWriter.NAME_FOR_WRITE_CORE_METHOD, Times.Once(), input);
+            terminalWriterMock.Protected().Verify(TestTerminalWriter.NAME_FOR_WRITE_CORE_METHOD, Times.Once(), input!);
         }
         else
         {

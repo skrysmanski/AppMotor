@@ -167,9 +167,9 @@ public readonly struct DirectoryPath : IEquatable<DirectoryPath>
     }
 
     /// <inheritdoc cref="Directory.GetParent"/>
-    public DirectoryPath GetParent(IFileSystem? fileSystem = null)
+    public DirectoryPath? GetParent(IFileSystem? fileSystem = null)
     {
-        return (fileSystem ?? RealFileSystem.Instance).Directory.GetParent(this.Value).FullName;
+        return (fileSystem ?? RealFileSystem.Instance).Directory.GetParent(this.Value)?.FullName;
     }
 
     /// <inheritdoc cref="Directory.GetDirectoryRoot"/>

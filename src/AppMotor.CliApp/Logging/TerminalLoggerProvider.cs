@@ -57,7 +57,7 @@ internal sealed class TerminalLoggerProvider : ILoggerProvider, ISupportExternal
         this._logEntryFormatters = CreateFormattersDictionary(formatters, terminal);
 
         ReloadLoggerOptions(options.CurrentValue);
-        this._optionsReloadToken = this._options.OnChange(ReloadLoggerOptions);
+        this._optionsReloadToken = this._options.OnChange(ReloadLoggerOptions)!;
 
         this._outputProcessor = new TerminalLogOutputProcessor(terminal);
     }

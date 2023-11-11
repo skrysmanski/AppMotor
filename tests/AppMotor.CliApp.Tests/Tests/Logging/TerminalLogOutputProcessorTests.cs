@@ -20,7 +20,7 @@ public sealed class TerminalLogOutputProcessorTests
     /// Tests that no log messages are lost if the processor is disposed while it's still writing messages.
     /// </summary>
     [Fact]
-    public void Test_WriteOnDispose()
+    public async Task Test_WriteOnDispose()
     {
         // Setup
         var writtenMessages = new List<string>();
@@ -55,7 +55,7 @@ public sealed class TerminalLogOutputProcessorTests
 
         unblockOutputEvent.Set();
 
-        disposeTask.Wait();
+        await disposeTask;
 
         // Verify
         var startDate = DateTimeUtc.Now;

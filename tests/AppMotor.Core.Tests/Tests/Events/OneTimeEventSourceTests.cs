@@ -1,6 +1,8 @@
 ﻿// SPDX-License-Identifier: MIT
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
+using System.Diagnostics.CodeAnalysis;
+
 using AppMotor.Core.Events;
 
 using Shouldly;
@@ -18,6 +20,7 @@ public sealed class OneTimeEventSourceTests
     private int _asyncHandlerCallCount;
 
     [Fact]
+    [SuppressMessage("Usage", "xUnit1031:Do not use blocking task operations in test method", Justification = "Sync Test")]
     public void Test_BasicUsage_WithoutEventArgs()
     {
         var eventSource = new OneTimeEventSource();

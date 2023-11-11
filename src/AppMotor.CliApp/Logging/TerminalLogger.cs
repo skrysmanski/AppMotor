@@ -100,7 +100,7 @@ internal sealed class TerminalLogger : ILogger
     }
 
     /// <inheritdoc />
-    public IDisposable BeginScope<TState>(TState state)
+    public IDisposable BeginScope<TState>(TState state) where TState : notnull
     {
         return this._scopeProvider.Push(state);
     }

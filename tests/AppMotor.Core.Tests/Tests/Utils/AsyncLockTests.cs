@@ -14,6 +14,7 @@ namespace AppMotor.Core.Tests.Utils;
 public sealed class AsyncLockTests
 {
     [Fact]
+    [SuppressMessage("Usage", "xUnit1031:Do not use blocking task operations in test method", Justification = "WhenAll() has no timeout parameter")]
     public void Test_Acquire()
     {
         using var theLock = new AsyncLock();
@@ -55,6 +56,7 @@ public sealed class AsyncLockTests
 
     [Fact]
     [SuppressMessage("ReSharper", "MethodSupportsCancellation")]
+    [SuppressMessage("Usage", "xUnit1031:Do not use blocking task operations in test method", Justification = "await has no timeout parameter")]
     public void Test_Acquire_CancellationToken()
     {
         using var theLock = new AsyncLock();
@@ -87,6 +89,7 @@ public sealed class AsyncLockTests
     }
 
     [Fact]
+    [SuppressMessage("Usage", "xUnit1031:Do not use blocking task operations in test method", Justification = "await has no timeout parameter")]
     public async Task Test_Acquire_WithTimeout()
     {
         using var theLock = new AsyncLock();
@@ -126,6 +129,7 @@ public sealed class AsyncLockTests
 
     [Fact]
     [SuppressMessage("ReSharper", "MethodSupportsCancellation")]
+    [SuppressMessage("Usage", "xUnit1031:Do not use blocking task operations in test method", Justification = "await has no timeout parameter")]
     public void Test_Acquire_WithTimeout_CancellationToken()
     {
         using var theLock = new AsyncLock();
