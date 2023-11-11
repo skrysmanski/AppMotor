@@ -227,49 +227,49 @@ public readonly struct FilePath : IEquatable<FilePath>
         (fileSystem ?? RealFileSystem.Instance).File.Delete(this.Value);
     }
 
-    /// <inheritdoc cref="File.GetAttributes"/>
+    /// <inheritdoc cref="File.GetAttributes(string)"/>
     public FileAttributes GetAttributes(IFileSystem? fileSystem = null)
     {
         return (fileSystem ?? RealFileSystem.Instance).File.GetAttributes(this.Value);
     }
 
-    /// <inheritdoc cref="File.SetAttributes"/>
+    /// <inheritdoc cref="File.SetAttributes(string,FileAttributes)"/>
     public void SetAttributes(FileAttributes fileAttributes, IFileSystem? fileSystem = null)
     {
         (fileSystem ?? RealFileSystem.Instance).File.SetAttributes(this.Value, fileAttributes);
     }
 
-    /// <inheritdoc cref="File.GetCreationTimeUtc"/>
+    /// <inheritdoc cref="File.GetCreationTimeUtc(string)"/>
     public DateTime GetCreationTimeUtc(IFileSystem? fileSystem = null)
     {
         return (fileSystem ?? RealFileSystem.Instance).File.GetCreationTimeUtc(this.Value);
     }
 
-    /// <inheritdoc cref="File.GetLastAccessTimeUtc"/>
+    /// <inheritdoc cref="File.GetLastAccessTimeUtc(string)"/>
     public DateTime GetLastAccessTimeUtc(IFileSystem? fileSystem = null)
     {
         return (fileSystem ?? RealFileSystem.Instance).File.GetLastAccessTimeUtc(this.Value);
     }
 
-    /// <inheritdoc cref="File.GetLastWriteTimeUtc"/>
+    /// <inheritdoc cref="File.GetLastWriteTimeUtc(string)"/>
     public DateTime GetLastWriteTimeUtc(IFileSystem? fileSystem = null)
     {
         return (fileSystem ?? RealFileSystem.Instance).File.GetLastWriteTimeUtc(this.Value);
     }
 
-    /// <inheritdoc cref="File.SetCreationTimeUtc"/>
+    /// <inheritdoc cref="File.SetCreationTimeUtc(string,DateTime)"/>
     public void SetCreationTimeUtc(DateTime creationTimeUtc, IFileSystem? fileSystem = null)
     {
         (fileSystem ?? RealFileSystem.Instance).File.SetCreationTimeUtc(this.Value, creationTimeUtc);
     }
 
-    /// <inheritdoc cref="File.SetLastAccessTimeUtc"/>
+    /// <inheritdoc cref="File.SetLastAccessTimeUtc(string,DateTime)"/>
     public void SetLastAccessTimeUtc(DateTime lastAccessTimeUtc, IFileSystem? fileSystem = null)
     {
         (fileSystem ?? RealFileSystem.Instance).File.SetLastAccessTimeUtc(this.Value, lastAccessTimeUtc);
     }
 
-    /// <inheritdoc cref="File.SetLastWriteTimeUtc"/>
+    /// <inheritdoc cref="File.SetLastWriteTimeUtc(string,DateTime)"/>
     public void SetLastWriteTimeUtc(DateTime lastWriteTimeUtc, IFileSystem? fileSystem = null)
     {
         (fileSystem ?? RealFileSystem.Instance).File.SetLastWriteTimeUtc(this.Value, lastWriteTimeUtc);
