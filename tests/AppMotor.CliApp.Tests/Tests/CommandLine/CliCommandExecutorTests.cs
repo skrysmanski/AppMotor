@@ -55,6 +55,7 @@ public sealed class CliCommandExecutorTests
         {
             called = true;
             cancellationToken.IsCancellationRequested.ShouldBe(false);
+            // ReSharper disable once AccessToDisposedClosure
             cts.Cancel();
             cancellationToken.IsCancellationRequested.ShouldBe(true); // Validates we actually got the token from "cts"
         }
@@ -107,6 +108,7 @@ public sealed class CliCommandExecutorTests
         {
             called = true;
             cancellationToken.IsCancellationRequested.ShouldBe(false);
+            // ReSharper disable once AccessToDisposedClosure
             cts.Cancel();
             cancellationToken.IsCancellationRequested.ShouldBe(true); // Validates we actually got the token from "cts"
             return retVal;
@@ -162,6 +164,7 @@ public sealed class CliCommandExecutorTests
         {
             called = true;
             cancellationToken.IsCancellationRequested.ShouldBe(false);
+            // ReSharper disable once AccessToDisposedClosure
             cts.Cancel();
             cancellationToken.IsCancellationRequested.ShouldBe(true); // Validates we actually got the token from "cts"
             return retVal;
@@ -213,6 +216,7 @@ public sealed class CliCommandExecutorTests
             await Task.Delay(1);
             called = true;
             cancellationToken.IsCancellationRequested.ShouldBe(false);
+            // ReSharper disable once AccessToDisposedClosure
             cts.Cancel();
             cancellationToken.IsCancellationRequested.ShouldBe(true); // Validates we actually got the token from "cts"
         }
@@ -268,6 +272,7 @@ public sealed class CliCommandExecutorTests
             await Task.Delay(1);
             called = true;
             cancellationToken.IsCancellationRequested.ShouldBe(false);
+            // ReSharper disable once AccessToDisposedClosure
             cts.Cancel();
             cancellationToken.IsCancellationRequested.ShouldBe(true); // Validates we actually got the token from "cts"
             return retVal;
@@ -326,6 +331,7 @@ public sealed class CliCommandExecutorTests
             await Task.Delay(1);
             called = true;
             cancellationToken.IsCancellationRequested.ShouldBe(false);
+            // ReSharper disable once AccessToDisposedClosure
             cts.Cancel();
             cancellationToken.IsCancellationRequested.ShouldBe(true); // Validates we actually got the token from "cts"
             return retVal;

@@ -2,6 +2,7 @@
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 
 using AppMotor.Core.Extensions;
 
@@ -27,9 +28,9 @@ namespace AppMotor.Core.Exceptions;
 /// <para>Thirdly, it makes the data dictionary "type-safe" for <c>foreach</c>. So you can
 /// use <c>foreach (var entry : ...)</c> where entry will be a proper key value pair.</para>
 /// </summary>
-#pragma warning disable CA1815 // Override equals and operator equals on value types
+[SuppressMessage("Naming", "CA1710:Identifiers should have correct suffix", Justification = "By design")]
+[SuppressMessage("Performance", "CA1815:Override equals and operator equals on value types", Justification = "Unnecessary/By design")]
 public readonly struct ExceptionDataAccessor : IReadOnlyCollection<KeyValuePair<object, object?>>
-#pragma warning restore CA1815 // Override equals and operator equals on value types
 {
     private readonly IDictionary? _data;
 
