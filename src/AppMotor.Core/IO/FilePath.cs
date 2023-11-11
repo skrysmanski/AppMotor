@@ -240,37 +240,37 @@ public readonly struct FilePath : IEquatable<FilePath>
     }
 
     /// <inheritdoc cref="File.GetCreationTimeUtc(string)"/>
-    public DateTime GetCreationTimeUtc(IFileSystem? fileSystem = null)
+    public DateTimeUtc GetCreationTimeUtc(IFileSystem? fileSystem = null)
     {
         return (fileSystem ?? RealFileSystem.Instance).File.GetCreationTimeUtc(this.Value);
     }
 
     /// <inheritdoc cref="File.GetLastAccessTimeUtc(string)"/>
-    public DateTime GetLastAccessTimeUtc(IFileSystem? fileSystem = null)
+    public DateTimeUtc GetLastAccessTimeUtc(IFileSystem? fileSystem = null)
     {
         return (fileSystem ?? RealFileSystem.Instance).File.GetLastAccessTimeUtc(this.Value);
     }
 
     /// <inheritdoc cref="File.GetLastWriteTimeUtc(string)"/>
-    public DateTime GetLastWriteTimeUtc(IFileSystem? fileSystem = null)
+    public DateTimeUtc GetLastWriteTimeUtc(IFileSystem? fileSystem = null)
     {
         return (fileSystem ?? RealFileSystem.Instance).File.GetLastWriteTimeUtc(this.Value);
     }
 
     /// <inheritdoc cref="File.SetCreationTimeUtc(string,DateTime)"/>
-    public void SetCreationTimeUtc(DateTime creationTimeUtc, IFileSystem? fileSystem = null)
+    public void SetCreationTimeUtc(DateTimeUtc creationTimeUtc, IFileSystem? fileSystem = null)
     {
         (fileSystem ?? RealFileSystem.Instance).File.SetCreationTimeUtc(this.Value, creationTimeUtc);
     }
 
     /// <inheritdoc cref="File.SetLastAccessTimeUtc(string,DateTime)"/>
-    public void SetLastAccessTimeUtc(DateTime lastAccessTimeUtc, IFileSystem? fileSystem = null)
+    public void SetLastAccessTimeUtc(DateTimeUtc lastAccessTimeUtc, IFileSystem? fileSystem = null)
     {
         (fileSystem ?? RealFileSystem.Instance).File.SetLastAccessTimeUtc(this.Value, lastAccessTimeUtc);
     }
 
     /// <inheritdoc cref="File.SetLastWriteTimeUtc(string,DateTime)"/>
-    public void SetLastWriteTimeUtc(DateTime lastWriteTimeUtc, IFileSystem? fileSystem = null)
+    public void SetLastWriteTimeUtc(DateTimeUtc lastWriteTimeUtc, IFileSystem? fileSystem = null)
     {
         (fileSystem ?? RealFileSystem.Instance).File.SetLastWriteTimeUtc(this.Value, lastWriteTimeUtc);
     }
