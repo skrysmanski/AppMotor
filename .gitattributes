@@ -1,5 +1,34 @@
-# Prevent git from messing around with line endings.
+#
+# NOTE: To re-apply all changes in this file to the current repository, run:
+#
+#  1. git-clean.cmd/.sh
+#  2. git rm --cached -r .
+#  3. git add -A
+#
+# NOTE: On Windows, you need to restore the Linux executable bit after doing this via:
+#
+#   git add --chmod=+x <file>
+#
+# For details for each file, use:
+#
+#   git status -v
+#
+
+# Prevent git from messing around with line endings (i.e. treat all files as binary by default).
 * -text
+
+# ReSharper has (historically and up until the time of writing) being bad with
+# respecting line endings when generating code (often resulting in mixed line
+# endings). Unfortunately, the ReSharper devs don't seem to care too much about
+# this. So, with this we at least enforce consistent line endings when files are
+# committed to Git.
+#
+# For explanation why "crlf", see: https://github.com/skrysmanski/base-dotnet/blob/main/docs/cs-line-endings.md
+#
+# See also:
+# * https://youtrack.jetbrains.com/issue/RSRP-478837
+# * https://youtrack.jetbrains.com/issue/RSRP-494722
+*.cs text eol=crlf
 
 # NOTE: Visual Studio does not respect the end-of-line settings in
 #   .editorconfig for .csproj files. So, we let git handle this and
@@ -8,39 +37,39 @@
 *.csproj text=auto
 
 # Store binary files in git-lfs
-**/*.exe filter=lfs diff=lfs merge=lfs -text
-**/*.dll filter=lfs diff=lfs merge=lfs -text
+**/*.exe filter=lfs diff=lfs merge=lfs
+**/*.dll filter=lfs diff=lfs merge=lfs
 
-**/*.gif filter=lfs diff=lfs merge=lfs -text
-**/*.png filter=lfs diff=lfs merge=lfs -text
-**/*.jpg filter=lfs diff=lfs merge=lfs -text
-**/*.jpeg filter=lfs diff=lfs merge=lfs -text
-**/*.tif filter=lfs diff=lfs merge=lfs -text
-**/*.bmp filter=lfs diff=lfs merge=lfs -text
-**/*.ico filter=lfs diff=lfs merge=lfs -text
-**/*.cur filter=lfs diff=lfs merge=lfs -text
+**/*.gif filter=lfs diff=lfs merge=lfs
+**/*.png filter=lfs diff=lfs merge=lfs
+**/*.jpg filter=lfs diff=lfs merge=lfs
+**/*.jpeg filter=lfs diff=lfs merge=lfs
+**/*.tif filter=lfs diff=lfs merge=lfs
+**/*.bmp filter=lfs diff=lfs merge=lfs
+**/*.ico filter=lfs diff=lfs merge=lfs
+**/*.cur filter=lfs diff=lfs merge=lfs
 
-**/*.avi filter=lfs diff=lfs merge=lfs -text
-**/*.mpg filter=lfs diff=lfs merge=lfs -text
-**/*.mpeg filter=lfs diff=lfs merge=lfs -text
+**/*.avi filter=lfs diff=lfs merge=lfs
+**/*.mpg filter=lfs diff=lfs merge=lfs
+**/*.mpeg filter=lfs diff=lfs merge=lfs
 
-**/*.wav filter=lfs diff=lfs merge=lfs -text
-**/*.mp3 filter=lfs diff=lfs merge=lfs -text
-**/*.m4a filter=lfs diff=lfs merge=lfs -text
+**/*.wav filter=lfs diff=lfs merge=lfs
+**/*.mp3 filter=lfs diff=lfs merge=lfs
+**/*.m4a filter=lfs diff=lfs merge=lfs
 
-**/*.zip filter=lfs diff=lfs merge=lfs -text
-**/*.gz filter=lfs diff=lfs merge=lfs -text
+**/*.zip filter=lfs diff=lfs merge=lfs
+**/*.gz filter=lfs diff=lfs merge=lfs
 
-**/*.ttf filter=lfs diff=lfs merge=lfs -text
+**/*.ttf filter=lfs diff=lfs merge=lfs
 
-**/*.doc filter=lfs diff=lfs merge=lfs -text
-**/*.docx filter=lfs diff=lfs merge=lfs -text
-**/*.xls filter=lfs diff=lfs merge=lfs -text
-**/*.xlsx filter=lfs diff=lfs merge=lfs -text
-**/*.ppt filter=lfs diff=lfs merge=lfs -text
-**/*.pptx filter=lfs diff=lfs merge=lfs -text
-**/*.pdf filter=lfs diff=lfs merge=lfs -text
-**/*.xps filter=lfs diff=lfs merge=lfs -text
-**/*.rtf filter=lfs diff=lfs merge=lfs -text
+**/*.doc filter=lfs diff=lfs merge=lfs
+**/*.docx filter=lfs diff=lfs merge=lfs
+**/*.xls filter=lfs diff=lfs merge=lfs
+**/*.xlsx filter=lfs diff=lfs merge=lfs
+**/*.ppt filter=lfs diff=lfs merge=lfs
+**/*.pptx filter=lfs diff=lfs merge=lfs
+**/*.pdf filter=lfs diff=lfs merge=lfs
+**/*.xps filter=lfs diff=lfs merge=lfs
+**/*.rtf filter=lfs diff=lfs merge=lfs
 
-**/*.bin filter=lfs diff=lfs merge=lfs -text
+**/*.bin filter=lfs diff=lfs merge=lfs
