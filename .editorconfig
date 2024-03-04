@@ -16,7 +16,7 @@ root = true
 # All files
 #
 [*]
-# For reasoning about encoding, see: https://github.com/skrysmanski/base/blob/master/docs/utf8-and-bom.md
+# For reasoning about encoding, see: https://manski.net/articles/utf8-bom
 charset = utf-8
 
 end_of_line = lf
@@ -34,7 +34,7 @@ insert_final_newline = true
 [*.md]
 charset = utf-8-bom
 
-# For explanation why spaces are used for Markdown, see: https://github.com/skrysmanski/base/blob/master/docs/markdown-indentation.md
+# For explanation why spaces are used for Markdown, see: https://manski.net/articles/markdown/indentation
 indent_style = space
 indent_size = 4
 
@@ -72,7 +72,7 @@ end_of_line = crlf
 # and maybe even strings to show to the user).
 charset = utf-8-bom
 
-# For explanation why "crlf", see: https://github.com/skrysmanski/base-dotnet/blob/main/docs/cs-line-endings.md
+# For explanation why "crlf", see: https://manski.net/articles/dotnet/line-endings
 # NOTE: This is also enforced through .gitattributes.
 end_of_line = crlf
 

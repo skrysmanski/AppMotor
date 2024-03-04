@@ -1,3 +1,12 @@
+##############################################################################
+#
+# Defines Git attributes (text, binary, lfs, ...) for various file extensions.
+#
+# Official documentation: https://git-scm.com/docs/gitattributes
+#
+# File pattern format: https://git-scm.com/docs/gitignore#_pattern_format
+#
+##############################################################################
 #
 # NOTE: To re-apply all changes in this file to the current repository, run:
 #
@@ -13,21 +22,13 @@
 #
 #   git status -v
 #
+##############################################################################
 
 # Prevent git from messing around with line endings (i.e. treat all files as binary by default).
 * -text
 
-# ReSharper has (historically and up until the time of writing) being bad with
-# respecting line endings when generating code (often resulting in mixed line
-# endings). Unfortunately, the ReSharper devs don't seem to care too much about
-# this. So, with this we at least enforce consistent line endings when files are
-# committed to Git.
-#
-# For explanation why "crlf", see: https://github.com/skrysmanski/base-dotnet/blob/main/docs/cs-line-endings.md
-#
-# See also:
-# * https://youtrack.jetbrains.com/issue/RSRP-478837
-# * https://youtrack.jetbrains.com/issue/RSRP-494722
+# Enforce CRLF line endings for C# files. Prevents accidental commits with mixed line endings.
+# For details on this and an explanation why "crlf", see: https://manski.net/articles/dotnet/line-endings
 *.cs text eol=crlf
 
 # NOTE: Visual Studio does not respect the end-of-line settings in
@@ -36,10 +37,15 @@
 #   (Windows or Linx/Unix/macOS). See .editorconfig for more details.
 *.csproj text=auto
 
-# Store binary files in git-lfs
+#
+# Binary files - stored in git-lfs
+#
+
+## Application files
 **/*.exe filter=lfs diff=lfs merge=lfs
 **/*.dll filter=lfs diff=lfs merge=lfs
 
+## Image files
 **/*.gif filter=lfs diff=lfs merge=lfs
 **/*.png filter=lfs diff=lfs merge=lfs
 **/*.jpg filter=lfs diff=lfs merge=lfs
@@ -49,19 +55,27 @@
 **/*.ico filter=lfs diff=lfs merge=lfs
 **/*.cur filter=lfs diff=lfs merge=lfs
 
+## Movie files
 **/*.avi filter=lfs diff=lfs merge=lfs
 **/*.mpg filter=lfs diff=lfs merge=lfs
 **/*.mpeg filter=lfs diff=lfs merge=lfs
 
+## Audio files
 **/*.wav filter=lfs diff=lfs merge=lfs
 **/*.mp3 filter=lfs diff=lfs merge=lfs
 **/*.m4a filter=lfs diff=lfs merge=lfs
 
+## Archive files
 **/*.zip filter=lfs diff=lfs merge=lfs
 **/*.gz filter=lfs diff=lfs merge=lfs
 
+## Font files
 **/*.ttf filter=lfs diff=lfs merge=lfs
+**/*.otf filter=lfs diff=lfs merge=lfs
+**/*.woff filter=lfs diff=lfs merge=lfs
+**/*.woff2 filter=lfs diff=lfs merge=lfs
 
+## Office documents
 **/*.doc filter=lfs diff=lfs merge=lfs
 **/*.docx filter=lfs diff=lfs merge=lfs
 **/*.xls filter=lfs diff=lfs merge=lfs
@@ -72,4 +86,14 @@
 **/*.xps filter=lfs diff=lfs merge=lfs
 **/*.rtf filter=lfs diff=lfs merge=lfs
 
+## Other binary files
 **/*.bin filter=lfs diff=lfs merge=lfs
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Exclude files from GitHub's language statistics
+# https://github.com/github-linguist/linguist/blob/master/docs/overrides.md#vendored-code
+
+# Helper scripts present in most repositories
+/git-clean.* linguist-vendored
+/git-clone-submodules.* linguist-vendored
