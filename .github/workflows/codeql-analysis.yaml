@@ -6,8 +6,12 @@
 name: CodeQL
 
 # When to run this workflow
-# See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows
-# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
+#
+# See: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
+# See: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on
+#
+# TIP: Don't use "schedule" triggers as this will cause the workflow to be disabled after 60 days of inactivity
+#   (and afterward the workflow must be manually reenabled).
 on:
   # Trigger the workflow on push to the main branch.
   push:
@@ -15,10 +19,8 @@ on:
       - main
   # Trigger the workflow for any pull requests.
   pull_request:
-  # Trigger the workflow at 22:21 every Wednesday.
-  # See: https://crontab.guru
-  schedule:
-    - cron: '21 22 * * 3'
+  # Allow manual run of this workflow (https://docs.github.com/en/actions/using-workflows/manually-running-a-workflow)
+  workflow_dispatch:
 
 # Permissions for GITHUB_TOKEN for this workflow.
 #
