@@ -1,12 +1,12 @@
 ﻿<!--
-  Contains common properties and targets for all source projects in this repository.
+  Contains common properties and targets for all production code projects in this repository.
 -->
 <Project>
 
   <!--
     See 'Project.NuGetPackage.props' for more details.
   -->
-  <PropertyGroup>
+  <PropertyGroup Label="NuGet">
     <!-- See: https://spdx.org/licenses/ -->
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
 
