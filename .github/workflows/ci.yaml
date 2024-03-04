@@ -31,6 +31,9 @@ on:
 permissions:
   contents: read
 
+env:
+  DOTNET_VERSION: '7.0'
+
 # NOTE: Jobs run in parallel by default.
 # https://docs.github.com/en/actions/using-jobs/using-jobs-in-a-workflow
 jobs:
@@ -67,7 +70,7 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           # NOTE: Apparently only the 3rd component can be "x"; i.e. "5.x" is not supported.
-          dotnet-version: '7.0.x'
+          dotnet-version: '${{ env.DOTNET_VERSION }}.x'
 
       ###########################################################################
       #
