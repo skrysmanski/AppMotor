@@ -51,7 +51,7 @@ jobs:
 
       # See: https://github.com/marketplace/actions/checkout
       - name: Clone Git repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           lfs: true
           submodules: true
@@ -60,11 +60,11 @@ jobs:
       # See: https://github.com/marketplace/actions/short-sha
       - name: Determine Git short commit hash
         id: short-sha
-        uses: benjlevesque/short-sha@v1.2
+        uses: benjlevesque/short-sha@v3.0
 
       # See: https://github.com/marketplace/actions/setup-net-core-sdk
       - name: Setup .NET build environment
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v4
         with:
           # NOTE: Apparently only the 3rd component can be "x"; i.e. "5.x" is not supported.
           dotnet-version: '7.0.x'
@@ -99,7 +99,7 @@ jobs:
 
       # See: https://github.com/marketplace/actions/upload-a-build-artifact
       - name: Upload test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         # Run this step even if "run_tests" has failed (but not if any other previous step has failed - which would
         # be "failure()" - because in this case the tests have not run and thus no .trx files have been generated).
         # See: https://docs.github.com/en/actions/learn-github-actions/expressions#failure
