@@ -124,20 +124,11 @@ public sealed class TypeExtensionsTests
         typeof(object).Is(typeof(ITestInterface)).ShouldBe(false);
     }
 
-    private interface ITestInterface
-    {
+    private interface ITestInterface;
 
-    }
+    private class ClassA : ITestInterface;
 
-    private class ClassA : ITestInterface
-    {
-
-    }
-
-    private class ClassB : ClassA
-    {
-
-    }
+    private class ClassB : ClassA;
 
     [Theory]
     [InlineData("+",  UnaryOperators.UnaryPlus)]

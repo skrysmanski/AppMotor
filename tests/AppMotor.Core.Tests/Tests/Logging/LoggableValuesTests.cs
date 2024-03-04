@@ -79,23 +79,13 @@ public sealed class LoggableValuesTests
         LoggableValues.IsSimpleLoggableType(typeof(MyCustomSensitiveType2)).ShouldBe(false);
     }
 
-    private enum MyEnum
-    {
-    }
+    private enum MyEnum;
 
-    private sealed class MyCustomLoggableType1 : ISimpleLoggableValue
-    {
-    }
+    private sealed class MyCustomLoggableType1 : ISimpleLoggableValue;
 
-    private sealed class MyCustomLoggableType2
-    {
-    }
+    private sealed class MyCustomLoggableType2;
 
-    private sealed class MyCustomSensitiveType1 : ISimpleLoggableValue, ISensitiveValue
-    {
-    }
+    private sealed class MyCustomSensitiveType1 : ISimpleLoggableValue, ISensitiveValue;
 
-    private sealed class MyCustomSensitiveType2 : ISimpleLoggableValue
-    {
-    }
+    private sealed class MyCustomSensitiveType2 : ISimpleLoggableValue;
 }

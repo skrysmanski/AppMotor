@@ -88,6 +88,7 @@ public sealed class PooledArrayBufferWriterTests
         bufferWriter.WrittenMemory.ShouldBe(new[] { 0, 0, 0 });
 
         // Dispose tests
+        // ReSharper disable once DisposeOnUsingVariable
         bufferWriter.Dispose();
         Should.Throw<ObjectDisposedException>(() => bufferWriter.Clear());
     }

@@ -9,6 +9,4 @@ namespace AppMotor.Core.Exceptions;
 /// Thrown if you try to access properties of an uninitialized struct.
 /// </summary>
 [PublicAPI]
-public class UninitializedStructPropertyException : InvalidOperationException
-{
-}
+public class UninitializedStructPropertyException : InvalidOperationException;

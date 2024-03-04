@@ -36,7 +36,7 @@ public sealed class CliCommandExecutorTests
         var testApplication = new TestApplication(new CliCommandExecutor(Execute));
 
         // Test
-        testApplication.AppHelper.Run(new[] { COMMAND_NAME }, expectedExitCode: 0);
+        testApplication.AppHelper.Run([COMMAND_NAME], expectedExitCode: 0);
 
         // Verify
         called.ShouldBe(true);
@@ -63,7 +63,7 @@ public sealed class CliCommandExecutorTests
         var testApplication = new TestApplication(new CliCommandExecutor(Execute));
 
         // Test
-        testApplication.AppHelper.Run(new[] { COMMAND_NAME }, expectedExitCode: 0, cts.Token);
+        testApplication.AppHelper.Run([COMMAND_NAME], expectedExitCode: 0, cts.Token);
 
         // Verify
         called.ShouldBe(true);
@@ -87,7 +87,7 @@ public sealed class CliCommandExecutorTests
         var testApplication = new TestApplication(new CliCommandExecutor(Execute));
 
         // Test
-        testApplication.AppHelper.Run(new[] { COMMAND_NAME }, expectedExitCode: retVal ? 0 : 1);
+        testApplication.AppHelper.Run([COMMAND_NAME], expectedExitCode: retVal ? 0 : 1);
 
         // Verify
         called.ShouldBe(true);
@@ -117,7 +117,7 @@ public sealed class CliCommandExecutorTests
         var testApplication = new TestApplication(new CliCommandExecutor(Execute));
 
         // Test
-        testApplication.AppHelper.Run(new[] { COMMAND_NAME }, expectedExitCode: retVal ? 0 : 1, cts.Token);
+        testApplication.AppHelper.Run([COMMAND_NAME], expectedExitCode: retVal ? 0 : 1, cts.Token);
 
         // Verify
         called.ShouldBe(true);
@@ -142,7 +142,7 @@ public sealed class CliCommandExecutorTests
         var testApplication = new TestApplication(new CliCommandExecutor(Execute));
 
         // Test
-        testApplication.AppHelper.Run(new[] { COMMAND_NAME }, expectedExitCode: retVal);
+        testApplication.AppHelper.Run([COMMAND_NAME], expectedExitCode: retVal);
 
         // Verify
         called.ShouldBe(true);
@@ -173,7 +173,7 @@ public sealed class CliCommandExecutorTests
         var testApplication = new TestApplication(new CliCommandExecutor(Execute));
 
         // Test
-        testApplication.AppHelper.Run(new[] { COMMAND_NAME }, expectedExitCode: retVal, cts.Token);
+        testApplication.AppHelper.Run([COMMAND_NAME], expectedExitCode: retVal, cts.Token);
 
         // Verify
         called.ShouldBe(true);
@@ -195,7 +195,7 @@ public sealed class CliCommandExecutorTests
         var testApplication = new TestApplication(new CliCommandExecutor(Execute));
 
         // Test
-        testApplication.AppHelper.Run(new[] { COMMAND_NAME }, expectedExitCode: 0);
+        testApplication.AppHelper.Run([COMMAND_NAME], expectedExitCode: 0);
 
         // Verify
         called.ShouldBe(true);
@@ -217,14 +217,14 @@ public sealed class CliCommandExecutorTests
             called = true;
             cancellationToken.IsCancellationRequested.ShouldBe(false);
             // ReSharper disable once AccessToDisposedClosure
-            cts.Cancel();
+            await cts.CancelAsync();
             cancellationToken.IsCancellationRequested.ShouldBe(true); // Validates we actually got the token from "cts"
         }
 
         var testApplication = new TestApplication(new CliCommandExecutor(Execute));
 
         // Test
-        testApplication.AppHelper.Run(new[] { COMMAND_NAME }, expectedExitCode: 0, cts.Token);
+        testApplication.AppHelper.Run([COMMAND_NAME], expectedExitCode: 0, cts.Token);
 
         // Verify
         called.ShouldBe(true);
@@ -249,7 +249,7 @@ public sealed class CliCommandExecutorTests
         var testApplication = new TestApplication(new CliCommandExecutor(Execute));
 
         // Test
-        testApplication.AppHelper.Run(new[] { COMMAND_NAME }, expectedExitCode: retVal ? 0 : 1);
+        testApplication.AppHelper.Run([COMMAND_NAME], expectedExitCode: retVal ? 0 : 1);
 
         // Verify
         called.ShouldBe(true);
@@ -273,7 +273,7 @@ public sealed class CliCommandExecutorTests
             called = true;
             cancellationToken.IsCancellationRequested.ShouldBe(false);
             // ReSharper disable once AccessToDisposedClosure
-            cts.Cancel();
+            await cts.CancelAsync();
             cancellationToken.IsCancellationRequested.ShouldBe(true); // Validates we actually got the token from "cts"
             return retVal;
         }
@@ -281,7 +281,7 @@ public sealed class CliCommandExecutorTests
         var testApplication = new TestApplication(new CliCommandExecutor(Execute));
 
         // Test
-        testApplication.AppHelper.Run(new[] { COMMAND_NAME }, expectedExitCode: retVal ? 0 : 1, cts.Token);
+        testApplication.AppHelper.Run([COMMAND_NAME], expectedExitCode: retVal ? 0 : 1, cts.Token);
 
         // Verify
         called.ShouldBe(true);
@@ -307,7 +307,7 @@ public sealed class CliCommandExecutorTests
         var testApplication = new TestApplication(new CliCommandExecutor(Execute));
 
         // Test
-        testApplication.AppHelper.Run(new[] { COMMAND_NAME }, expectedExitCode: retVal);
+        testApplication.AppHelper.Run([COMMAND_NAME], expectedExitCode: retVal);
 
         // Verify
         called.ShouldBe(true);
@@ -332,7 +332,7 @@ public sealed class CliCommandExecutorTests
             called = true;
             cancellationToken.IsCancellationRequested.ShouldBe(false);
             // ReSharper disable once AccessToDisposedClosure
-            cts.Cancel();
+            await cts.CancelAsync();
             cancellationToken.IsCancellationRequested.ShouldBe(true); // Validates we actually got the token from "cts"
             return retVal;
         }
@@ -340,7 +340,7 @@ public sealed class CliCommandExecutorTests
         var testApplication = new TestApplication(new CliCommandExecutor(Execute));
 
         // Test
-        testApplication.AppHelper.Run(new[] { COMMAND_NAME }, expectedExitCode: retVal, cts.Token);
+        testApplication.AppHelper.Run([COMMAND_NAME], expectedExitCode: retVal, cts.Token);
 
         // Verify
         called.ShouldBe(true);

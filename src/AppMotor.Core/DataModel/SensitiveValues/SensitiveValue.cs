@@ -9,14 +9,10 @@ namespace AppMotor.Core.DataModel;
 /// by accident.
 /// </summary>
 /// <seealso cref="SensitiveValueMarker"/>
-public interface ISensitiveValue
-{
-}
+public interface ISensitiveValue;
 
 /// <summary>
 /// A <see cref="TypeMarker"/> alternative to <see cref="ISensitiveValue"/>.
 /// </summary>
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class SensitiveValueMarker : TypeMarker
-{
-}
+public sealed class SensitiveValueMarker : TypeMarker;

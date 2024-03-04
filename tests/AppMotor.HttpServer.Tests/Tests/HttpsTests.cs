@@ -57,7 +57,7 @@ public sealed class HttpsTests : TestBase
             responseString.ShouldBe("Hello World!");
         }
 
-        cts.Cancel();
+        await cts.CancelAsync();
 
         await TestTimeout.TimeoutAfter(appTask, TimeSpan.FromSeconds(10));
     }

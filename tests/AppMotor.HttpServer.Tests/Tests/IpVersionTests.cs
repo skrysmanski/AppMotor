@@ -110,7 +110,7 @@ public sealed class IpVersionTests : TestBase
         {
             this.TestConsole.WriteLine();
 
-            cts.Cancel();
+            await cts.CancelAsync();
 
             await TestTimeout.TimeoutAfter(appTask, TimeSpan.FromSeconds(10));
         }
