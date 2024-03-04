@@ -11,25 +11,28 @@ name: CI
 # See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows
 # See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
 on:
-  # Trigger the workflow on push or pull request, but only for the main branch.
-  # Reason: Until a feature branch is converted into a pull request, there's no (real) need
-  #   to have this workflow waste resources and trigger 'workflow did not work' emails.
+  # Trigger the workflow on push to the main branch.
   push:
     branches:
       - main
+  # Trigger the workflow for any pull requests.
   pull_request:
-    branches:
-      - main
+  # Allow manual run of this workflow (https://docs.github.com/en/actions/using-workflows/manually-running-a-workflow)
+  workflow_dispatch:
 
 # Permissions for GITHUB_TOKEN for this workflow.
-#   See: https://docs.github.com/en/actions/reference/authentication-in-a-workflow#permissions-for-the-github_token
-# NOTE: Because of this, we don't use "@hash" but "@vX" for non-GitHub steps below. Usually you would use "@hash"
-#   as a security measure to pin a specific version. However, since we run with the minimal permissions
-#   here, malicious code couldn't do much harm (most likely).
-#   See: https://blog.gitguardian.com/github-actions-security-cheat-sheet/#use-specific-action-version-tags
+#
+# See: https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
+#
+# NOTE: Because we run with minimal permissions, we use "@vX" (instead of "@hash") for non-GitHub steps below.
+#   Usually you would use "@hash" as a security measure to pin a specific version. However, since we run with
+#   minimal permissions here, malicious code can't do much harm (most likely). For more details, see:
+#   https://blog.gitguardian.com/github-actions-security-cheat-sheet/#use-specific-action-version-tags
 permissions:
   contents: read
 
+# NOTE: Jobs run in parallel by default.
+# https://docs.github.com/en/actions/using-jobs/using-jobs-in-a-workflow
 jobs:
   build-and-test:
     # Name the job
@@ -39,7 +42,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # See: https://github.com/actions/checkout
+
+      ###########################################################################
+      #
+      # Setup Steps
+      #
+      ###########################################################################
+
+      # See: https://github.com/marketplace/actions/checkout
       - name: Clone Git repository
         uses: actions/checkout@v3
         with:
@@ -52,12 +62,18 @@ jobs:
         id: short-sha
         uses: benjlevesque/short-sha@v1.2
 
-      # See: https://github.com/actions/setup-dotnet
+      # See: https://github.com/marketplace/actions/setup-net-core-sdk
       - name: Setup .NET build environment
         uses: actions/setup-dotnet@v2
         with:
           # NOTE: Apparently only the 3rd component can be "x"; i.e. "5.x" is not supported.
           dotnet-version: '7.0.x'
+
+      ###########################################################################
+      #
+      # Build Steps
+      #
+      ###########################################################################
 
       # See: https://docs.microsoft.com/de-de/dotnet/core/tools/dotnet-build
       # NOTE: Without specifying a solution file, "dotnet build" searches for a .sln file in the current directory.
@@ -75,7 +91,13 @@ jobs:
           # Tells tests that they're running in a (potentially slow) CI environment.
           RUNS_IN_CI: true
 
-      # See: https://github.com/actions/upload-artifact
+      ###########################################################################
+      #
+      # Archive Steps
+      #
+      ###########################################################################
+
+      # See: https://github.com/marketplace/actions/upload-a-build-artifact
       - name: Upload test results
         uses: actions/upload-artifact@v3
         # Run this step even if "run_tests" has failed (but not if any other previous step has failed - which would
