@@ -10,4 +10,8 @@
 
   <Import Project="$(MSBuildThisFileDirectory)_ProjectCommons/Common.Directory.Build.props" />
 
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+  </PropertyGroup>
+
 </Project>
