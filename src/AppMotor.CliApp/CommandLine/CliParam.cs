@@ -125,7 +125,8 @@ public class CliParam<T> : CliParamBase
         }
     }
 
-    private Symbol CreateUnderlyingNamedParameter()
+    [MustUseReturnValue]
+    private Option<T> CreateUnderlyingNamedParameter()
     {
         Option<T> option;
 
@@ -148,7 +149,8 @@ public class CliParam<T> : CliParamBase
         return option;
     }
 
-    private Symbol CreateUnderlyingPositionalParameter()
+    [MustUseReturnValue]
+    private Argument<T> CreateUnderlyingPositionalParameter()
     {
         var argument = new Argument<T>(this.PrimaryName, this.HelpText);
 
