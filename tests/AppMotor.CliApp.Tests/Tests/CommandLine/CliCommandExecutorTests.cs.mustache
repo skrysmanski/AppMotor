@@ -58,7 +58,13 @@ public sealed class CliCommandExecutorTests
             called = true;
 {{#useCancellationToken}}
             cancellationToken.IsCancellationRequested.ShouldBe(false);
+            // ReSharper disable once AccessToDisposedClosure
+{{^isAsync}}
             cts.Cancel();
+{{/isAsync}}
+{{#isAsync}}
+            await cts.CancelAsync();
+{{/isAsync}}
             cancellationToken.IsCancellationRequested.ShouldBe(true); // Validates we actually got the token from "cts"
 {{/useCancellationToken}}
 {{#returnsExitCode}}
@@ -69,7 +75,7 @@ public sealed class CliCommandExecutorTests
         var testApplication = new TestApplication(new CliCommandExecutor(Execute));
 
         // Test
-        testApplication.AppHelper.Run(new[] { COMMAND_NAME }, expectedExitCode: {{^returnsExitCode}}0{{/returnsExitCode}}{{#exitCodeIsBool}}retVal ? 0 : 1{{/exitCodeIsBool}}{{#exitCodeIsInt}}retVal{{/exitCodeIsInt}}{{#useCancellationToken}}, cts.Token{{/useCancellationToken}});
+        testApplication.AppHelper.Run([COMMAND_NAME], expectedExitCode: {{^returnsExitCode}}0{{/returnsExitCode}}{{#exitCodeIsBool}}retVal ? 0 : 1{{/exitCodeIsBool}}{{#exitCodeIsInt}}retVal{{/exitCodeIsInt}}{{#useCancellationToken}}, cts.Token{{/useCancellationToken}});
 
         // Verify
         called.ShouldBe(true);

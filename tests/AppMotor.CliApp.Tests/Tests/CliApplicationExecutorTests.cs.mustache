@@ -19,7 +19,7 @@ namespace AppMotor.CliApp.Tests;
 /// </summary>
 public sealed class CliApplicationExecutorTests
 {
-    private static readonly string[] TEST_ARGS = { "abc", "def" };
+    private static readonly string[] TEST_ARGS = ["abc", "def"];
 
 {{#tests}}
 {{#returnsExitCode}}
@@ -60,7 +60,13 @@ public sealed class CliApplicationExecutorTests
 {{/useArgs}}
 {{#useCancellationToken}}
             cancellationToken.IsCancellationRequested.ShouldBe(false);
+            // ReSharper disable once AccessToDisposedClosure
+{{^isAsync}}
             cts.Cancel();
+{{/isAsync}}
+{{#isAsync}}
+            await cts.CancelAsync();
+{{/isAsync}}
             cancellationToken.IsCancellationRequested.ShouldBe(true); // Validates we actually got the token from "cts"
 {{/useCancellationToken}}
 {{#returnsExitCode}}
