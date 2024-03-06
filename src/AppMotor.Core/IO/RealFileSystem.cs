@@ -16,5 +16,5 @@ public static class RealFileSystem
     /// The real file system.
     /// </summary>
     [PublicAPI]
-    public static FileSystem Instance { get; } = new();
+    public static IFileSystem Instance { get; } = new FileSystem();
 }
