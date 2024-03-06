@@ -43,7 +43,7 @@ public sealed class ITerminalWriterTests
     [InlineData("de-de", 5.5, "5,5")]
     [InlineData("en-us", 5.5, "5.5")]
     [InlineData("en-us", null, null)]
-    public void Test_Write_Convertible_ValueType(string culture, double? convertibleValue, string expectedOutput)
+    public void Test_Write_Convertible_ValueType(string culture, double? convertibleValue, string? expectedOutput)
     {
         // Setup
         var terminalWriter = new TestTerminalWriter()
@@ -86,7 +86,7 @@ public sealed class ITerminalWriterTests
     [InlineData("de-de", 5.5, "5,5")]
     [InlineData("en-us", 5.5, "5.5")]
     [InlineData("en-us", null, null)]
-    public void Test_Write_Object_IConvertible(string culture, double? convertibleValue, string expectedOutput)
+    public void Test_Write_Object_IConvertible(string culture, double? convertibleValue, string? expectedOutput)
     {
         // Setup
         var terminalWriter = new TestTerminalWriter()
@@ -127,7 +127,7 @@ public sealed class ITerminalWriterTests
     [InlineData("de-de", 5.5, "5,5")]
     [InlineData("en-us", 5.5, "5.5")]
     [InlineData("en-us", null, null)]
-    public void Test_Write_Format(string culture, double? convertibleValue, string expectedOutput)
+    public void Test_Write_Format(string culture, double? convertibleValue, string? expectedOutput)
     {
         // Setup
         var terminalWriter = new TestTerminalWriter()
@@ -176,7 +176,7 @@ public sealed class ITerminalWriterTests
     [InlineData("de-de", 5.5, "5,5")]
     [InlineData("en-us", 5.5, "5.5")]
     [InlineData("en-us", null, null)]
-    public void Test_WriteLine_Convertible_ValueType(string culture, double? convertibleValue, string expectedOutput)
+    public void Test_WriteLine_Convertible_ValueType(string culture, double? convertibleValue, string? expectedOutput)
     {
         // Setup
         var terminalWriter = new TestTerminalWriter()
@@ -219,7 +219,7 @@ public sealed class ITerminalWriterTests
     [InlineData("de-de", 5.5, "5,5")]
     [InlineData("en-us", 5.5, "5.5")]
     [InlineData("en-us", null, null)]
-    public void Test_WriteLine_Object_IConvertible(string culture, double? convertibleValue, string expectedOutput)
+    public void Test_WriteLine_Object_IConvertible(string culture, double? convertibleValue, string? expectedOutput)
     {
         // Setup
         var terminalWriter = new TestTerminalWriter()
@@ -260,7 +260,7 @@ public sealed class ITerminalWriterTests
     [InlineData("de-de", 5.5, "5,5")]
     [InlineData("en-us", 5.5, "5.5")]
     [InlineData("en-us", null, null)]
-    public void Test_WriteLine_Format(string culture, double? convertibleValue, string expectedOutput)
+    public void Test_WriteLine_Format(string culture, double? convertibleValue, string? expectedOutput)
     {
         // Setup
         var terminalWriter = new TestTerminalWriter()
