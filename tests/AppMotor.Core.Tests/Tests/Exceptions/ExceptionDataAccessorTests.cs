@@ -69,7 +69,8 @@ public sealed class ExceptionDataAccessorTests
         Should.NotThrow(() => accessor.Clear());
 
         // Enumeration is empty.
-        accessor.GetEnumerator().MoveNext().ShouldBe(false);
+        using var enumerator = accessor.GetEnumerator();
+        enumerator.MoveNext().ShouldBe(false);
     }
 
     [Fact]
@@ -94,7 +95,8 @@ public sealed class ExceptionDataAccessorTests
         Should.NotThrow(() => accessor.Clear());
 
         // Enumeration is empty.
-        accessor.GetEnumerator().MoveNext().ShouldBe(false);
+        using var enumerator = accessor.GetEnumerator();
+        enumerator.MoveNext().ShouldBe(false);
     }
 
     [Fact]

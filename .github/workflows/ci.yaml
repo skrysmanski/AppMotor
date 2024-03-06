@@ -36,7 +36,7 @@ permissions:
   contents: read
 
 env:
-  DOTNET_VERSION: '7.0'
+  DOTNET_VERSION: '8.0'
 
 # NOTE: Jobs run in parallel by default.
 # https://docs.github.com/en/actions/using-jobs/using-jobs-in-a-workflow

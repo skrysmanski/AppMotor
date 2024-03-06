@@ -16,6 +16,4 @@ namespace AppMotor.CliApp.Terminals;
 /// Instances of this interface may or may not also implement <see cref="ITerminalWindow"/>. You can use an
 /// "is"/"as" conversion to check for this and adopt your code accordingly.
 /// </remarks>
-public interface ITerminal : ITerminalInput, ITerminalOutput
-{
-}
+public interface ITerminal : ITerminalInput, ITerminalOutput;

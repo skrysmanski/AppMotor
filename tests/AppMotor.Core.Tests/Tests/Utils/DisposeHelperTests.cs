@@ -37,8 +37,5 @@ public sealed class DisposeHelperTests
     }
 
     [UsedImplicitly(ImplicitUseKindFlags.Access)]
-    public interface IMixedDisposable : IDisposable, IAsyncDisposable
-    {
-
-    }
+    public interface IMixedDisposable : IDisposable, IAsyncDisposable;
 }

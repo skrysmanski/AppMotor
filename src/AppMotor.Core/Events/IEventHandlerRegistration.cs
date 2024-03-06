@@ -7,6 +7,4 @@ namespace AppMotor.Core.Events;
 /// A registration for <see cref="Event{TEventHandler}"/>. Dispose this registration
 /// to remove/delete the registration.
 /// </summary>
-public interface IEventHandlerRegistration : IDisposable
-{
-}
+public interface IEventHandlerRegistration : IDisposable;

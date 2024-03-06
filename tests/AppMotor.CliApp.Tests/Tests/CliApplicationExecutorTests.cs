@@ -19,7 +19,7 @@ namespace AppMotor.CliApp.Tests;
 /// </summary>
 public sealed class CliApplicationExecutorTests
 {
-    private static readonly string[] TEST_ARGS = { "abc", "def" };
+    private static readonly string[] TEST_ARGS = ["abc", "def"];
 
     [Fact]
     public void Test_Sync_Void_NoArgs_NoCancellationToken()
@@ -403,7 +403,7 @@ public sealed class CliApplicationExecutorTests
             called = true;
             cancellationToken.IsCancellationRequested.ShouldBe(false);
             // ReSharper disable once AccessToDisposedClosure
-            cts.Cancel();
+            await cts.CancelAsync();
             cancellationToken.IsCancellationRequested.ShouldBe(true); // Validates we actually got the token from "cts"
         }
 
@@ -433,7 +433,7 @@ public sealed class CliApplicationExecutorTests
             args.ShouldBe(TEST_ARGS);
             cancellationToken.IsCancellationRequested.ShouldBe(false);
             // ReSharper disable once AccessToDisposedClosure
-            cts.Cancel();
+            await cts.CancelAsync();
             cancellationToken.IsCancellationRequested.ShouldBe(true); // Validates we actually got the token from "cts"
         }
 
@@ -515,7 +515,7 @@ public sealed class CliApplicationExecutorTests
             called = true;
             cancellationToken.IsCancellationRequested.ShouldBe(false);
             // ReSharper disable once AccessToDisposedClosure
-            cts.Cancel();
+            await cts.CancelAsync();
             cancellationToken.IsCancellationRequested.ShouldBe(true); // Validates we actually got the token from "cts"
             return retVal;
         }
@@ -548,7 +548,7 @@ public sealed class CliApplicationExecutorTests
             args.ShouldBe(TEST_ARGS);
             cancellationToken.IsCancellationRequested.ShouldBe(false);
             // ReSharper disable once AccessToDisposedClosure
-            cts.Cancel();
+            await cts.CancelAsync();
             cancellationToken.IsCancellationRequested.ShouldBe(true); // Validates we actually got the token from "cts"
             return retVal;
         }
@@ -634,7 +634,7 @@ public sealed class CliApplicationExecutorTests
             called = true;
             cancellationToken.IsCancellationRequested.ShouldBe(false);
             // ReSharper disable once AccessToDisposedClosure
-            cts.Cancel();
+            await cts.CancelAsync();
             cancellationToken.IsCancellationRequested.ShouldBe(true); // Validates we actually got the token from "cts"
             return retVal;
         }
@@ -668,7 +668,7 @@ public sealed class CliApplicationExecutorTests
             args.ShouldBe(TEST_ARGS);
             cancellationToken.IsCancellationRequested.ShouldBe(false);
             // ReSharper disable once AccessToDisposedClosure
-            cts.Cancel();
+            await cts.CancelAsync();
             cancellationToken.IsCancellationRequested.ShouldBe(true); // Validates we actually got the token from "cts"
             return retVal;
         }

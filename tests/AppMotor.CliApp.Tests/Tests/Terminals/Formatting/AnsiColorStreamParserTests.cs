@@ -431,10 +431,7 @@ public sealed class AnsiColorStreamParserTests
         }
     }
 
-    private interface IParsedItem
-    {
-
-    }
+    private interface IParsedItem;
 
     private sealed class ParsedTextItem : IParsedItem, IEquatable<ParsedTextItem>
     {

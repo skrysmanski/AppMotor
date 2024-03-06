@@ -13,6 +13,4 @@ namespace System.Runtime.CompilerServices;
 /// </summary>
 [UsedImplicitly]
 [EditorBrowsable(EditorBrowsableState.Never)]
-public sealed class IsExternalInit
-{
-}
+public sealed class IsExternalInit;

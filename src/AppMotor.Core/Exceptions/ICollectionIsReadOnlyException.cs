@@ -8,6 +8,4 @@ namespace AppMotor.Core.Exceptions;
 /// and its variants. Via this interface on can catch all related
 /// exceptions in one <c>catch</c> block.
 /// </summary>
-public interface ICollectionIsReadOnlyException
-{
-}
+public interface ICollectionIsReadOnlyException;

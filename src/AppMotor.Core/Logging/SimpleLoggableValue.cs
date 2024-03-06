@@ -12,14 +12,10 @@ namespace AppMotor.Core.Logging;
 /// and therefor in <see cref="ExtendedExceptionStringExtensions.ToStringExtended"/>.
 /// </summary>
 /// <seealso cref="SimpleLoggableValueMarker"/>
-public interface ISimpleLoggableValue
-{
-}
+public interface ISimpleLoggableValue;
 
 /// <summary>
 /// A <see cref="TypeMarker"/> alternative to <see cref="ISimpleLoggableValue"/>.
 /// </summary>
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class SimpleLoggableValueMarker : TypeMarker
-{
-}
+public sealed class SimpleLoggableValueMarker : TypeMarker;
