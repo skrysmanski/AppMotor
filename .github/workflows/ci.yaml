@@ -94,12 +94,14 @@ jobs:
         run: dotnet build --configuration Release
 
       # See: https://docs.microsoft.com/de-de/dotnet/core/tools/dotnet-test
-      # NOTE: Without specifying a solution file, "dotnet test" searches for a .sln file in the current directory.
-      # NOTE 2: There seems to be no way to name the .trx file as '<project>.trx'. If no 'LogFileName' is specified,
+      # NOTES:
+      # * Without specifying a solution file, "dotnet test" searches for a .sln file in the current directory.
+      # * There seems to be no way to name the .trx file as '<project>.trx'. If no 'LogFileName' is specified,
       #   the .trx files will be named something like "_fv-az278-737_2021-08-15_03_50_33.trx".
+      # * The Option 'TreatNoTestsAsError' is documented here: https://learn.microsoft.com/en-us/visualstudio/test/configure-unit-tests-by-using-a-dot-runsettings-file?view=vs-2022#runconfiguration-element
       - name: Run tests
         id: run_tests
-        run: dotnet test --configuration Release --no-restore --no-build --logger "trx;LogFileName=${{ runner.os }}.trx" --nologo
+        run: dotnet test --configuration Release --no-restore --no-build --logger "trx;LogFileName=${{ runner.os }}.trx" --nologo -- RunConfiguration.TreatNoTestsAsError=true
         env:
           # Tells tests that they're running in a (potentially slow) CI environment.
           RUNS_IN_CI: true
