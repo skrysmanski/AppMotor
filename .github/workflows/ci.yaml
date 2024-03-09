@@ -137,6 +137,58 @@ jobs:
           path: '**/*.trx'
           if-no-files-found: error
 
+
+  #
+  # Create action test report
+  #
+  test-report:
+
+    # Name of the job
+    name: Test Report
+
+    needs: build-and-test
+
+    # Set the type of machine to run on
+    # See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
+    runs-on: ubuntu-latest
+
+    permissions:
+      actions: read
+      checks: write
+
+    steps:
+      # See: https://github.com/marketplace/actions/download-a-build-artifact
+      #
+      # The dorny/test-reporter@v1.8.0 action doesn't support actions/upload-artifact@v4 yet.
+      # We therefore download the artifact manually and feed it to test-reporter as local files.
+      # See: https://github.com/dorny/test-reporter/issues/363
+      - name: Download test results
+        uses: actions/download-artifact@v4
+        with:
+          pattern: test-results-*
+          path: test-results
+
+      # See: https://github.com/marketplace/actions/test-reporter
+      - name: Create test report
+        # For pinned versions, see: https://blog.gitguardian.com/github-actions-security-cheat-sheet/#use-specific-action-version-tags
+        uses: dorny/test-reporter@eaa763f6ffc21c7a37837f56cd5f9737f27fc6c8 # version 1.8.0
+        with:
+          # NOTE: We add the 'github.run_number' to the name so that we can easier identify the
+          #   test report if they pile up due to bug https://github.com/dorny/test-reporter/issues/67.
+          #   See top of this file for more details.
+          name: 'Test Report #${{ github.run_number }}'
+          # Path to test results (downloaded in previous step)
+          path: 'test-results/**/*.trx'
+          # Format of test results
+          reporter: dotnet-trx
+          # Don't mark the test report generated as failed if there's a failed test.
+          # Only mark it as failed if something with the workflow has actually gone wrong.
+          fail-on-error: false
+          # Workaround for error 'fatal: not a git repository' caused by a call to 'git ls-files'
+          # See: https://github.com/dorny/test-reporter/issues/169#issuecomment-1583560458
+          max-annotations: 0
+
+
   #
   # CodeQL job
   #
