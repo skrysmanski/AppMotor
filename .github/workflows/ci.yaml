@@ -3,9 +3,15 @@
 #
 # For more details on workflows, see README.md.
 #
+# NOTES:
+#
+# * We don't use CodeQL because it takes, at the time of writing, 3 minutes to run which is
+#   3x the time of the "build-and-test" job. Since we already have the Microsoft Code Analysis
+#   enabled, I don't expect CodeQL to offer much advantages (especially compared to the time it
+#   takes to execute).
+#
 
-# IMPORTANT: When changing this name, also change the name in the trigger section in "test-report.yaml".
-name: CI
+name: Continuous Integration
 
 # When to run this workflow
 #
@@ -187,70 +193,6 @@ jobs:
           # Workaround for error 'fatal: not a git repository' caused by a call to 'git ls-files'
           # See: https://github.com/dorny/test-reporter/issues/169#issuecomment-1583560458
           max-annotations: 0
-
-
-  #
-  # CodeQL job
-  #
-  codeql:
-
-    # Name of the job
-    name: CodeQL
-
-    # Set the type of machine to run on
-    # See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
-    runs-on: ubuntu-latest
-
-    permissions:
-      actions: read
-      security-events: write
-
-    steps:
-
-      ###########################################################################
-      #
-      # Setup Steps
-      #
-      ###########################################################################
-
-      # See: https://github.com/marketplace/actions/checkout
-      - name: Clone Git repository
-        uses: actions/checkout@v4
-        with:
-          lfs: true
-          submodules: true
-
-      # Initializes the CodeQL tools for scanning.
-      # See: https://github.com/github/codeql-action
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
-        with:
-          languages: csharp
-
-      # See: https://github.com/marketplace/actions/setup-net-core-sdk
-      - name: Setup .NET build environment
-        uses: actions/setup-dotnet@v4
-        with:
-          # NOTE: Apparently only the 3rd component can be "x"; i.e. "5.x" is not supported.
-          dotnet-version: '${{ env.DOTNET_VERSION }}.x'
-
-      ###########################################################################
-      #
-      # Build Steps
-      #
-      ###########################################################################
-
-      # See: https://docs.microsoft.com/de-de/dotnet/core/tools/dotnet-build
-      # NOTES:
-      # * Without specifying a solution file, "dotnet build" searches for a .sln file in the current directory.
-      # * The "CodeQL_Release" configuration only contains production code projects - thus reducing the amount of code
-      #   that needs to be analyzed.
-      - name: Build code
-        run: dotnet build --configuration CodeQL_Release
-
-      # See: https://github.com/github/codeql-action
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
 
 
   #
