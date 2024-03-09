@@ -241,7 +241,10 @@ jobs:
       ###########################################################################
 
       # See: https://docs.microsoft.com/de-de/dotnet/core/tools/dotnet-build
-      # NOTE: Without specifying a solution file, "dotnet build" searches for a .sln file in the current directory.
+      # NOTES:
+      # * Without specifying a solution file, "dotnet build" searches for a .sln file in the current directory.
+      # * The "CodeQL_Release" configuration only contains production code projects - thus reducing the amount of code
+      #   that needs to be analyzed.
       - name: Build code
         run: dotnet build --configuration CodeQL_Release
 
