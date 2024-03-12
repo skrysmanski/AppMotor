@@ -64,7 +64,7 @@ public class CliParam<T> : CliParamBase
     {
         get
         {
-            if (!this._value.IsSet)
+            if (!this._value.HasValue)
             {
                 throw new InvalidOperationException("This value can't be accessed at this state.");
             }
@@ -130,7 +130,7 @@ public class CliParam<T> : CliParamBase
     {
         Option<T> option;
 
-        if (this.DefaultValue.IsSet && ShouldSetUnderlyingDefaultValueForOptionalParameter())
+        if (this.DefaultValue.HasValue && ShouldSetUnderlyingDefaultValueForOptionalParameter())
         {
             option = new Option<T>(this.Names.ToArray(), () => this.DefaultValue.Value, this.HelpText);
         }
@@ -141,7 +141,7 @@ public class CliParam<T> : CliParamBase
 
         option.AllowMultipleArgumentsPerToken = false;
 
-        if (!this.DefaultValue.IsSet)
+        if (!this.DefaultValue.HasValue)
         {
             option.IsRequired = true;
         }
@@ -154,7 +154,7 @@ public class CliParam<T> : CliParamBase
     {
         var argument = new Argument<T>(this.PrimaryName, this.HelpText);
 
-        if (this.DefaultValue.IsSet)
+        if (this.DefaultValue.HasValue)
         {
             // Since we don't always set the default value on the argument (to hide it from the help output),
             // we have to set the arity of the argument definition instead to define that it's optional.

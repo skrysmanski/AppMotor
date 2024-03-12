@@ -13,7 +13,7 @@ namespace AppMotor.Core.DataModel;
 /// is set or not.
 /// </para>
 /// </summary>
-public readonly struct Optional<T> : IEquatable<Optional<T>>
+public readonly struct Optional<T> : IEquatable<Optional<T>>, IEquatable<T>
 {
     /// <summary>
     /// You may use this to unset an optional value.
@@ -21,12 +21,10 @@ public readonly struct Optional<T> : IEquatable<Optional<T>>
     [PublicAPI]
     public static readonly Optional<T> UNSET;
 
-    internal const string NOT_SET_TO_STRING_RESULT = "<not set>";
-
     private readonly T _value;
 
     /// <summary>
-    /// The value. Can only be obtained if <see cref="IsSet"/> is <c>true</c>;
+    /// The value. Can only be obtained if <see cref="HasValue"/> is <c>true</c>;
     /// otherwise an exception will be thrown.
     /// </summary>
     [PublicAPI]
@@ -34,7 +32,7 @@ public readonly struct Optional<T> : IEquatable<Optional<T>>
     {
         get
         {
-            if (!this.IsSet)
+            if (!this.HasValue)
             {
                 throw new InvalidOperationException("This value is not set.");
             }
@@ -47,13 +45,16 @@ public readonly struct Optional<T> : IEquatable<Optional<T>>
     /// Whether this value is set.
     /// </summary>
     [PublicAPI]
-    public bool IsSet { get; }
+    public bool HasValue { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="value">The value. Can be <c>null</c> which is treated as a set value (unlike in <see cref="Optional{T}"/>).</param>
     public Optional(T value) : this()
     {
         this._value = value;
-        this.IsSet = true;
+        this.HasValue = true;
     }
 
     /// <summary>
@@ -67,13 +68,14 @@ public readonly struct Optional<T> : IEquatable<Optional<T>>
     /// <inheritdoc />
     public bool Equals(Optional<T> other)
     {
-        if (this.IsSet != other.IsSet)
+        if (this.HasValue != other.HasValue)
         {
             return false;
         }
 
-        if (!this.IsSet) // && !other.IsSet
+        if (!this.HasValue) // && !other.HasValue
         {
+            // If both sides are "null", we don't need to compare "_value".
             return true;
         }
 
@@ -81,9 +83,24 @@ public readonly struct Optional<T> : IEquatable<Optional<T>>
     }
 
     /// <inheritdoc />
+    public bool Equals(T? other)
+    {
+        return this.HasValue && EqualityComparer<T>.Default.Equals(this._value, other);
+    }
+
+    /// <inheritdoc />
     public override bool Equals(object? obj)
     {
-        return obj is Optional<T> other && Equals(other);
+        if (obj is Optional<T> otherOption)
+        {
+            return Equals(otherOption);
+        }
+        else if (obj is T other)
+        {
+            return Equals(other);
+        }
+
+        return false;
     }
 
     /// <summary>
@@ -102,10 +119,42 @@ public readonly struct Optional<T> : IEquatable<Optional<T>>
         return !(left == right);
     }
 
+    /// <summary>
+    /// Compares the two optionals for equality.
+    /// </summary>
+    public static bool operator ==(T? left, Optional<T> right)
+    {
+        return right.Equals(left);
+    }
+
+    /// <summary>
+    /// Compares the two optionals for in-equality.
+    /// </summary>
+    public static bool operator !=(T? left, Optional<T> right)
+    {
+        return !(left == right);
+    }
+
+    /// <summary>
+    /// Compares the two optionals for equality.
+    /// </summary>
+    public static bool operator ==(Optional<T> left, T? right)
+    {
+        return left.Equals(right);
+    }
+
+    /// <summary>
+    /// Compares the two optionals for in-equality.
+    /// </summary>
+    public static bool operator !=(Optional<T> left, T? right)
+    {
+        return !(left == right);
+    }
+
     /// <inheritdoc />
     public override int GetHashCode()
     {
-        if (!this.IsSet)
+        if (!this.HasValue)
         {
             return 0;
         }
@@ -116,13 +165,13 @@ public readonly struct Optional<T> : IEquatable<Optional<T>>
     /// <inheritdoc />
     public override string ToString()
     {
-        if (this.IsSet)
+        if (this.HasValue)
         {
             return this._value?.ToString() ?? "";
         }
         else
         {
-            return NOT_SET_TO_STRING_RESULT;
+            return "<not set>";
         }
     }
 }

@@ -120,7 +120,7 @@ public sealed class CliParamTests
 
         // Assumptions
         param.ParameterType.ShouldBe(CliParamTypes.Named);
-        param.DefaultValue.IsSet.ShouldBe(collectionDefaultValue is not null);
+        param.DefaultValue.HasValue.ShouldBe(collectionDefaultValue is not null);
 
         // Tests
 
@@ -245,7 +245,7 @@ public sealed class CliParamTests
 
         // Assumptions
         param.ParameterType.ShouldBe(CliParamTypes.Positional);
-        param.DefaultValue.IsSet.ShouldBe(collectionDefaultValue is not null);
+        param.DefaultValue.HasValue.ShouldBe(collectionDefaultValue is not null);
 
         // Tests
 
@@ -333,7 +333,7 @@ public sealed class CliParamTests
 
         // Assumptions
         param.ParameterType.ShouldBe(CliParamTypes.Named);
-        param.DefaultValue.IsSet.ShouldBe(true);
+        param.DefaultValue.HasValue.ShouldBe(true);
 
         // Tests
         TestApplicationWithParams app = new(
@@ -370,7 +370,7 @@ public sealed class CliParamTests
 
         // Assumptions
         param.ParameterType.ShouldBe(CliParamTypes.Positional);
-        param.DefaultValue.IsSet.ShouldBe(true);
+        param.DefaultValue.HasValue.ShouldBe(true);
 
         // Tests
         TestApplicationWithParams app = new(
@@ -404,7 +404,7 @@ public sealed class CliParamTests
         param.ParameterType.ShouldBe(CliParamTypes.Named);
 
         // Test
-        param.DefaultValue.IsSet.ShouldBe(true);
+        param.DefaultValue.HasValue.ShouldBe(true);
         param.DefaultValue.Value.ShouldBe(42);
 
         var underlyingImplementation = (Option<int>)param.UnderlyingImplementation;
@@ -442,7 +442,7 @@ public sealed class CliParamTests
         param.ParameterType.ShouldBe(CliParamTypes.Named);
 
         // Test
-        param.DefaultValue.IsSet.ShouldBe(true);
+        param.DefaultValue.HasValue.ShouldBe(true);
         param.DefaultValue.Value.ShouldBeNull();
 
         var underlyingImplementation = (Option<int?>)param.UnderlyingImplementation;
@@ -480,7 +480,7 @@ public sealed class CliParamTests
         param.ParameterType.ShouldBe(CliParamTypes.Named);
 
         // Test
-        param.DefaultValue.IsSet.ShouldBe(true);
+        param.DefaultValue.HasValue.ShouldBe(true);
         param.DefaultValue.Value.ShouldBeNull();
 
         var underlyingImplementation = (Option<string?>)param.UnderlyingImplementation;
@@ -512,7 +512,7 @@ public sealed class CliParamTests
         param.ParameterType.ShouldBe(CliParamTypes.Named);
 
         // Test
-        param.DefaultValue.IsSet.ShouldBe(false);
+        param.DefaultValue.HasValue.ShouldBe(false);
 
         var underlyingImplementation = (Option<int>)param.UnderlyingImplementation;
         ((IValueDescriptor)underlyingImplementation).HasDefaultValue.ShouldBe(false);
@@ -546,7 +546,7 @@ public sealed class CliParamTests
         param.ParameterType.ShouldBe(CliParamTypes.Named);
 
         // Test
-        param.DefaultValue.IsSet.ShouldBe(true);
+        param.DefaultValue.HasValue.ShouldBe(true);
 
         var underlyingImplementation = (Option<bool>)param.UnderlyingImplementation;
         ((IValueDescriptor)underlyingImplementation).HasDefaultValue.ShouldBe(false);
@@ -596,7 +596,7 @@ public sealed class CliParamTests
         param.ParameterType.ShouldBe(CliParamTypes.Positional);
 
         // Test
-        param.DefaultValue.IsSet.ShouldBe(true);
+        param.DefaultValue.HasValue.ShouldBe(true);
         param.DefaultValue.Value.ShouldBe("abc");
 
         var underlyingImplementation = (Argument<string>)param.UnderlyingImplementation;
@@ -627,7 +627,7 @@ public sealed class CliParamTests
         param.ParameterType.ShouldBe(CliParamTypes.Positional);
 
         // Test
-        param.DefaultValue.IsSet.ShouldBe(false);
+        param.DefaultValue.HasValue.ShouldBe(false);
 
         var underlyingImplementation = (Argument<string>)param.UnderlyingImplementation;
         underlyingImplementation.HasDefaultValue.ShouldBe(false);
@@ -712,7 +712,7 @@ public sealed class CliParamTests
         param.ParameterType.ShouldBe(paramType);
 
         // Test
-        param.DefaultValue.IsSet.ShouldBe(true);
+        param.DefaultValue.HasValue.ShouldBe(true);
         param.DefaultValue.Value.ShouldBe(null);
     }
 
@@ -727,7 +727,7 @@ public sealed class CliParamTests
         param.ParameterType.ShouldBe(paramType);
 
         // Test
-        param.DefaultValue.IsSet.ShouldBe(false);
+        param.DefaultValue.HasValue.ShouldBe(false);
     }
 
     [Theory]
@@ -745,7 +745,7 @@ public sealed class CliParamTests
         //   (like for nullable value types). Unfortunately, .NET's type system doesn't
         //   record the nullability of reference types. So there's no way for the CliParam
         //   class to differentiate between "string" and "string?".
-        param.DefaultValue.IsSet.ShouldBe(false);
+        param.DefaultValue.HasValue.ShouldBe(false);
     }
 
     [Theory]
@@ -759,7 +759,7 @@ public sealed class CliParamTests
         param.ParameterType.ShouldBe(paramType);
 
         // Test
-        param.DefaultValue.IsSet.ShouldBe(false);
+        param.DefaultValue.HasValue.ShouldBe(false);
     }
 
     [Theory]
@@ -783,7 +783,7 @@ public sealed class CliParamTests
         param.ParameterType.ShouldBe(CliParamTypes.Named);
 
         // Test
-        param.DefaultValue.IsSet.ShouldBe(true);
+        param.DefaultValue.HasValue.ShouldBe(true);
 
         var underlyingImplementation = (Option<int?>)param.UnderlyingImplementation;
         underlyingImplementation.IsRequired.ShouldBe(false);
@@ -811,7 +811,7 @@ public sealed class CliParamTests
         param.ParameterType.ShouldBe(CliParamTypes.Positional);
 
         // Test
-        param.DefaultValue.IsSet.ShouldBe(true);
+        param.DefaultValue.HasValue.ShouldBe(true);
 
         var underlyingImplementation = (Argument<int?>)param.UnderlyingImplementation;
         underlyingImplementation.HasDefaultValue.ShouldBe(false);
@@ -845,7 +845,7 @@ public sealed class CliParamTests
         param.ParameterType.ShouldBe(CliParamTypes.Named);
 
         // Test
-        param.DefaultValue.IsSet.ShouldBe(explicitSet);
+        param.DefaultValue.HasValue.ShouldBe(explicitSet);
 
         var underlyingImplementation = (Option<string?>)param.UnderlyingImplementation;
         underlyingImplementation.IsRequired.ShouldBe(!explicitSet);
@@ -873,7 +873,7 @@ public sealed class CliParamTests
         param.ParameterType.ShouldBe(CliParamTypes.Positional);
 
         // Test
-        param.DefaultValue.IsSet.ShouldBe(explicitSet);
+        param.DefaultValue.HasValue.ShouldBe(explicitSet);
 
         var underlyingImplementation = (Argument<string?>)param.UnderlyingImplementation;
         underlyingImplementation.HasDefaultValue.ShouldBe(false);
@@ -923,7 +923,7 @@ public sealed class CliParamTests
         param.ParameterType.ShouldBe(CliParamTypes.Named);
 
         // Test
-        param.DefaultValue.IsSet.ShouldBe(true);
+        param.DefaultValue.HasValue.ShouldBe(true);
 
         var underlyingImplementation = (Option<bool>)param.UnderlyingImplementation;
         underlyingImplementation.IsRequired.ShouldBe(false);
@@ -951,7 +951,7 @@ public sealed class CliParamTests
         param.ParameterType.ShouldBe(CliParamTypes.Positional);
 
         // Test
-        param.DefaultValue.IsSet.ShouldBe(explicitSet);
+        param.DefaultValue.HasValue.ShouldBe(explicitSet);
 
         var underlyingImplementation = (Argument<bool>)param.UnderlyingImplementation;
         underlyingImplementation.HasDefaultValue.ShouldBe(explicitSet);
