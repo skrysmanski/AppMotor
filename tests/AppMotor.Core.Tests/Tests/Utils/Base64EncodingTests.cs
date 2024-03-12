@@ -11,19 +11,19 @@ using Xunit;
 
 namespace AppMotor.Core.Tests.Utils;
 
-public class Base64EncodingTests
+public sealed class Base64EncodingTests
 {
     public static IEnumerable<object[]> TestDataWithPadding
     {
         get
         {
-            yield return new object[] { "", "" };
-            yield return new object[] { "f", "Zg==" };
-            yield return new object[] { "fo", "Zm8=" };
-            yield return new object[] { "foo", "Zm9v" };
-            yield return new object[] { "foob", "Zm9vYg==" };
-            yield return new object[] { "fooba", "Zm9vYmE=" };
-            yield return new object[] { "foobar", "Zm9vYmFy" };
+            yield return ["", ""];
+            yield return ["f", "Zg=="];
+            yield return ["fo", "Zm8="];
+            yield return ["foo", "Zm9v"];
+            yield return ["foob", "Zm9vYg=="];
+            yield return ["fooba", "Zm9vYmE="];
+            yield return ["foobar", "Zm9vYmFy"];
         }
     }
 

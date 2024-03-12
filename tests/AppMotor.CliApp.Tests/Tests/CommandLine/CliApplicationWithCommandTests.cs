@@ -52,7 +52,7 @@ public sealed class CliApplicationWithCommandTests
         var testCommand = new TestCommand();
 
         // Test
-        int exitCode = CliApplication.Run(new[] { "--value", "42" }, testCommand);
+        int exitCode = CliApplication.Run(["--value", "42"], testCommand);
 
         // Verify
         testCommand.Executed.ShouldBe(true);
@@ -66,7 +66,7 @@ public sealed class CliApplicationWithCommandTests
         var testCommand = new TestCommand();
 
         // Test
-        int exitCode = await CliApplication.RunAsync(new[] { "--value", "42" }, testCommand);
+        int exitCode = await CliApplication.RunAsync(["--value", "42"], testCommand);
 
         // Verify
         testCommand.Executed.ShouldBe(true);

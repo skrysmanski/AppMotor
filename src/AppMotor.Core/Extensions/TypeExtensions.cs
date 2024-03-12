@@ -18,12 +18,12 @@ public static class TypeExtensions
 {
     /// <summary>
     /// Returns whether this type is a (scalar) numeric type. This list includes <c>byte</c>
-    /// and <c>sbyte</c> as well as <see cref="BigInteger"/>. However <see cref="Complex"/>
+    /// and <c>sbyte</c> as well as <see cref="BigInteger"/>. However, <see cref="Complex"/>
     /// is excluded.
     /// </summary>
     /// <remarks>
     /// This method checks the type's full name but ignores the type's assembly. It's therefor
-    /// not 100% fool proof. However, the chance that someone recreates one of the system types
+    /// not 100% foolproof. However, the chance that someone recreates one of the system types
     /// which then should not be a numeric value is rather slim (or even impossible?).
     /// </remarks>
     /// <seealso cref="IsNumericIntegerType"/>
@@ -62,7 +62,7 @@ public static class TypeExtensions
     /// </summary>
     /// <remarks>
     /// This method checks the type's full name but ignores the type's assembly. It's therefor
-    /// not 100% fool proof. However, the chance that someone recreates one of the system types
+    /// not 100% foolproof. However, the chance that someone recreates one of the system types
     /// which then should not be a numeric value is rather slim (or even impossible?).
     /// </remarks>
     /// <seealso cref="IsNumericType"/>
@@ -96,7 +96,7 @@ public static class TypeExtensions
     /// </summary>
     /// <remarks>
     /// This method checks the type's full name but ignores the type's assembly. It's therefor
-    /// not 100% fool proof. However, the chance that someone recreates one of the system types
+    /// not 100% foolproof. However, the chance that someone recreates one of the system types
     /// which then should not be a numeric value is rather slim (or even impossible?).
     /// </remarks>
     /// <seealso cref="IsNumericIntegerType"/>
@@ -270,7 +270,7 @@ public static class TypeExtensions
     [MustUseReturnValue]
     public static MethodInfo? GetOperator(this Type type, UnaryOperators @operator)
     {
-        return type.GetMethod("op_" + @operator, BindingFlags.Public | BindingFlags.Static, new[] { type });
+        return type.GetMethod("op_" + @operator, BindingFlags.Public | BindingFlags.Static, [type]);
     }
 
     /// <summary>
@@ -308,11 +308,11 @@ public static class TypeExtensions
     {
         if (otherTypeIsSecondOperand)
         {
-            return type.GetMethod("op_" + @operator, BindingFlags.Public | BindingFlags.Static, new[] { type, otherType });
+            return type.GetMethod("op_" + @operator, BindingFlags.Public | BindingFlags.Static, [type, otherType]);
         }
         else
         {
-            return type.GetMethod("op_" + @operator, BindingFlags.Public | BindingFlags.Static, new[] { otherType, type });
+            return type.GetMethod("op_" + @operator, BindingFlags.Public | BindingFlags.Static, [otherType, type]);
         }
     }
 }

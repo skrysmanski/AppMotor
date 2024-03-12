@@ -424,7 +424,7 @@ public sealed class DateTimeUtcTests
     {
         DateTimeUtc FunctionUnderTest()
         {
-            return DateTimeUtc.ParseExact(input, new[] { "yyyy-MM-ddTHH:mm:ssZ", "MM/dd/yy HH:mm:ss K" }, CultureInfo.InvariantCulture);
+            return DateTimeUtc.ParseExact(input, ["yyyy-MM-ddTHH:mm:ssZ", "MM/dd/yy HH:mm:ss K"], CultureInfo.InvariantCulture);
         }
 
         if (expectedIsoString is not null)
@@ -460,7 +460,7 @@ public sealed class DateTimeUtcTests
     [InlineData("abc", null)]
     public void Test_TryParseExact_MultipleFormats(string input, string? expectedIsoString)
     {
-        bool success = DateTimeUtc.TryParseExact(input, new[] { "yyyy-MM-ddTHH:mm:ssZ", "MM/dd/yy HH:mm:ss K" }, CultureInfo.InvariantCulture, out var result);
+        bool success = DateTimeUtc.TryParseExact(input, ["yyyy-MM-ddTHH:mm:ssZ", "MM/dd/yy HH:mm:ss K"], CultureInfo.InvariantCulture, out var result);
 
         success.ShouldBe(expectedIsoString is not null);
 

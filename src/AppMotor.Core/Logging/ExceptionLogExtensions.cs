@@ -160,7 +160,7 @@ public static class ExceptionLogExtensions
     {
         private readonly PropertyInfo[] _allPropertiesOrderedByName;
 
-        private readonly HashSet<Type> _allPropertyTypes = new();
+        private readonly HashSet<Type> _allPropertyTypes = [];
 
         public ImmutableArray<PropertyInfo> Value => this._valueLazy.Value;
 

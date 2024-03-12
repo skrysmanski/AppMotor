@@ -53,11 +53,11 @@ at AppMotor.CliApp.CliApplication.RunAsync(String[] args, CancellationToken canc
 
             for (var i = 0; i < testStackTrace.Count; i++)
             {
-                yield return new object[]
-                {
+                yield return
+                [
                     testStackTrace[i],
                     expectedCleanedStackTrace[i],
-                };
+                ];
             }
         }
     }

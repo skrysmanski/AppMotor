@@ -83,7 +83,7 @@ public sealed class ChildProcessStartInfo
         Validate.ArgumentWithName(nameof(processFileName)).IsNotNullOrWhiteSpace(processFileName);
 
         this.ProcessFileName = processFileName;
-        this._arguments = new();
+        this._arguments = [];
     }
 
     /// <summary>
@@ -96,6 +96,6 @@ public sealed class ChildProcessStartInfo
         Validate.ArgumentWithName(nameof(processFileName)).IsNotNullOrWhiteSpace(processFileName);
 
         this.ProcessFileName = processFileName;
-        this._arguments = processArguments ?? new();
+        this._arguments = processArguments ?? [];
     }
 }

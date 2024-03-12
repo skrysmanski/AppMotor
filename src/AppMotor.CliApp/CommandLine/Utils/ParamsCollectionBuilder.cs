@@ -11,9 +11,9 @@ namespace AppMotor.CliApp.CommandLine.Utils;
 
 internal sealed class ParamsCollectionBuilder
 {
-    private readonly List<CliParamBase> _params = new();
+    private readonly List<CliParamBase> _params = [];
 
-    private readonly HashSet<string> _aliases = new();
+    private readonly HashSet<string> _aliases = [];
 
     public IReadOnlySet<string> RegisteredAliases => this._aliases;
 

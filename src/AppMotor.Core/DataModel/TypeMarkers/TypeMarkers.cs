@@ -76,11 +76,11 @@ public static class TypeMarkers
 
                 if (this._underlyingCollection != null)
                 {
-                    newCollection = new HashSet<Type>(this._underlyingCollection);
+                    newCollection = [..this._underlyingCollection];
                 }
                 else
                 {
-                    newCollection = new HashSet<Type>();
+                    newCollection = [];
                 }
 
                 newCollection.Add(markerType);

@@ -163,7 +163,7 @@ public sealed class AnsiStreamParserTests
 
     private sealed class TestStreamParser : AnsiStreamParser
     {
-        public List<ParsedItem> ParseResults { get; } = new();
+        public List<ParsedItem> ParseResults { get; } = [];
 
         /// <inheritdoc />
         protected override void OnAnsiEscapeSequence(ReadOnlySpan<char> escapeSequence)

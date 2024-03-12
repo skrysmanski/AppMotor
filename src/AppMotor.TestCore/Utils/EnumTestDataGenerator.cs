@@ -17,7 +17,7 @@ public sealed class EnumTestDataGenerator<TEnum> : IEnumerable<object[]> where T
     {
         foreach (var enumValue in EnumUtils.GetValues<TEnum>())
         {
-            yield return new object[] { enumValue };
+            yield return [enumValue];
         }
     }
 

@@ -9,7 +9,7 @@ internal class TestApplicationWithParams : TestApplicationWithParamsBase
 {
     private readonly Action _mainAction;
 
-    private readonly List<CliParamBase> _params = new();
+    private readonly List<CliParamBase> _params = [];
 
     /// <inheritdoc />
     protected override CliCommandExecutor Executor => new(Execute);

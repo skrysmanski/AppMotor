@@ -19,7 +19,7 @@ public sealed class CliApplicationWithVerbsTests
     {
         // Test 1
         int exitCode1 = CliApplication.Run(
-            new[] { "do1", "--value1", "42" },
+            ["do1", "--value1", "42"],
             new CliVerb("do1", new Test1Command()),
             new CliVerb("do2", new Test2Command())
         );
@@ -27,7 +27,7 @@ public sealed class CliApplicationWithVerbsTests
 
         // Test 1
         int exitCode2 = CliApplication.Run(
-            new[] { "do2", "--value2", "43" },
+            ["do2", "--value2", "43"],
             new CliVerb("do1", new Test1Command()),
             new CliVerb("do2", new Test2Command())
         );
@@ -39,7 +39,7 @@ public sealed class CliApplicationWithVerbsTests
     {
         // Test 1
         int exitCode1 = await CliApplication.RunAsync(
-            new[] { "do1", "--value1", "42" },
+            ["do1", "--value1", "42"],
             new CliVerb("do1", new Test1Command()),
             new CliVerb("do2", new Test2Command())
         );
@@ -47,7 +47,7 @@ public sealed class CliApplicationWithVerbsTests
 
         // Test 1
         int exitCode2 = await CliApplication.RunAsync(
-            new[] { "do2", "--value2", "43" },
+            ["do2", "--value2", "43"],
             new CliVerb("do1", new Test1Command()),
             new CliVerb("do2", new Test2Command())
         );

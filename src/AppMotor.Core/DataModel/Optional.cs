@@ -19,7 +19,7 @@ public readonly struct Optional<T> : IEquatable<Optional<T>>
     /// You may use this to unset an optional value.
     /// </summary>
     [PublicAPI]
-    public static readonly Optional<T> UNSET = new Optional<T>();
+    public static readonly Optional<T> UNSET;
 
     internal const string NOT_SET_TO_STRING_RESULT = "<not set>";
 
@@ -57,7 +57,7 @@ public readonly struct Optional<T> : IEquatable<Optional<T>>
     }
 
     /// <summary>
-    /// Implicit coversion operator from <typeparamref name="T"/> to <see cref="Optional{T}"/>.
+    /// Implicit conversion operator from <typeparamref name="T"/> to <see cref="Optional{T}"/>.
     /// </summary>
     public static implicit operator Optional<T>(T value)
     {

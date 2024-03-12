@@ -18,13 +18,13 @@ public sealed class Base32EncodingTests
     {
         get
         {
-            yield return new object[] { "", "" };
-            yield return new object[] { "f", "MY======" };
-            yield return new object[] { "fo", "MZXQ====" };
-            yield return new object[] { "foo", "MZXW6===" };
-            yield return new object[] { "foob", "MZXW6YQ=" };
-            yield return new object[] { "fooba", "MZXW6YTB" };
-            yield return new object[] { "foobar", "MZXW6YTBOI======" };
+            yield return ["", ""];
+            yield return ["f", "MY======"];
+            yield return ["fo", "MZXQ===="];
+            yield return ["foo", "MZXW6==="];
+            yield return ["foob", "MZXW6YQ="];
+            yield return ["fooba", "MZXW6YTB"];
+            yield return ["foobar", "MZXW6YTBOI======"];
         }
     }
 
@@ -32,13 +32,13 @@ public sealed class Base32EncodingTests
     {
         get
         {
-            yield return new object[] { "", "" };
-            yield return new object[] { "f", "MY" };
-            yield return new object[] { "fo", "MZXQ" };
-            yield return new object[] { "foo", "MZXW6" };
-            yield return new object[] { "foob", "MZXW6YQ" };
-            yield return new object[] { "fooba", "MZXW6YTB" };
-            yield return new object[] { "foobar", "MZXW6YTBOI" };
+            yield return ["", ""];
+            yield return ["f", "MY"];
+            yield return ["fo", "MZXQ"];
+            yield return ["foo", "MZXW6"];
+            yield return ["foob", "MZXW6YQ"];
+            yield return ["fooba", "MZXW6YTB"];
+            yield return ["foobar", "MZXW6YTBOI"];
         }
     }
 
@@ -202,6 +202,7 @@ public sealed class Base32EncodingTests
     {
         var symbols = Base32Encoding.DEFAULT_SYMBOLS.ToLowerInvariant().ToCharArray();
 
+        // ReSharper disable once UseUtf8StringLiteral
         var foobarAsByteArray = Encoding.ASCII.GetBytes("foobar");
 
         var encoding = new Base32Encoding(symbols, paddingChar: null);

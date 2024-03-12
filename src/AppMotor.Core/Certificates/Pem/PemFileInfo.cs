@@ -14,9 +14,9 @@ namespace AppMotor.Core.Certificates.Pem;
 /// </summary>
 public sealed class PemFileInfo
 {
-    private static readonly Regex BLOCK_START_REGEX = new(@"^-----BEGIN (.+)-----$", RegexOptions.Compiled);
+    private static readonly Regex BLOCK_START_REGEX = new("^-----BEGIN (.+)-----$", RegexOptions.Compiled);
 
-    private static readonly Regex BLOCK_END_REGEX = new(@"^-----END (.+)-----$", RegexOptions.Compiled);
+    private static readonly Regex BLOCK_END_REGEX = new("^-----END (.+)-----$", RegexOptions.Compiled);
 
     /// <summary>
     /// The blocks in the PEM file.
@@ -96,7 +96,7 @@ public sealed class PemFileInfo
             if (pemLine[0] == '-')
             {
                 // PEM block line.
-                // NOTE: "-" is no valid character in Base64. Thus a line starting
+                // NOTE: "-" is no valid character in Base64. Thus, a line starting
                 //   with "-" does not contain any sensitive information (at least
                 //   not in well-formed PEM files).
                 var lineAsString = new string(pemLine);

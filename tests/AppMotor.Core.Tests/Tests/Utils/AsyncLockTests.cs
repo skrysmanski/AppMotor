@@ -51,7 +51,7 @@ public sealed class AsyncLockTests
             }
         });
 
-        Task.WaitAll(new[] { task1, task2 }, 10_000).ShouldBe(true);
+        Task.WaitAll([task1, task2], 10_000).ShouldBe(true);
     }
 
     [Fact]

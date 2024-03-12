@@ -374,7 +374,7 @@ public sealed class AnsiColorStreamParserTests
 
     private sealed class TestStreamParser : AnsiColorStreamParser
     {
-        public List<IParsedItem> ParsedItems { get; } = new();
+        public List<IParsedItem> ParsedItems { get; } = [];
 
         /// <inheritdoc />
         protected override void OnTextColor(ConsoleColor color)

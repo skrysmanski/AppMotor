@@ -97,7 +97,7 @@ public sealed class CliApplicationTests
         var testTerminal = new TestTerminal();
 
         // Test
-        int exitCode = CliApplication.Run<TestApplication>(new[] { "abc", "def" }, testTerminal);
+        int exitCode = CliApplication.Run<TestApplication>(["abc", "def"], testTerminal);
 
         // Verify
         exitCode.ShouldBe(42, testTerminal.CurrentOutput);
@@ -111,7 +111,7 @@ public sealed class CliApplicationTests
         var testTerminal = new TestTerminal();
 
         //  Test
-        int exitCode = await CliApplication.RunAsync<TestApplication>(new[] { "abc", "def" }, testTerminal);
+        int exitCode = await CliApplication.RunAsync<TestApplication>(["abc", "def"], testTerminal);
 
         // Verify
         exitCode.ShouldBe(42, testTerminal.CurrentOutput);
@@ -170,7 +170,7 @@ public sealed class CliApplicationTests
         using var cts = new CancellationTokenSource();
 
         // Test
-        int exitCode = testApp.Run(new[] { "abc", "def" }, cts.Token);
+        int exitCode = testApp.Run(["abc", "def"], cts.Token);
 
         // Verify
         exitCode.ShouldBe(42, testTerminal.CurrentOutput);
@@ -230,7 +230,7 @@ public sealed class CliApplicationTests
         using var cts = new CancellationTokenSource();
 
         // Test
-        int exitCode = await testApp.RunAsync(new[] { "abc", "def" }, cts.Token);
+        int exitCode = await testApp.RunAsync(["abc", "def"], cts.Token);
 
         // Verify
         exitCode.ShouldBe(42, testTerminal.CurrentOutput);

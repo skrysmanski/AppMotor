@@ -25,9 +25,9 @@ public class ReadOnlyMemoryStream : ReadOnlyStream
     {
         if (buffer.Array is null)
         {
-            if (buffer.Offset == 0 && buffer.Count == 0)
+            if (buffer is { Offset: 0, Count: 0 })
             {
-                return new MemoryStream(Array.Empty<byte>(), 0, 0, writable: false);
+                return new MemoryStream([], 0, 0, writable: false);
             }
             else
             {

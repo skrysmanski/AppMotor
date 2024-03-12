@@ -24,12 +24,7 @@ public sealed class TestLoggerStatistics
     {
         lock (this._logEntryCounts)
         {
-            if (this._logEntryCounts.TryGetValue(logLevel, out var count))
-            {
-                return count;
-            }
-
-            return 0;
+            return this._logEntryCounts.GetValueOrDefault(logLevel, defaultValue: 0);
         }
     }
 

@@ -285,7 +285,7 @@ public sealed class ITerminalWriterTests
         /// <inheritdoc />
         public bool EnableColors { get; set; } = true;
 
-        public List<string?> WriteCalls { get; } = new();
+        public List<string?> WriteCalls { get; } = [];
 
         /// <inheritdoc />
         public void Write(string? value)

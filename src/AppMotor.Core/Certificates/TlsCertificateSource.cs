@@ -21,8 +21,9 @@ namespace AppMotor.Core.Certificates;
 public abstract class TlsCertificateSource
 {
     // NOTE: Strangely enough, these magic numbers also seem to be used by .pfx files.
-    private static readonly byte[] PFX_MAGIC_NUMBER = { 0x30, 0x82 };
+    private static readonly byte[] PFX_MAGIC_NUMBER = [0x30, 0x82];
 
+    // ReSharper disable once UseUtf8StringLiteral
     private static readonly byte[] PEM_MAGIC_NUMBER = Encoding.ASCII.GetBytes("-----BEGIN ");
 
     /// <summary>

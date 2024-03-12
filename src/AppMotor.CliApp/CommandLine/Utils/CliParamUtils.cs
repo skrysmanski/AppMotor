@@ -108,12 +108,10 @@ public static class CliParamUtils
 
         foreach (var cliParamName in cliParam.Names)
         {
-            if (allParamNames.Contains(cliParamName))
+            if (!allParamNames.Add(cliParamName))
             {
                 throw new InvalidOperationException($"There are multiple parameters with name '{cliParamName}'.");
             }
-
-            allParamNames.Add(cliParamName);
         }
 
         alreadyFoundCliParams.Add(cliParam);

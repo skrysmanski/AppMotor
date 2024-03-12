@@ -23,7 +23,7 @@ public static class HResultInfo
 
         var fieldInfos = typeof(HResults).GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
 
-        foreach (var fieldInfo in fieldInfos.Where(fi => fi.IsLiteral && !fi.IsInitOnly))
+        foreach (var fieldInfo in fieldInfos.Where(fi => fi is { IsLiteral: true, IsInitOnly: false }))
         {
             int hResult = (int)fieldInfo.GetRawConstantValue()!;
             hResultNames[hResult] = fieldInfo.Name;
@@ -33,7 +33,7 @@ public static class HResultInfo
     }
 
     /// <summary>
-    /// Returns the name for the specified value, if it has a name. Otherwise
+    /// Returns the name for the specified value, if it has a name. Otherwise,
     /// <c>null</c> will be returned.
     /// </summary>
     [PublicAPI, Pure]

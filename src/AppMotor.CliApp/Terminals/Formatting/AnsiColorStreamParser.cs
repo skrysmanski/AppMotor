@@ -25,7 +25,7 @@ public abstract class AnsiColorStreamParser : AnsiStreamParser
     /// Note that this is implemented as member variable rather than local variable
     /// to save on the allocation.
     /// </summary>
-    private readonly List<Range> _curParamRanges = new();
+    private readonly List<Range> _curParamRanges = [];
 
     /// <summary>
     /// Called when the text/foreground color should be set the specified 4 bit color.
@@ -33,7 +33,7 @@ public abstract class AnsiColorStreamParser : AnsiStreamParser
     protected abstract void OnTextColor(ConsoleColor color);
 
     /// <summary>
-    /// Called when the text/foreground color should be set the specified 8 bit color.
+    /// Called when the text/foreground color should be set the specified 8-bit color.
     /// Note that for the values 0 - 15, <see cref="OnTextColor(System.ConsoleColor)"/>
     /// is called instead.
     /// </summary>
@@ -52,7 +52,7 @@ public abstract class AnsiColorStreamParser : AnsiStreamParser
     protected abstract void OnBackgroundColor(ConsoleColor color);
 
     /// <summary>
-    /// Called when the background color should be set the specified 8 bit color.
+    /// Called when the background color should be set the specified 8-bit color.
     /// Note that for the values 0 - 15, <see cref="OnBackgroundColor(System.ConsoleColor)"/>
     /// is called instead.
     /// </summary>
@@ -69,7 +69,7 @@ public abstract class AnsiColorStreamParser : AnsiStreamParser
     /// Called when the text/foreground and/or background color should be reset to its default.
     /// </summary>
     /// <remarks>
-    /// If the ANSI escape sequence is "ESC[0m" (reset all colors and formatting), <see cref="OnNonColorAnsiEscapeSequence"/>
+    /// If the ANSI escape sequence is <c>ESC[0m</c> (reset all colors and formatting), <see cref="OnNonColorAnsiEscapeSequence"/>
     /// will be called additionally to this method.
     /// </remarks>
     protected abstract void OnResetColors(bool resetForegroundColor, bool resetBackgroundColor);
@@ -81,7 +81,7 @@ public abstract class AnsiColorStreamParser : AnsiStreamParser
     /// <param name="escapeSequenceContents">The content/parameter of the ANSI sequence, i.e. without the escape
     /// sequence prefix (<c>\x1B[</c>) and postfix (<c>m</c>).</param>
     /// <remarks>
-    /// This method will be called for the sequence "ESC[0m" (reset all colors and formatting) additionally to
+    /// This method will be called for the sequence <c>ESC[0m</c> (reset all colors and formatting) additionally to
     /// <see cref="OnResetColors"/>.
     /// </remarks>
     protected abstract void OnNonColorAnsiEscapeSequence(ReadOnlySpan<char> escapeSequenceContents);
@@ -139,7 +139,7 @@ public abstract class AnsiColorStreamParser : AnsiStreamParser
                             var colorType = TryParseColorTypeParameter(escapeSequenceContents, ref index);
                             switch (colorType)
                             {
-                                case 5: // 8 bit color
+                                case 5: // 8-bit color
                                     var colorIndex = TryParse8BitColor(escapeSequenceContents, ref index);
                                     if (colorIndex is null)
                                     {
@@ -181,7 +181,7 @@ public abstract class AnsiColorStreamParser : AnsiStreamParser
                             var colorType = TryParseColorTypeParameter(escapeSequenceContents, ref index);
                             switch (colorType)
                             {
-                                case 5: // 8 bit color
+                                case 5: // 8-bit color
                                     var colorIndex = TryParse8BitColor(escapeSequenceContents, ref index);
                                     if (colorIndex is null)
                                     {
@@ -426,7 +426,7 @@ public abstract class AnsiColorStreamParser : AnsiStreamParser
     /// Returns <c>null</c> otherwise.
     /// </summary>
     /// <remarks>
-    /// This method is a tad faster than <see cref="char.IsDigit(char)"/>. Also it returns
+    /// This method is a tad faster than <see cref="char.IsDigit(char)"/>. Also, it returns
     /// <c>true</c> only for the digits 0 - 9 - not for any other digit character (unlike
     /// <see cref="char.IsDigit(char)"/>).
     /// </remarks>

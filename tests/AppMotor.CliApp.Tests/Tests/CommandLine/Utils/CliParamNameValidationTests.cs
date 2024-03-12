@@ -159,6 +159,6 @@ public sealed class CliParamNameValidationTests
 
     private static IEnumerable<object?[]> CreateTestDataWith(string? paramName, CliParamTypes paramType, bool allowReservedParamName, CliParamNameValidityCheckResults expectedResult)
     {
-        yield return new object?[] { paramName, paramType, allowReservedParamName, expectedResult };
+        yield return [paramName, paramType, allowReservedParamName, expectedResult];
     }
 }
