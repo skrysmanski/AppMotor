@@ -28,7 +28,7 @@ public static class TypeExtensions
     /// </remarks>
     /// <seealso cref="IsNumericIntegerType"/>
     /// <seealso cref="IsNumericFloatType"/>
-    [PublicAPI, Pure]
+    [MustUseReturnValue]
     public static bool IsNumericType(this Type type)
     {
         Validate.ArgumentWithName(nameof(type)).IsNotNull(type);
@@ -67,7 +67,7 @@ public static class TypeExtensions
     /// </remarks>
     /// <seealso cref="IsNumericType"/>
     /// <seealso cref="IsNumericFloatType"/>
-    [PublicAPI, Pure]
+    [MustUseReturnValue]
     public static bool IsNumericIntegerType(this Type type)
     {
         Validate.ArgumentWithName(nameof(type)).IsNotNull(type);
@@ -101,7 +101,7 @@ public static class TypeExtensions
     /// </remarks>
     /// <seealso cref="IsNumericIntegerType"/>
     /// <seealso cref="IsNumericType"/>
-    [PublicAPI, Pure]
+    [MustUseReturnValue]
     public static bool IsNumericFloatType(this Type type)
     {
         Validate.ArgumentWithName(nameof(type)).IsNotNull(type);
@@ -123,7 +123,7 @@ public static class TypeExtensions
     /// all reference types and for all nullable value types.
     /// </summary>
     /// <seealso cref="IsNullableValueType"/>
-    [PublicAPI, Pure]
+    [PublicAPI, MustUseReturnValue]
     [Obsolete("Nullable and non-nullable reference types (available since C# 8) can't be differentiated this way. " +
               "As such this method may return 'true' even for non-nullable reference type. " +
               "Because of this, it's no longer advisable to use this method.")]
@@ -138,7 +138,7 @@ public static class TypeExtensions
     /// Returns whether this is a nullable value type.
     /// </summary>
     /// <seealso cref="IsNullableType"/>
-    [PublicAPI, Pure]
+    [MustUseReturnValue]
     public static bool IsNullableValueType(this Type type)
     {
         Validate.ArgumentWithName(nameof(type)).IsNotNull(type);
@@ -156,7 +156,7 @@ public static class TypeExtensions
     /// Unlike <see cref="Type.IsAssignableFrom"/>, the parameter <paramref name="typeToCheck"/>
     /// can't be <c>null</c> here.
     /// </remarks>
-    [PublicAPI, Pure]
+    [MustUseReturnValue]
     public static bool Is<TBaseType>(this Type typeToCheck)
     {
         return typeToCheck.Is(typeof(TBaseType));
@@ -172,7 +172,7 @@ public static class TypeExtensions
     /// Unlike <see cref="Type.IsAssignableFrom"/>, the parameter <paramref name="typeToCheck"/>
     /// can't be <c>null</c> here.
     /// </remarks>
-    [PublicAPI, Pure]
+    [MustUseReturnValue]
     public static bool Is(this Type typeToCheck, Type baseType)
     {
         Validate.ArgumentWithName(nameof(typeToCheck)).IsNotNull(typeToCheck);
