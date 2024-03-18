@@ -14,70 +14,82 @@ namespace AppMotor.Core.Tests.Extensions;
 
 public sealed class TypeExtensionsTests
 {
-    [Fact]
-    public void Test_IsNumericType()
+    [Theory]
+    [InlineData(typeof(string),     false)]
+    [InlineData(typeof(char),       false)]
+    [InlineData(typeof(bool),       false)]
+    [InlineData(typeof(IntPtr),     false)]
+    [InlineData(typeof(UIntPtr),    false)]
+    [InlineData(typeof(byte),       true)]
+    [InlineData(typeof(sbyte),      true)]
+    [InlineData(typeof(short),      true)]
+    [InlineData(typeof(ushort),     true)]
+    [InlineData(typeof(int),        true)]
+    [InlineData(typeof(uint),       true)]
+    [InlineData(typeof(long),       true)]
+    [InlineData(typeof(ulong),      true)]
+    [InlineData(typeof(Int128),     true)]
+    [InlineData(typeof(UInt128),    true)]
+    [InlineData(typeof(BigInteger), true)]
+    [InlineData(typeof(float),      true)]
+    [InlineData(typeof(double),     true)]
+    [InlineData(typeof(Half),       true)]
+    [InlineData(typeof(decimal),    true)]
+    public void Test_IsNumericType(Type type, bool expectedResult)
     {
-        typeof(string).IsNumericType().ShouldBe(false);
-        typeof(char).IsNumericType().ShouldBe(false);
-
-        typeof(byte).IsNumericType().ShouldBe(true);
-        typeof(sbyte).IsNumericType().ShouldBe(true);
-        typeof(short).IsNumericType().ShouldBe(true);
-        typeof(ushort).IsNumericType().ShouldBe(true);
-        typeof(int).IsNumericType().ShouldBe(true);
-        typeof(uint).IsNumericType().ShouldBe(true);
-        typeof(long).IsNumericType().ShouldBe(true);
-        typeof(ulong).IsNumericType().ShouldBe(true);
-
-        typeof(float).IsNumericType().ShouldBe(true);
-        typeof(double).IsNumericType().ShouldBe(true);
-        typeof(decimal).IsNumericType().ShouldBe(true);
-
-        typeof(BigInteger).IsNumericType().ShouldBe(true);
+        type.IsNumericType().ShouldBe(expectedResult);
     }
 
-    [Fact]
-    public void Test_IsNumericIntegerType()
+    [Theory]
+    [InlineData(typeof(string),     false)]
+    [InlineData(typeof(char),       false)]
+    [InlineData(typeof(bool),       false)]
+    [InlineData(typeof(IntPtr),     false)]
+    [InlineData(typeof(UIntPtr),    false)]
+    [InlineData(typeof(byte),       true)]
+    [InlineData(typeof(sbyte),      true)]
+    [InlineData(typeof(short),      true)]
+    [InlineData(typeof(ushort),     true)]
+    [InlineData(typeof(int),        true)]
+    [InlineData(typeof(uint),       true)]
+    [InlineData(typeof(long),       true)]
+    [InlineData(typeof(ulong),      true)]
+    [InlineData(typeof(Int128),     true)]
+    [InlineData(typeof(UInt128),    true)]
+    [InlineData(typeof(BigInteger), true)]
+    [InlineData(typeof(float),      false)]
+    [InlineData(typeof(double),     false)]
+    [InlineData(typeof(Half),       false)]
+    [InlineData(typeof(decimal),    false)]
+    public void Test_IsNumericIntegerType(Type type, bool expectedResult)
     {
-        typeof(string).IsNumericIntegerType().ShouldBe(false);
-        typeof(char).IsNumericIntegerType().ShouldBe(false);
-
-        typeof(byte).IsNumericIntegerType().ShouldBe(true);
-        typeof(sbyte).IsNumericIntegerType().ShouldBe(true);
-        typeof(short).IsNumericIntegerType().ShouldBe(true);
-        typeof(ushort).IsNumericIntegerType().ShouldBe(true);
-        typeof(int).IsNumericIntegerType().ShouldBe(true);
-        typeof(uint).IsNumericIntegerType().ShouldBe(true);
-        typeof(long).IsNumericIntegerType().ShouldBe(true);
-        typeof(ulong).IsNumericIntegerType().ShouldBe(true);
-
-        typeof(float).IsNumericIntegerType().ShouldBe(false);
-        typeof(double).IsNumericIntegerType().ShouldBe(false);
-        typeof(decimal).IsNumericIntegerType().ShouldBe(false);
-
-        typeof(BigInteger).IsNumericIntegerType().ShouldBe(true);
+        type.IsNumericIntegerType().ShouldBe(expectedResult);
     }
 
-    [Fact]
-    public void Test_IsNumericFloatType()
+    [Theory]
+    [InlineData(typeof(string),     false)]
+    [InlineData(typeof(char),       false)]
+    [InlineData(typeof(bool),       false)]
+    [InlineData(typeof(IntPtr),     false)]
+    [InlineData(typeof(UIntPtr),    false)]
+    [InlineData(typeof(byte),       false)]
+    [InlineData(typeof(sbyte),      false)]
+    [InlineData(typeof(short),      false)]
+    [InlineData(typeof(ushort),     false)]
+    [InlineData(typeof(int),        false)]
+    [InlineData(typeof(uint),       false)]
+    [InlineData(typeof(long),       false)]
+    [InlineData(typeof(ulong),      false)]
+    [InlineData(typeof(Int128),     false)]
+    [InlineData(typeof(UInt128),    false)]
+    [InlineData(typeof(BigInteger), false)]
+    [InlineData(typeof(float),      true)]
+    [InlineData(typeof(double),     true)]
+    [InlineData(typeof(Half),       true)]
+    [InlineData(typeof(decimal),    true)]
+    public void Test_IsNumericFloatType(Type type, bool expectedResult)
     {
-        typeof(string).IsNumericFloatType().ShouldBe(false);
-        typeof(char).IsNumericFloatType().ShouldBe(false);
-
-        typeof(byte).IsNumericFloatType().ShouldBe(false);
-        typeof(sbyte).IsNumericFloatType().ShouldBe(false);
-        typeof(short).IsNumericFloatType().ShouldBe(false);
-        typeof(ushort).IsNumericFloatType().ShouldBe(false);
-        typeof(int).IsNumericFloatType().ShouldBe(false);
-        typeof(uint).IsNumericFloatType().ShouldBe(false);
-        typeof(long).IsNumericFloatType().ShouldBe(false);
-        typeof(ulong).IsNumericFloatType().ShouldBe(false);
-
-        typeof(float).IsNumericFloatType().ShouldBe(true);
-        typeof(double).IsNumericFloatType().ShouldBe(true);
-        typeof(decimal).IsNumericFloatType().ShouldBe(true);
-
-        typeof(BigInteger).IsNumericFloatType().ShouldBe(false);
+        type.IsNumericFloatType().ShouldBe(expectedResult);
     }
 
     [Fact]

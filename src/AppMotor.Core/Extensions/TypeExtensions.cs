@@ -21,11 +21,6 @@ public static class TypeExtensions
     /// and <c>sbyte</c> as well as <see cref="BigInteger"/>. However, <see cref="Complex"/>
     /// is excluded.
     /// </summary>
-    /// <remarks>
-    /// This method checks the type's full name but ignores the type's assembly. It's therefor
-    /// not 100% foolproof. However, the chance that someone recreates one of the system types
-    /// which then should not be a numeric value is rather slim (or even impossible?).
-    /// </remarks>
     /// <seealso cref="IsNumericIntegerType"/>
     /// <seealso cref="IsNumericFloatType"/>
     [MustUseReturnValue]
@@ -33,38 +28,55 @@ public static class TypeExtensions
     {
         Validate.ArgumentWithName(nameof(type)).IsNotNull(type);
 
-        switch (type.FullName)
+        if (type.IsPrimitive)
         {
-            case "System.Byte":
-            case "System.SByte":
-            case "System.Int16":
-            case "System.UInt16":
-            case "System.Int32":
-            case "System.UInt32":
-            case "System.Int64":
-            case "System.UInt64":
-            case "System.Numerics.BigInteger":
-                return true;
+            switch (type.FullName)
+            {
+                case "System.Byte":
+                case "System.SByte":
+                case "System.Int16":
+                case "System.UInt16":
+                case "System.Int32":
+                case "System.UInt32":
+                case "System.Int64":
+                case "System.UInt64":
+                    return true;
 
-            case "System.Single":
-            case "System.Double":
-            case "System.Decimal":
-                return true;
+                case "System.Single":
+                case "System.Double":
+                    return true;
 
-            default:
-                return false;
+                default:
+                    return false;
+            }
+        }
+        else if (type.IsValueType)
+        {
+            switch (type.FullName)
+            {
+                case "System.Int128":
+                case "System.UInt128":
+                case "System.Numerics.BigInteger":
+                    return true;
+
+                case "System.Half":
+                case "System.Decimal":
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+        else
+        {
+            return false;
         }
     }
 
     /// <summary>
-    /// Returns whether this type is an integer type. This list includes <c>byte</c>
-    /// and <c>sbyte</c> as well as <see cref="BigInteger"/>.
+    /// Returns whether this type is an integer type. This list includes <c>byte</c>, <c>sbyte</c>, <see cref="BigInteger"/>,
+    /// <c>Int128</c>, and <c>UInt128</c>.
     /// </summary>
-    /// <remarks>
-    /// This method checks the type's full name but ignores the type's assembly. It's therefor
-    /// not 100% foolproof. However, the chance that someone recreates one of the system types
-    /// which then should not be a numeric value is rather slim (or even impossible?).
-    /// </remarks>
     /// <seealso cref="IsNumericType"/>
     /// <seealso cref="IsNumericFloatType"/>
     [MustUseReturnValue]
@@ -72,33 +84,47 @@ public static class TypeExtensions
     {
         Validate.ArgumentWithName(nameof(type)).IsNotNull(type);
 
-        switch (type.FullName)
+        if (type.IsPrimitive)
         {
-            case "System.Byte":
-            case "System.SByte":
-            case "System.Int16":
-            case "System.UInt16":
-            case "System.Int32":
-            case "System.UInt32":
-            case "System.Int64":
-            case "System.UInt64":
-            case "System.Numerics.BigInteger":
-                return true;
+            switch (type.FullName)
+            {
+                case "System.Byte":
+                case "System.SByte":
+                case "System.Int16":
+                case "System.UInt16":
+                case "System.Int32":
+                case "System.UInt32":
+                case "System.Int64":
+                case "System.UInt64":
+                    return true;
 
-            default:
-                return false;
+                default:
+                    return false;
+            }
+        }
+        else if (type.IsValueType)
+        {
+            switch (type.FullName)
+            {
+                case "System.Int128":
+                case "System.UInt128":
+                case "System.Numerics.BigInteger":
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+        else
+        {
+            return false;
         }
     }
 
     /// <summary>
     /// Returns whether this type is a floating point type. This list includes <c>float</c>,
-    /// <c>double</c> and <c>decimal</c>.
+    /// <c>double</c>, <c>decimal</c>, and <c>Half</c>.
     /// </summary>
-    /// <remarks>
-    /// This method checks the type's full name but ignores the type's assembly. It's therefor
-    /// not 100% foolproof. However, the chance that someone recreates one of the system types
-    /// which then should not be a numeric value is rather slim (or even impossible?).
-    /// </remarks>
     /// <seealso cref="IsNumericIntegerType"/>
     /// <seealso cref="IsNumericType"/>
     [MustUseReturnValue]
@@ -106,15 +132,33 @@ public static class TypeExtensions
     {
         Validate.ArgumentWithName(nameof(type)).IsNotNull(type);
 
-        switch (type.FullName)
+        if (type.IsPrimitive)
         {
-            case "System.Single":
-            case "System.Double":
-            case "System.Decimal":
-                return true;
+            switch (type.FullName)
+            {
+                case "System.Single":
+                case "System.Double":
+                    return true;
 
-            default:
-                return false;
+                default:
+                    return false;
+            }
+        }
+        else if (type.IsValueType)
+        {
+            switch (type.FullName)
+            {
+                case "System.Half":
+                case "System.Decimal":
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+        else
+        {
+            return false;
         }
     }
 
