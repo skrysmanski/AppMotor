@@ -21,12 +21,24 @@ public static class TypeExtensions
     /// and <c>sbyte</c> as well as <see cref="BigInteger"/>. However, <see cref="Complex"/>
     /// is excluded.
     /// </summary>
+    /// <param name="type">The type to check</param>
+    /// <param name="includeNullables">Whether this method should return <c>true</c> for nullable
+    /// number types as well. If <c>true</c>, this method will return <c>true</c> for <c>int?</c>.
+    /// If <c>false</c>, it will return <c>false</c> in this case.</param>
     /// <seealso cref="IsNumericIntegerType"/>
     /// <seealso cref="IsNumericFloatType"/>
     [MustUseReturnValue]
-    public static bool IsNumericType(this Type type)
+    public static bool IsNumericType(this Type type, bool includeNullables)
     {
-        Validate.ArgumentWithName(nameof(type)).IsNotNull(type);
+        // Check if the type is a nullable value type and use the underlying type for the check.
+        if (includeNullables && type.IsValueType)
+        {
+            var underlyingType = Nullable.GetUnderlyingType(type);
+            if (underlyingType is not null)
+            {
+                return underlyingType.IsNumericType(includeNullables: false);
+            }
+        }
 
         if (type.IsPrimitive)
         {
@@ -77,12 +89,24 @@ public static class TypeExtensions
     /// Returns whether this type is an integer type. This list includes <c>byte</c>, <c>sbyte</c>, <see cref="BigInteger"/>,
     /// <c>Int128</c>, and <c>UInt128</c>.
     /// </summary>
+    /// <param name="type">The type to check</param>
+    /// <param name="includeNullables">Whether this method should return <c>true</c> for nullable
+    /// number types as well. If <c>true</c>, this method will return <c>true</c> for <c>int?</c>.
+    /// If <c>false</c>, it will return <c>false</c> in this case.</param>
     /// <seealso cref="IsNumericType"/>
     /// <seealso cref="IsNumericFloatType"/>
     [MustUseReturnValue]
-    public static bool IsNumericIntegerType(this Type type)
+    public static bool IsNumericIntegerType(this Type type, bool includeNullables)
     {
-        Validate.ArgumentWithName(nameof(type)).IsNotNull(type);
+        // Check if the type is a nullable value type and use the underlying type for the check.
+        if (includeNullables && type.IsValueType)
+        {
+            var underlyingType = Nullable.GetUnderlyingType(type);
+            if (underlyingType is not null)
+            {
+                return underlyingType.IsNumericType(includeNullables: false);
+            }
+        }
 
         if (type.IsPrimitive)
         {
@@ -125,12 +149,24 @@ public static class TypeExtensions
     /// Returns whether this type is a floating point type. This list includes <c>float</c>,
     /// <c>double</c>, <c>decimal</c>, and <c>Half</c>.
     /// </summary>
+    /// <param name="type">The type to check</param>
+    /// <param name="includeNullables">Whether this method should return <c>true</c> for nullable
+    /// number types as well. If <c>true</c>, this method will return <c>true</c> for <c>int?</c>.
+    /// If <c>false</c>, it will return <c>false</c> in this case.</param>
     /// <seealso cref="IsNumericIntegerType"/>
     /// <seealso cref="IsNumericType"/>
     [MustUseReturnValue]
-    public static bool IsNumericFloatType(this Type type)
+    public static bool IsNumericFloatType(this Type type, bool includeNullables)
     {
-        Validate.ArgumentWithName(nameof(type)).IsNotNull(type);
+        // Check if the type is a nullable value type and use the underlying type for the check.
+        if (includeNullables && type.IsValueType)
+        {
+            var underlyingType = Nullable.GetUnderlyingType(type);
+            if (underlyingType is not null)
+            {
+                return underlyingType.IsNumericType(includeNullables: false);
+            }
+        }
 
         if (type.IsPrimitive)
         {

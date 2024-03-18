@@ -67,7 +67,7 @@ public static class LoggableValues
                 typeToCheck = underlyingType;
             }
 
-            if (typeToCheck.IsNumericType())
+            if (typeToCheck.IsNumericType(includeNullables: true))
             {
                 return true;
             }

@@ -37,7 +37,14 @@ public sealed class TypeExtensionsTests
     [InlineData(typeof(decimal),    true)]
     public void Test_IsNumericType(Type type, bool expectedResult)
     {
-        type.IsNumericType().ShouldBe(expectedResult);
+        type.IsNumericType(includeNullables: false).ShouldBe(expectedResult);
+
+        if (expectedResult)
+        {
+            var nullableType = typeof(Nullable<>).MakeGenericType(type);
+            nullableType.IsNumericType(includeNullables: false).ShouldBe(false);
+            nullableType.IsNumericType(includeNullables: true).ShouldBe(true);
+        }
     }
 
     [Theory]
@@ -63,7 +70,14 @@ public sealed class TypeExtensionsTests
     [InlineData(typeof(decimal),    false)]
     public void Test_IsNumericIntegerType(Type type, bool expectedResult)
     {
-        type.IsNumericIntegerType().ShouldBe(expectedResult);
+        type.IsNumericIntegerType(includeNullables: false).ShouldBe(expectedResult);
+
+        if (expectedResult)
+        {
+            var nullableType = typeof(Nullable<>).MakeGenericType(type);
+            nullableType.IsNumericIntegerType(includeNullables: false).ShouldBe(false);
+            nullableType.IsNumericIntegerType(includeNullables: true).ShouldBe(true);
+        }
     }
 
     [Theory]
@@ -89,7 +103,14 @@ public sealed class TypeExtensionsTests
     [InlineData(typeof(decimal),    true)]
     public void Test_IsNumericFloatType(Type type, bool expectedResult)
     {
-        type.IsNumericFloatType().ShouldBe(expectedResult);
+        type.IsNumericFloatType(includeNullables: false).ShouldBe(expectedResult);
+
+        if (expectedResult)
+        {
+            var nullableType = typeof(Nullable<>).MakeGenericType(type);
+            nullableType.IsNumericFloatType(includeNullables: false).ShouldBe(false);
+            nullableType.IsNumericFloatType(includeNullables: true).ShouldBe(true);
+        }
     }
 
     [Fact]
