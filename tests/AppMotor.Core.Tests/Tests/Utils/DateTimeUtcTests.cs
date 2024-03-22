@@ -4,6 +4,7 @@
 using System.Globalization;
 using System.Text.Json;
 
+using AppMotor.Core.Extensions;
 using AppMotor.Core.Utils;
 using AppMotor.TestCore;
 using AppMotor.TestCore.Shouldly;
@@ -278,6 +279,7 @@ public sealed class DateTimeUtcTests
         dateTimeUtc.ToString().ShouldBe(now.ToString());
         dateTimeUtc.ToString(null).ShouldBe(now.ToString((string?)null));
         dateTimeUtc.ToString(null, null).ShouldBe(now.ToString(null, null));
+        dateTimeUtc.ToString("o").ShouldBe(now.ToStringIC("yyyy-MM-ddTHH:mm:ss.fffffffZ"));
     }
 
     [Fact]
