@@ -97,10 +97,10 @@ public static class ExceptionExtensions
     /// <see cref="AggregateException"/>s no matter how many exceptions actually occurred.</para>
     /// </summary>
     /// <param name="aggregateException">The exception to unroll</param>
-    /// <param name="deepUnroll">If <c>true</c> and the only inner exception is also a
+    /// <param name="deepUnroll">If <c>true</c> and the only inner exception is also an
     /// <seealso cref="AggregateException"/>, this inner exception will also be unrolled (and so forth).
     /// If <c>false</c>, only this exception will be unrolled. In case of doubt, use <c>false</c> and
-    /// change it to <c>true</c> if see the need.</param>
+    /// change it to <c>true</c> if you see the need.</param>
     /// <param name="preventUnrollingOnExistingExceptionData">When unrolling, should existing exception
     /// data (<see cref="Exception.Data"/>) prevent unrolling (<c>true</c>; the default). The reasoning
     /// here is that if the <see cref="AggregateException"/> itself contains exception data, it would
@@ -148,6 +148,47 @@ public static class ExceptionExtensions
         else
         {
             return onlyInnerException;
+        }
+    }
+
+    /// <summary>
+    /// Returns the innermost exception(s), i.e. the exception(s) that don't have any inner exceptions.
+    /// Note that because <see cref="AggregateException"/>s can have more than one inner exception, this
+    /// method may return more than one innermost exception.
+    /// </summary>
+    [PublicAPI, MustUseReturnValue]
+    public static IEnumerable<Exception> GetInnerMostExceptions(this Exception exception)
+    {
+        if (exception is AggregateException aggregateException)
+        {
+            if (aggregateException.InnerExceptions.Count == 0)
+            {
+                yield return aggregateException;
+            }
+            else
+            {
+                foreach (var innerException in aggregateException.InnerExceptions)
+                {
+                    foreach (var innerMostExceptions in innerException.GetInnerMostExceptions())
+                    {
+                        yield return innerMostExceptions;
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (exception.InnerException is null)
+            {
+                yield return exception;
+            }
+            else
+            {
+                foreach (var innerMostException in exception.InnerException.GetInnerMostExceptions())
+                {
+                    yield return innerMostException;
+                }
+            }
         }
     }
 }
