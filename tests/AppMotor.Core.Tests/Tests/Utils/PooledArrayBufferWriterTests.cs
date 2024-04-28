@@ -44,6 +44,7 @@ public sealed class PooledArrayBufferWriterTests
         bufferWriter.WrittenSpan.Length.ShouldBe(3);
 
         // Dispose tests
+        // ReSharper disable once DisposeOnUsingVariable
         bufferWriter.Dispose();
 
         Should.Throw<ObjectDisposedException>(() => bufferWriter.GetSpan());
@@ -55,6 +56,7 @@ public sealed class PooledArrayBufferWriterTests
         Should.Throw<ObjectDisposedException>(() => bufferWriter.WrittenMemory);
         Should.Throw<ObjectDisposedException>(() => bufferWriter.WrittenSpan.Length);
 
+        // ReSharper disable once DisposeOnUsingVariable
         bufferWriter.Dispose(); // should not throw
     }
 
