@@ -227,6 +227,40 @@ public static class TypeExtensions
     }
 
     /// <summary>
+    /// Returns the item type if this type is a collection (i.e. inheriting from <see cref="IEnumerable{T}"/>).
+    /// Returns <c>null</c> if this type is not a collection type or not a generic collection type.
+    /// </summary>
+    /// <exception cref="AmbiguousMatchException">Thrown if this type implements <see cref="IEnumerable{T}"/> multiple
+    /// times with different type arguments.</exception>
+    [MustUseReturnValue]
+    public static Type? GetCollectionItemType(this Type type)
+    {
+        var implementedIEnumerableInterfaceTypes = type.FindInterfaces(FindInterfacesFilter, null);
+
+        if (implementedIEnumerableInterfaceTypes.Length == 0)
+        {
+            // Not implemented.
+            return null;
+        }
+        else if (implementedIEnumerableInterfaceTypes.Length == 1)
+        {
+            return implementedIEnumerableInterfaceTypes[0].GetGenericArguments()[0];
+        }
+        else
+        {
+            // NOTE: Getting here is possible but doesn't really make sense because both "implementations"
+            //   would share the non-generic IEnumerable implementation - and which type would be returned
+            //   in this case?
+            throw new AmbiguousMatchException($"The type '{type}' implements 'IEnumerable<T>' multiple times with different type arguments.");
+        }
+
+        static bool FindInterfacesFilter(Type interfaceTypeToCheck, object? criteria)
+        {
+            return interfaceTypeToCheck.IsGenericType && interfaceTypeToCheck.GetGenericTypeDefinition() == typeof(IEnumerable<>);
+        }
+    }
+
+    /// <summary>
     /// This method does the same as <see cref="Type.IsAssignableFrom"/>. However,
     /// <c>IsAssignableFrom</c> is often very confusing because it swaps the order
     /// of base type and child type when compared to <c>is</c> checks. This method

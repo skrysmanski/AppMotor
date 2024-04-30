@@ -3,6 +3,7 @@
 
 using System.Collections;
 using System.Numerics;
+using System.Reflection;
 
 using AppMotor.Core.DataModel;
 using AppMotor.Core.Extensions;
@@ -223,6 +224,22 @@ public sealed class TypeExtensionsTests
     private struct GenericStructA<TValue> : IGenericTestInterface<TValue>
     {
         public void DoSomething(TValue value) => throw new NotSupportedException();
+    }
+
+    [Fact]
+    public void Test_GetCollectionItemType()
+    {
+        typeof(List<string>).GetCollectionItemType().ShouldBe(typeof(string));
+        typeof(IReadOnlyCollection<int>).GetCollectionItemType().ShouldBe(typeof(int));
+
+        typeof(StringComparer).GetCollectionItemType().ShouldBe(null);
+
+        Should.Throw<AmbiguousMatchException>(() => typeof(MultiIEnumerableTestClass).GetCollectionItemType());
+    }
+
+    private class MultiIEnumerableTestClass : List<int>, IEnumerable<string>
+    {
+        public new IEnumerator<string> GetEnumerator() => throw new NotSupportedException();
     }
 
     [Theory]
