@@ -359,6 +359,8 @@ public static class TypeExtensions
 
                     baseType = baseType.BaseType;
                 }
+
+                return false;
             }
         }
 

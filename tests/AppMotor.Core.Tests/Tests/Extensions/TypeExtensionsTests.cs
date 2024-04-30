@@ -1,7 +1,6 @@
 ﻿// SPDX-License-Identifier: MIT
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
-using System.Collections;
 using System.Numerics;
 using System.Reflection;
 
@@ -190,13 +189,17 @@ public sealed class TypeExtensionsTests
         typeof(List<>).Is(typeof(IReadOnlyCollection<string>)).ShouldBe(false);
         typeof(List<>).Is(typeof(object)).ShouldBe(true);
         typeof(List<>).Is(typeof(int)).ShouldBe(false);
+        typeof(List<int>).Is(typeof(GenericClassA<>)).ShouldBe(false);
 
         typeof(GenericClassB<int, string>).Is(typeof(IGenericTestInterface<>)).ShouldBe(true);
         typeof(GenericClassB<int, string>).Is(typeof(GenericClassA<>)).ShouldBe(true);
+        typeof(GenericClassC<int, string>).Is(typeof(GenericClassA<>)).ShouldBe(true);
 
         typeof(IGenericTestInterface<>).Is(typeof(object)).ShouldBe(true);
 
         typeof(GenericStructA<string>).Is(typeof(IGenericTestInterface<>)).ShouldBe(true);
+
+        typeof(MultiIEnumerableTestClass).Is(typeof(IEnumerable<>)).ShouldBe(true);
     }
 
     private interface ITestInterface;
@@ -220,6 +223,9 @@ public sealed class TypeExtensionsTests
     {
         public void DoSomething(TValue2 value) => throw new NotSupportedException();
     }
+
+    // For code coverage purposes
+    private class GenericClassC<TValue1, TValue2> : GenericClassB<TValue1, TValue2>;
 
     private struct GenericStructA<TValue> : IGenericTestInterface<TValue>
     {
