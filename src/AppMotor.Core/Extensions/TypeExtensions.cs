@@ -233,6 +233,10 @@ public static class TypeExtensions
     /// aims to be better understandable.
     /// </summary>
     /// <remarks>
+    /// The non-generic version of this method (<see cref="Is"/>) also supports open
+    /// generic types (e.g. <c>IList&lt;&gt;</c> ) for <typeparamref name="TBaseOrInterfaceType"/>.
+    /// </remarks>
+    /// <remarks>
     /// Unlike <see cref="Type.IsAssignableFrom"/>, the parameter <paramref name="typeToCheck"/>
     /// can't be <c>null</c> here.
     /// </remarks>
@@ -249,6 +253,10 @@ public static class TypeExtensions
     /// aims to be better understandable.
     /// </summary>
     /// <remarks>
+    /// This method also supports open generic types (e.g. <c>IList&lt;&gt;</c> ) - both
+    /// for <paramref name="baseOrInterfaceType"/> as well as this type.
+    /// </remarks>
+    /// <remarks>
     /// Unlike <see cref="Type.IsAssignableFrom"/>, the parameter <paramref name="typeToCheck"/>
     /// can't be <c>null</c> here.
     /// </remarks>
@@ -258,7 +266,81 @@ public static class TypeExtensions
         Validate.ArgumentWithName(nameof(typeToCheck)).IsNotNull(typeToCheck);
         Validate.ArgumentWithName(nameof(baseOrInterfaceType)).IsNotNull(baseOrInterfaceType);
 
+        // This includes enums, arrays, and value types.
+        if (baseOrInterfaceType.IsSealed)
+        {
+            return false;
+        }
+
+        if (baseOrInterfaceType.IsGenericTypeDefinition)
+        {
+            //
+            // Open generic type (e.g. "IList<>").
+            //
+            // NOTE: At the time of writing (.NET 8/C# 12) it's NOT possible to have a partially open generics
+            //   (e.g. "IDictionary<string,>").
+            //
+            if (baseOrInterfaceType.IsInterface)
+            {
+                var baseTypeFullName = baseOrInterfaceType.FullName!;
+
+                //
+                // Try "Type.GetInterface()" first, if possible.
+                //
+                // "Type.GetInterface()" doesn't work for nested classes (detectable by the "+" in the type name).
+                if (!baseTypeFullName.Contains('+'))
+                {
+                    try
+                    {
+                        var implementedInterface = typeToCheck.GetInterface(baseTypeFullName);
+                        return implementedInterface?.Assembly == baseOrInterfaceType.Assembly;
+                    }
+                    catch (AmbiguousMatchException)
+                    {
+                        // This type implements multiple interfaces (with either different type arguments or
+                        // from different assemblies) with the same name.
+                        //
+                        // NOTE: Because the search in "Type.GetInterface()" only looks at the type's full name
+                        //   but not at the assembly, we can NOT assume "return true;" in case of this exception
+                        //   (as the exception may be caused by an interface with the same name but from a different
+                        //   assembly).
+                    }
+                }
+
+                //
+                // Use "Type.FindInterfaces()" if "Type.GetInterface()" couldn't be used.
+                //
+                return typeToCheck.FindInterfaces(FindOpenGenericInterfaceFilter, baseOrInterfaceType).Length != 0;
+            }
+            else
+            {
+                var baseType = typeToCheck.BaseType;
+
+                while (baseType is not null && baseType != typeof(object))
+                {
+                    if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == baseOrInterfaceType)
+                    {
+                        return true;
+                    }
+
+                    baseType = baseType.BaseType;
+                }
+            }
+        }
+
         return baseOrInterfaceType.IsAssignableFrom(typeToCheck);
+
+        static bool FindOpenGenericInterfaceFilter(Type interfaceTypeToCheck, object? criteria)
+        {
+            if (!interfaceTypeToCheck.IsGenericType)
+            {
+                // We only get here for open generic types. So if "interfaceTypeToCheck" is not a generic type,
+                // it can't be the type we're looking for.
+                return false;
+            }
+
+            return interfaceTypeToCheck.GetGenericTypeDefinition().Equals(criteria);
+        }
     }
 
     /// <summary>

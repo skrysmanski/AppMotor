@@ -1,10 +1,13 @@
 ﻿// SPDX-License-Identifier: MIT
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
+using System.Collections;
 using System.Numerics;
 
 using AppMotor.Core.DataModel;
 using AppMotor.Core.Extensions;
+
+using JetBrains.Annotations;
 
 using Shouldly;
 
@@ -178,11 +181,49 @@ public sealed class TypeExtensionsTests
         typeof(ClassB).Is(typeof(int)).ShouldBe(false);
     }
 
+    [Fact]
+    public void Test_Is_OpenGeneric()
+    {
+        typeof(List<string>).Is(typeof(IReadOnlyCollection<>)).ShouldBe(true);
+        typeof(List<>).Is(typeof(IReadOnlyCollection<>)).ShouldBe(true);
+        typeof(List<>).Is(typeof(IReadOnlyCollection<string>)).ShouldBe(false);
+        typeof(List<>).Is(typeof(object)).ShouldBe(true);
+        typeof(List<>).Is(typeof(int)).ShouldBe(false);
+
+        typeof(GenericClassB<int, string>).Is(typeof(IGenericTestInterface<>)).ShouldBe(true);
+        typeof(GenericClassB<int, string>).Is(typeof(GenericClassA<>)).ShouldBe(true);
+
+        typeof(IGenericTestInterface<>).Is(typeof(object)).ShouldBe(true);
+
+        typeof(GenericStructA<string>).Is(typeof(IGenericTestInterface<>)).ShouldBe(true);
+    }
+
     private interface ITestInterface;
 
     private class ClassA : ITestInterface;
 
     private class ClassB : ClassA;
+
+    private interface IGenericTestInterface<in T>
+    {
+        [UsedImplicitly] // only required to exist
+        void DoSomething(T value);
+    }
+
+    private class GenericClassA<TValue1> : IGenericTestInterface<TValue1>
+    {
+        public void DoSomething(TValue1 value) => throw new NotSupportedException();
+    }
+
+    private class GenericClassB<TValue1, TValue2> : GenericClassA<TValue1>, IGenericTestInterface<TValue2>
+    {
+        public void DoSomething(TValue2 value) => throw new NotSupportedException();
+    }
+
+    private struct GenericStructA<TValue> : IGenericTestInterface<TValue>
+    {
+        public void DoSomething(TValue value) => throw new NotSupportedException();
+    }
 
     [Theory]
     [InlineData("+",  UnaryOperators.UnaryPlus)]
