@@ -237,9 +237,9 @@ public static class TypeExtensions
     /// can't be <c>null</c> here.
     /// </remarks>
     [MustUseReturnValue]
-    public static bool Is<TBaseType>(this Type typeToCheck)
+    public static bool Is<TBaseOrInterfaceType>(this Type typeToCheck)
     {
-        return typeToCheck.Is(typeof(TBaseType));
+        return typeToCheck.Is(typeof(TBaseOrInterfaceType));
     }
 
     /// <summary>
@@ -253,12 +253,12 @@ public static class TypeExtensions
     /// can't be <c>null</c> here.
     /// </remarks>
     [MustUseReturnValue]
-    public static bool Is(this Type typeToCheck, Type baseType)
+    public static bool Is(this Type typeToCheck, Type baseOrInterfaceType)
     {
         Validate.ArgumentWithName(nameof(typeToCheck)).IsNotNull(typeToCheck);
-        Validate.ArgumentWithName(nameof(baseType)).IsNotNull(baseType);
+        Validate.ArgumentWithName(nameof(baseOrInterfaceType)).IsNotNull(baseOrInterfaceType);
 
-        return baseType.IsAssignableFrom(typeToCheck);
+        return baseOrInterfaceType.IsAssignableFrom(typeToCheck);
     }
 
     /// <summary>
