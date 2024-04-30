@@ -150,11 +150,32 @@ public sealed class TypeExtensionsTests
         typeof(ClassB).Is<ITestInterface>().ShouldBe(true);
         typeof(ClassB).Is(typeof(ITestInterface)).ShouldBe(true);
 
+        typeof(ClassB).Is<ClassA>().ShouldBe(true);
+        typeof(ClassB).Is(typeof(ClassA)).ShouldBe(true);
+
+        typeof(ClassA).Is<ClassB>().ShouldBe(false);
+        typeof(ClassA).Is(typeof(ClassB)).ShouldBe(false);
+
         typeof(ITestInterface).Is<ITestInterface>().ShouldBe(true);
         typeof(ITestInterface).Is(typeof(ITestInterface)).ShouldBe(true);
 
         typeof(object).Is<ITestInterface>().ShouldBe(false);
         typeof(object).Is(typeof(ITestInterface)).ShouldBe(false);
+
+        typeof(ITestInterface).Is<object>().ShouldBe(true);
+        typeof(ITestInterface).Is(typeof(object)).ShouldBe(true);
+
+        typeof(object).Is<object>().ShouldBe(true);
+        typeof(object).Is(typeof(object)).ShouldBe(true);
+
+        typeof(ClassB).Is<object>().ShouldBe(true);
+        typeof(ClassB).Is(typeof(object)).ShouldBe(true);
+
+        typeof(int).Is<object>().ShouldBe(true);
+        typeof(int).Is(typeof(object)).ShouldBe(true);
+
+        typeof(ClassB).Is<int>().ShouldBe(false);
+        typeof(ClassB).Is(typeof(int)).ShouldBe(false);
     }
 
     private interface ITestInterface;
