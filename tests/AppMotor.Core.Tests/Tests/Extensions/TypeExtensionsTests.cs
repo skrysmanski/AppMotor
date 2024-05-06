@@ -184,6 +184,7 @@ public sealed class TypeExtensionsTests
     [Fact]
     public void Test_Is_OpenGeneric()
     {
+        // Non-nested types
         typeof(List<string>).Is(typeof(IReadOnlyCollection<>)).ShouldBe(true);
         typeof(List<>).Is(typeof(IReadOnlyCollection<>)).ShouldBe(true);
         typeof(List<>).Is(typeof(IReadOnlyCollection<string>)).ShouldBe(false);
@@ -191,6 +192,7 @@ public sealed class TypeExtensionsTests
         typeof(List<>).Is(typeof(int)).ShouldBe(false);
         typeof(List<int>).Is(typeof(GenericClassA<>)).ShouldBe(false);
 
+        // Nested types
         typeof(GenericClassB<int, string>).Is(typeof(IGenericTestInterface<>)).ShouldBe(true);
         typeof(GenericClassB<int, string>).Is(typeof(GenericClassA<>)).ShouldBe(true);
         typeof(GenericClassC<int, string>).Is(typeof(GenericClassA<>)).ShouldBe(true);

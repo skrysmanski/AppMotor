@@ -316,7 +316,7 @@ public static class TypeExtensions
             //
             if (baseOrInterfaceType.IsInterface)
             {
-                var baseTypeFullName = baseOrInterfaceType.FullName!;
+                var interfaceTypeFullName = baseOrInterfaceType.FullName!;
 
                 //
                 // Try "Type.GetInterface()" first, if possible.
@@ -326,7 +326,7 @@ public static class TypeExtensions
                 {
                     try
                     {
-                        var implementedInterface = typeToCheck.GetInterface(baseTypeFullName);
+                        var implementedInterface = typeToCheck.GetInterface(interfaceTypeFullName);
                         return implementedInterface?.Assembly == baseOrInterfaceType.Assembly;
                     }
                     catch (AmbiguousMatchException)
