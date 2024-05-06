@@ -321,8 +321,8 @@ public static class TypeExtensions
                 //
                 // Try "Type.GetInterface()" first, if possible.
                 //
-                // "Type.GetInterface()" doesn't work for nested classes (detectable by the "+" in the type name).
-                if (!baseTypeFullName.Contains('+'))
+                // "Type.GetInterface()" doesn't work for nested interfaces.
+                if (!baseOrInterfaceType.IsNested)
                 {
                     try
                     {
