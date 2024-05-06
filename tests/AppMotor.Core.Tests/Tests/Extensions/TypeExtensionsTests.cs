@@ -239,6 +239,7 @@ public sealed class TypeExtensionsTests
     {
         typeof(List<string>).GetCollectionItemType().ShouldBe(typeof(string));
         typeof(IReadOnlyCollection<int>).GetCollectionItemType().ShouldBe(typeof(int));
+        typeof(bool[]).GetCollectionItemType().ShouldBe(typeof(bool));
 
         typeof(StringComparer).GetCollectionItemType().ShouldBe(null);
 

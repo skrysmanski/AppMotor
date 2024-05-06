@@ -230,6 +230,9 @@ public static class TypeExtensions
     /// Returns the item type if this type is a collection (i.e. inheriting from <see cref="IEnumerable{T}"/>).
     /// Returns <c>null</c> if this type is not a collection type or not a generic collection type.
     /// </summary>
+    /// <remarks>
+    /// This method also works if this type is an array type.
+    /// </remarks>
     /// <exception cref="AmbiguousMatchException">Thrown if this type implements <see cref="IEnumerable{T}"/> multiple
     /// times with different type arguments.</exception>
     [MustUseReturnValue]
