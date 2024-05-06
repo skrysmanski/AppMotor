@@ -238,6 +238,11 @@ public static class TypeExtensions
     [MustUseReturnValue]
     public static Type? GetCollectionItemType(this Type type)
     {
+        if (type.IsArray)
+        {
+            return type.GetElementType();
+        }
+
         var implementedIEnumerableInterfaceTypes = type.FindInterfaces(FindInterfacesFilter, null);
 
         if (implementedIEnumerableInterfaceTypes.Length == 0)
