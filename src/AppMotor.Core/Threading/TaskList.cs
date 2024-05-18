@@ -87,6 +87,7 @@ public readonly struct TaskList : IReadOnlyList<Task>
     }
 
     /// <inheritdoc />
+    [MustDisposeResource]
     public IEnumerator<Task> GetEnumerator()
     {
         if (this._underlyingList != null)
@@ -100,6 +101,7 @@ public readonly struct TaskList : IReadOnlyList<Task>
     }
 
     /// <inheritdoc />
+    [MustDisposeResource]
     IEnumerator IEnumerable.GetEnumerator()
     {
         return GetEnumerator();
@@ -184,6 +186,7 @@ public readonly struct TaskList<T> : IReadOnlyList<Task<T>>
     }
 
     /// <inheritdoc />
+    [MustDisposeResource]
     public IEnumerator<Task<T>> GetEnumerator()
     {
         if (this._underlyingList != null)
@@ -197,6 +200,7 @@ public readonly struct TaskList<T> : IReadOnlyList<Task<T>>
     }
 
     /// <inheritdoc />
+    [MustDisposeResource]
     IEnumerator IEnumerable.GetEnumerator()
     {
         return GetEnumerator();
