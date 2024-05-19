@@ -2,6 +2,7 @@
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
 using System.Drawing;
+
 using AppMotor.Core.Colors;
 
 using JetBrains.Annotations;
