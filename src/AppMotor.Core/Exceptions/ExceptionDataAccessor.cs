@@ -22,7 +22,7 @@ namespace AppMotor.Core.Exceptions;
 /// we can't be sure that child classes will always return a non-null value. This struct internally
 /// treats <c>null</c> as empty, read-only dictionary.</para>
 ///
-/// <para>Secondly, if the data dictionary is read-only, write operations just wont do anything.
+/// <para>Secondly, if the data dictionary is read-only, write operations just won't do anything.
 /// They especially won't throw any exceptions.</para>
 ///
 /// <para>Thirdly, it makes the data dictionary "type-safe" for <c>foreach</c>. So you can
