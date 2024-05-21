@@ -4,6 +4,7 @@
 using System.ComponentModel;
 
 using AppMotor.Core.Globalization;
+using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;
 
@@ -47,5 +48,14 @@ public static class StringExtensions
 
             yield return line;
         }
+    }
+
+    /// <summary>
+    /// Replaces all newline sequences in the current string with <paramref name="lineTerminator"/>.
+    /// </summary>
+    [MustUseReturnValue]
+    public static string ReplaceLineEndings(this string input, LineTerminators lineTerminator)
+    {
+        return input.ReplaceLineEndings(lineTerminator.AsString());
     }
 }
