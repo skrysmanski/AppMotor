@@ -22,4 +22,23 @@ public sealed class LineTerminatorsTests
         LineTerminators.Lf.AsString().ShouldBe("\n");
         Should.Throw<ArgumentOutOfRangeException>(() => ((LineTerminators)5000).AsString());
     }
+
+    [Fact]
+    public void Test_IsSystemDefault()
+    {
+        LineTerminators.SystemDefault.IsSystemDefault().ShouldBe(true);
+
+        if (Environment.NewLine == "\r\n")
+        {
+            LineTerminators.CrLf.IsSystemDefault().ShouldBe(true);
+            LineTerminators.Lf.IsSystemDefault().ShouldBe(false);
+        }
+        else
+        {
+            LineTerminators.CrLf.IsSystemDefault().ShouldBe(false);
+            LineTerminators.Lf.IsSystemDefault().ShouldBe(true);
+        }
+
+        Should.Throw<ArgumentOutOfRangeException>(() => ((LineTerminators)5000).IsSystemDefault());
+    }
 }
