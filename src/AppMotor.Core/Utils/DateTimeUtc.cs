@@ -214,7 +214,7 @@ public readonly struct DateTimeUtc : IEquatable<DateTimeUtc>, IComparable<DateTi
             return result;
         }
 
-        var exception = new FormatException("The string could not be parsed.");
+        var exception = new FormatException($"The specified string doesn't match the specified date/time format: {format}");
         exception.AddData("InputString", dateTimeAsString.ToString());
         throw exception;
     }
@@ -235,7 +235,7 @@ public readonly struct DateTimeUtc : IEquatable<DateTimeUtc>, IComparable<DateTi
             return result;
         }
 
-        var exception = new FormatException("The string could not be parsed.");
+        var exception = new FormatException($"The specified string doesn't match any of specified date/time formats:{formats.Select(format => $"\n - {format}")}");
         exception.AddData("InputString", dateTimeAsString.ToString());
         throw exception;
     }
