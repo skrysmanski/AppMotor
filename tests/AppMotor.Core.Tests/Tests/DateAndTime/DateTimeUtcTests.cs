@@ -15,6 +15,9 @@ using Xunit;
 
 namespace AppMotor.Core.Tests.DateAndTime;
 
+/// <summary>
+/// Tests for <see cref="DateTimeUtc"/>.
+/// </summary>
 public sealed class DateTimeUtcTests
 {
     [Fact]
@@ -388,11 +391,14 @@ public sealed class DateTimeUtcTests
     {
         bool success = DateTimeUtc.TryParse(input, CultureInfo.InvariantCulture, out var result);
 
-        success.ShouldBe(expectedIsoString is not null);
-
         if (expectedIsoString is not null)
         {
+            success.ShouldBe(true);
             result.ToString("s", CultureInfo.InvariantCulture).ShouldBe(expectedIsoString);
+        }
+        else
+        {
+            success.ShouldBe(false);
         }
     }
 
@@ -448,11 +454,14 @@ public sealed class DateTimeUtcTests
     {
         bool success = DateTimeUtc.TryParseExact(input, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture, out var result);
 
-        success.ShouldBe(expectedIsoString is not null);
-
         if (expectedIsoString is not null)
         {
+            success.ShouldBe(true);
             result.ToString("s", CultureInfo.InvariantCulture).ShouldBe(expectedIsoString);
+        }
+        else
+        {
+            success.ShouldBe(false);
         }
     }
 
@@ -464,11 +473,14 @@ public sealed class DateTimeUtcTests
     {
         bool success = DateTimeUtc.TryParseExact(input, ["yyyy-MM-ddTHH:mm:ssZ", "MM/dd/yy HH:mm:ss K"], CultureInfo.InvariantCulture, out var result);
 
-        success.ShouldBe(expectedIsoString is not null);
-
         if (expectedIsoString is not null)
         {
+            success.ShouldBe(true);
             result.ToString("s", CultureInfo.InvariantCulture).ShouldBe(expectedIsoString);
+        }
+        else
+        {
+            success.ShouldBe(false);
         }
     }
 }
