@@ -5,6 +5,7 @@ using AppMotor.CliApp.Terminals.Formatting;
 using AppMotor.TestCore;
 
 using Shouldly;
+
 using Xunit;
 
 namespace AppMotor.CliApp.Tests.Terminals.Formatting;

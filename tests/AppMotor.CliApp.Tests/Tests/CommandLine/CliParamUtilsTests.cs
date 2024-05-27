@@ -260,7 +260,7 @@ public sealed class CliParamUtilsTests
         public readonly string SomeField = "abc";
 
         [UsedImplicitly]
-        public CliParam<string>? NullParam { get; } = null;
+        public CliParam<string>? NullParam { get; }
 
         [UsedImplicitly]
         public CliParam<bool>? WriteOnlyParam

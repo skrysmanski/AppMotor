@@ -1,13 +1,14 @@
 ﻿// SPDX-License-Identifier: MIT
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
+using System.Globalization;
+
 using AppMotor.CliApp.Terminals;
 using AppMotor.Core.Globalization;
 
 using Moq;
 
 using Shouldly;
-using System.Globalization;
 
 using Xunit;
 
