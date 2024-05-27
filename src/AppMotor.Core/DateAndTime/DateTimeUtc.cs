@@ -294,7 +294,7 @@ public readonly struct DateTimeUtc : IEquatable<DateTimeUtc>, IComparable<DateTi
     /// This method uses <see cref="DateTimeStyles.None"/>.
     /// </remarks>
     [MustUseReturnValue]
-    public static bool TryParseExact(ReadOnlySpan<char> dateTimeAsString, [NotNullWhen(true)] string?[]? formats, IFormatProvider formatProvider, out DateTimeUtc result)
+    public static bool TryParseExact(ReadOnlySpan<char> dateTimeAsString, string?[]? formats, IFormatProvider formatProvider, out DateTimeUtc result)
     {
         return TryParseExact(dateTimeAsString, formats, formatProvider, DateTimeStyles.None, out result);
     }
@@ -310,7 +310,7 @@ public readonly struct DateTimeUtc : IEquatable<DateTimeUtc>, IComparable<DateTi
     /// <param name="styles">The parse styles to use</param>
     /// <param name="result">The parse result</param>
     [MustUseReturnValue]
-    public static bool TryParseExact(ReadOnlySpan<char> dateTimeAsString, [NotNullWhen(true)] string?[]? formats, IFormatProvider formatProvider, DateTimeStyles styles, out DateTimeUtc result)
+    public static bool TryParseExact(ReadOnlySpan<char> dateTimeAsString, string?[]? formats, IFormatProvider formatProvider, DateTimeStyles styles, out DateTimeUtc result)
     {
         if (!DateTimeOffset.TryParseExact(dateTimeAsString, formats, formatProvider, styles, out var dateTimeOffset))
         {
