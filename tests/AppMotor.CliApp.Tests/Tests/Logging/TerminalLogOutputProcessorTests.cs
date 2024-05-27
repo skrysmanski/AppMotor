@@ -3,7 +3,7 @@
 
 using AppMotor.CliApp.Logging;
 using AppMotor.CliApp.Terminals;
-using AppMotor.Core.Utils;
+using AppMotor.Core.DateAndTime;
 
 using Shouldly;
 

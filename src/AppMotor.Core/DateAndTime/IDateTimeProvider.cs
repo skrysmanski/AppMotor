@@ -3,7 +3,7 @@
 
 using JetBrains.Annotations;
 
-namespace AppMotor.Core.Utils;
+namespace AppMotor.Core.DateAndTime;
 
 /// <summary>
 /// Provides the current time and date. This interface primarily exists for (unit) testing

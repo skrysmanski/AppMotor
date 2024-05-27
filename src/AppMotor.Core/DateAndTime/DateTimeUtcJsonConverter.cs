@@ -4,7 +4,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace AppMotor.Core.Utils;
+namespace AppMotor.Core.DateAndTime;
 
 /// <summary>
 /// JSON converter for <see cref="DateTimeUtc"/>.

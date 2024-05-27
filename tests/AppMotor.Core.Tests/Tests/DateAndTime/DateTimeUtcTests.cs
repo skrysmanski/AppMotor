@@ -4,8 +4,8 @@
 using System.Globalization;
 using System.Text.Json;
 
+using AppMotor.Core.DateAndTime;
 using AppMotor.Core.Extensions;
-using AppMotor.Core.Utils;
 using AppMotor.TestCore;
 using AppMotor.TestCore.Shouldly;
 
@@ -13,7 +13,7 @@ using Shouldly;
 
 using Xunit;
 
-namespace AppMotor.Core.Tests.Utils;
+namespace AppMotor.Core.Tests.DateAndTime;
 
 public sealed class DateTimeUtcTests
 {

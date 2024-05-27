@@ -9,13 +9,13 @@ using AppMotor.Core.Extensions;
 
 using JetBrains.Annotations;
 
-namespace AppMotor.Core.Utils;
+namespace AppMotor.Core.DateAndTime;
 
 /// <summary>
 /// Like <see cref="DateTime"/> but always in UTC (i.e. <see cref="DateTimeKind.Utc"/>).
 /// </summary>
 /// <remarks>
-/// This type makes it easier/less error prone to operate with date times in the backend - in that there is
+/// This type makes it easier/less error-prone to operate with date times in the backend - in that there is
 /// no confusion whether the instance is in UTC or local time (like with <see cref="DateTime"/>).
 /// </remarks>
 [JsonConverter(typeof(DateTimeUtcJsonConverter))]
