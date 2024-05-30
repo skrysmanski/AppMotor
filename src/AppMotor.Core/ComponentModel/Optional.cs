@@ -3,7 +3,7 @@
 
 using JetBrains.Annotations;
 
-namespace AppMotor.Core.DataModel;
+namespace AppMotor.Core.ComponentModel;
 
 /// <summary>
 /// Represents a value that may or may not be set.

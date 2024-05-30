@@ -10,7 +10,7 @@ using JetBrains.Annotations;
 
 using NotNullOnExitAttribute = System.Diagnostics.CodeAnalysis.NotNullAttribute;
 
-namespace AppMotor.Core.DataModel;
+namespace AppMotor.Core.ComponentModel;
 
 /// <summary>
 /// Contains methods related to sensitive values. See <see cref="ISensitiveValue"/>

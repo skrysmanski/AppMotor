@@ -4,7 +4,7 @@
 using System.Numerics;
 using System.Reflection;
 
-using AppMotor.Core.DataModel;
+using AppMotor.Core.ComponentModel;
 using AppMotor.Core.Utils;
 
 using JetBrains.Annotations;

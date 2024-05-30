@@ -3,7 +3,7 @@
 
 using JetBrains.Annotations;
 
-namespace AppMotor.Core.DataModel;
+namespace AppMotor.Core.ComponentModel;
 
 /// <summary>
 /// Extension methods to mark arbitrary types with <see cref="TypeMarker"/>s.

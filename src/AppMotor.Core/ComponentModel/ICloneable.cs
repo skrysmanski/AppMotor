@@ -3,7 +3,7 @@
 
 using JetBrains.Annotations;
 
-namespace AppMotor.Core.DataModel;
+namespace AppMotor.Core.ComponentModel;
 
 /// <summary>
 /// Represents a type that can create clones (copies) of itself.

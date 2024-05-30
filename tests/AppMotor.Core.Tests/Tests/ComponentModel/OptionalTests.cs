@@ -1,13 +1,13 @@
 ﻿// SPDX-License-Identifier: MIT
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
-using AppMotor.Core.DataModel;
+using AppMotor.Core.ComponentModel;
 
 using Shouldly;
 
 using Xunit;
 
-namespace AppMotor.Core.Tests.DataModel;
+namespace AppMotor.Core.Tests.ComponentModel;
 
 /// <summary>
 /// Tests for <see cref="Optional{T}"/>.

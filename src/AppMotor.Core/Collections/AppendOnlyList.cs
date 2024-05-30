@@ -3,7 +3,7 @@
 
 using System.Collections;
 
-using AppMotor.Core.DataModel;
+using AppMotor.Core.ComponentModel;
 using AppMotor.Core.Exceptions;
 using AppMotor.Core.Utils;
 

@@ -4,7 +4,7 @@
 using System.Globalization;
 using System.Security;
 
-using AppMotor.Core.DataModel;
+using AppMotor.Core.ComponentModel;
 using AppMotor.Core.Utils;
 
 namespace AppMotor.Core.Logging;
