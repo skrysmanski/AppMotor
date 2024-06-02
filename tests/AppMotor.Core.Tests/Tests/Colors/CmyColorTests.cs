@@ -6,7 +6,7 @@ using System.Drawing;
 using AppMotor.Core.Colors;
 using AppMotor.Core.Extensions;
 using AppMotor.TestCore;
-using AppMotor.TestCore.Utils;
+using AppMotor.TestCore.TestData;
 
 using Shouldly;
 
@@ -70,7 +70,7 @@ public sealed class CmyColorTests
     }
 
     [Theory]
-    [ClassData(typeof(EnumTestDataGenerator<KnownColor>))]
+    [ClassData(typeof(EnumTestData<KnownColor>))]
     public void Test_KnownColors(KnownColor knownColor)
     {
         var rgbColor = new RgbColor(knownColor);

@@ -5,12 +5,12 @@ using System.Collections;
 
 using AppMotor.Core.Utils;
 
-namespace AppMotor.TestCore.Utils;
+namespace AppMotor.TestCore.TestData;
 
 /// <summary>
-/// Provides all members/values of an enum as test data to be used as <c>[ClassData(typeof(EnumTestDataGenerator&lt;MyEnum&gt;))]</c>.
+/// Provides all members/values of an enum as test data to be used as <c>[ClassData(typeof(EnumTestData&lt;MyEnum&gt;))]</c>.
 /// </summary>
-public sealed class EnumTestDataGenerator<TEnum> : IEnumerable<object[]> where TEnum : Enum
+public sealed class EnumTestData<TEnum> : IEnumerable<object[]> where TEnum : Enum
 {
     /// <inheritdoc />
     public IEnumerator<object[]> GetEnumerator()
