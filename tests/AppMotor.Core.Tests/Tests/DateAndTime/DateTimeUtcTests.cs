@@ -181,19 +181,61 @@ public sealed class DateTimeUtcTests
     [Fact]
     public void Test_ToDateTime()
     {
-        var now = DateTime.UtcNow;
-        var dateTimeUtc = new DateTimeUtc(now);
+        // Test 1: source is DateTimeKind.Utc
+        var source1 = DateTime.UtcNow;
+        source1.Kind.ShouldBe(DateTimeKind.Utc); // verify assumption
 
-        dateTimeUtc.ToDateTime().Ticks.ShouldBe(now.Ticks);
+        var dateTimeUtc1 = new DateTimeUtc(source1);
+
+        dateTimeUtc1.ToDateTime().Ticks.ShouldBe(source1.Ticks);
+        dateTimeUtc1.ToDateTime().Kind.ShouldBe(DateTimeKind.Utc);
+
+        // Test 2: source is DateTimeKind.Local
+        var source2 = source1.ToLocalTime();
+        source2.Kind.ShouldBe(DateTimeKind.Local); // verify assumption
+
+        var dateTimeUtc2 = new DateTimeUtc(source2);
+
+        dateTimeUtc2.ToDateTime().Ticks.ShouldBe(source2.ToUniversalTime().Ticks);
+        dateTimeUtc2.ToDateTime().Kind.ShouldBe(DateTimeKind.Utc);
+
+        // Test 3: source is DateTimeOffset
+        var source3 = new DateTimeOffset(source1.ToLocalTime());
+
+        var dateTimeUtc3 = new DateTimeUtc(source3);
+
+        dateTimeUtc3.ToDateTime().Ticks.ShouldBe(source3.ToUniversalTime().Ticks);
+        dateTimeUtc3.ToDateTime().Kind.ShouldBe(DateTimeKind.Utc);
     }
 
     [Fact]
     public void Test_ToLocalTime()
     {
-        var now = DateTime.Now;
-        var dateTimeUtc = new DateTimeUtc(now);
+        // Test 1: source is DateTimeKind.Utc
+        var source1 = DateTime.UtcNow;
+        source1.Kind.ShouldBe(DateTimeKind.Utc); // verify assumption
 
-        dateTimeUtc.ToLocalTime().ShouldBe(now);
+        var dateTimeUtc1 = new DateTimeUtc(source1);
+
+        dateTimeUtc1.ToLocalTime().Ticks.ShouldBe(source1.ToLocalTime().Ticks);
+        dateTimeUtc1.ToLocalTime().Kind.ShouldBe(DateTimeKind.Local);
+
+        // Test 2: source is DateTimeKind.Local
+        var source2 = source1.ToLocalTime();
+        source2.Kind.ShouldBe(DateTimeKind.Local); // verify assumption
+
+        var dateTimeUtc2 = new DateTimeUtc(source2);
+
+        dateTimeUtc2.ToLocalTime().Ticks.ShouldBe(source2.Ticks);
+        dateTimeUtc2.ToLocalTime().Kind.ShouldBe(DateTimeKind.Local);
+
+        // Test 3: source is DateTimeOffset
+        var source3 = new DateTimeOffset(source1.ToLocalTime());
+
+        var dateTimeUtc3 = new DateTimeUtc(source3);
+
+        dateTimeUtc3.ToLocalTime().Ticks.ShouldBe(source3.ToLocalTime().Ticks);
+        dateTimeUtc3.ToLocalTime().Kind.ShouldBe(DateTimeKind.Local);
     }
 
     [Fact]

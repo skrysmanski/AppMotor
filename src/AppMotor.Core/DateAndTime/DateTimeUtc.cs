@@ -477,7 +477,7 @@ public readonly struct DateTimeUtc : IEquatable<DateTimeUtc>, IComparable<DateTi
     #region Conversion to and from other types
 
     /// <summary>
-    /// Converts this instance into a <see cref="DateTime"/>.
+    /// Converts this instance into a <see cref="DateTime"/>. The kind of the returned value will be <see cref="DateTimeKind.Utc"/>.
     /// </summary>
     /// <seealso cref="ToDateTimeOffset"/>
     /// <seealso cref="ToLocalTime"/>
@@ -488,7 +488,7 @@ public readonly struct DateTimeUtc : IEquatable<DateTimeUtc>, IComparable<DateTi
     }
 
     /// <summary>
-    /// Implicit conversion to <see cref="DateTime"/>.
+    /// Implicit conversion to <see cref="DateTime"/>. The kind of the returned value will be <see cref="DateTimeKind.Utc"/>.
     /// </summary>
     /// <seealso cref="ToDateTime"/>
     public static implicit operator DateTime(DateTimeUtc dateTime)
@@ -505,7 +505,7 @@ public readonly struct DateTimeUtc : IEquatable<DateTimeUtc>, IComparable<DateTi
     }
 
     /// <summary>
-    /// Converts this instance into a <see cref="DateTime"/> in the local timezone.
+    /// Converts this instance into a <see cref="DateTime"/> in the local timezone. The kind of the returned value will be <see cref="DateTimeKind.Local"/>.
     /// </summary>
     /// <seealso cref="ToDateTime"/>
     [Pure]
