@@ -335,7 +335,7 @@ public readonly struct DateTimeUtc : IEquatable<DateTimeUtc>, IComparable<DateTi
     /// be expressed precisely with a <see cref="TimeSpan"/> (since the number of days per month is not always
     /// the same). This is why this method exists.
     /// </remarks>
-    [Pure]
+    [MustUseReturnValue]
     public DateTimeUtc AddMonths(int months)
     {
         return new(this._underlyingDateTime.AddMonths(months));
@@ -350,7 +350,7 @@ public readonly struct DateTimeUtc : IEquatable<DateTimeUtc>, IComparable<DateTi
     /// be expressed precisely with a <see cref="TimeSpan"/> (since the number of days per year is not always
     /// the same). This is why this method exists.
     /// </remarks>
-    [Pure]
+    [MustUseReturnValue]
     public DateTimeUtc AddYears(int years)
     {
         return new(this._underlyingDateTime.AddYears(years));
@@ -481,7 +481,7 @@ public readonly struct DateTimeUtc : IEquatable<DateTimeUtc>, IComparable<DateTi
     /// </summary>
     /// <seealso cref="ToDateTimeOffset"/>
     /// <seealso cref="ToLocalTime"/>
-    [Pure]
+    [MustUseReturnValue]
     public DateTime ToDateTime()
     {
         return this._underlyingDateTime;
@@ -508,7 +508,7 @@ public readonly struct DateTimeUtc : IEquatable<DateTimeUtc>, IComparable<DateTi
     /// Converts this instance into a <see cref="DateTime"/> in the local timezone. The kind of the returned value will be <see cref="DateTimeKind.Local"/>.
     /// </summary>
     /// <seealso cref="ToDateTime"/>
-    [Pure]
+    [MustUseReturnValue]
     public DateTime ToLocalTime()
     {
         return this._underlyingDateTime.ToLocalTime();
@@ -519,7 +519,7 @@ public readonly struct DateTimeUtc : IEquatable<DateTimeUtc>, IComparable<DateTi
     /// </summary>
     /// <seealso cref="ToDateTime"/>
     /// <seealso cref="ToLocalTime"/>
-    [Pure]
+    [MustUseReturnValue]
     public DateTimeOffset ToDateTimeOffset()
     {
         return new(this._underlyingDateTime);
@@ -550,7 +550,7 @@ public readonly struct DateTimeUtc : IEquatable<DateTimeUtc>, IComparable<DateTi
 
     /// <inheritdoc cref="DateTime.ToString(string)"/>
     [SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "Same as DateTime.ToString()")]
-    [Pure]
+    [MustUseReturnValue]
     public string ToString(string? format)
     {
         return this._underlyingDateTime.ToString(format);
