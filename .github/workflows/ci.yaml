@@ -163,17 +163,6 @@ jobs:
       checks: write
 
     steps:
-      # See: https://github.com/marketplace/actions/download-a-build-artifact
-      #
-      # The dorny/test-reporter@v1.8.0 action doesn't support actions/upload-artifact@v4 yet.
-      # We therefore download the artifact manually and feed it to test-reporter as local files.
-      # See: https://github.com/dorny/test-reporter/issues/363
-      - name: Download test results
-        uses: actions/download-artifact@v4
-        with:
-          pattern: test-results-*
-          path: test-results
-
       # See: https://github.com/marketplace/actions/test-reporter
       - name: Create test report
         # For pinned versions, see: https://blog.gitguardian.com/github-actions-security-cheat-sheet/#use-specific-action-version-tags
@@ -183,8 +172,10 @@ jobs:
           #   test report if they pile up due to bug https://github.com/dorny/test-reporter/issues/67.
           #   See top of this file for more details.
           name: 'Test Report #${{ github.run_number }}'
-          # Path to test results (downloaded in previous step)
-          path: 'test-results/**/*.trx'
+          # The name of the artifact (minus extension) created by the CI workflow.
+          artifact: /test-results-(.*)/
+          # Path to test results (inside artifact .zip)
+          path: '**/*.trx'
           # Format of test results
           reporter: dotnet-trx
           # Don't mark the test report generated as failed if there's a failed test.
