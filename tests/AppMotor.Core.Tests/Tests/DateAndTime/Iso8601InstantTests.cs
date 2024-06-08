@@ -618,14 +618,13 @@ public sealed class Iso8601InstantTests
 
         var instantWithoutTimeZoneOffset = new Iso8601Instant(baseDate, timeZoneOffset: null);
 
-        var result4 = instantWithoutTimeZoneOffset.ToDateTimeUtc(DateTimeKind.Utc);
+        var result4 = instantWithoutTimeZoneOffset.ToDateTimeUtc(assumeUtcIfNoTimeZoneOffsetIsSet: true);
         result4.ShouldBe(baseDateAsDateTimeUtc);
 
-        var result5 = instantWithoutTimeZoneOffset.ToDateTimeUtc(DateTimeKind.Local);
-        result5.ShouldBe(baseDateAsDateTimeUtc - s_localTimeZoneOffset);
+        var result5 = instantWithoutTimeZoneOffset.ToDateTimeUtc();
+        result5.ShouldBe(baseDateAsDateTimeUtc);
 
-        Should.Throw<InvalidOperationException>(() => instantWithoutTimeZoneOffset.ToDateTimeUtc(DateTimeKind.Unspecified));
-        Should.Throw<InvalidOperationException>(() => instantWithoutTimeZoneOffset.ToDateTimeUtc());
+        Should.Throw<InvalidOperationException>(() => instantWithoutTimeZoneOffset.ToDateTimeUtc(assumeUtcIfNoTimeZoneOffsetIsSet: false));
     }
 
     [Fact]

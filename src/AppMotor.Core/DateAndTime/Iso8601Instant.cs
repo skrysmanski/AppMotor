@@ -756,23 +756,22 @@ public readonly struct Iso8601Instant : IEquatable<Iso8601Instant>
     /// <summary>
     /// Converts this ISO-8601 instant into a <see cref="DateTimeUtc"/>.
     /// </summary>
-    /// <param name="assumeKind">If <see cref="TimeZoneOffset"/> is <c>null</c>, this specifies what <see cref="DateTimeKind"/>
-    /// should be assumed for <see cref="DateTimePart"/>. Defaults to <see cref="DateTimeKind.Unspecified"/>.</param>
-    /// <exception cref="InvalidOperationException">Thrown if <see cref="TimeZoneOffset"/> is <c>null</c> and <paramref name="assumeKind"/>
-    /// is <see cref="DateTimeKind.Unspecified"/> (the default).</exception>
+    /// <param name="assumeUtcIfNoTimeZoneOffsetIsSet">Specifies whether to assume UTC as time zone if <see cref="TimeZoneOffset"/> is <c>null</c>
+    /// (defaults to <c>true</c>).</param>
+    /// <exception cref="InvalidOperationException">Thrown if <see cref="TimeZoneOffset"/> is <c>null</c> and <paramref name="assumeUtcIfNoTimeZoneOffsetIsSet"/>
+    /// is <c>false</c>.</exception>
     [MustUseReturnValue]
-    public DateTimeUtc ToDateTimeUtc(DateTimeKind assumeKind = DateTimeKind.Unspecified)
+    public DateTimeUtc ToDateTimeUtc(bool assumeUtcIfNoTimeZoneOffsetIsSet = true)
     {
         if (this.TimeZoneOffset is null)
         {
-            switch (assumeKind)
+            if (assumeUtcIfNoTimeZoneOffsetIsSet)
             {
-                case DateTimeKind.Utc:
-                case DateTimeKind.Local:
-                    return DateTime.SpecifyKind(this.DateTimePart, assumeKind);
-
-                default:
-                    throw new InvalidOperationException("Can't create an instance of DateTimeUtc without a time zone offset.");
+                return DateTime.SpecifyKind(this.DateTimePart, DateTimeKind.Utc);
+            }
+            else
+            {
+                throw new InvalidOperationException("Can't create an instance of DateTimeUtc without a time zone offset.");
             }
         }
 
