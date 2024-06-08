@@ -147,6 +147,8 @@ jobs:
   #
   # Create action test report
   #
+  # NOTE: This is a separate job (from 'build-and-test') because it needs special write permissions.
+  #
   test-report:
 
     # Name of the job
@@ -182,12 +184,15 @@ jobs:
           # Only mark it as failed if something with the workflow has actually gone wrong.
           fail-on-error: false
           # Workaround for error 'fatal: not a git repository' caused by a call to 'git ls-files'
+          # (This is because this job doesn't checkout any git repository.)
           # See: https://github.com/dorny/test-reporter/issues/169#issuecomment-1583560458
           max-annotations: 0
 
 
   #
   # Publish Online Documentation
+  #
+  # NOTE: This is a separate job (from 'build-and-test') because it needs special write permissions.
   #
   documentation:
 
