@@ -170,7 +170,49 @@ public sealed class Iso8601InstantTests
     /// an element from <paramref name="expectedInstants"/> (has the same item count as <paramref name="validLengths"/>).
     /// </summary>
     [Theory]
-    [ClassData(typeof(TryParseTestData))]
+    [ClassData(typeof(ParsingTestData))]
+    public void Test_Parse(string input, int[] validLengths, Iso8601Instant[] expectedInstants)
+    {
+        int nextValidLengthIndex = 0;
+
+        for (var length = 1; length <= input.Length; length++)
+        {
+            // Setup
+            var nextValidLength = validLengths[nextValidLengthIndex];
+            bool shouldBeValid = length == nextValidLength;
+            var partialInput = input[0..length];
+
+            if (shouldBeValid)
+            {
+                // Test
+                var parsedInstant = Iso8601Instant.Parse(partialInput);
+                // Verify
+                parsedInstant.ShouldBe(expectedInstants[nextValidLengthIndex]);
+            }
+            else
+            {
+                // Test
+                var ex = Should.Throw<FormatException>(() => Iso8601Instant.Parse(partialInput));
+                // Verify
+                ex.Message.ShouldBe("The specified value is not a valid/supported ISO-8601 string.");
+            }
+
+            // After setup
+            if (length == nextValidLength && nextValidLengthIndex + 1 < validLengths.Length)
+            {
+                nextValidLengthIndex++;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Tests parsing various strings. Each string is "iterated" by creating substrings from length 1 to its full length.
+    /// Each substring is parsed and whether the parsing should be correct is determined from <paramref name="validLengths"/>
+    /// (which contains each length that should result in a successful parsing). If successful, the result is compared against
+    /// an element from <paramref name="expectedInstants"/> (has the same item count as <paramref name="validLengths"/>).
+    /// </summary>
+    [Theory]
+    [ClassData(typeof(ParsingTestData))]
     public void Test_TryParse(string input, int[] validLengths, Iso8601Instant[] expectedInstants)
     {
         int nextValidLengthIndex = 0;
@@ -206,7 +248,7 @@ public sealed class Iso8601InstantTests
     /// <summary>
     /// Provides the test data for <see cref="Test_TryParse"/>.
     /// </summary>
-    private sealed class TryParseTestData : TestDataBase
+    private sealed class ParsingTestData : TestDataBase
     {
         /// <inheritdoc />
         public override IEnumerator<object[]> GetEnumerator()

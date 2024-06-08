@@ -2,16 +2,19 @@
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
 using System.Globalization;
-using System.Text.Json;
 
 using AppMotor.Core.DateAndTime;
 using AppMotor.Core.Extensions;
 using AppMotor.TestCore;
 using AppMotor.TestCore.Shouldly;
 
+using Newtonsoft.Json;
+
 using Shouldly;
 
 using Xunit;
+
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace AppMotor.Core.Tests.DateAndTime;
 
@@ -377,7 +380,7 @@ public sealed class DateTimeUtcTests
     }
 
     [Fact]
-    public void Test_JsonSerialization()
+    public void Test_JsonSerialization_SystemTextJson()
     {
         var testData = new JsonTestData(new DateTimeUtc(2020, 2, 3, 4, 5, 6, 7));
 
@@ -390,10 +393,44 @@ public sealed class DateTimeUtcTests
         deserializedTestData!.SomeTime.ShouldBe(testData.SomeTime);
     }
 
+    [Fact]
+    public void Test_JsonSerialization_NewtonsoftJson()
+    {
+        var testData = new JsonTestData(new DateTimeUtc(2020, 2, 3, 4, 5, 6, 7));
+
+        var json = JsonConvert.SerializeObject(testData);
+
+        json.ShouldBe("{\"SomeTime\":\"2020-02-03T04:05:06.007Z\"}");
+
+        var deserializedTestData = JsonConvert.DeserializeObject<JsonTestData>(json);
+
+        deserializedTestData!.SomeTime.ShouldBe(testData.SomeTime);
+    }
+
+    [Fact]
+    public void Test_JsonSerialization_NonIso8601_SystemTextJson()
+    {
+        const string JSON = "{\"SomeTime\":\"6/15/2009 1:45:30 PM\"}";
+
+        var ex = Should.Throw<System.Text.Json.JsonException>(() => JsonSerializer.Deserialize<JsonTestData>(JSON));
+
+        ex.Message.ShouldContain("Path: $.SomeTime");
+    }
+
+    [Fact]
+    public void Test_JsonSerialization_NonIso8601_NewtonsoftJson()
+    {
+        const string JSON = "{\"SomeTime\":\"6/15/2009 1:45:30 PM\"}";
+
+        var ex = Should.Throw<JsonSerializationException>(() => JsonConvert.DeserializeObject<JsonTestData>(JSON));
+
+        ex.Message.ShouldContain("Path 'SomeTime'");
+    }
+
     private record JsonTestData(DateTimeUtc SomeTime);
 
     [Fact]
-    public void Test_JsonSerialization_Null()
+    public void Test_JsonSerialization_Null_SystemTextJson()
     {
         var testData = new JsonTestDataNullable(null);
 
@@ -402,6 +439,20 @@ public sealed class DateTimeUtcTests
         json.ShouldBe("{\"SomeTime\":null}");
 
         var deserializedTestData = JsonSerializer.Deserialize<JsonTestDataNullable>(json);
+
+        deserializedTestData!.SomeTime.ShouldBe(null);
+    }
+
+    [Fact]
+    public void Test_JsonSerialization_Null_NewtonsoftJson()
+    {
+        var testData = new JsonTestDataNullable(null);
+
+        var json = JsonConvert.SerializeObject(testData);
+
+        json.ShouldBe("{\"SomeTime\":null}");
+
+        var deserializedTestData = JsonConvert.DeserializeObject<JsonTestDataNullable>(json);
 
         deserializedTestData!.SomeTime.ShouldBe(null);
     }

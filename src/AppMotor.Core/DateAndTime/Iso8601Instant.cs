@@ -188,6 +188,24 @@ public readonly struct Iso8601Instant : IEquatable<Iso8601Instant>
     }
 
     /// <summary>
+    /// Parses the specified string as ISO-8601.
+    /// </summary>
+    /// <remarks>
+    /// For details on the implementation, see <see cref="TryParse"/>.
+    /// </remarks>
+    /// <exception cref="FormatException">Thrown if the specified string is not a valid/supported ISO-8601 string.</exception>
+    [MustUseReturnValue]
+    public static Iso8601Instant Parse(ReadOnlySpan<char> iso8601String)
+    {
+        if (!TryParse(iso8601String, out var result))
+        {
+            throw new FormatException("The specified value is not a valid/supported ISO-8601 string.");
+        }
+
+        return result;
+    }
+
+    /// <summary>
     /// Attempts to parse the specified string as ISO-8601.
     /// </summary>
     ///

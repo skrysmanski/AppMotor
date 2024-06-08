@@ -1,10 +1,13 @@
 ﻿// SPDX-License-Identifier: MIT
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
+using AppMotor.Core.ComponentModel;
 using AppMotor.Core.Extensions;
 
 using JetBrains.Annotations;
@@ -18,6 +21,7 @@ namespace AppMotor.Core.DateAndTime;
 /// This type makes it easier/less error-prone to operate with date times in the backend - in that there is
 /// no confusion whether the instance is in UTC or local time (like with <see cref="DateTime"/>).
 /// </remarks>
+[TypeConverter(typeof(DateTimeUtcTypeConverter))]
 [JsonConverter(typeof(DateTimeUtcJsonConverter))]
 public readonly struct DateTimeUtc : IEquatable<DateTimeUtc>, IComparable<DateTimeUtc>, IComparable, IFormattable
 {
@@ -565,4 +569,47 @@ public readonly struct DateTimeUtc : IEquatable<DateTimeUtc>, IComparable<DateTi
     }
 
     #endregion Conversion to and from other types
+
+    /// <summary>
+    /// Type converter for serializers with TypeConverter support (e.g. Newtonsoft.Json; Yaml.NET).
+    /// </summary>
+    /// <seealso cref="DateTimeUtcJsonConverter"/>
+    private sealed class DateTimeUtcTypeConverter : StringTypeConverter<DateTimeUtc>
+    {
+        /// <inheritdoc />
+        protected override DateTimeUtc ConvertFrom(string value, ITypeDescriptorContext? context, CultureInfo? culture)
+        {
+            return Iso8601Instant.Parse(value).ToDateTimeUtc();
+        }
+
+        /// <inheritdoc />
+        protected override string ConvertTo(DateTimeUtc value, ITypeDescriptorContext? context, CultureInfo? culture)
+        {
+            return new Iso8601Instant(value).ToString();
+        }
+    }
+
+    /// <summary>
+    /// Special converter for System.Text.Json since it doesn't support TypeConverters (<see cref="DateTimeUtcTypeConverter"/>);
+    /// see: https://github.com/dotnet/runtime/issues/38812#issuecomment-948929862
+    /// </summary>
+    private sealed class DateTimeUtcJsonConverter : JsonConverter<DateTimeUtc>
+    {
+        /// <inheritdoc />
+        public override DateTimeUtc Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (!Iso8601Instant.TryParse(reader.GetString(), out var iso8601Instant))
+            {
+                throw new JsonException();
+            }
+
+            return iso8601Instant.ToDateTimeUtc();
+        }
+
+        /// <inheritdoc />
+        public override void Write(Utf8JsonWriter writer, DateTimeUtc value, JsonSerializerOptions options)
+        {
+            writer.WriteStringValue(new Iso8601Instant(value).ToString());
+        }
+    }
 }
