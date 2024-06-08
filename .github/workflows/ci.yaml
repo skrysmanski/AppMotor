@@ -177,7 +177,7 @@ jobs:
       # See: https://github.com/marketplace/actions/test-reporter
       - name: Create test report
         # For pinned versions, see: https://blog.gitguardian.com/github-actions-security-cheat-sheet/#use-specific-action-version-tags
-        uses: dorny/test-reporter@eaa763f6ffc21c7a37837f56cd5f9737f27fc6c8 # version 1.8.0
+        uses: dorny/test-reporter@31a54ee7ebcacc03a09ea97a7e5465a47b84aea5 # version 1.9.1
         with:
           # NOTE: We add the 'github.run_number' to the name so that we can easier identify the
           #   test report if they pile up due to bug https://github.com/dorny/test-reporter/issues/67.
