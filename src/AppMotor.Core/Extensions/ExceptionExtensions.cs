@@ -156,6 +156,9 @@ public static class ExceptionExtensions
     /// Note that because <see cref="AggregateException"/>s can have more than one inner exception, this
     /// method may return more than one innermost exception.
     /// </summary>
+    /// <remarks>
+    /// This method never returns an empty collection.
+    /// </remarks>
     [PublicAPI, MustUseReturnValue]
     public static IEnumerable<Exception> GetInnerMostExceptions(this Exception exception)
     {
