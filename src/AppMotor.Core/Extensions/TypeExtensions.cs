@@ -235,12 +235,19 @@ public static class TypeExtensions
     /// </remarks>
     /// <exception cref="AmbiguousMatchException">Thrown if this type implements <see cref="IEnumerable{T}"/> multiple
     /// times with different type arguments.</exception>
-    [MustUseReturnValue]
+    [MustUseReturnValue, Pure]
     public static Type? GetCollectionItemType(this Type type)
     {
         if (type.IsArray)
         {
             return type.GetElementType();
+        }
+
+        // NOTE: We need this extra check here because "FindInterface()" below doesn't return anything if
+        //   "type" is actually "IEnumerable<T>".
+        if (type.IsInterface && IsIEnumerableOfT(type))
+        {
+            return type.GetGenericArguments()[0];
         }
 
         var implementedIEnumerableInterfaceTypes = type.FindInterfaces(FindInterfacesFilter, null);
@@ -263,6 +270,11 @@ public static class TypeExtensions
         }
 
         static bool FindInterfacesFilter(Type interfaceTypeToCheck, object? criteria)
+        {
+            return IsIEnumerableOfT(interfaceTypeToCheck);
+        }
+
+        static bool IsIEnumerableOfT(Type interfaceTypeToCheck)
         {
             return interfaceTypeToCheck.IsGenericType && interfaceTypeToCheck.GetGenericTypeDefinition() == typeof(IEnumerable<>);
         }

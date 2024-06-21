@@ -1,6 +1,7 @@
 ﻿// SPDX-License-Identifier: MIT
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
+using System.Collections;
 using System.Numerics;
 using System.Reflection;
 
@@ -234,15 +235,38 @@ public sealed class TypeExtensionsTests
         public void DoSomething(TValue value) => throw new NotSupportedException();
     }
 
-    [Fact]
-    public void Test_GetCollectionItemType()
+    [Theory]
+    [InlineData(typeof(List<string>), typeof(string))]
+    [InlineData(typeof(IReadOnlyCollection<int>), typeof(int))]
+    [InlineData(typeof(IEnumerable<int>), typeof(int))]
+    [InlineData(typeof(bool?[]), typeof(bool?))]
+    [InlineData(typeof(string), typeof(char))]
+    [InlineData(typeof(IEnumerable), null)]
+    [InlineData(typeof(ICollection), null)]
+    [InlineData(typeof(IList), null)]
+    [InlineData(typeof(StringComparer), null)]
+    public void Test_GetCollectionItemType(Type typeToTest, Type? expectedCollectionItemType)
     {
-        typeof(List<string>).GetCollectionItemType().ShouldBe(typeof(string));
-        typeof(IReadOnlyCollection<int>).GetCollectionItemType().ShouldBe(typeof(int));
-        typeof(bool[]).GetCollectionItemType().ShouldBe(typeof(bool));
+        typeToTest.GetCollectionItemType().ShouldBe(expectedCollectionItemType);
+    }
 
-        typeof(StringComparer).GetCollectionItemType().ShouldBe(null);
+    [Theory]
+    [InlineData(typeof(List<>))]
+    [InlineData(typeof(IReadOnlyCollection<>))]
+    [InlineData(typeof(IEnumerable<>))]
+    public void Test_GetCollectionItemType_OpenGeneric(Type typeToTest)
+    {
+        // Test
+        var collectionItemType = typeToTest.GetCollectionItemType();
 
+        // Verify
+        collectionItemType.ShouldNotBeNull();
+        collectionItemType.IsGenericTypeParameter.ShouldBe(true);
+    }
+
+    [Fact]
+    public void Test_GetCollectionItemType_AmbiguousMatch()
+    {
         Should.Throw<AmbiguousMatchException>(() => typeof(MultiIEnumerableTestClass).GetCollectionItemType());
     }
 
