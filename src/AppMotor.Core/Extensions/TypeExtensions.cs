@@ -229,16 +229,21 @@ public static class TypeExtensions
 
     /// <summary>
     /// Returns the type of the items of the specified collection type (i.e. a type implementing <see cref="IEnumerable{T}"/>).
-    /// Returns <c>null</c> if this type is not a collection type or only implements a non-generic collection interface
-    /// (i.e. <see cref="IEnumerable"/>, <see cref="ICollection"/>, <see cref="IList"/>, ...).
+    /// Returns <c>null</c> if this type is not a collection type. Also returns <c>null</c> if <paramref name="type"/> only
+    /// implements a non-generic collection interface (i.e. <see cref="IEnumerable"/>, <see cref="ICollection"/>, <see cref="IList"/>, ...)
+    /// and <paramref name="enableNonGenericCollectionSupport"/> is <c>false</c> (it's <c>true</c> by default).
     /// </summary>
+    /// <param name="type">This type</param>
+    /// <param name="enableNonGenericCollectionSupport">Affects the return type if <paramref name="type"/> only implements
+    /// a non-generic collection interface but not <see cref="IEnumerable{T}"/>. If this is <c>true</c> (the default),
+    /// returns <c>typeof(object)</c> in this case. If <c>false</c>, returns <c>null</c> in this case.</param>
     /// <remarks>
     /// This method also works if this type is an array type.
     /// </remarks>
     /// <exception cref="AmbiguousMatchException">Thrown if this type implements <see cref="IEnumerable{T}"/> multiple
     /// times with different type arguments.</exception>
     [MustUseReturnValue, Pure]
-    public static Type? GetCollectionItemType(this Type type)
+    public static Type? GetCollectionItemType(this Type type, bool enableNonGenericCollectionSupport = true)
     {
         if (type.IsArray)
         {
@@ -256,7 +261,12 @@ public static class TypeExtensions
 
         if (implementedIEnumerableInterfaceTypes.Length == 0)
         {
-            // Not implemented.
+            // IEnumerable<T> is not implemented.
+            if (enableNonGenericCollectionSupport && type.Is<IEnumerable>())
+            {
+                return typeof(object);
+            }
+
             return null;
         }
         else if (implementedIEnumerableInterfaceTypes.Length == 1)

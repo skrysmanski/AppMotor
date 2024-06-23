@@ -241,13 +241,21 @@ public sealed class TypeExtensionsTests
     [InlineData(typeof(IEnumerable<int>), typeof(int))]
     [InlineData(typeof(bool?[]), typeof(bool?))]
     [InlineData(typeof(string), typeof(char))]
-    [InlineData(typeof(IEnumerable), null)]
-    [InlineData(typeof(ICollection), null)]
-    [InlineData(typeof(IList), null)]
     [InlineData(typeof(StringComparer), null)]
     public void Test_GetCollectionItemType(Type typeToTest, Type? expectedCollectionItemType)
     {
         typeToTest.GetCollectionItemType().ShouldBe(expectedCollectionItemType);
+    }
+
+    [Theory]
+    [InlineData(typeof(IEnumerable))]
+    [InlineData(typeof(ICollection))]
+    [InlineData(typeof(IList))]
+    public void Test_GetCollectionItemType_NonGenericCollection(Type typeToTest)
+    {
+        typeToTest.GetCollectionItemType().ShouldBe(typeof(object));
+        typeToTest.GetCollectionItemType(enableNonGenericCollectionSupport: true).ShouldBe(typeof(object));
+        typeToTest.GetCollectionItemType(enableNonGenericCollectionSupport: false).ShouldBeNull();
     }
 
     [Theory]
