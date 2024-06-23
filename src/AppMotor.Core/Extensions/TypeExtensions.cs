@@ -1,6 +1,7 @@
 ﻿// SPDX-License-Identifier: MIT
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
+using System.Collections;
 using System.Numerics;
 using System.Reflection;
 
@@ -227,8 +228,9 @@ public static class TypeExtensions
     }
 
     /// <summary>
-    /// Returns the item type if this type is a collection (i.e. inheriting from <see cref="IEnumerable{T}"/>).
-    /// Returns <c>null</c> if this type is not a collection type or not a generic collection type.
+    /// Returns the type of the items of the specified collection type (i.e. a type implementing <see cref="IEnumerable{T}"/>).
+    /// Returns <c>null</c> if this type is not a collection type or only implements a non-generic collection interface
+    /// (i.e. <see cref="IEnumerable"/>, <see cref="ICollection"/>, <see cref="IList"/>, ...).
     /// </summary>
     /// <remarks>
     /// This method also works if this type is an array type.
