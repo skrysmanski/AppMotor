@@ -18,6 +18,23 @@ namespace AppMotor.Core.Extensions;
 public static class TypeExtensions
 {
     /// <summary>
+    /// Returns the name of this type in C# syntax: e.g. "List&lt;string&gt;" instead of "List`1"
+    /// or "ushort" instead of "UInt16".
+    /// </summary>
+    /// <param name="type">This type</param>
+    /// <param name="includeNamespaces">If <c>true</c>, all type names (except for types for which a C# keyword
+    /// exists) will be returned fully-qualified with their namespace. If <c>false</c> (the default), only the
+    /// type's name will be returned (i.e. without namespace).</param>
+    /// <remarks>
+    /// For more control over the returned string, use the class <see cref="CSharpTypeName"/> instead.
+    /// </remarks>
+    [MustUseReturnValue]
+    public static string GetCSharpName(this Type type, bool includeNamespaces = false)
+    {
+        return CSharpTypeName.GetName(type, includeNamespaces ? CSharpTypeName.IncludeNamespaceFlags.All : CSharpTypeName.IncludeNamespaceFlags.None);
+    }
+
+    /// <summary>
     /// Returns whether this type is a (scalar) numeric type. This list includes <c>byte</c>
     /// and <c>sbyte</c> as well as <see cref="BigInteger"/>. However, <see cref="Complex"/>
     /// is excluded.

@@ -18,6 +18,18 @@ namespace AppMotor.Core.Tests.Extensions;
 
 public sealed class TypeExtensionsTests
 {
+    [Fact]
+    public void Test_GetCSharpName()
+    {
+        typeof(string).GetCSharpName().ShouldBe("string");
+        typeof(string).GetCSharpName(includeNamespaces: true).ShouldBe("string");
+        typeof(string).GetCSharpName(includeNamespaces: false).ShouldBe("string");
+
+        typeof(List<string>).GetCSharpName().ShouldBe("List<string>");
+        typeof(List<string>).GetCSharpName(includeNamespaces: true).ShouldBe("System.Collections.Generic.List<string>");
+        typeof(List<string>).GetCSharpName(includeNamespaces: false).ShouldBe("List<string>");
+    }
+
     [Theory]
     [InlineData(typeof(string),     false)]
     [InlineData(typeof(char),       false)]
