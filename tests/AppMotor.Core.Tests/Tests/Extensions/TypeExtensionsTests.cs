@@ -37,6 +37,18 @@ public sealed class TypeExtensionsTests
         typeof(bool).GetDefaultValue().ShouldBe(false);
     }
 
+    [Fact]
+    public void Test_GetDefaultValue_NullableValueTypes()
+    {
+        // Verify assumptions
+        default(bool?).ShouldBe(null);
+        default(int?).ShouldBe(null);
+
+        // Tests
+        typeof(bool?).GetDefaultValue().ShouldBe(null);
+        typeof(int?).GetDefaultValue().ShouldBe(null);
+    }
+
     /// <summary>
     /// Tests that mutating the default value of a mutable struct doesn't mutate the default value itself.
     /// This version works with regular C# (where such a thing isn't possible - see <see cref="Test_GetDefaultValue_MutableStruct_Reflection"/>).

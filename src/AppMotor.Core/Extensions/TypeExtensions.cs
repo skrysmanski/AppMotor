@@ -43,6 +43,11 @@ public static class TypeExtensions
     {
         if (type.IsValueType)
         {
+            if (type.IsNullableValueType())
+            {
+                return null;
+            }
+
             return RuntimeHelpers.GetUninitializedObject(type);
         }
         else
