@@ -4,6 +4,7 @@
 using System.Collections;
 using System.Numerics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 using AppMotor.Core.ComponentModel;
 using AppMotor.Core.Utils;
@@ -32,6 +33,22 @@ public static class TypeExtensions
     public static string GetCSharpName(this Type type, bool includeNamespaces = false)
     {
         return CSharpTypeName.GetName(type, includeNamespaces ? CSharpTypeName.IncludeNamespaceFlags.All : CSharpTypeName.IncludeNamespaceFlags.None);
+    }
+
+    /// <summary>
+    /// Returns the value of <c>default(T)</c> for the specified type.
+    /// </summary>
+    [MustUseReturnValue]
+    public static object? GetDefaultValue(this Type type)
+    {
+        if (type.IsValueType)
+        {
+            return RuntimeHelpers.GetUninitializedObject(type);
+        }
+        else
+        {
+            return null;
+        }
     }
 
     /// <summary>

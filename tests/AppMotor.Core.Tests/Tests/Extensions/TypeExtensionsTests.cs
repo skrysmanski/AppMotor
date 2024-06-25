@@ -3,7 +3,6 @@
 
 using System.Collections;
 using System.Numerics;
-using System.Reflection;
 
 using AppMotor.Core.ComponentModel;
 using AppMotor.Core.Extensions;
@@ -28,6 +27,78 @@ public sealed class TypeExtensionsTests
         typeof(List<string>).GetCSharpName().ShouldBe("List<string>");
         typeof(List<string>).GetCSharpName(includeNamespaces: true).ShouldBe("System.Collections.Generic.List<string>");
         typeof(List<string>).GetCSharpName(includeNamespaces: false).ShouldBe("List<string>");
+    }
+
+    [Fact]
+    public void Test_GetDefaultValue()
+    {
+        typeof(string).GetDefaultValue().ShouldBe(null);
+        typeof(int).GetDefaultValue().ShouldBe(0);
+        typeof(bool).GetDefaultValue().ShouldBe(false);
+    }
+
+    /// <summary>
+    /// Tests that mutating the default value of a mutable struct doesn't mutate the default value itself.
+    /// This version works with regular C# (where such a thing isn't possible - see <see cref="Test_GetDefaultValue_MutableStruct_Reflection"/>).
+    /// </summary>
+    [Fact]
+    public void Test_GetDefaultValue_MutableStruct_Regular()
+    {
+        var value1 = (MutableTestStruct)typeof(MutableTestStruct).GetDefaultValue()!;
+        value1.Value.ShouldBe(0);
+
+        value1.Value = 42;
+
+        var value2 = (MutableTestStruct)typeof(MutableTestStruct).GetDefaultValue()!;
+        // Value must not carry over from previous default value.
+        value2.Value.ShouldBe(0);
+    }
+
+    /// <summary>
+    /// Tests that mutating the default value of a mutable struct doesn't mutate the default value itself.
+    /// This version works with reflection (which seems to be the only way to mutate boxed structs).
+    /// </summary>
+    [Fact]
+    public void Test_GetDefaultValue_MutableStruct_Reflection()
+    {
+        var value1 = typeof(MutableTestStruct).GetDefaultValue()!;
+        ((MutableTestStruct)value1).Value.ShouldBe(0);
+
+        typeof(MutableTestStruct).GetProperty(nameof(MutableTestStruct.Value))!.SetValue(value1, 42);
+
+        var value2 = (MutableTestStruct)typeof(MutableTestStruct).GetDefaultValue()!;
+        // Value must not carry over from previous default value.
+        value2.Value.ShouldBe(0);
+    }
+
+    private struct MutableTestStruct
+    {
+        public int Value { get; set; }
+    }
+
+    /// <summary>
+    /// Tests that <see cref="TypeExtensions.GetDefaultValue"/> doesn't call the parameterless constructor on structs
+    /// (which are allowed since some previous C# version).
+    /// </summary>
+    [Fact]
+    public void Test_GetDefaultValue_StructWithParameterlessConstructor()
+    {
+        // Verify assumption
+        default(TestStructWithParameterlessConstructor).Value.ShouldBe(0);
+
+        // Test
+        ((TestStructWithParameterlessConstructor)typeof(TestStructWithParameterlessConstructor).GetDefaultValue()!).Value.ShouldBe(0);
+    }
+
+    private readonly struct TestStructWithParameterlessConstructor
+    {
+        public int Value { get; }
+
+        // ReSharper disable once UnusedMember.Local
+        public TestStructWithParameterlessConstructor()
+        {
+            this.Value = 43;
+        }
     }
 
     [Theory]
@@ -287,7 +358,7 @@ public sealed class TypeExtensionsTests
     [Fact]
     public void Test_GetCollectionItemType_AmbiguousMatch()
     {
-        Should.Throw<AmbiguousMatchException>(() => typeof(MultiIEnumerableTestClass).GetCollectionItemType());
+        Should.Throw<System.Reflection.AmbiguousMatchException>(() => typeof(MultiIEnumerableTestClass).GetCollectionItemType());
     }
 
     private class MultiIEnumerableTestClass : List<int>, IEnumerable<string>
