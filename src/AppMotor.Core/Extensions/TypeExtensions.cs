@@ -252,13 +252,22 @@ public static class TypeExtensions
     /// <summary>
     /// Returns whether this is a nullable value type.
     /// </summary>
-    /// <seealso cref="IsNullableType"/>
+    /// <remarks>
+    /// This method returns <c>false</c> for <c>typeof(Nullable&lt;&gt;)</c> (i.e. the open
+    /// generic).
+    /// </remarks>
     [MustUseReturnValue]
     public static bool IsNullableValueType(this Type type)
     {
         Validate.ArgumentWithName(nameof(type)).IsNotNull(type);
 
-        return Nullable.GetUnderlyingType(type) != null;
+        // ReSharper disable once MergeIntoPattern
+        if (type.IsGenericType && !type.IsGenericTypeDefinition)
+        {
+            return type.GetGenericTypeDefinition() == typeof(Nullable<>);
+        }
+
+        return false;
     }
 
     /// <summary>

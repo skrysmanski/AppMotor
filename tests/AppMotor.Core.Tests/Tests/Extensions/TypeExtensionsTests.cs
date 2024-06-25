@@ -211,6 +211,8 @@ public sealed class TypeExtensionsTests
 
         typeof(string).IsNullableValueType().ShouldBe(false);
         typeof(object).IsNullableValueType().ShouldBe(false);
+
+        typeof(Nullable<>).IsNullableValueType().ShouldBe(false);
     }
 
     [Fact]
