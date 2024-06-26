@@ -383,7 +383,7 @@ public static class TypeExtensions
         // This includes enums, arrays, and value types.
         if (baseOrInterfaceType.IsSealed)
         {
-            return false;
+            return typeToCheck == baseOrInterfaceType;
         }
 
         if (baseOrInterfaceType.IsGenericTypeDefinition)

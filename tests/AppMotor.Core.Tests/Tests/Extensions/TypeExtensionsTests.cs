@@ -3,6 +3,7 @@
 
 using System.Collections;
 using System.Numerics;
+using System.Reflection;
 
 using AppMotor.Core.ComponentModel;
 using AppMotor.Core.Extensions;
@@ -89,7 +90,7 @@ public sealed class TypeExtensionsTests
     }
 
     /// <summary>
-    /// Tests that <see cref="TypeExtensions.GetDefaultValue"/> doesn't call the parameterless constructor on structs
+    /// Tests that <see cref="Core.Extensions.TypeExtensions.GetDefaultValue"/> doesn't call the parameterless constructor on structs
     /// (which are allowed since some previous C# version).
     /// </summary>
     [Fact]
@@ -251,14 +252,19 @@ public sealed class TypeExtensionsTests
         typeof(ClassB).Is<ITestInterface>().ShouldBe(true);
         typeof(ClassB).Is(typeof(ITestInterface)).ShouldBe(true);
 
-        typeof(ClassB).Is<ClassA>().ShouldBe(true);
-        typeof(ClassB).Is(typeof(ClassA)).ShouldBe(true);
-
         typeof(ClassA).Is<ClassB>().ShouldBe(false);
         typeof(ClassA).Is(typeof(ClassB)).ShouldBe(false);
 
+        typeof(ClassA).Is<ITestInterface>().ShouldBe(true);
+        typeof(ClassA).Is(typeof(ITestInterface)).ShouldBe(true);
+
         typeof(ITestInterface).Is<ITestInterface>().ShouldBe(true);
         typeof(ITestInterface).Is(typeof(ITestInterface)).ShouldBe(true);
+
+        typeof(ClassA).Is<ClassA>().ShouldBe(true);
+        typeof(ClassA).Is(typeof(ClassA)).ShouldBe(true);
+        typeof(ClassB).Is<ClassB>().ShouldBe(true);
+        typeof(ClassB).Is(typeof(ClassB)).ShouldBe(true);
 
         typeof(object).Is<ITestInterface>().ShouldBe(false);
         typeof(object).Is(typeof(ITestInterface)).ShouldBe(false);
@@ -277,6 +283,14 @@ public sealed class TypeExtensionsTests
 
         typeof(ClassB).Is<int>().ShouldBe(false);
         typeof(ClassB).Is(typeof(int)).ShouldBe(false);
+
+        typeof(GenericClassA<string>).Is(typeof(GenericClassA<string>)).ShouldBe(true);
+        typeof(GenericClassA<string>).Is<GenericClassA<string>>().ShouldBe(true);
+        typeof(GenericClassA<string>).Is(typeof(GenericClassA<int>)).ShouldBe(false);
+        typeof(GenericClassA<string>).Is<GenericClassA<int>>().ShouldBe(false);
+
+        typeof(SealedClass).Is(typeof(SealedClass)).ShouldBe(true);
+        typeof(SealedClass).Is<SealedClass>().ShouldBe(true);
     }
 
     [Fact]
@@ -307,6 +321,8 @@ public sealed class TypeExtensionsTests
     private class ClassA : ITestInterface;
 
     private class ClassB : ClassA;
+
+    private sealed class SealedClass : ClassA;
 
     private interface IGenericTestInterface<in T>
     {
@@ -372,7 +388,7 @@ public sealed class TypeExtensionsTests
     [Fact]
     public void Test_GetCollectionItemType_AmbiguousMatch()
     {
-        Should.Throw<System.Reflection.AmbiguousMatchException>(() => typeof(MultiIEnumerableTestClass).GetCollectionItemType());
+        Should.Throw<AmbiguousMatchException>(() => typeof(MultiIEnumerableTestClass).GetCollectionItemType());
     }
 
     private class MultiIEnumerableTestClass : List<int>, IEnumerable<string>
