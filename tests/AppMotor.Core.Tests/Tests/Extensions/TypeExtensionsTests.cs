@@ -293,27 +293,26 @@ public sealed class TypeExtensionsTests
         typeof(SealedClass).Is<SealedClass>().ShouldBe(true);
     }
 
-    [Fact]
-    public void Test_Is_OpenGeneric()
+    [Theory]
+    // Non-nested types
+    [InlineData(typeof(List<string>), typeof(IReadOnlyCollection<>), true)]
+    [InlineData(typeof(List<>), typeof(IReadOnlyCollection<>), true)]
+    [InlineData(typeof(List<>), typeof(IReadOnlyCollection<string>), false)]
+    [InlineData(typeof(List<>), typeof(object), true)]
+    [InlineData(typeof(List<>), typeof(int), false)]
+    [InlineData(typeof(List<int>), typeof(GenericClassA<>), false)]
+
+    // Nested tye
+    [InlineData(typeof(GenericClassB<int, string>), typeof(IGenericTestInterface<>), true)]
+    [InlineData(typeof(GenericClassB<int, string>), typeof(GenericClassA<>), true)]
+    [InlineData(typeof(GenericClassC<int, string>), typeof(GenericClassA<>), true)]
+
+    [InlineData(typeof(IGenericTestInterface<>), typeof(object), true)]
+    [InlineData(typeof(GenericStructA<string>), typeof(IGenericTestInterface<>), true)]
+    [InlineData(typeof(MultiIEnumerableTestClass), typeof(IEnumerable<>), true)]
+    public void Test_Is_OpenGeneric(Type typeToCheck, Type typeToCompare, bool expectedResult)
     {
-        // Non-nested types
-        typeof(List<string>).Is(typeof(IReadOnlyCollection<>)).ShouldBe(true);
-        typeof(List<>).Is(typeof(IReadOnlyCollection<>)).ShouldBe(true);
-        typeof(List<>).Is(typeof(IReadOnlyCollection<string>)).ShouldBe(false);
-        typeof(List<>).Is(typeof(object)).ShouldBe(true);
-        typeof(List<>).Is(typeof(int)).ShouldBe(false);
-        typeof(List<int>).Is(typeof(GenericClassA<>)).ShouldBe(false);
-
-        // Nested types
-        typeof(GenericClassB<int, string>).Is(typeof(IGenericTestInterface<>)).ShouldBe(true);
-        typeof(GenericClassB<int, string>).Is(typeof(GenericClassA<>)).ShouldBe(true);
-        typeof(GenericClassC<int, string>).Is(typeof(GenericClassA<>)).ShouldBe(true);
-
-        typeof(IGenericTestInterface<>).Is(typeof(object)).ShouldBe(true);
-
-        typeof(GenericStructA<string>).Is(typeof(IGenericTestInterface<>)).ShouldBe(true);
-
-        typeof(MultiIEnumerableTestClass).Is(typeof(IEnumerable<>)).ShouldBe(true);
+        typeToCheck.Is(typeToCompare).ShouldBe(expectedResult);
     }
 
     private interface ITestInterface;
