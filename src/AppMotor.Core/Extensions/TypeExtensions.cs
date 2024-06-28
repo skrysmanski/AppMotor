@@ -460,6 +460,23 @@ public static class TypeExtensions
     }
 
     /// <summary>
+    /// Returns the parameterless constructor for this type. Returns <c>null</c> if
+    /// the type doesn't have a parameterless constructor. Also returns <c>null</c> for types
+    /// without constructors (interfaces, enums, simple types, arrays) and for <c>abstract</c> types.
+    /// </summary>
+    /// <param name="type">This type.</param>
+    /// <param name="publicOnly">Whether to only consider a <c>public</c> parameterless constructor
+    /// (the default). If <c>false</c>, this method will also look for a private parameterless constructor.</param>
+    /// <remarks>
+    /// For nullable value types, this method will return the constructor for the underlying value type.
+    /// </remarks>
+    [MustUseReturnValue]
+    public static ParameterlessConstructor? GetParameterlessConstructor(this Type type, bool publicOnly = true)
+    {
+        return ParameterlessConstructor.GetForType(type, publicOnly: publicOnly);
+    }
+
+    /// <summary>
     /// Returns the <see cref="MethodInfo"/> for the specified custom operator defined in this type.
     /// For binary operators (i.e. with two parameters/operands), this method assumes that both operands
     /// are of this type. Returns <c>null</c>, if the operator method doesn't exist.

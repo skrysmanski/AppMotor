@@ -396,6 +396,22 @@ public sealed class TypeExtensionsTests
         public new IEnumerator<string> GetEnumerator() => throw new NotSupportedException();
     }
 
+    [Fact]
+    public void Test_GetParameterlessConstructor()
+    {
+        typeof(object).GetParameterlessConstructor().ShouldNotBeNull();
+        typeof(string).GetParameterlessConstructor().ShouldBeNull();
+
+        typeof(TestClassWithPrivateConstructor).GetParameterlessConstructor().ShouldBeNull();
+        typeof(TestClassWithPrivateConstructor).GetParameterlessConstructor(publicOnly: false).ShouldNotBeNull();
+    }
+
+    // ReSharper disable once ConvertToStaticClass
+    private sealed class TestClassWithPrivateConstructor
+    {
+        private TestClassWithPrivateConstructor() { }
+    }
+
     [Theory]
     [InlineData("+",  UnaryOperators.UnaryPlus)]
     [InlineData("-",  UnaryOperators.UnaryNegation)]
