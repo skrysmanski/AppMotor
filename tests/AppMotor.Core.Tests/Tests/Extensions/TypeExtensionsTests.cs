@@ -300,7 +300,13 @@ public sealed class TypeExtensionsTests
     [InlineData(typeof(List<>), typeof(IReadOnlyCollection<string>), false)]
     [InlineData(typeof(List<>), typeof(object), true)]
     [InlineData(typeof(List<>), typeof(int), false)]
+    [InlineData(typeof(List<int>), typeof(List<>), true)]
     [InlineData(typeof(List<int>), typeof(GenericClassA<>), false)]
+
+    // Generic structs
+    [InlineData(typeof(KeyValuePair<string, int>), typeof(KeyValuePair<,>), true)]
+    [InlineData(typeof(KeyValuePair<,>), typeof(KeyValuePair<,>), true)]
+    [InlineData(typeof(KeyValuePair<,>), typeof(KeyValuePair<string, int>), false)]
 
     // Nested tye
     [InlineData(typeof(GenericClassB<int, string>), typeof(IGenericTestInterface<>), true)]

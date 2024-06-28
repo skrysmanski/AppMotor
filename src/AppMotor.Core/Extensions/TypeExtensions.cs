@@ -367,8 +367,13 @@ public static class TypeExtensions
     /// aims to be better understandable.
     /// </summary>
     /// <remarks>
-    /// This method also supports open generic types (e.g. <c>IList&lt;&gt;</c> ) - both
-    /// for <paramref name="baseOrInterfaceType"/> as well as this type.
+    /// <para>Unlike <see cref="Type.IsAssignableFrom"/>, this method also supports open generic
+    /// types (e.g. <c>IList&lt;&gt;</c>) - both for <paramref name="baseOrInterfaceType"/> as
+    /// well as this type.</para>
+    ///
+    /// <para>For example, <c>typeof(List&lt;string&gt;).Is(typeof(IEnumerable&lt;&gt;))</c> is <c>true</c>,
+    /// while <c>typeof(List&lt;&gt;).Is(typeof(List&lt;string&gt;))</c> is <c>false</c>.
+    /// However, <c>typeof(List&lt;&gt;).Is(typeof(IEnumerable&lt;&gt;))</c> is <c>true</c>.</para>
     /// </remarks>
     /// <remarks>
     /// Unlike <see cref="Type.IsAssignableFrom"/>, the parameter <paramref name="typeToCheck"/>
@@ -381,7 +386,8 @@ public static class TypeExtensions
         Validate.ArgumentWithName(nameof(baseOrInterfaceType)).IsNotNull(baseOrInterfaceType);
 
         // This includes enums, arrays, and value types.
-        if (baseOrInterfaceType.IsSealed)
+        // But: Don't use this shortcut if the base type is an open generic type.
+        if (baseOrInterfaceType is { IsSealed: true, IsGenericTypeDefinition: false })
         {
             return typeToCheck == baseOrInterfaceType;
         }
@@ -428,16 +434,18 @@ public static class TypeExtensions
             }
             else
             {
-                var baseType = typeToCheck.BaseType;
+                // NOTE: We must not use "typeToCheck.BaseType" here because we want to be able to check
+                //   "List<int>" against "List<>" or "KeyValuePair<string, int>" against "KeyValuePair<,>".
+                var typeToCheckAgainstOpenGeneric = typeToCheck;
 
-                while (baseType is not null && baseType != typeof(object))
+                while (typeToCheckAgainstOpenGeneric is not null && typeToCheckAgainstOpenGeneric != typeof(object))
                 {
-                    if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == baseOrInterfaceType)
+                    if (typeToCheckAgainstOpenGeneric.IsGenericType && typeToCheckAgainstOpenGeneric.GetGenericTypeDefinition() == baseOrInterfaceType)
                     {
                         return true;
                     }
 
-                    baseType = baseType.BaseType;
+                    typeToCheckAgainstOpenGeneric = typeToCheckAgainstOpenGeneric.BaseType;
                 }
 
                 return false;
