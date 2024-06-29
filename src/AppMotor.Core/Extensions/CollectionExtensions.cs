@@ -9,10 +9,28 @@ using JetBrains.Annotations;
 namespace AppMotor.Core.Extensions;
 
 /// <summary>
-/// Extension methods for <see cref="ICollection{T}"/>.
+/// Extension methods for <see cref="IEnumerable{T}"/> and <see cref="ICollection{T}"/>.
 /// </summary>
 public static class CollectionExtensions
 {
+    /// <summary>
+    /// Returns this enumeration without any <c>null</c> elements.
+    /// </summary>
+    [MustUseReturnValue]
+    public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T?> collection) where T : class
+    {
+        return collection.Where(item => item is not null)!;
+    }
+
+    /// <summary>
+    /// Returns this enumeration without any <c>null</c> elements.
+    /// </summary>
+    [MustUseReturnValue]
+    public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T?> collection) where T : struct
+    {
+        return collection.Where(item => item is not null).Select(item => item!.Value);
+    }
+
     /// <summary>
     /// Adds the specified items to the collection.
     /// </summary>
