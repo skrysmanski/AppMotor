@@ -565,11 +565,8 @@ public static class TypeExtensions
 
     /// <summary>
     /// Returns the <see cref="MethodInfo"/> for the specified custom unary (i.e. one parameter/operand) operator
-    /// defined in this type. This method assumes that both operands are of this type. Returns <c>null</c>, if
-    /// the operator method doesn't exist.
+    /// defined in this type. Returns <c>null</c>, if the operator method doesn't exist.
     /// </summary>
-    /// <param name="type"></param>
-    /// <param name="operator">The operator</param>
     [MustUseReturnValue]
     public static MethodInfo? GetOperator(this Type type, UnaryOperators @operator)
     {
@@ -578,11 +575,13 @@ public static class TypeExtensions
 
     /// <summary>
     /// Returns the <see cref="MethodInfo"/> for the specified custom binary (i.e. two parameters/operands) operator
-    /// defined in this type. This method assumes that both operands are of this type. Returns <c>null</c>, if the
-    /// operator method doesn't exist.
+    /// defined in this type. This method assumes that both operands are of this type (except for <see cref="BinaryOperators.LeftShift"/>
+    /// and <see cref="BinaryOperators.RightShift"/>). Returns <c>null</c>, if the operator method doesn't exist.
     /// </summary>
-    /// <param name="type"></param>
-    /// <param name="operator">The operator</param>
+    /// <remarks>
+    /// If you're looking for an operator where one of the parameters has a different type than this type, use
+    /// <see cref="GetOperator(Type,BinaryOperators,Type,bool)"/> instead.
+    /// </remarks>
     [MustUseReturnValue]
     public static MethodInfo? GetOperator(this Type type, BinaryOperators @operator)
     {
@@ -602,10 +601,9 @@ public static class TypeExtensions
     /// </summary>
     /// <param name="type"></param>
     /// <param name="operator">The operator</param>
-    /// <param name="otherType">The type of the other operand (one is always this type);
-    /// can be the same as this type</param>
+    /// <param name="otherType">The type of the other operand (one is always of this type); can be the same as this type</param>
     /// <param name="otherTypeIsSecondOperand">Whether <paramref name="otherType"/> is used as first (<c>false</c>)
-    /// or as second (<c>true</c>) operand; the latter is the default</param>
+    /// or as second (<c>true</c>) operand; the latter is the default.</param>
     [MustUseReturnValue]
     public static MethodInfo? GetOperator(this Type type, BinaryOperators @operator, Type otherType, bool otherTypeIsSecondOperand = true)
     {

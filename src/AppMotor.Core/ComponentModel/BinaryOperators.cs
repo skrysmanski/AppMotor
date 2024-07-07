@@ -1,11 +1,14 @@
 ﻿// SPDX-License-Identifier: MIT
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
+using AppMotor.Core.Extensions;
+
 namespace AppMotor.Core.ComponentModel;
 
 /// <summary>
 /// The various binary (i.e. two parameters/operands) operators that can be custom implemented in C#.
 /// </summary>
+/// <seealso cref="TypeExtensions.GetOperator(Type,BinaryOperators)"/>
 /// <seealso cref="UnaryOperators"/>
 public enum BinaryOperators
 {
