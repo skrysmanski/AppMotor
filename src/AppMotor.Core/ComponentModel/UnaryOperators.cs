@@ -4,7 +4,7 @@
 namespace AppMotor.Core.ComponentModel;
 
 /// <summary>
-/// The various unary (i.e. one parameters/operands) operators that can be custom implemented in C#.
+/// The various unary (i.e. one parameter/operand) operators that can be custom implemented in C#.
 /// </summary>
 /// <seealso cref="BinaryOperators"/>
 public enum UnaryOperators
