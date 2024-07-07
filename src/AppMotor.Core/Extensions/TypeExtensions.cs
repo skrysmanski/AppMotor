@@ -621,6 +621,9 @@ public static class TypeExtensions
     /// Returns the implicit operator to convert from <paramref name="otherType"/> to this type. Returns <c>null</c>
     /// if no such operator exists.
     /// </summary>
+    /// <remarks>
+    /// This method doesn't return an operator for built-in implicit conversions like <c>int</c> to <c>long</c>.
+    /// </remarks>
     /// <seealso cref="GetImplicitOperatorTo"/>
     /// <seealso cref="GetExplicitOperatorFrom"/>
     [MustUseReturnValue]
@@ -633,6 +636,9 @@ public static class TypeExtensions
     /// Returns the implicit operator to convert from this type to <paramref name="otherType"/>. Returns <c>null</c>
     /// if no such operator exists.
     /// </summary>
+    /// <remarks>
+    /// This method doesn't return an operator for built-in implicit conversions like <c>int</c> to <c>long</c>.
+    /// </remarks>
     /// <seealso cref="GetImplicitOperatorFrom"/>
     /// <seealso cref="GetExplicitOperatorTo"/>
     [MustUseReturnValue]
@@ -645,6 +651,9 @@ public static class TypeExtensions
     /// Returns the explicit operator to convert from <paramref name="otherType"/> to this type. Returns <c>null</c>
     /// if no such operator exists.
     /// </summary>
+    /// <remarks>
+    /// This method doesn't return an operator for built-in explicit conversions like <c>double</c> to <c>int</c>.
+    /// </remarks>
     /// <seealso cref="GetExplicitOperatorTo"/>
     /// <seealso cref="GetImplicitOperatorFrom"/>
     [MustUseReturnValue]
@@ -657,6 +666,9 @@ public static class TypeExtensions
     /// Returns the explicit operator to convert from this type to <paramref name="otherType"/>. Returns <c>null</c>
     /// if no such operator exists.
     /// </summary>
+    /// <remarks>
+    /// This method doesn't return an operator for built-in explicit conversions like <c>double</c> to <c>int</c>.
+    /// </remarks>
     /// <seealso cref="GetExplicitOperatorFrom"/>
     /// <seealso cref="GetImplicitOperatorTo"/>
     [MustUseReturnValue]
