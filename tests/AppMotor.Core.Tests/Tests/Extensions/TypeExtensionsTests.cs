@@ -435,7 +435,7 @@ public sealed class TypeExtensionsTests
         operatorFromEnum.ShouldBeSameAs(operatorFromString);
 
         operatorFromEnum.Name.ShouldBe("op_" + operatorAsEnum);
-        operatorFromEnum.GetParameters().Select(p => p.ParameterType).ShouldBe(new[] { typeof(OperatorsTestContainer) });
+        operatorFromEnum.GetParameters().Select(p => p.ParameterType).ShouldBe([typeof(OperatorsTestContainer)]);
     }
 
     [Theory]
@@ -472,7 +472,7 @@ public sealed class TypeExtensionsTests
             BinaryOperators.RightShift => typeof(int),
             _ => typeof(OperatorsTestContainer),
         };
-        operatorFromEnum.GetParameters().Select(p => p.ParameterType).ShouldBe(new[] { typeof(OperatorsTestContainer), secondType });
+        operatorFromEnum.GetParameters().Select(p => p.ParameterType).ShouldBe([typeof(OperatorsTestContainer), secondType]);
     }
 
     [Theory]
@@ -505,11 +505,11 @@ public sealed class TypeExtensionsTests
             operatorFromEnum.Name.ShouldBe("op_" + operatorAsEnum);
             if (otherTypeIsSecondOperand)
             {
-                operatorFromEnum.GetParameters().Select(p => p.ParameterType).ShouldBe(new[] { typeof(OperatorsTestContainer), typeof(string) });
+                operatorFromEnum.GetParameters().Select(p => p.ParameterType).ShouldBe([typeof(OperatorsTestContainer), typeof(string)]);
             }
             else
             {
-                operatorFromEnum.GetParameters().Select(p => p.ParameterType).ShouldBe(new[] { typeof(string), typeof(OperatorsTestContainer) });
+                operatorFromEnum.GetParameters().Select(p => p.ParameterType).ShouldBe([typeof(string), typeof(OperatorsTestContainer)]);
             }
         }
 
@@ -530,7 +530,7 @@ public sealed class TypeExtensionsTests
         operatorInfo.ShouldNotBeNull();
 
         operatorInfo.Name.ShouldBe("op_" + operatorAsEnum);
-        operatorInfo.GetParameters().Select(p => p.ParameterType).ShouldBe(new[] { typeof(OperatorsTestContainer), typeof(int) });
+        operatorInfo.GetParameters().Select(p => p.ParameterType).ShouldBe([typeof(OperatorsTestContainer), typeof(int)]);
     }
 
     [Fact]
