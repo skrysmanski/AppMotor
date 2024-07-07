@@ -540,6 +540,58 @@ public sealed class TypeExtensionsTests
         Should.Throw<ArgumentException>(() => typeof(OperatorsTestContainer).GetOperator("xxx", typeof(string)));
     }
 
+    [Fact]
+    public void Test_GetImplicitOperatorFrom()
+    {
+        // Test
+        var operatorInfo = typeof(OperatorsTestContainer).GetImplicitOperatorFrom(typeof(int));
+
+        // Verify
+        operatorInfo.ShouldNotBeNull();
+        operatorInfo.ReturnType.ShouldBe(typeof(OperatorsTestContainer));
+        operatorInfo.GetParameters().Select(p => p.ParameterType).ShouldBe([typeof(int)]);
+    }
+
+    [Theory]
+    [InlineData(typeof(string))]
+    [InlineData(typeof(bool))]
+    public void Test_GetImplicitOperatorTo(Type otherType)
+    {
+        // Test
+        var operatorInfo = typeof(OperatorsTestContainer).GetImplicitOperatorTo(otherType);
+
+        // Verify
+        operatorInfo.ShouldNotBeNull();
+        operatorInfo.ReturnType.ShouldBe(otherType);
+        operatorInfo.GetParameters().Select(p => p.ParameterType).ShouldBe([typeof(OperatorsTestContainer)]);
+    }
+
+    [Fact]
+    public void Test_GetExplicitOperatorFrom()
+    {
+        // Test
+        var operatorInfo = typeof(OperatorsTestContainer).GetExplicitOperatorFrom(typeof(long));
+
+        // Verify
+        operatorInfo.ShouldNotBeNull();
+        operatorInfo.ReturnType.ShouldBe(typeof(OperatorsTestContainer));
+        operatorInfo.GetParameters().Select(p => p.ParameterType).ShouldBe([typeof(long)]);
+    }
+
+    [Theory]
+    [InlineData(typeof(ulong))]
+    [InlineData(typeof(ushort))]
+    public void Test_GetExplicitOperatorTo(Type otherType)
+    {
+        // Test
+        var operatorInfo = typeof(OperatorsTestContainer).GetExplicitOperatorTo(otherType);
+
+        // Verify
+        operatorInfo.ShouldNotBeNull();
+        operatorInfo.ReturnType.ShouldBe(otherType);
+        operatorInfo.GetParameters().Select(p => p.ParameterType).ShouldBe([typeof(OperatorsTestContainer)]);
+    }
+
 #pragma warning disable CS0660, CS0661
     private sealed class OperatorsTestContainer
 #pragma warning restore CS0660, CS0661
@@ -819,6 +871,22 @@ public sealed class TypeExtensionsTests
         #endregion Special
 
         #endregion Binary Operators
+
+        #region Implicit & Explicit Operators
+
+        public static implicit operator OperatorsTestContainer(int value) => throw new NotSupportedException();
+
+        // NOTE: The following two operators just differ by their return type - which is normally not supported for C# methods.
+        public static implicit operator string(OperatorsTestContainer value) => throw new NotSupportedException();
+        public static implicit operator bool(OperatorsTestContainer value) => throw new NotSupportedException();
+
+        public static explicit operator OperatorsTestContainer(long value) => throw new NotSupportedException();
+
+        // NOTE: The following two operators just differ by their return type - which is normally not supported for C# methods.
+        public static explicit operator ulong(OperatorsTestContainer value) => throw new NotSupportedException();
+        public static explicit operator ushort(OperatorsTestContainer value) => throw new NotSupportedException();
+
+        #endregion Implicit & Explicit Operators
 
         // ReSharper restore UnusedParameter.Local
     }

@@ -616,4 +616,92 @@ public static class TypeExtensions
             return type.GetMethod("op_" + @operator, BindingFlags.Public | BindingFlags.Static, [otherType, type]);
         }
     }
+
+    /// <summary>
+    /// Returns the implicit operator to convert from <paramref name="otherType"/> to this type. Returns <c>null</c>
+    /// if no such operator exists.
+    /// </summary>
+    /// <seealso cref="GetImplicitOperatorTo"/>
+    /// <seealso cref="GetExplicitOperatorFrom"/>
+    [MustUseReturnValue]
+    public static MethodInfo? GetImplicitOperatorFrom(this Type type, Type otherType)
+    {
+        return type.GetConversionOperatorFrom("op_Implicit", otherType);
+    }
+
+    /// <summary>
+    /// Returns the implicit operator to convert from this type to <paramref name="otherType"/>. Returns <c>null</c>
+    /// if no such operator exists.
+    /// </summary>
+    /// <seealso cref="GetImplicitOperatorFrom"/>
+    /// <seealso cref="GetExplicitOperatorTo"/>
+    [MustUseReturnValue]
+    public static MethodInfo? GetImplicitOperatorTo(this Type type, Type otherType)
+    {
+        return type.GetConversionOperatorTo("op_Implicit", otherType);
+    }
+
+    /// <summary>
+    /// Returns the explicit operator to convert from <paramref name="otherType"/> to this type. Returns <c>null</c>
+    /// if no such operator exists.
+    /// </summary>
+    /// <seealso cref="GetExplicitOperatorTo"/>
+    /// <seealso cref="GetImplicitOperatorFrom"/>
+    [MustUseReturnValue]
+    public static MethodInfo? GetExplicitOperatorFrom(this Type type, Type otherType)
+    {
+        return type.GetConversionOperatorFrom("op_Explicit", otherType);
+    }
+
+    /// <summary>
+    /// Returns the explicit operator to convert from this type to <paramref name="otherType"/>. Returns <c>null</c>
+    /// if no such operator exists.
+    /// </summary>
+    /// <seealso cref="GetExplicitOperatorFrom"/>
+    /// <seealso cref="GetImplicitOperatorTo"/>
+    [MustUseReturnValue]
+    public static MethodInfo? GetExplicitOperatorTo(this Type type, Type otherType)
+    {
+        return type.GetConversionOperatorTo("op_Explicit", otherType);
+    }
+
+    [MustUseReturnValue]
+    private static MethodInfo? GetConversionOperatorFrom(this Type type, string operatorName, Type otherType)
+    {
+        return type.GetMethod(operatorName, BindingFlags.Public | BindingFlags.Static, [otherType]);
+    }
+
+    [MustUseReturnValue]
+    private static MethodInfo? GetConversionOperatorTo(this Type type, string operatorName, Type otherType)
+    {
+        // NOTE: In this case, the operator methods only differ by return type - for which there
+        //   is no support in type.GetMethod(). Thus, we have to iterate all methods.
+        foreach (var methodInfo in type.GetMethods(BindingFlags.Public | BindingFlags.Static))
+        {
+            if (methodInfo.Name != operatorName)
+            {
+                continue;
+            }
+
+            var parameters = methodInfo.GetParameters();
+            if (parameters.Length != 1)
+            {
+                // I guess we could get here if someone created manually a static method named "op_Implicit".
+                continue;
+            }
+
+            if (parameters[0].ParameterType != type)
+            {
+                // Doesn't convert from this type.
+                continue;
+            }
+
+            if (methodInfo.ReturnType == otherType)
+            {
+                return methodInfo;
+            }
+        }
+
+        return null;
+    }
 }
