@@ -16,6 +16,9 @@ using Xunit;
 
 namespace AppMotor.Core.Tests.Extensions;
 
+/// <summary>
+/// Tests for <see cref="Core.Extensions.TypeExtensions"/>.
+/// </summary>
 public sealed class TypeExtensionsTests
 {
     [Fact]
