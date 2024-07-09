@@ -61,10 +61,17 @@ public static class TypeExtensions
     /// and <c>sbyte</c> as well as <see cref="BigInteger"/>. However, <see cref="Complex"/>
     /// is excluded.
     /// </summary>
+    ///
     /// <param name="type">The type to check</param>
     /// <param name="includeNullables">Whether this method should return <c>true</c> for nullable
     /// number types as well. If <c>true</c>, this method will return <c>true</c> for <c>int?</c>.
     /// If <c>false</c>, it will return <c>false</c> in this case.</param>
+    ///
+    /// <remarks>
+    /// This method only recognizes built-in number types (like <c>int</c> or even <c>BigInteger</c>)
+    /// but not custom types that implement <see cref="INumber{TSelf}"/>.
+    /// </remarks>
+    ///
     /// <seealso cref="IsNumericIntegerType"/>
     /// <seealso cref="IsNumericFloatType"/>
     [MustUseReturnValue]
@@ -129,10 +136,17 @@ public static class TypeExtensions
     /// Returns whether this type is an integer type. This list includes <c>byte</c>, <c>sbyte</c>, <see cref="BigInteger"/>,
     /// <c>Int128</c>, and <c>UInt128</c>.
     /// </summary>
+    ///
     /// <param name="type">The type to check</param>
     /// <param name="includeNullables">Whether this method should return <c>true</c> for nullable
     /// number types as well. If <c>true</c>, this method will return <c>true</c> for <c>int?</c>.
     /// If <c>false</c>, it will return <c>false</c> in this case.</param>
+    ///
+    /// <remarks>
+    /// This method only recognizes built-in number types (like <c>int</c> or even <c>BigInteger</c>)
+    /// but not custom types that implement <see cref="IBinaryNumber{TSelf}"/>.
+    /// </remarks>
+    ///
     /// <seealso cref="IsNumericType"/>
     /// <seealso cref="IsNumericFloatType"/>
     [MustUseReturnValue]
@@ -189,10 +203,17 @@ public static class TypeExtensions
     /// Returns whether this type is a floating point type. This list includes <c>float</c>,
     /// <c>double</c>, <c>decimal</c>, and <c>Half</c>.
     /// </summary>
+    ///
     /// <param name="type">The type to check</param>
     /// <param name="includeNullables">Whether this method should return <c>true</c> for nullable
     /// number types as well. If <c>true</c>, this method will return <c>true</c> for <c>int?</c>.
     /// If <c>false</c>, it will return <c>false</c> in this case.</param>
+    ///
+    /// <remarks>
+    /// This method only recognizes built-in number types (like <c>float</c> or even <c>Half</c>)
+    /// but not custom types that implement <see cref="IFloatingPoint{TSelf}"/>.
+    /// </remarks>
+    ///
     /// <seealso cref="IsNumericIntegerType"/>
     /// <seealso cref="IsNumericType"/>
     [MustUseReturnValue]
