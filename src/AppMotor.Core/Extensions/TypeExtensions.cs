@@ -82,20 +82,20 @@ public static class TypeExtensions
 
         if (type.IsPrimitive)
         {
-            switch (type.FullName)
+            switch (Type.GetTypeCode(type))
             {
-                case "System.Byte":
-                case "System.SByte":
-                case "System.Int16":
-                case "System.UInt16":
-                case "System.Int32":
-                case "System.UInt32":
-                case "System.Int64":
-                case "System.UInt64":
+                case TypeCode.Byte:
+                case TypeCode.SByte:
+                case TypeCode.Int16:
+                case TypeCode.UInt16:
+                case TypeCode.Int32:
+                case TypeCode.UInt32:
+                case TypeCode.Int64:
+                case TypeCode.UInt64:
                     return true;
 
-                case "System.Single":
-                case "System.Double":
+                case TypeCode.Single:
+                case TypeCode.Double:
                     return true;
 
                 default:
@@ -150,16 +150,16 @@ public static class TypeExtensions
 
         if (type.IsPrimitive)
         {
-            switch (type.FullName)
+            switch (Type.GetTypeCode(type))
             {
-                case "System.Byte":
-                case "System.SByte":
-                case "System.Int16":
-                case "System.UInt16":
-                case "System.Int32":
-                case "System.UInt32":
-                case "System.Int64":
-                case "System.UInt64":
+                case TypeCode.Byte:
+                case TypeCode.SByte:
+                case TypeCode.Int16:
+                case TypeCode.UInt16:
+                case TypeCode.Int32:
+                case TypeCode.UInt32:
+                case TypeCode.Int64:
+                case TypeCode.UInt64:
                     return true;
 
                 default:
@@ -210,10 +210,10 @@ public static class TypeExtensions
 
         if (type.IsPrimitive)
         {
-            switch (type.FullName)
+            switch (Type.GetTypeCode(type))
             {
-                case "System.Single":
-                case "System.Double":
+                case TypeCode.Single:
+                case TypeCode.Double:
                     return true;
 
                 default:
