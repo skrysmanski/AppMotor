@@ -150,6 +150,14 @@ public static class CSharpTypeName
             //
             // Non-generic types
             //
+
+            // "Type" objects have the actual type of "RuntimeType". Simplify this to "Type"
+            // as "RuntimeType" is internal and never surfaces in any code.
+            if (type.FullName == "System.RuntimeType")
+            {
+                return includeNamespace ? "System.Type" : "Type";
+            }
+
             return includeNamespace ? type.FullName! : type.Name;
         }
         else

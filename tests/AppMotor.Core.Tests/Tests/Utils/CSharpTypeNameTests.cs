@@ -71,4 +71,16 @@ public sealed class CSharpTypeNameTests
     {
         CSharpTypeName.GetName(typeof(List<Uri>), type => type.Namespace == "System.Collections.Generic").ShouldBe("System.Collections.Generic.List<Uri>");
     }
+
+    [Fact]
+    public void Test_GetName_Type()
+    {
+        // ReSharper disable once PossibleMistakenCallToGetType
+        var runtimeTypeType = typeof(int).GetType();
+
+        CSharpTypeName.GetName(runtimeTypeType).ShouldBe("Type");
+        CSharpTypeName.GetName(runtimeTypeType, CSharpTypeName.IncludeNamespaceFlags.SystemSubNamespaces).ShouldBe("Type");
+        CSharpTypeName.GetName(runtimeTypeType, CSharpTypeName.IncludeNamespaceFlags.SystemNamespace).ShouldBe("System.Type");
+        CSharpTypeName.GetName(runtimeTypeType, CSharpTypeName.IncludeNamespaceFlags.OtherNamespaces).ShouldBe("Type");
+    }
 }
