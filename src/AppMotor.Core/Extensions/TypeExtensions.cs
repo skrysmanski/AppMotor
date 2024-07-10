@@ -506,6 +506,42 @@ public static class TypeExtensions
     }
 
     /// <summary>
+    /// Same as <see cref="Type.MakeGenericType"/> but returns <c>null</c> if any of the <paramref name="typeArguments"/>
+    /// violates the constraints specified for the corresponding type parameter.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown if this type does not represent a generic type definition
+    /// (i.e. <see cref="Type.IsGenericTypeDefinition"/> returns <c>false</c>).</exception>
+    /// <exception cref="ArgumentException">Thrown if the element count in <paramref name="typeArguments"/> doesn't match
+    /// the number of type parameters of this type. Or if <paramref name="typeArguments"/> contains an element that is a
+    /// pointer type (<see cref="Type.IsPointer"/> returns <c>true</c>), a by-ref type (<see cref="Type.IsByRef"/> returns
+    /// <c>true</c>), or <c>typeof(void)</c>.</exception>
+    [MustUseReturnValue]
+    public static Type? TryMakeGenericType(this Type type, params Type[] typeArguments)
+    {
+        try
+        {
+            return type.MakeGenericType(typeArguments);
+        }
+        catch (ArgumentException)
+        {
+            // UGLY HACK: Unfortunately, catching the ArgumentException is the easiest (and probably best) way
+            //   to determine if any of the generic type parameter constraints have been violated.
+
+            if (type.GetGenericArguments().Length != typeArguments.Length)
+            {
+                throw;
+            }
+
+            if (typeArguments.Any(static type => type.IsPointer || type.IsByRef || type == typeof(void)))
+            {
+                throw;
+            }
+
+            return null;
+        }
+    }
+
+    /// <summary>
     /// Returns the <see cref="MethodInfo"/> for the specified custom operator defined in this type.
     /// For binary operators (i.e. with two parameters/operands), this method assumes that both operands
     /// are of this type. Returns <c>null</c>, if the operator method doesn't exist.

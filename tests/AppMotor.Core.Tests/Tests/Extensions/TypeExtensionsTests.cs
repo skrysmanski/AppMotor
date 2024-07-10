@@ -420,6 +420,31 @@ public sealed class TypeExtensionsTests
         private TestClassWithPrivateConstructor() { }
     }
 
+    [Fact]
+    public void Test_TryMakeGenericType()
+    {
+        // Success
+        typeof(INumberBase<>).TryMakeGenericType(typeof(int)).ShouldBe(typeof(INumberBase<int>));
+
+        // Success: Strange but apparently ok
+        typeof(INumberBase<>).TryMakeGenericType(typeof(INumberBase<>).GetGenericArguments()[0]).ShouldBe(typeof(INumberBase<>));
+
+        // Failure: constraint violation
+        typeof(INumberBase<>).TryMakeGenericType(typeof(string)).ShouldBe(null);
+
+        // Failure: not an open generic
+        Should.Throw<InvalidOperationException>(() => typeof(string).TryMakeGenericType(typeof(int)));
+        Should.Throw<InvalidOperationException>(() => typeof(INumberBase<int>).TryMakeGenericType(typeof(int)));
+
+        // Failure: wrong type param count
+        Should.Throw<ArgumentException>(() => typeof(INumberBase<>).TryMakeGenericType(typeof(int), typeof(long)));
+        Should.Throw<ArgumentException>(() => typeof(INumberBase<>).TryMakeGenericType());
+
+        // Failure: invalid type parameter
+        Should.Throw<ArgumentException>(() => typeof(INumberBase<>).TryMakeGenericType(typeof(void)));
+        Should.Throw<ArgumentException>(() => typeof(INumberBase<>).TryMakeGenericType(typeof(int*)));
+    }
+
     [Theory]
     [InlineData("+",  UnaryOperators.UnaryPlus)]
     [InlineData("-",  UnaryOperators.UnaryNegation)]
