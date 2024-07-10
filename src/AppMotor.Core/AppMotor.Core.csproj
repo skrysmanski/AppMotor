@@ -15,9 +15,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
+    <PackageReference Include="JetBrains.Annotations" Version="2024.2.0" />
     <PackageReference Include="System.Collections.Immutable" Version="8.0.0" />
-    <PackageReference Include="TestableIO.System.IO.Abstractions.Wrappers" Version="21.0.2" />
+    <PackageReference Include="TestableIO.System.IO.Abstractions.Wrappers" Version="21.0.22" />
   </ItemGroup>
 
 </Project>
