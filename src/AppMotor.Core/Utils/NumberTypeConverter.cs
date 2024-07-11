@@ -241,6 +241,7 @@ public static class NumberTypeConverter
                 case CreateMethods.Truncating:
                     return T.CreateTruncating(sourceNumber);
                 default:
+                    // CODE COVERAGE: can't be reached
                     throw new UnexpectedSwitchValueException(nameof(createMethod), createMethod);
             }
         }
