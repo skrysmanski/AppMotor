@@ -439,7 +439,7 @@ public static class TypeExtensions
                     catch (AmbiguousMatchException)
                     {
                         // This type implements multiple interfaces (with either different type arguments or
-                        // from different assemblies) with the same name.
+                        // from different assemblies) with the same name. (For example, multiple "IEquatable<T>".)
                         //
                         // NOTE: Because the search in "Type.GetInterface()" only looks at the type's full name
                         //   but not at the assembly, we can NOT assume "return true;" in case of this exception

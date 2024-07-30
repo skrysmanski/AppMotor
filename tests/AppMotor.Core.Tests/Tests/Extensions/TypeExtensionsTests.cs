@@ -294,6 +294,10 @@ public sealed class TypeExtensionsTests
 
         typeof(SealedClass).Is(typeof(SealedClass)).ShouldBe(true);
         typeof(SealedClass).Is<SealedClass>().ShouldBe(true);
+
+        typeof(MultiIEnumerableTestClass).Is<IEnumerable<int>>().ShouldBe(true);
+        typeof(MultiIEnumerableTestClass).Is<IEnumerable<string>>().ShouldBe(true);
+        typeof(MultiIEnumerableTestClass).Is<IEnumerable<bool>>().ShouldBe(false);
     }
 
     [Theory]
