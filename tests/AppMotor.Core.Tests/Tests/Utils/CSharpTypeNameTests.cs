@@ -83,4 +83,30 @@ public sealed class CSharpTypeNameTests
         CSharpTypeName.GetName(runtimeTypeType, CSharpTypeName.IncludeNamespaceFlags.SystemNamespace).ShouldBe("System.Type");
         CSharpTypeName.GetName(runtimeTypeType, CSharpTypeName.IncludeNamespaceFlags.OtherNamespaces).ShouldBe("Type");
     }
+
+    [Theory]
+    [InlineData(typeof(NestedClass), nameof(CSharpTypeNameTests) + "." + nameof(NestedClass))]
+    [InlineData(typeof(GenericNestedClass<>), nameof(CSharpTypeNameTests) + "." + nameof(GenericNestedClass<int>) + "<T>")]
+    [InlineData(typeof(GenericNestedClass<int>), nameof(CSharpTypeNameTests) + "." + nameof(GenericNestedClass<int>) + "<int>")]
+    [InlineData(typeof(GenericNestedClass<>.SubNestedType), nameof(CSharpTypeNameTests) + "." + nameof(GenericNestedClass<int>) + "<T>." + nameof(GenericNestedClass<int>.SubNestedType))]
+    [InlineData(typeof(GenericNestedClass<int>.SubNestedType), nameof(CSharpTypeNameTests) + "." + nameof(GenericNestedClass<int>) + "<int>." + nameof(GenericNestedClass<int>.SubNestedType))]
+    [InlineData(typeof(GenericNestedClass<int>.SubNestedType.SubSubNestedType<string>), nameof(CSharpTypeNameTests) + "." + nameof(GenericNestedClass<int>) + "<int>." + nameof(GenericNestedClass<int>.SubNestedType) + "." + nameof(GenericNestedClass<int>.SubNestedType.SubSubNestedType<string>) + "<string>")]
+    public void Test_GetName_NestedType(Type type, string expectedName)
+    {
+        CSharpTypeName.GetName(type).ShouldBe(expectedName);
+        CSharpTypeName.GetName(type, CSharpTypeName.IncludeNamespaceFlags.OtherNamespaces).ShouldBe(GetType().Namespace + "." + expectedName);
+    }
+
+    private sealed class NestedClass;
+
+    // ReSharper disable once UnusedTypeParameter
+    // ReSharper disable once ClassNeverInstantiated.Local
+    private sealed class GenericNestedClass<T>
+    {
+        public struct SubNestedType
+        {
+            // ReSharper disable once UnusedTypeParameter
+            public sealed class SubSubNestedType<T2>;
+        }
+    }
 }

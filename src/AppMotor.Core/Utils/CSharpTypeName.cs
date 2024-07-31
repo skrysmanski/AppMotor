@@ -1,6 +1,7 @@
 ﻿// SPDX-License-Identifier: MIT
 // Copyright AppMotor Framework (https://github.com/skrysmanski/AppMotor)
 
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -13,7 +14,7 @@ namespace AppMotor.Core.Utils;
 /// </summary>
 public static class CSharpTypeName
 {
-    private static readonly Regex GENERIC_NAME_REGEX = new(@"^(.+)`\d+$", RegexOptions.Compiled);
+    private static readonly Regex GENERIC_NAME_REGEX = new(@"^(.+)`(\d+)$", RegexOptions.Compiled);
 
     /// <summary>
     /// Returns the name of the specified type in C# syntax: e.g. "List&lt;string&gt;" instead of "List`1"
@@ -143,8 +144,11 @@ public static class CSharpTypeName
                 return "decimal";
         }
 
-        bool includeNamespace = type.Namespace is not null && includeNamespacePredicate(type);
+        // NOTE: Only include namespace if this type is not(!) a nested type. If it's a nested type,
+        //   the namespace can only be included for the outermost type.
+        bool includeNamespace = type.DeclaringType is null && type.Namespace is not null && includeNamespacePredicate(type);
 
+        // NOTE: If "type" is a non-generic type nested inside a generic type, "IsGenericType" will still be "true".
         if (!type.IsGenericType)
         {
             //
@@ -158,6 +162,11 @@ public static class CSharpTypeName
                 return includeNamespace ? "System.Type" : "Type";
             }
 
+            if (type.DeclaringType is not null)
+            {
+                return GetName(type.DeclaringType, includeNamespacePredicate) + "." + type.Name;
+            }
+
             return includeNamespace ? type.FullName! : type.Name;
         }
         else
@@ -167,32 +176,58 @@ public static class CSharpTypeName
             //
             var nameBuilder = new StringBuilder();
 
-            if (includeNamespace)
+            if (type.DeclaringType is not null)
             {
-                nameBuilder.Append(type.Namespace).Append('.');
+                var declaringType = type.DeclaringType;
+
+                // NOTE: For types nested inside a generic type, "type.DeclaringType.IsGenericTypeDefinition" is always "true" - no
+                //   matter whether "type" is a generic type definition or a concrete type.
+                //
+                //   If "type" is also a generic type definition, we can simply use "DeclaringType". If not, we have to construct
+                //   the declaring type properly.
+                if (declaringType.IsGenericTypeDefinition && !type.IsGenericTypeDefinition)
+                {
+                    var typeParameterCount = declaringType.GetGenericArguments().Length;
+                    declaringType = declaringType.MakeGenericType([..type.GetGenericArguments().Take(typeParameterCount)]);
+                }
+
+                nameBuilder.Append(GetName(declaringType, includeNamespacePredicate))
+                           .Append('.');
+            }
+            else if (includeNamespace)
+            {
+                nameBuilder.Append(type.Namespace)
+                           .Append('.');
             }
 
             var match = GENERIC_NAME_REGEX.Match(type.Name);
-            var cleanedName = match.Groups[1].Value;
-            nameBuilder.Append(cleanedName);
 
-            nameBuilder.Append('<');
-
-            var genericArguments = type.GetGenericArguments();
-
-            for (var i = 0; i < genericArguments.Length; i++)
+            if (!match.Success)
             {
-                if (i != 0)
-                {
-                    nameBuilder.Append(", ");
-                }
-
-                var genericArgumentType = genericArguments[i];
-                var genericArgumentName = GetName(genericArgumentType, includeNamespacePredicate);
-                nameBuilder.Append(genericArgumentName);
+                // This match fails if "type" is a non-generic type nested inside a generic type.
+                nameBuilder.Append(type.Name);
             }
+            else
+            {
+                var cleanedName = match.Groups[1].Value;
+                nameBuilder.Append(cleanedName);
 
-            nameBuilder.Append('>');
+                nameBuilder.Append('<');
+
+                var genericArguments = type.GetGenericArguments();
+
+                // NOTE: If "type" is a generic type nested inside another generic type, "GetGenericArguments()" will return
+                //   the type parameter both for the nested and for the outer type. So we have to skip the ones from the outer
+                //   type by parsing the number of the type name (to figure out how many parameters we "type" actually defines).
+                int genericArgumentsCount = int.Parse(match.Groups[2].ValueSpan, NumberStyles.None, CultureInfo.InvariantCulture);
+
+                var filteredGenericArguments = genericArguments.Skip(genericArguments.Length - genericArgumentsCount)
+                                                               .Select(genericParameter => GetName(genericParameter, includeNamespacePredicate));
+
+                nameBuilder.AppendJoin(", ", filteredGenericArguments);
+
+                nameBuilder.Append('>');
+            }
 
             return nameBuilder.ToString();
         }
