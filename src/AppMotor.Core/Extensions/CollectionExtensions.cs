@@ -17,7 +17,7 @@ public static class CollectionExtensions
     /// Returns this enumeration without any <c>null</c> elements.
     /// </summary>
     [MustUseReturnValue]
-    public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T?> collection) where T : class
+    public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T?> collection)
     {
         return collection.Where(item => item is not null)!;
     }
