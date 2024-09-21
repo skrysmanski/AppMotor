@@ -1,4 +1,4 @@
-﻿// Source: https://github.com/dotnet/runtime/blob/master/src/libraries/Common/src/System/HResults.cs
+﻿// Source: https://github.com/dotnet/runtime/blob/main/src/libraries/Common/src/System/HResults.cs
 
 // ReSharper disable All
 #pragma warning disable IDE0004 // Remove Unnecessary Cast
@@ -59,6 +59,7 @@ namespace System
         internal const int COR_E_ENTRYPOINTNOTFOUND = unchecked((int)0x80131523);
         internal const int COR_E_EXCEPTION = unchecked((int)0x80131500);
         internal const int COR_E_EXECUTIONENGINE = unchecked((int)0x80131506);
+        internal const int COR_E_FAILFAST = unchecked((int)0x80131623);
         internal const int COR_E_FIELDACCESS = unchecked((int)0x80131507);
         internal const int COR_E_FILELOAD = unchecked((int)0x80131621);
         internal const int COR_E_FILENOTFOUND = unchecked((int)0x80070002);
@@ -117,7 +118,11 @@ namespace System
         internal const int COR_E_VERIFICATION = unchecked((int)0x8013150D);
         internal const int COR_E_WAITHANDLECANNOTBEOPENED = unchecked((int)0x8013152C);
         internal const int CO_E_NOTINITIALIZED = unchecked((int)0x800401F0);
+        internal const int DISP_E_PARAMNOTFOUND = unchecked((int)0x80020004);
+        internal const int DISP_E_TYPEMISMATCH = unchecked((int)0x80020005);
+        internal const int DISP_E_BADVARTYPE = unchecked((int)0x80020008);
         internal const int DISP_E_OVERFLOW = unchecked((int)0x8002000A);
+        internal const int DISP_E_DIVBYZERO = unchecked((int)0x80020012);
         internal const int E_BOUNDS = unchecked((int)0x8000000B);
         internal const int E_CHANGED_STATE = unchecked((int)0x8000000C);
         internal const int E_FILENOTFOUND = unchecked((int)0x80070002);
@@ -131,5 +136,19 @@ namespace System
         internal const int RO_E_CLOSED = unchecked((int)0x80000013);
         internal const int RPC_E_CHANGED_MODE = unchecked((int)0x80010106);
         internal const int TYPE_E_TYPEMISMATCH = unchecked((int)0x80028CA0);
+        internal const int STG_E_PATHNOTFOUND = unchecked((int)0x80030003);
+        internal const int CTL_E_PATHNOTFOUND = unchecked((int)0x800A004C);
+        internal const int CTL_E_FILENOTFOUND = unchecked((int)0x800A0035);
+        internal const int FUSION_E_INVALID_NAME = unchecked((int)0x80131047);
+        internal const int FUSION_E_REF_DEF_MISMATCH = unchecked((int)0x80131040);
+        internal const int ERROR_TOO_MANY_OPEN_FILES = unchecked((int)0x80070004);
+        internal const int ERROR_SHARING_VIOLATION = unchecked((int)0x80070020);
+        internal const int ERROR_LOCK_VIOLATION = unchecked((int)0x80070021);
+        internal const int ERROR_OPEN_FAILED = unchecked((int)0x8007006E);
+        internal const int ERROR_DISK_CORRUPT = unchecked((int)0x80070571);
+        internal const int ERROR_UNRECOGNIZED_VOLUME = unchecked((int)0x800703ED);
+        internal const int ERROR_DLL_INIT_FAILED = unchecked((int)0x8007045A);
+        internal const int MSEE_E_ASSEMBLYLOADINPROGRESS = unchecked((int)0x80131016);
+        internal const int ERROR_FILE_INVALID = unchecked((int)0x800703EE);
     }
 }

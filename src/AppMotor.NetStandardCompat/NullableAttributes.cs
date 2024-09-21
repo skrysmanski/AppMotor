@@ -1,9 +1,12 @@
 ﻿// Source: https://github.com/dotnet/runtime/blob/main/src/libraries/System.Private.CoreLib/src/System/Diagnostics/CodeAnalysis/NullableAttributes.cs
+
 // ReSharper disable All
 #pragma warning disable IDE0009 // Member access should be qualified.
 #pragma warning disable IDE0021 // Use block body for constructor
 #pragma warning disable IDE0161 // Convert to file-scoped namespace
-#pragma warning disable IDE0300 // Simplify collection initialization
+
+//=============================================================================
+
 
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
@@ -147,8 +150,7 @@ namespace System.Diagnostics.CodeAnalysis
         /// <param name="member">
         /// The field or property member that is promised to be not-null.
         /// </param>
-        [SuppressMessage("Design", "CA1019:Define accessors for attribute arguments", Justification = "Not our code")]
-        public MemberNotNullAttribute(string member) => Members = new[] { member };
+        public MemberNotNullAttribute(string member) => Members = [member];
 
         /// <summary>Initializes the attribute with the list of field and property members.</summary>
         /// <param name="members">
@@ -171,21 +173,20 @@ namespace System.Diagnostics.CodeAnalysis
     {
         /// <summary>Initializes the attribute with the specified return value condition and a field or property member.</summary>
         /// <param name="returnValue">
-        /// The return value condition. If the method returns this value, the associated parameter will not be null.
+        /// The return value condition. If the method returns this value, the associated field or property member will not be null.
         /// </param>
         /// <param name="member">
         /// The field or property member that is promised to be not-null.
         /// </param>
-        [SuppressMessage("Design", "CA1019:Define accessors for attribute arguments", Justification = "Not our code")]
         public MemberNotNullWhenAttribute(bool returnValue, string member)
         {
             ReturnValue = returnValue;
-            Members = new[] { member };
+            Members = [member];
         }
 
         /// <summary>Initializes the attribute with the specified return value condition and list of field and property members.</summary>
         /// <param name="returnValue">
-        /// The return value condition. If the method returns this value, the associated parameter will not be null.
+        /// The return value condition. If the method returns this value, the associated field and property members will not be null.
         /// </param>
         /// <param name="members">
         /// The list of field and property members that are promised to be not-null.
