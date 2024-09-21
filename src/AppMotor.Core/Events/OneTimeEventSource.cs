@@ -23,7 +23,7 @@ public class OneTimeEventSource
     [SuppressMessage("Design", "CA1030:Use events where appropriate")]
     public void RaiseEvent()
     {
-        Task.Run(() => this.Event.RaiseEvent()).Wait();
+        Task.Run(this.Event.RaiseEvent).Wait();
     }
 
     /// <summary>

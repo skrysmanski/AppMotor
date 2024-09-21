@@ -20,7 +20,7 @@ public sealed class ProcessArgumentsTests
     public void Test_Constructor_Array()
     {
         new ProcessArguments().Count.ShouldBe(0);
-        new ProcessArguments(Array.Empty<string>()).Count.ShouldBe(0);
+        new ProcessArguments([]).Count.ShouldBe(0);
         // ReSharper disable once RedundantCast
         new ProcessArguments((string[]?)null).Count.ShouldBe(0);
 

@@ -219,7 +219,7 @@ public class Base32Encoding : Rfc4648Encoding
 
         if (encodedString.Length == 0)
         {
-            return Array.Empty<byte>();
+            return [];
         }
 
         int bufferSize = CalcDecodedByteCount(encodedString.Length);

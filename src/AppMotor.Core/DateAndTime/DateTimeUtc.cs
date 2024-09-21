@@ -436,7 +436,7 @@ public readonly struct DateTimeUtc : IEquatable<DateTimeUtc>, IComparable<DateTi
     /// <inheritdoc />
     public int CompareTo(object? obj)
     {
-        if (ReferenceEquals(null, obj))
+        if (obj is null)
         {
             return 1;
         }

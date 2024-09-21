@@ -291,7 +291,7 @@ public abstract class CliApplication
     [MustUseReturnValue]
     public Task<int> RunAsync(CancellationToken cancellationToken)
     {
-        return RunAsync(Array.Empty<string>(), cancellationToken);
+        return RunAsync([], cancellationToken);
     }
 
     /// <summary>

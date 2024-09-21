@@ -23,7 +23,7 @@ public class EventSource
     [SuppressMessage("Design", "CA1030:Use events where appropriate")]
     public void RaiseEvent()
     {
-        Task.Run(() => this.Event.RaiseEventAsync()).Wait();
+        Task.Run(this.Event.RaiseEventAsync).Wait();
     }
 
     /// <summary>

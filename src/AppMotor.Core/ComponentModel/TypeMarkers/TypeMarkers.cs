@@ -12,7 +12,7 @@ namespace AppMotor.Core.ComponentModel;
 /// </summary>
 public static class TypeMarkers
 {
-    private static readonly ConcurrentDictionary<Type, TypeMarkerCollection> s_markers = new ConcurrentDictionary<Type, TypeMarkerCollection>();
+    private static readonly ConcurrentDictionary<Type, TypeMarkerCollection> s_markers = new();
 
     /// <summary>
     /// This event is raised whenever a type is marked with a new type marker (via

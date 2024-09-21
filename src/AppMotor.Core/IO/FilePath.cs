@@ -393,7 +393,7 @@ public readonly struct FilePath : IEquatable<FilePath>
     /// <inheritdoc />
     public override int GetHashCode()
     {
-        return (this._value != null ? this._value.GetHashCode() : 0);
+        return this._value != null ? this._value.GetHashCode() : 0;
     }
 
     /// <summary>

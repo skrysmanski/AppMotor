@@ -9,7 +9,7 @@ namespace AppMotor.CliApp.Terminals.Formatting;
 /// <summary>
 /// Takes care about ANSI escape sequence support on Windows - see <see cref="Enable"/>.
 /// </summary>
-public static class AnsiSupportOnWindows
+public static partial class AnsiSupportOnWindows
 {
     private const int STD_OUTPUT_HANDLE = -11;
 
@@ -56,15 +56,17 @@ public static class AnsiSupportOnWindows
         return SetConsoleMode(stdOutHandle, consoleMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
     }
 
-    [DllImport("kernel32.dll")]
+    [LibraryImport("kernel32.dll")]
     [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-    private static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
 
-    [DllImport("kernel32.dll")]
+    [LibraryImport("kernel32.dll")]
     [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-    private static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
 
-    [DllImport("kernel32.dll", SetLastError = true)]
+    [LibraryImport("kernel32.dll", SetLastError = true)]
     [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-    private static extern IntPtr GetStdHandle(int nStdHandle);
+    private static partial IntPtr GetStdHandle(int nStdHandle);
 }

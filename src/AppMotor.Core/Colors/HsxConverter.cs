@@ -13,7 +13,7 @@ internal static class HsxConverter
 {
     public static void ConvertHslToHsv(float s, float l, out float s2, out float v)
     {
-        v = l + s * Math.Min(l, 1 - l);
+        v = l + (s * Math.Min(l, 1 - l));
 
         if (v.IsBasicallyEqualTo(0))
         {
@@ -21,7 +21,7 @@ internal static class HsxConverter
         }
         else
         {
-            s2 = 2 * (1 - l / v);
+            s2 = 2 * (1 - (l / v));
         }
     }
 
@@ -56,11 +56,11 @@ internal static class HsxConverter
         }
         else if (g == max)
         {
-            h = (b - r) / delta + 2f;
+            h = ((b - r) / delta) + 2f;
         }
         else
         {
-            h = (r - g) / delta + 4f;
+            h = ((r - g) / delta) + 4f;
         }
 
         h *= 60f;
@@ -75,7 +75,7 @@ internal static class HsxConverter
         int div = max + min;
         if (div > byte.MaxValue)
         {
-            div = byte.MaxValue * 2 - max - min;
+            div = (byte.MaxValue * 2) - max - min;
         }
 
         s = delta / div;
@@ -111,7 +111,7 @@ internal static class HsxConverter
 
     public static void ConvertHsvToHsl(float s, float v, out float s2, out float l)
     {
-        l = v * (1 - s / 2);
+        l = v * (1 - (s / 2));
 
         if (l is > 0 and < 1)
         {
@@ -147,12 +147,12 @@ internal static class HsxConverter
             {
                 var rangedH = h / 360.0;
 
-                var temp2 = l < 0.5 ? l * (1.0 + s) : l + s - l * s;
-                var temp1 = 2.0 * l - temp2;
+                var temp2 = l < 0.5 ? l * (1.0 + s) : l + s - (l * s);
+                var temp1 = (2.0 * l) - temp2;
 
-                rAsFloat = (float)GetColorComponent(temp1, temp2, rangedH + 1.0 / 3.0);
+                rAsFloat = (float)GetColorComponent(temp1, temp2, rangedH + (1.0 / 3.0));
                 gAsFloat = (float)GetColorComponent(temp1, temp2, rangedH);
-                bAsFloat = (float)GetColorComponent(temp1, temp2, rangedH - 1.0 / 3.0);
+                bAsFloat = (float)GetColorComponent(temp1, temp2, rangedH - (1.0 / 3.0));
             }
         }
 
@@ -168,7 +168,7 @@ internal static class HsxConverter
 
         if (temp3 < 1.0 / 6.0)
         {
-            return temp1 + (temp2 - temp1) * 6.0 * temp3;
+            return temp1 + ((temp2 - temp1) * 6.0 * temp3);
         }
 
         if (temp3 < 0.5)
@@ -178,7 +178,7 @@ internal static class HsxConverter
 
         if (temp3 < 2.0 / 3.0)
         {
-            return temp1 + (temp2 - temp1) * (2.0 / 3.0 - temp3) * 6.0;
+            return temp1 + ((temp2 - temp1) * ((2.0 / 3.0) - temp3) * 6.0);
         }
 
         return temp1;

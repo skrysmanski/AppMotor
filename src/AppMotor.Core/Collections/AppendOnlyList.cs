@@ -14,7 +14,7 @@ using ExcludeFromCodeCoverageAttribute = System.Diagnostics.CodeAnalysis.Exclude
 namespace AppMotor.Core.Collections;
 
 /// <summary>
-/// Represents a list that can only be append to (but not removed from or changed in any other way).
+/// Represents a list that can only be appended to (but not removed from or changed in any other way).
 ///
 /// <para>This design allows for the list to have very cheap clones (via <see cref="CloneShallow"/>)
 /// when there's always/most of the time only one clone that will be appended to. (If more than one
@@ -55,7 +55,7 @@ public sealed class AppendOnlyList<T> : IReadOnlyList<T>, IShallowCloneable<Appe
     [PublicAPI]
     public AppendOnlyList()
     {
-        this._underlyingList = new List<T>();
+        this._underlyingList = [];
     }
 
     /// <summary>

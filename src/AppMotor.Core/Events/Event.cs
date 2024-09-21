@@ -17,7 +17,7 @@ public sealed class Event
 {
     private readonly object _eventHandlersLock = new();
 
-    private ImmutableArray<EventHandlerRegistration> _eventHandlers = ImmutableArray<EventHandlerRegistration>.Empty;
+    private ImmutableArray<EventHandlerRegistration> _eventHandlers = [];
 
     /// <summary>
     /// Constructor.

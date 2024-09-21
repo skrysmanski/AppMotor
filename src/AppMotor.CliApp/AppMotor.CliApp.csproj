@@ -18,6 +18,9 @@
 
     <!-- This allows a developer to temporarily disable the requirements for documentation more easily during development. -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+    <!-- Required for [LibraryImport]. -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>

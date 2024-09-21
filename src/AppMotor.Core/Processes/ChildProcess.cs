@@ -282,8 +282,8 @@ public static class ChildProcess
                 throw new InvalidOperationException("Process could not be started for unknown reasons.");
             }
 
-            stdOutReadTask = Task.Run(() => this._process.StandardOutput.ReadToEndAsync());
-            stdErrReadTask = Task.Run(() => this._process.StandardError.ReadToEndAsync());
+            stdOutReadTask = Task.Run(this._process.StandardOutput.ReadToEndAsync);
+            stdErrReadTask = Task.Run(this._process.StandardError.ReadToEndAsync);
         }
 
         private ChildProcessResult PostProcessAfterExit(

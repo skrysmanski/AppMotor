@@ -289,7 +289,7 @@ public abstract class AnsiColorStreamParser : AnsiStreamParser
                 {
                     return null;
                 }
-                return num1 * 10 + num2;
+                return (num1 * 10) + num2;
             }
 
             case 3: // primarily for RGB colors
@@ -309,7 +309,7 @@ public abstract class AnsiColorStreamParser : AnsiStreamParser
                 {
                     return null;
                 }
-                return num1 * 100 + num2 * 10 + num3;
+                return (num1 * 100) + (num2 * 10) + num3;
             }
 
             default:

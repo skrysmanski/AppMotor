@@ -97,6 +97,6 @@ public static class AnsiEscapeSequence
     [MustUseReturnValue]
     public static ReadOnlySpan<char> ExtractSequenceContent(ReadOnlySpan<char> escapeSequence)
     {
-        return escapeSequence.Slice(start: 2, length: escapeSequence.Length - 3);
+        return escapeSequence[2..^1];
     }
 }

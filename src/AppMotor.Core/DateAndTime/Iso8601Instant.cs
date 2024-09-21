@@ -465,7 +465,7 @@ public readonly struct Iso8601Instant : IEquatable<Iso8601Instant>
                 {
                     int digitValue = ch - '0';
 
-                    result = result * 10 + digitValue;
+                    result = (result * 10) + digitValue;
                 }
                 else
                 {
@@ -531,7 +531,7 @@ public readonly struct Iso8601Instant : IEquatable<Iso8601Instant>
                 {
                     int digitValue = ch - '0';
 
-                    result = result * 10 + digitValue;
+                    result = (result * 10) + digitValue;
                     readDigitCount++;
                 }
                 else

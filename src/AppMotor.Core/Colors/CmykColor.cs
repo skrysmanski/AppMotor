@@ -192,13 +192,13 @@ public readonly struct CmykColor : IColor, IEquatable<CmykColor>
     [MustUseReturnValue]
     public CmyColor ToCmy()
     {
-        var maxRgb = 1.0 - this.K / 100;
+        var maxRgb = 1.0 - (this.K / 100);
 
         return new CmyColor(
             this.A,
-            (byte)Math.Round(255 - 255.0 * (1 - (double)this._c) * maxRgb),
-            (byte)Math.Round(255 - 255.0 * (1 - (double)this._m) * maxRgb),
-            (byte)Math.Round(255 - 255.0 * (1 - (double)this._y) * maxRgb)
+            (byte)Math.Round(255 - (255.0 * (1 - (double)this._c) * maxRgb)),
+            (byte)Math.Round(255 - (255.0 * (1 - (double)this._m) * maxRgb)),
+            (byte)Math.Round(255 - (255.0 * (1 - (double)this._y) * maxRgb))
         );
     }
 

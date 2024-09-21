@@ -18,7 +18,7 @@ public class ProcessArguments : List<string>
     /// Creates an instance of this class and populates it with the specified arguments.
     /// </summary>
     public ProcessArguments(params string[]? args)
-        : base(args ?? Array.Empty<string>())
+        : base(args ?? [])
     {
     }
 
@@ -26,7 +26,7 @@ public class ProcessArguments : List<string>
     /// Creates an instance of this class and populates it with a copy of the specified collection.
     /// </summary>
     public ProcessArguments(IEnumerable<string>? args)
-        : base(args ?? Array.Empty<string>())
+        : base(args ?? [])
     {
     }
 

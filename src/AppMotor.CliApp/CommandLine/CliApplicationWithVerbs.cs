@@ -16,7 +16,7 @@ namespace AppMotor.CliApp.CommandLine;
 /// instead.
 /// </summary>
 /// <remarks>
-/// Sub classes cannot have parameters (<see cref="CliParam{T}"/>) of their own. Parameter can only exist
+/// Subclasses cannot have parameters (<see cref="CliParam{T}"/>) of their own. Parameter can only exist
 /// on the commands.
 /// </remarks>
 public class CliApplicationWithVerbs : CliApplication
@@ -95,10 +95,7 @@ public class CliApplicationWithVerbs : CliApplication
         if (args.Length > 0 && string.Equals(args[0], HelpParamUtils.HelpCommandName, StringComparison.OrdinalIgnoreCase))
         {
             // Usage of virtual "help" command
-            var newArgs = new List<string>(args.Length);
-            newArgs.Add(HelpParamUtils.DefaultHelpParamName);
-            newArgs.AddRange(args[1..]);
-            return newArgs.ToArray();
+            return [HelpParamUtils.DefaultHelpParamName, ..args[1..]];
         }
 
         bool hasHelpParam = args.Any(HelpParamUtils.IsHelpParamName);
@@ -109,11 +106,8 @@ public class CliApplicationWithVerbs : CliApplication
         }
         else
         {
-            // Set first arg to the help param and add the others afterwards.
-            var newArgs = new List<string>(args.Length);
-            newArgs.Add(HelpParamUtils.DefaultHelpParamName);
-            newArgs.AddRange(args.Where(arg => !HelpParamUtils.IsHelpParamName(arg)));
-            return newArgs.ToArray();
+            // Set first arg to the help param and add the others afterward.
+            return [HelpParamUtils.DefaultHelpParamName, ..args.Where(arg => !HelpParamUtils.IsHelpParamName(arg))];
         }
     }
 }

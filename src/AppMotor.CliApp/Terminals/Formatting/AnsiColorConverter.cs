@@ -87,7 +87,7 @@ public static class AnsiColorConverter
     [MustUseReturnValue]
     public static bool Is4BitForegroundColor(int number)
     {
-        return number is >= 30 and <= 37 or >= 90 and <= 97;
+        return number is (>= 30 and <= 37) or (>= 90 and <= 97);
     }
 
     /// <summary>
@@ -97,7 +97,7 @@ public static class AnsiColorConverter
     [MustUseReturnValue]
     public static bool Is4BitBackgroundColor(int number)
     {
-        return number is >= 40 and <= 47 or >= 100 and <= 107;
+        return number is (>= 40 and <= 47) or (>= 100 and <= 107);
     }
 
     /// <summary>

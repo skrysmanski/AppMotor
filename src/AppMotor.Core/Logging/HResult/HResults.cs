@@ -1,6 +1,8 @@
 ﻿// Source: https://github.com/dotnet/runtime/blob/master/src/libraries/Common/src/System/HResults.cs
 
 // ReSharper disable All
+#pragma warning disable IDE0004 // Remove Unnecessary Cast
+#pragma warning disable IDE0161 // Convert to file-scoped namespace
 
 //=============================================================================
 

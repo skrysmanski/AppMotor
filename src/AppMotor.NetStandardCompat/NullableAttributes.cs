@@ -1,5 +1,9 @@
 ﻿// Source: https://github.com/dotnet/runtime/blob/main/src/libraries/System.Private.CoreLib/src/System/Diagnostics/CodeAnalysis/NullableAttributes.cs
 // ReSharper disable All
+#pragma warning disable IDE0009 // Member access should be qualified.
+#pragma warning disable IDE0021 // Use block body for constructor
+#pragma warning disable IDE0161 // Convert to file-scoped namespace
+#pragma warning disable IDE0300 // Simplify collection initialization
 
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.

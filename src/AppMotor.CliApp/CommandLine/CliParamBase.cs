@@ -115,7 +115,7 @@ public abstract class CliParamBase
     {
         Validate.ArgumentWithName(nameof(name)).IsValidParameterName(name, CliParamTypes.Positional);
 
-        this.Names = new[] { name }.ToImmutableArray();
+        this.Names = [name];
         this.PositionIndex = positionIndex;
     }
 

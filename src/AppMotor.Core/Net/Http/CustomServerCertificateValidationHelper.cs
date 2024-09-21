@@ -37,12 +37,7 @@ public sealed class CustomServerCertificateValidationHelper
     {
         Validate.ArgumentWithName(nameof(customCertificates)).IsNotNull(customCertificates);
 
-        this._customCertificates = new X509Certificate2Collection();
-
-        foreach (var customCertificate in customCertificates)
-        {
-            this._customCertificates.Add(customCertificate);
-        }
+        this._customCertificates = [..customCertificates];
     }
 
     /// <summary>
@@ -52,9 +47,9 @@ public sealed class CustomServerCertificateValidationHelper
     /// </summary>
     [PublicAPI]
     public bool ValidationCallback(
-#pragma warning disable CA1801 // Review unused parameters -> required for signature
+#pragma warning disable IDE0060 // Review unused parameters -> required for signature
             HttpRequestMessage request,
-#pragma warning restore CA1801 // Review unused parameters
+#pragma warning restore IDE0060 // Review unused parameters
             X509Certificate2? serverCert,
             X509Chain? certChain,
             SslPolicyErrors errors
