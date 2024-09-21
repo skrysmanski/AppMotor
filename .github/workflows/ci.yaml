@@ -234,12 +234,12 @@ jobs:
       # See: https://github.com/retypeapp/action-build
       - name: Build HTML files
         # For pinned versions, see: https://blog.gitguardian.com/github-actions-security-cheat-sheet/#use-specific-action-version-tags
-        uses: retypeapp/action-build@a95ca1f9508dec8465a93f2e50a1228d22e90f4e # version 3.5.0
+        uses: retypeapp/action-build@0f5c1e55453d13ec21ac8c441c9ebce6b2c4b0b0 # version 3.6.0
 
       # See: https://github.com/retypeapp/action-github-pages
       - name: Publish HTML files to GitHub Pages
         # For pinned versions, see: https://blog.gitguardian.com/github-actions-security-cheat-sheet/#use-specific-action-version-tags
-        uses: retypeapp/action-github-pages@5a952a4f53fc7366288db464ec120f755e9f1303 # version 3.5.0
+        uses: retypeapp/action-github-pages@5a952a4f53fc7366288db464ec120f755e9f1303 # version 3.6.0
         with:
           # The branch where the results are stored
           branch: retype
