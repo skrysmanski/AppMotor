@@ -4,6 +4,8 @@
 using System.ComponentModel;
 using System.Globalization;
 
+using JetBrains.Annotations;
+
 namespace AppMotor.Core.ComponentModel;
 
 /// <summary>
@@ -34,6 +36,7 @@ public abstract class StringTypeConverter<T> : TypeConverter where T : notnull
     /// <summary>
     /// Converts the specified string into the type of this converter.
     /// </summary>
+    [PublicAPI]
     protected abstract T ConvertFrom(string value, ITypeDescriptorContext? context, CultureInfo? culture);
 
     /// <inheritdoc />
@@ -53,5 +56,6 @@ public abstract class StringTypeConverter<T> : TypeConverter where T : notnull
     /// <summary>
     /// Converts the specified instance into a string.
     /// </summary>
+    [PublicAPI]
     protected abstract string ConvertTo(T value, ITypeDescriptorContext? context, CultureInfo? culture);
 }
